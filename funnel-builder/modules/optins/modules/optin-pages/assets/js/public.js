@@ -1,4 +1,5 @@
 /*global wffnfunnelVars */
+/*global wfffOptinVars */
 /*global fbq */
 /*global pintrk */
 (function ($) {
@@ -23,7 +24,7 @@
         },
         initPhoneFlag: function () {
             let intlconfig = {
-                initialCountry: window.wffnfunnelVars.op_flag_country,
+                initialCountry: window.wfffOptinVars.op_flag_country,
                 separateDialCode: true,
                 geoIpLookup: function (callback) {
                     $.get('https://ipinfo.io', function () {
@@ -34,8 +35,8 @@
                 },
             };
 
-            if (typeof window.wffnfunnelVars.onlyCountries !== "undefined" && window.wffnfunnelVars.onlyCountries.length > 0) {
-                intlconfig.onlyCountries = window.wffnfunnelVars.onlyCountries;
+            if (typeof window.wfffOptinVars.onlyCountries !== "undefined" && window.wfffOptinVars.onlyCountries.length > 0) {
+                intlconfig.onlyCountries = window.wfffOptinVars.onlyCountries;
             }
             var elems = document.querySelectorAll(".phone_flag_code input[type='tel']");
             for (var i in elems) {
@@ -81,8 +82,8 @@
 
                 var self = jQuery(this);
                 var message = null;
-                var error_msg = window.wffnfunnelVars.op_valid_text;
-                var error_email = window.wffnfunnelVars.op_valid_email;
+                var error_msg = window.wfffOptinVars.op_valid_text;
+                var error_email = window.wfffOptinVars.op_valid_email;
                 if (jQuery.trim(self.val()) === '') {
                     message = error_msg;
                 } else if ('checkbox' === self.attr('type')) {
@@ -114,7 +115,7 @@
             jQuery(formElem).find('.wfop_phone_validation .wffn-optin-input').each(function () {
                 var inst = jQuery(this);
                 var error_message = null;
-                var error_phone = window.wffnfunnelVars.op_valid_phone;
+                var error_phone = window.wfffOptinVars.op_valid_phone;
                 if (jQuery.trim(inst.val()) !== '' && 'wfop_optin_phone' === inst.attr('name')) {
                     if ("undefined" !== typeof window.intlTelInputGlobals) {
                         var itis = window.intlTelInputGlobals.getInstance(inst.get(0));

@@ -413,6 +413,11 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		}
 
 		public function register_notices() {
+			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			if ( ! $user ) {
+				return;
+			}
+
 			$global_funnel_id = WFFN_Common::get_store_checkout_id();
 			global $fk_block_notice;
 
@@ -427,14 +432,9 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				echo wp_kses_post( $this->block_incompat_notice() );
 				echo '<p><a class="button button-primary" href="' . esc_url( $action_url ) . '">' . __( ' Switch to Classic Checkout', 'funnel-builder' ) . '</a>     <a href="' . esc_url( $dismiss_url ) . '">' . __( 'Dismiss', 'funnel-builder' ) . '</a>  </p>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo '</div>';
-
-
 			}
 
-
 			$this->show_setup_wizard();
-
-
 		}
 
 		/**
@@ -458,10 +458,9 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return;
 			}
 			$current_admin_url = basename( wffn_clean( $_SERVER['REQUEST_URI'] ) ); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-			$status            = get_option( '_wffn_onboarding_completed', false );
 			$dismiss_url       = admin_url( 'admin-ajax.php?action=wffn_dismiss_notice&nkey=onboarding_wizard&nonce=' . wp_create_nonce( 'wp_wffn_dismiss_notice' ) . '&redirect=' . $current_admin_url );
 
-			if ( false === $status && false === $this->is_user_dismissed( get_current_user_id(), 'onboarding_wizard' ) ) { ?>
+			if ( WFFN_Core()->admin->is_wizard_available() ) { ?>
 
 
                 <div class="notice notice-warning" style="position: relative;">

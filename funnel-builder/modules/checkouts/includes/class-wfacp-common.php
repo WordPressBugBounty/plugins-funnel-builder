@@ -2112,7 +2112,7 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 
 
 		$display_type = get_option( 'woocommerce_tax_display_cart' );
-		if ( 'incl' == $display_type ) {
+		if ( 'incl' == $display_type && $signup_fee > 0 ) {
 			$signup_fee = self::get_price_sign_up_fee( $pro, 'inc_tax' );
 		}
 
@@ -2153,13 +2153,20 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 	}
 
 	public static function get_signup_fee( $price ) {
+		if ( empty( $price ) ) {
+			return $price;
+		}
+		if ( is_string( $price ) ) {
+			$price = strval( $price );
+		}
 		global $wfacp_product_switcher_quantity;
-		if ( ! is_null( $wfacp_product_switcher_quantity ) && $wfacp_product_switcher_quantity > 0 ) {
+		if ( ! empty( $price ) && ! is_null( $wfacp_product_switcher_quantity ) && $wfacp_product_switcher_quantity > 0 ) {
 			$price *= $wfacp_product_switcher_quantity;
 		}
 
 		return $price;
 	}
+
 
 	/**
 	 * @param $pro WC_Product_Subscription
@@ -2731,10 +2738,7 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 	}
 
 	public static function generate_transient_key() {
-		require_once ABSPATH . 'wp-includes/class-phpass.php';
-		$hasher = new PasswordHash( 8, false );
-
-		return md5( $hasher->get_random_bytes( 32 ) );
+		return md5( bwf_generate_random_bytes( 32 ) );
 	}
 
 	public static function do_wc_ajax() {
@@ -2814,22 +2818,22 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 
 
 		new WFACP_Add_Address_Field( 'wc_custom_field', array(
-			'type'         => 'wfacp_html',
-			'label'        => 'Extra Billing Fields',
+			'type'        => 'wfacp_html',
+			'label'       => 'Extra Billing Fields',
 			'placeholder' => 'Extra Billing Fields',
-			'cssready'     => [ 'wfacp-col-left-third' ],
-			'class'        => array( 'form-row-third first', 'wfacp-col-full' ),
-			'required'     => false,
-			'priority'     => 60,
+			'cssready'    => [ 'wfacp-col-left-third' ],
+			'class'       => array( 'form-row-third first', 'wfacp-col-full' ),
+			'required'    => false,
+			'priority'    => 60,
 		) );
 		new WFACP_Add_Address_Field( 'wc_custom_field', array(
-			'type'         => 'wfacp_html',
-			'label'        => 'Extra Shipping Fields',
+			'type'        => 'wfacp_html',
+			'label'       => 'Extra Shipping Fields',
 			'placeholder' => 'Extra Shipping Fields',
-			'cssready'     => [ 'wfacp-col-left-third' ],
-			'class'        => array( 'form-row-third first', 'wfacp-col-full' ),
-			'required'     => false,
-			'priority'     => 60,
+			'cssready'    => [ 'wfacp-col-left-third' ],
+			'class'       => array( 'form-row-third first', 'wfacp-col-full' ),
+			'required'    => false,
+			'priority'    => 60,
 		), 'shipping' );
 
 
@@ -2879,6 +2883,7 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 
 		return $sections;
 	}
+
 	public static function oxy_get_meta_prefix( $key ) {
 		if ( function_exists( 'oxy_get_meta_prefix' ) ) {
 			$key = oxy_get_meta_prefix( $key );

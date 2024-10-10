@@ -77,7 +77,7 @@ class BWF_Plugin_Compatibilities {
 		}
 
 		foreach ( self::$plugin_compatibilities as $plugins_class ) {
-			if ( method_exists( $plugins_class, 'is_enable' ) && $plugins_class->is_enable() && is_callable( array( $plugins_class, 'get_fixed_currency_price_reverse' ) ) ) {
+			if ( method_exists( $plugins_class, 'is_enable' ) && $plugins_class->is_enable() && is_callable( array( $plugins_class, 'get_currency_symbol' ) ) ) {
 				return call_user_func( array( $plugins_class, 'get_currency_symbol' ), $currency );
 			}
 		}

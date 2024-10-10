@@ -27,7 +27,6 @@ final class WFACP_admin {
 		add_action( 'admin_menu', [ $this, 'remove_page_attributes' ], 90 );
 
 		add_filter( 'plugin_action_links_' . WFACP_PLUGIN_BASENAME, array( $this, 'plugin_actions' ) );
-		add_filter( 'woofunnels_uninstall_reasons', array( $this, 'plugin_uninstall_reasons' ), 20 );
 		add_action( 'admin_head', [ $this, 'open_admin_bar' ], 90 );
 
 
@@ -1755,44 +1754,7 @@ final class WFACP_admin {
 		return $links;
 	}
 
-	public function plugin_uninstall_reasons( $uninstall_reasons ) {
 
-		if ( ! isset( $uninstall_reasons['default'] ) ) {
-			return $uninstall_reasons;
-		}
-
-		$sorted        = [ 0, 1, 2, 6, 3, 4, 5, 7 ];
-		$final_reasons = [];
-
-		array_push( $uninstall_reasons['default'], [
-			'id'                => 35,
-			'text'              => __( 'Doing testing', 'woofunnels-aero-checkout' ),
-			'input_type'        => '',
-			'input_placeholder' => '',
-		] );
-		array_push( $uninstall_reasons['default'], [
-			'id'                => 42,
-			'text'              => __( 'My checkout is not looking good', 'woofunnels-aero-checkout' ),
-			'input_type'        => '',
-			'input_placeholder' => '',
-		] );
-		array_push( $uninstall_reasons['default'], [
-			'id'                => 41,
-			'text'              => __( 'Troubleshooting conflicts with other plugins', 'woofunnels-aero-checkout' ),
-			'input_type'        => '',
-			'input_placeholder' => '',
-		] );
-
-		foreach ( $sorted as $key => $value ) {
-			if ( $value === 2 ) {
-				$uninstall_reasons['default'][ $value ]['text'] = 'I only need the plugin for shorter period';
-			}
-			$final_reasons['default'][] = $uninstall_reasons['default'][ $value ];
-		}
-
-
-		return $final_reasons;
-	}
 
 	public function add_meta_boxes_for_shortcodes() {
 

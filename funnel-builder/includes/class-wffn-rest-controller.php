@@ -1210,7 +1210,7 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 			if ( 3 === $state ) {
 				$text = __( 'Indexing of orders is underway. This setting will work once the process completes.', 'funnel-builder-powerpack' );
 			} else {
-				$text = __( 'This rule needs indexing of past orders. Go to <a target="_blank" href="' . esc_url( admin_url( 'admin.php?page=woofunnels&tab=tools' ) ) . '">Tools > Index Orders</a> and click \'Start\' to index orders', 'funnel-builder-powerpack' );
+				$text = __( 'This rule needs indexing of past orders. Go to <a target="_blank" href="' . esc_url( admin_url( 'admin.php?page=bwf&path=/settings/tools' ) ) . '">Tools > Index Orders</a> and click \'Start\' to index orders', 'funnel-builder-powerpack' );
 			}
 
 			return $text;

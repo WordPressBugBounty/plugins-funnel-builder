@@ -162,7 +162,7 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 				WC()->session->set( '_wffn_session_id', '' );
 			}
 
-			$this->set_cookie( 'wffn_ay_'.$get_key, '', time() - DAY_IN_SECONDS );
+			$this->set_cookie( 'wffn_ay_' . $get_key, '', time() - DAY_IN_SECONDS );
 			$this->set_cookie( 'wffn_si', '', time() - DAY_IN_SECONDS );
 			WFFN_Core()->logger->log( "Clearing the session" . print_r( $get_key, true ) ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
@@ -278,10 +278,9 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 		}
 
 		public function generate_transient_key() {
-			require_once ABSPATH . 'wp-includes/class-phpass.php';
-			$hasher = new PasswordHash( 8, false );
 
-			return md5( $hasher->get_random_bytes( 32 ) );
+				return md5( bwf_generate_random_bytes( 32 ) );
+
 		}
 
 		/**
@@ -303,7 +302,9 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 
 		/**
 		 * Add funnel session param in url
-		 * @param $url		 *
+		 *
+		 * @param $url *
+		 *
 		 * @return mixed|string
 		 */
 		public function maybe_add_funnel_session_param( $url ) {

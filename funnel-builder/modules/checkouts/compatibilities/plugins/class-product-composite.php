@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * plugin name : Woo Composite Products by WooCommerce v.10.0.2
+ */
+
 #[AllowDynamicProperties]
 class WFACP_WooCommerce_Product_Composite {
 
@@ -24,7 +28,11 @@ class WFACP_WooCommerce_Product_Composite {
 	}
 
 	public function do_not_display( $status, $cart_item ) {
-		if ( $cart_item['data']->get_type() == 'composite' ) {
+
+		if ( ! isset( $cart_item['data'] ) || ! $cart_item['data'] instanceof WC_Product ) {
+			return $status;
+		}
+		if ( $cart_item['data']->get_type() === 'composite' ) {
 			$status = true;
 		}
 
@@ -115,7 +123,6 @@ class WFACP_WooCommerce_Product_Composite {
 
 		return $MinMax;
 	}
-
 
 
 }

@@ -83,11 +83,6 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 		 * Try to initialize the funnel based on the current environment
 		 */
 		public function maybe_initialize_setup() {
-			$supported_environment_to_open_funnel = true;
-			if ( false === $supported_environment_to_open_funnel ) {
-				return;
-			}
-
 			$is_preview_mode = WFFN_Common::is_page_builder_preview();
 			if ( $is_preview_mode ) {
 				return;

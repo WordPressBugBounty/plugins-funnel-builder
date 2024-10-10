@@ -66,13 +66,13 @@ if ( ! class_exists( 'WFFN_Step_Landing' ) ) {
 			return __( 'Sales Page', 'funnel-builder' );
 		}
 
-
 		/**
-		 * @param $step
+		 * @param $term
+		 * @param $funnel_id
 		 *
-		 * @return array
+		 * @return array|array[]
 		 */
-		public function get_step_designs( $term, $funnel_id = 0 ) {
+		public function get_step_designs( $term, $funnel_id = 0 ) { //phpcs:ignore
 			$active_pages    = WFFN_Core()->landing_pages->get_landing_pages( $term );
 			$inside_funnels  = [];
 			$outside_funnels = [];
@@ -360,6 +360,7 @@ if ( ! class_exists( 'WFFN_Step_Landing' ) ) {
 			if ( $landing_id > 0 ) {
 				WFCO_Model_Report_views::update_data( gmdate( 'Y-m-d', current_time( 'timestamp' ) ), $landing_id, 3 );
 			}
+			WFFN_Core()->data->set( 'source_id', $landing_id )->save();
 			do_action( 'wffn_event_step_converted', $landing_id, $step_data );
 			do_action( 'wffn_event_step_converted_' . $this->slug, $landing_id, $step_data );
 		}

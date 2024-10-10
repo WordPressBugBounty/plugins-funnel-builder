@@ -171,11 +171,13 @@ foreach ( $section_order as $item_section ) {
 
 				echo '<div class="wfty_box wfty_order_download" >';
 				echo '<div class="wfty_title">' . esc_html( $order_download_heading ) . '</div>';
-				add_filter( 'woocommerce_account_downloads_columns', function ( $array ) {
-					if ( isset( $array['download-remaining'] ) && 'false' === $this->data['order_downloads_show_file_downloads'] ) {
+                $order_downloads_show_file_downloads  = $this->data['order_downloads_show_file_downloads'];
+                $order_downloads_show_file_expiry  = $this->data['order_downloads_show_file_expiry'];
+				add_filter( 'woocommerce_account_downloads_columns', function ( $array ) use ( $order_downloads_show_file_downloads, $order_downloads_show_file_expiry ) {
+					if ( isset( $array['download-remaining'] ) && 'false' === $order_downloads_show_file_downloads ) {
 						unset( $array['download-remaining'] );
 					}
-					if ( isset( $array['download-expires'] ) && 'false' === $this->data['order_downloads_show_file_expiry'] ) {
+					if ( isset( $array['download-expires'] ) && 'false' === $order_downloads_show_file_expiry ) {
 						unset( $array['download-expires'] );
 					}
 
@@ -218,6 +220,14 @@ foreach ( $section_order as $item_section ) {
 					foreach ( $order_ids as $orderId ) {
 						$order_obj = apply_filters( 'wfty_maybe_update_order', wc_get_order( $orderId ) );
 						$downloads = $order_obj->get_downloadable_items();
+						$downloads = array_map( function ( $d_item ) use ( $order_downloads_btn_text ) {
+							$d_item['btn_text'] = $order_downloads_btn_text;
+
+							return $d_item;
+						}, $downloads );
+
+						$downloads = apply_filters( 'wfty_maybe_update_download_data', $downloads, $order_obj );
+
 						foreach ( $downloads as $download ) : ?>
                             <tr>
 								<?php foreach ( wc_get_account_downloads_columns() as $column_id => $column_name ) : ?>
@@ -231,7 +241,7 @@ foreach ( $section_order as $item_section ) {
 													echo esc_html( $download['download_name'] );
 													break;
 												case 'download-file':
-													echo '<a href="' . esc_url( $download['download_url'] ) . '" class="button">' . esc_html( $order_downloads_btn_text ) . '</a>';
+													echo '<a href="' . esc_url( $download['download_url'] ) . '" class="button">' . esc_html( $download['btn_text'] ) . '</a>';
 													break;
 												case 'download-remaining':
 													echo is_numeric( $download['downloads_remaining'] ) ? esc_html( $download['downloads_remaining'] ) : esc_html__( '&infin;', 'woocommerce' );

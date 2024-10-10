@@ -542,10 +542,10 @@ abstract class WFACP_Template_Common {
 	}
 
 	public function remove_theme_css_and_scripts() {
-
 		if ( false == apply_filters( 'wfacp_remove_theme_js_css_files', true, $this ) ) {
 			return;
 		}
+
 		$theme_css_path = $this->get_theme_css_path();
 		global $wp_scripts, $wp_styles;
 		$registered_script = $wp_scripts->registered;
@@ -1976,6 +1976,14 @@ abstract class WFACP_Template_Common {
 	public function change_place_order_button_text( $text ) {
 
 		return $text;
+	}
+	public function exclude_place_order_text_update_order_review( $text ) {
+		if ( apply_filters( 'wfacp_exclude_place_order_text_update_order_review', true ) && did_action( 'woocommerce_checkout_update_order_review' ) > 0 && current_action() === 'woocommerce_order_button_text' ) {
+			return true;
+		}
+
+		return false;
+
 	}
 
 	public function payment_button_alignment() {

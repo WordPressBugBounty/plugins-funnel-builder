@@ -96,8 +96,8 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 
 		public function get_add_to_cart_prams( $product_id, $variation_id, $quantity, $mode ) {
 
-			$product_id_to_use = ! empty( $variation_id ) && $variation_id > 0 && $this->do_treat_variable_as_simple( $mode ) ? $variation_id : $product_id;
-			$product           = wc_get_product( $product_id_to_use );
+			$product_id = ! empty( $variation_id ) && $variation_id > 0 && ( false === $this->do_treat_variable_as_simple( $mode ) ) ? $variation_id : $product_id;
+			$product    = wc_get_product( $product_id );
 
 			// Calculate price
 			$price = apply_filters( 'wffn_add_to_cart_tracking_price', $product->get_price(), $product, $variation_id, $quantity, $mode, $this->admin_general_settings );

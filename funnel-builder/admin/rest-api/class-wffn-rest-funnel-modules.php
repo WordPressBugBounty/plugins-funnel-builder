@@ -374,7 +374,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						}
 						$formatted_name = $product_object->get_formatted_name();
 						$product_id     = $product_object->get_id();
-						$products[]     = [ 'id' => $product_id, 'name' => rawurldecode( wp_strip_all_tags( $formatted_name ) ) . "(#". $product_id .")" ];
+						$products[]     = [ 'id' => $product_id, 'name' => rawurldecode( wp_strip_all_tags( $formatted_name ) ) . "(#" . $product_id . ")" ];
 					}
 				}
 				if ( ! empty( $products ) ) {
@@ -1412,7 +1412,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 					if ( ! empty( $design['selected_type'] ) ) {
 
-						if ( ! in_array( $design['selected_type'], [ 'elementor', 'divi', 'oxy', 'gutenberg', 'pre_built', 'embed_forms', 'customizer' ], true ) ) {
+						if ( ! in_array( $design['selected_type'], [ 'elementor', 'divi', 'oxy', 'bricks', 'gutenberg', 'pre_built', 'embed_forms', 'customizer' ], true ) ) {
 							$step['other_builder'] = $this->detectActivePageBuilder( $post_data );
 						}
 
@@ -1782,7 +1782,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 			$builder = ( 'pre_built' === $builder ) ? 'customizer' : $builder;
 			switch ( $builder ) {
 				case 'divi':
-					$edit_url = add_query_arg( array( 'p' => $page_id, 'et_fb' => true, 'PageSpeed' => 'off' ), site_url() );
+					$edit_url = add_query_arg( array( 'et_fb' => true, 'PageSpeed' => 'off' ), get_the_permalink( $page_id ) );
 					break;
 
 				case 'elementor':
@@ -1805,6 +1805,11 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 					break;
 				case 'customizer':
 					$edit_url = add_query_arg( array( 'ct_builder' => true ), get_the_permalink( $page_id ) );
+					break;
+
+
+				case 'bricks':
+					$edit_url = add_query_arg( array( 'bricks' => 'run' ), get_the_permalink( $page_id ) );
 					break;
 
 				default:

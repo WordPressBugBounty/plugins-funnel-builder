@@ -3844,17 +3844,17 @@ body .wfacp_main_form.woocommerce .ywcmas_manage_addresses_cb_container input[ty
     margin-right: 7px;
 }
 
-body #pp_full_res input[type="text"],
-body #pp_full_res input[type="password"],
-body #pp_full_res input[type="email"],
-body #pp_full_res input[type="tel"],
+body #pp_full_res input[type="text"]:not([hidden]),
+body #pp_full_res input[type="password"]:not([hidden]),
+body #pp_full_res input[type="email"]:not([hidden]),
+body #pp_full_res input[type="tel"]:not([hidden]),
 body #pp_full_res select,
 body #pp_full_res textarea,
 body #pp_full_res .select2-container .select2-selection--single .select2-selection__rendered,
-body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="text"],
-body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="password"],
-body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="email"],
-body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="tel"],
+body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="text"]:not([hidden]),
+body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="password"]:not([hidden]),
+body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="email"]:not([hidden]),
+body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager input[type="tel"]:not([hidden]),
 body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager select,
 body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager textarea,
 body .wfacp_main_form.woocommerce .ywcmas_multiple_addresses_manager .select2-container .select2-selection--single .select2-selection__rendered {
@@ -4742,13 +4742,14 @@ body .woocommerce-error,
 body .woocommerce-info,
 body .woocommerce-message {
     background-color: transparent;
-    padding: 0 0 0;
-    margin: 0 0 0;
-    border-top: none;
+    padding: 0;
+    margin: 0;
     min-height: 1px;
     text-transform: inherit;
     display: block;
     text-align: left;
+    border: none;
+    box-shadow: none;
 }
 
 
@@ -5769,10 +5770,13 @@ body #wfacp-sec-wrapper .woocommerce-checkout {
 body #wfacp-sec-wrapper .wfacp_main_form p.wfacp_field_type_hidden {
     display: none;
 }
+
 body #wfacp-sec-wrapper .wfacp_main_form #payment .place-order .bwfan_user_consent.wfacp-consent-term-condition {
     padding: 0;
 }
-
+body #wfacp-e-form .wc-credit-card-form.wc-payment-form input[hidden] {
+    display: none;
+}
 /* -----------------------------------------------MEDIA QUERY---------------------------------------- */
 @media (min-width: 993px) {
     body .select2-dropdown {

@@ -50,10 +50,11 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			add_filter( 'woocommerce_get_checkout_order_received_url', array( $this, 'redirect_to_thankyou' ), 999, 2 );
 			add_action( 'init', array( $this, 'register_post_type' ), 5 );
 			add_action( 'wp', array( $this, 'maybe_check_for_custom_page' ), 1 );
-			add_action( 'wp', array( $this, 'maybe_redirect_funnel_thankyou' ), 2 );
 			add_action( 'wp', array( $this, 'set_id' ), 2 );
 			add_action( 'wp', array( $this, 'validate_order' ), 11 );
 			add_action( 'wp', array( $this, 'wfty_add_shortcodes' ), 12 );
+			add_action( 'wp', array( $this, 'maybe_redirect_funnel_thankyou' ), 999 );
+
 
 
 			add_action( 'wp', array( $this, 'parse_request_for_thankyou' ), - 1 );
@@ -332,6 +333,24 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 					$get_order_id = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_NUMBER_INT );
 				}
 
+				if ( empty( $get_order_id ) ) {
+					return;
+				}
+
+				$order = $this->data->get_order( $get_order_id );
+
+				if ( ! $order instanceof WC_Order ) {
+                    return;
+				}
+
+				/**
+				 * Return if key not match with order
+				 */
+				$order_key = $order->get_order_key();
+				if ( empty( $order_key ) || filter_input( INPUT_GET, 'key', FILTER_SANITIZE_SPECIAL_CHARS ) !== $order_key ) {
+					return;
+				}
+
 				if ( $get_order_id !== null ) {
 					$get_order_received_endpoint                = get_option( 'woocommerce_checkout_order_received_endpoint', 'order-received' );
 					$wp_query_obj->query_vars['order-received'] = $get_order_id;
@@ -347,7 +366,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				/**
 				 * Check if its a page built using elementor, delete the cache for the page
 				 */
-				if ( defined('ELEMENTOR_VERSION') && version_compare(ELEMENTOR_VERSION,'3.23.0','>=') && class_exists( 'Elementor\Core\Base\Document' ) && method_exists( 'Elementor\Core\Base\Document', 'is_built_with_elementor' ) ) {
+				if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.23.0', '>=' ) && class_exists( 'Elementor\Core\Base\Document' ) && method_exists( 'Elementor\Core\Base\Document', 'is_built_with_elementor' ) ) {
 					$document = Elementor\Plugin::$instance->documents->get( get_the_ID() );
 
 					if ( $document && $document->is_built_with_elementor() ) {
@@ -1090,7 +1109,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		public function maybe_redirect_funnel_thankyou( $wp_obj ) {
 
 			// Check if on the funnel thank you page or if the thankyou page reattempt is in progress
-			if ( ! empty( filter_input( INPUT_GET, 'wfty_source', FILTER_SANITIZE_NUMBER_INT ) ) || ! empty( filter_input( INPUT_GET, 'nt', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+			if ( ! empty( filter_input( INPUT_GET, 'wfty_sources', FILTER_SANITIZE_NUMBER_INT ) ) || ! empty( filter_input( INPUT_GET, 'nt', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
 				return;
 			}
 
@@ -1110,22 +1129,41 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				return;
 			}
 
+
+			/**
+			 * not return forcefully thank you page URL if URL contains specific params
+			 */
+			$params = apply_filters( 'wffn_redirect_thankyou_exclude_by_query_params', array( 'filter_flag' => 'onMollieReturn' ), $order_id );
+
+			if ( is_array( $params ) ) {
+				foreach ( $params as $param => $value ) {
+					if ( isset( $_GET[ $param ] ) && $_GET[ $param ] === $value ) { //phpcs:ignore
+						return;
+					}
+
+				}
+
+			}
+
 			// Retrieve the order using the order ID and redirect if it's a valid order
 			$order = wc_get_order( $order_id );
 			if ( $order instanceof WC_Order ) {
 
 				$url = $order->get_checkout_order_received_url();
-
 				if ( empty( $url ) ) {
 					return;
 				}
+				$get_params =  $_GET; //phpcs:ignore
+				$query_var = [ 'nt' => '1' ];
 
-				$url = add_query_arg( [ 'nt' => '1' ], $url );
+				if ( ! empty( $get_params ) && is_array( $get_params ) ) {
+					$query_var = array_merge( $query_var, $get_params );
+				}
+
+				$url = add_query_arg( $query_var, $url );
 				wp_redirect( $url );
 				exit;
 			}
-
-			return;
 
 		}
 

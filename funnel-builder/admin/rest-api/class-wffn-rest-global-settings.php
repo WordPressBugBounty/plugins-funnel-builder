@@ -206,7 +206,7 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 				return rest_ensure_response( $resp );
 			}
 
-			$tab = ( 'funnelkit_first_party_tracking' === $tab || 'funnelkit_pixel_tracking' === $tab ) ? 'woofunnels_general_settings' : $tab;
+			$tab = ( 'funnelkit_first_party_tracking' === $tab || 'funnelkit_pixel_tracking' === $tab || 'funnelkit_advanced' === $tab ) ? 'woofunnels_general_settings' : $tab;
 			do_action( 'bwf_global_save_settings_' . $tab, $settings );
 
 			$resp = array(

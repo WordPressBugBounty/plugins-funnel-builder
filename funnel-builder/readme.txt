@@ -2,9 +2,9 @@
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.5.0
+Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 3.5.2
+Stable tag: 3.6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -202,6 +202,7 @@ These would help you nail the products and sales page copy that resonates the mo
 - **Divi:** We integrate with Divi and have pre-built checkout page templates for you to try. You can customize a Shopify style checkout or our most popular Minimalist template in Divi.
 - **Oxygen:** FunnelKit has a range of templates that you can customize and build with the help of Oxygen page builder.
 - **Gutenberg:** FunnelKit deeply integrates with Gutenberg to give you a nice feeling of editing your funnel pages in WordPress Gutenberg builder.
+- **Bricks:**  FunnelKit’s deep integration with Bricks page builder enables you to design beautiful, high-converting funnels. Use drag-and-drop elements to customize pre-designed templates or create one from scratch using Bricks.
 - **Other Page Builders:** You can use any other page builder of your choice, like Beaver, Thrive, or others, to customize the funnel pages. Use the custom shortcodes to create and personalize any page on the builder.
 - **LearnDash:** FunnelKit integrates via WooCommerce with the popular LMS plugin, LearnDash, allowing you to auto-enroll leads into your free course with a single click.
 
@@ -375,6 +376,36 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.6.0 (Oct 10, 2024) =
+* Added:  Deep Integration with Bricks Page builder with 6 new elements and pre-built templates:
+      - Checkout Form
+      - Mini Cart
+      - Opt-in form
+      - Opt-in form popup
+      - Order Details
+      - Customer Details
+* Added: A new global setting to allow/disallow theme styles and scripts on FunnelKit pages. (#6390, #5847)
+* Added: Checkout - Compatibility with WooCommerce Product Add-ons. (#5584)
+* Added: Checkout - Compatibility with WooCommerce Checkout Field Editor by WooCommerce for third-party advanced fields. (#6580)
+* Added: Checkout - A new filter `wfacp_smart_button_position_rest` added to modify available positions for express checkout buttons. (#6756)
+* Improved: Checkout - Updated compatibility with Tickera Bridge for WooCommerce. (#6633)
+* Improved: Checkout- Handling for Query Param to auto-populate checkout field in support with Meta policies about pixel data. (#6741)
+* Improved: Restrict onboarding setup admin notice to users with funnel access only. (#6649)
+* Improved: Do not record payment URLs from gateways as a referrer. (#6669)
+* Improved: Remove 'Domain' from Pixel event data as it is considered PII by Meta. (#6648)
+* Improved: Remove usage of `X-HTTP-Method-Override` in some API endpoints for the Admin App as certain servers block these API requests. (#6686)
+* Improved: Checkout - Updated compatibility with WooCommerce PayPal Payments to resolve duplicate credit card fields. (#6685)
+* Improved: Checkout - Updated compatibility with TranslatePress. (#6713)
+* Improved: Checkout - Updated compatibility with the Brazilian Market on WooCommerce. (#6717)
+* Improved: Checkout - Updated compatibility with the Thrive Builder. (#6751)
+* Improved: Compatibility with the Divi theme updated for renamed directories. (#6626)
+* Improved: Checkout - Handled cases where the `id` attribute was missing for extra advanced fields. (#6727)
+* Fixed: Issue where users were redirected to the thank you page after canceling payment through Mollie. (#6678)
+* Fixed: Checkout - Subscription price showed double when multiple quantities were in checkout products for products without a signup fee, under WCML setup. (#6696)
+* Fixed: Error when no funnel session was found during opt-in submission. (#6707)
+* Fixed: Checkout - CSS issue for WooCommerce notices on checkout pages. (#6480)
+* Fixed: Edit link for Divi theme/builder templates was not working for few setups. (#6734)
 
 = 3.5.2 (Aug 28, 2024) =
 * Fixed: Checkout - Field label for different billing/shipping was not editable in the backend. (#6616)

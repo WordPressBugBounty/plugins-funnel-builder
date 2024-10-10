@@ -202,6 +202,7 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 		}
 
 		public function register_classes() {
+
 			do_action( 'wfacp_before_loaded' );
 			$load_classes = self::get_registered_class();
 			if ( is_array( $load_classes ) && count( $load_classes ) > 0 ) {

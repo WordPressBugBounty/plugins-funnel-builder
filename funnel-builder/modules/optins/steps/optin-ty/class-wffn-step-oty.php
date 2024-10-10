@@ -74,7 +74,7 @@ if ( ! class_exists( 'WFFN_Step_Oty' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_step_designs( $term, $funnel_id = 0 ) {
+		public function get_step_designs( $term, $funnel_id = 0 ) {//phpcs:ignore
 			$active_pages    = WFOPP_Core()->optin_ty_pages->get_oty_pages( $term );
 			$inside_funnels  = [];
 			$outside_funnels = [];
@@ -360,6 +360,11 @@ if ( ! class_exists( 'WFFN_Step_Oty' ) ) {
 		public function maybe_add_script() {
 
 			if ( WFOPP_Core()->optin_ty_pages->is_wfoty_page() === true ) {
+
+				$is_preview_mode = WFFN_Common::is_page_builder_preview();
+				if ( $is_preview_mode ) {
+					return;
+				}
 
 				$funnel       = WFFN_Core()->data->get_session_funnel();
 				$current_step = WFFN_Core()->data->get_current_step();

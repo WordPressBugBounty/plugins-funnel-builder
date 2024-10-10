@@ -341,6 +341,8 @@ if ( ! class_exists( 'WFFN_Optin_Form_Controller_Custom_Form' ) ) {
 
 				$result             = apply_filters( 'wfopp_modify_form_submit_result', $result, $optin_page_id );
 				$result['next_url'] = $this->get_redirect_to_next_step( $result['posted_data'] );
+
+				WFFN_Core()->data->set( 'source_id', $optin_page_id )->save();
 				WFFN_Core()->logger->log( "returning : " . print_r( $result, true ) );  //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
 			}

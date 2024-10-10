@@ -203,12 +203,12 @@ body #wfacp-e-form .wfacp_main_form .wfacp_shipping_table ul#shipping_method li,
 }
 
 /* default input fields styling */
-body #wfacp-e-form input[type="text"],
-body #wfacp-e-form input[type="date"],
-body #wfacp-e-form input[type="password"],
-body #wfacp-e-form input[type="email"],
-body #wfacp-e-form input[type="tel"],
-body #wfacp-e-form input[type="number"],
+body #wfacp-e-form input[type="text"]:not([hidden]),
+body #wfacp-e-form input[type="date"]:not([hidden]),
+body #wfacp-e-form input[type="password"]:not([hidden]),
+body #wfacp-e-form input[type="email"]:not([hidden]),
+body #wfacp-e-form input[type="tel"]:not([hidden]),
+body #wfacp-e-form input[type="number"]:not([hidden]),
 body #wfacp-e-form select,
 body #wfacp-e-form textarea,
 body #wfacp-e-form select#join_referral_program {

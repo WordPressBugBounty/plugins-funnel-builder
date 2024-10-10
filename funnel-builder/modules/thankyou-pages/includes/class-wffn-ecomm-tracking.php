@@ -1232,7 +1232,6 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 
 		public function get_event_data() {
 			$event_data = array(
-				'domain'         => site_url(),
 				'plugin'         => 'FunnelKit Thankyou',
 				'event_day'      => current_time( "l" ),
 				'event_month'    => current_time( "F" ),

@@ -152,7 +152,9 @@ class WFACP_Class_Register_Third_Party_Fields {
 		 */
 		$checkout = WC()->checkout();
 
-		$fields = $checkout->get_checkout_fields();
+		$fields = apply_filters( 'wfacp_advanced_order_fields', $checkout->get_checkout_fields(), $key );
+
+
 		/**
 		 * Get Registered AeroCheckout Fields
 		 */
@@ -264,21 +266,33 @@ class WFACP_Class_Register_Third_Party_Fields {
 		$offset = 0;
 		$fields = $section['fields'];
 
+		$temp = [];
+
 
 		foreach ( $section['fields'] as $key => $single ) {
 			if ( $single['id'] == 'billing_wc_custom_field' && ! empty( $this->checkout_fields['billing'] ) ) {
 				$fields = $this->merge_fields( $fields, $offset, $this->checkout_fields['billing'], $single );
-
+				$temp[] = $single['id'];
 				break;
 			}
 			if ( $single['id'] === 'shipping_wc_custom_field' && ! empty( $this->checkout_fields['shipping'] ) ) {
 				$fields = $this->merge_fields( $fields, $offset, $this->checkout_fields['shipping'], $single );
+				$temp[] = $single['id'];
 				break;
 			}
 			$offset ++;
 		}
 
-		$section['fields'] = $fields;
+		if ( in_array( 'billing_wc_custom_field', $temp ) ) {
+			$extra_fields = $this->checkout_fields['shipping'];
+
+		} else {
+			$extra_fields = $this->checkout_fields['billing'];
+
+		}
+
+
+		$section['fields'] = apply_filters( 'wfacp_detect_extra_fields', $fields, $extra_fields, $temp );
 
 		return $section;
 	}
@@ -328,7 +342,9 @@ class WFACP_Class_Register_Third_Party_Fields {
 	 * Add Default AeroCheckout class on the field when class not exists
 	 */
 	public function add_default_wfacp_styling( $args, $key ) {
+
 		$other_address_fields = WFACP_Common::get_aero_registered_checkout_fields();
+
 		if ( isset( $args['class'] ) && is_array( $args['class'] ) && ! in_array( 'wfacp-col-full', $args['class'] ) ) {
 			$args['class'] = array_merge( [ 'wfacp-form-control-wrapper', 'wfacp-col-full' ], $args['class'] );
 			if ( false !== strpos( $args['type'], 'hidden' ) ) {
@@ -364,7 +380,17 @@ class WFACP_Class_Register_Third_Party_Fields {
 
 		if ( ! in_array( $key, $other_address_fields ) && isset( $args['type'] ) && 'select' === $args['type'] && count( $this->wc_fields_under_billing ) > 0 && array_key_exists( $key, $this->wc_fields_under_billing ) && isset( $this->wc_fields_under_billing[ $key ]['options'] ) ) {
 			$args['options'] = $this->wc_fields_under_billing[ $key ]['options'];
+		}
+		/**
+		 * Merge Default Classes under billing and shipping address fields
+		 */
 
+		if ( apply_filters( 'wfacp_merge_default_billing_fields_classes', false, $key ) && isset( $args['class'] ) && is_array( $args['class'] ) && isset( $this->wc_fields_under_billing[ $key ]['class'] ) && is_array( $this->wc_fields_under_billing[ $key ]['class'] ) ) {
+			$args['class'] = array_values( array_unique( array_merge( $args['class'], $this->wc_fields_under_billing[ $key ]['class'] ) ) );
+		}
+
+		if ( apply_filters( 'wfacp_merge_default_shipping_fields_classes', false, $key ) && isset( $args['class'] ) && is_array( $args['class'] ) && isset( $this->wc_fields_under_shipping[ $key ]['class'] ) && is_array( $this->wc_fields_under_shipping[ $key ]['class'] ) ) {
+			$args['class'] = array_values( array_unique( array_merge( $args['class'], $this->wc_fields_under_shipping[ $key ]['class'] ) ) );
 		}
 
 

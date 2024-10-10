@@ -303,14 +303,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 				if ( ! empty( $settings['smart_button_position'] ) ) {
 
-					$smart_button_positions = [
-						'wfacp_form_single_step_start'         => __( 'At top of checkout Page', 'woofunnels-aero-checkout' ),
-						'wfacp_before_product_switching_field' => __( 'Before product switcher', 'woofunnels-aero-checkout' ),
-						'wfacp_after_product_switching_field'  => __( 'After product switcher', 'woofunnels-aero-checkout' ),
-						'wfacp_before_order_summary_field'     => __( 'Before order summary', 'woofunnels-aero-checkout' ),
-						'wfacp_after_order_summary_field'      => __( 'After order summary', 'woofunnels-aero-checkout' ),
-						'wfacp_before_payment_section'         => __( 'Above the payment gateways', 'woofunnels-aero-checkout' ),
-					];
+					$smart_button_positions = $this->get_smart_button_positions();
 
 					$id = $settings['smart_button_position'];
 
@@ -354,14 +347,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 			$prompt_display_message = __( 'Hey there! It seems you have a {{site_title}} account.', 'woofunnel-aero-checkout' );
 
-			$smart_button_positions = [
-				'wfacp_form_single_step_start'         => __( 'At top of checkout Page', 'woofunnels-aero-checkout' ),
-				'wfacp_before_product_switching_field' => __( 'Before product switcher', 'woofunnels-aero-checkout' ),
-				'wfacp_after_product_switching_field'  => __( 'After product switcher', 'woofunnels-aero-checkout' ),
-				'wfacp_before_order_summary_field'     => __( 'Before order summary', 'woofunnels-aero-checkout' ),
-				'wfacp_after_order_summary_field'      => __( 'After order summary', 'woofunnels-aero-checkout' ),
-				'wfacp_before_payment_section'         => __( 'Above the payment gateways', 'woofunnels-aero-checkout' ),
-			];
+			$smart_button_positions = $this->get_smart_button_positions();
 
 			$live_validation                                            = [];
 			$optional_field_db_values                                   = [];
@@ -1394,7 +1380,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'id'             => 'wc_advanced_order_field',
 					'type'           => 'wfacp_html',
 					'label'          => __( 'Extra Advanced Fields' ),
-					'placeholder'   => '',
+					'placeholder'    => '',
 					'data_label'     => __( 'Extra Advanced Fields' ),
 					'required'       => false,
 					'default'        => '',
@@ -1994,7 +1980,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 		public function rectify_fields_options( $fields_options ) {
 			$options = [];
 			if ( ! empty( $fields_options ) && is_array( $fields_options ) ) {
-				foreach ( $fields_options as  $option ) {
+				foreach ( $fields_options as $option ) {
 					if ( empty( $option['heading'] ) ) {
 						$key = str_replace( [ 'address_1', 'address_2', 'city', 'postcode', 'country', 'state', 'phone' ], [
 							'street_address_1',
@@ -2680,7 +2666,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					$key                             = str_replace( [ 'shipping_', 'billing_' ], [ '' ], $option['key'] );
 					$key_to_use                      = $this->prepare_post_address_fields( $key, 'key' );
 					$field_label                     = $this->prepare_post_address_fields( $key );
-					$data = [];
+					$data                            = [];
 					$data[ $key_to_use ]             = ( isset( $option['status'] ) && true === bwf_string_to_bool( $option['status'] ) ) ? 'true' : 'false';
 					$data[ $field_label . '_label' ] = ! empty( $option['label'] ) ? $option['label'] : '';
 
@@ -2745,6 +2731,21 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			}
 
 			return $data;
+		}
+
+		public function get_smart_button_positions() {
+
+			$smart_button_positions = [
+				'wfacp_form_single_step_start'         => __( 'At top of checkout Page', 'woofunnels-aero-checkout' ),
+				'wfacp_before_product_switching_field' => __( 'Before product switcher', 'woofunnels-aero-checkout' ),
+				'wfacp_after_product_switching_field'  => __( 'After product switcher', 'woofunnels-aero-checkout' ),
+				'wfacp_before_order_summary_field'     => __( 'Before order summary', 'woofunnels-aero-checkout' ),
+				'wfacp_after_order_summary_field'      => __( 'After order summary', 'woofunnels-aero-checkout' ),
+				'wfacp_before_payment_section'         => __( 'Above the payment gateways', 'woofunnels-aero-checkout' ),
+			];
+
+			return apply_filters( 'wfacp_smart_button_position_rest', $smart_button_positions );
+
 		}
 	}
 

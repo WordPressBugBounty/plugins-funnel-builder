@@ -575,7 +575,7 @@ if ( ! class_exists( 'WFFN_REST_Steps' ) ) {
 			$template = isset( $args['template'] ) ? sanitize_text_field( $args['template'] ) : '';
 			$id       = isset( $args['id'] ) ? sanitize_text_field( $args['id'] ) : '';
 			$is_multi = isset( $args['is_multi'] ) ? $args['is_multi'] : '';
-
+			do_action( 'wffn_before_import_checkout_template', $id, $builder );
 			WFACP_Core()->template_loader->add_default_template( true );
 			$result = WFACP_Core()->importer->import( $id, $builder, $template, $is_multi );
 

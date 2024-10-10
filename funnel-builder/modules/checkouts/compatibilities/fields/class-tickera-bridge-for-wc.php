@@ -53,6 +53,12 @@ class Tickera_Bridge_For_WC {
 
 		$this->tc_general_settings = get_option( 'tc_general_setting', false );
 		$this->instance            = WFACP_Common::remove_actions( 'woocommerce_checkout_after_customer_details', 'TC_WooCommerce_Bridge', 'add_standard_tc_fields_to_checkout' );
+
+		$checkout_owner_fields_placement_hook = isset( $this->tc_general_settings['tc_woo_checkout_owner_fields_placement'] ) ? $this->tc_general_settings['tc_woo_checkout_owner_fields_placement'] : 'woocommerce_checkout_after_customer_details';
+
+		if ( ! empty( $checkout_owner_fields_placement_hook ) ) {
+			$this->instance = WFACP_Common::remove_actions( $checkout_owner_fields_placement_hook, 'TC_WooCommerce_Bridge', 'render_tc_owner_fields' );
+		}
 	}
 
 	public function display_field( $field, $key ) {
@@ -66,6 +72,8 @@ class Tickera_Bridge_For_WC {
         <div class="tickera_wrap" id="tickera_wrap">
 			<?php
 			$this->instance->add_standard_tc_fields_to_checkout();
+			$this->instance->render_tc_owner_fields();
+
 			?>
         </div>
 

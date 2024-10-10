@@ -70,9 +70,6 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 			add_filter( 'wffn_assets_styles', [ $this, 'add_optin_fronted_style' ], 10, 1 );
 			add_action( 'bwf_global_save_settings_op-settings', array( $this, 'update_global_settings_fields' ) );
 
-			add_filter( 'wffn_localized_data', array( $this, 'maybe_add_js_localized' ) );
-
-
 			add_action( 'plugins_loaded', [ $this, 'load_compatibility' ], 2 );
 			add_filter( 'woofunnels_global_settings_fields', array( $this, 'add_global_settings_fields' ) );
 			// Manage Tabs position
@@ -185,6 +182,8 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 				wp_enqueue_style( 'wffn-optin-frontend-style' );
 				wp_register_script( 'wffn-optin-public', $this->url . 'assets/js/public' . $suffix . '.js', 'jquery', WFFN_VERSION_DEV, true );
 				wp_enqueue_script( 'wffn-optin-public' );
+
+				wp_localize_script( 'wffn-optin-public', 'wfffOptinVars', $this->maybe_add_js_localized() );
 				global $post;
 				$page_template = ( $post instanceof WP_Post ) ? get_post_meta( $post->ID, '_wp_page_template', true ) : '';
 				if ( 'default' === $page_template || empty( $page_template ) ) {
@@ -1184,10 +1183,11 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 		}
 
-		public function maybe_add_js_localized( $localized ) {
+		public function maybe_add_js_localized() {
+			$localized = array();
 			if ( $this->is_wfop_page() ) {
-				$current_step                = WFFN_Core()->data->get_current_step();
-				$db_options                  = $this->setup_custom_options( $current_step['id'] );
+				global $post;
+				$db_options                  = $this->setup_custom_options( $post->ID );
 				$localized['op_valid_phone'] = $db_options['op_valid_phone'];
 
 				if ( isset( $db_options['op_valid_enable'] ) && $db_options['op_valid_enable'] === 'true' ) {
@@ -1198,7 +1198,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 					$localized['op_valid_email'] = '';
 				}
 				$localized['op_flag_country'] = 'auto';
-				$localized['onlyCountries']   = apply_filters( 'wffn_optin_phone_param_only_countries', [], $current_step['id'] );
+				$localized['onlyCountries']   = apply_filters( 'wffn_optin_phone_param_only_countries', [],$post->ID );
 
 			}
 

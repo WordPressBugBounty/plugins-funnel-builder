@@ -584,7 +584,7 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 				$limit_str = '';
 			}
 
-			if ( ! in_array( absint( wffn_conversion_tracking_migrator()->get_upgrade_state() ), [ 3, 4 ], true ) ) {
+			if ( ! in_array( absint( wffn_conversion_tracking_migrator()->get_upgrade_state() ), [ 0, 3, 4 ], true ) ) {
 				$conversions_orders = $this->get_conversion_orders_from_aero( $args, $limit_str );
 			}else {
 				$conversions_orders = $this->get_conversion_orders( $args, $limit_str, $return_data );

@@ -6,7 +6,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 	class WFFN_Ecomm_Tracking_Common {
 		public $api_events = [];
 		public $gtag_rendered = false;
-		public $admin_general_settings=null;
+		public $admin_general_settings = null;
 
 		public function __construct() {
 			add_action( 'wp_head', array( $this, 'render' ), 90 );
@@ -32,10 +32,10 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		}
 
 		public function get_advanced_pixel_data( $type ) {
-			if( 'fb' === $type ){
+			if ( 'fb' === $type ) {
 				return WFFN_Common::pixel_advanced_matching_data();
 			}
-			if( 'tiktok' === $type ){
+			if ( 'tiktok' === $type ) {
 				return WFFN_Common::tiktok_advanced_matching_data();
 			}
 
@@ -109,6 +109,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 				?>
                 <!-- Facebook Analytics Script Added By WooFunnels -->
                 <script type="text/javascript">
+					<?php $this->prepare_wffnevents(); ?>
                     function wffnFbTrackingIn() {
                         var wffn_shouldRender = 1;
 						<?php do_action( 'wffn_allow_tracking_inline_js' ); ?>
@@ -132,7 +133,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
                             }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 							<?php
 
-							$get_all_fb_pixel  = $this->is_fb_pixel();
+							$get_all_fb_pixel = $this->is_fb_pixel();
 							$get_each_pixel_id = explode( ',', $get_all_fb_pixel );
 							if ( is_array( $get_each_pixel_id ) && count( $get_each_pixel_id ) > 0 ) {
 							foreach ( $get_each_pixel_id as $pixel_id ) {
@@ -173,7 +174,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			echo '';
 		}
 
-		public function maybe_print_gtag_script( $k, $code, $label ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function maybe_print_gtag_script( $k, $code, $label ) { //phpcs:ignore
 			echo '';
 		}
 
@@ -250,10 +251,38 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		public function render_fb_view() {
 			if ( $this->should_render_view( 'fb' ) ) {
 				?>
-                var wffnEvents = [];
+                if(typeof wffn_ev_custom_fb_event_id === 'undefined'){
+                var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
+                }
                 var wffn_ev_view_fb_event_id = Math.random().toString(36).substring(2, 15);
                 fbq('track', 'PageView',(typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent({} ):{},{'eventID': 'PageView_'+wffn_ev_view_fb_event_id});
+				<?php
+
+			}
+		}
+
+		public function prepare_wffnevents() {
+			if ( $this->should_render_view( 'fb' ) ) {
+				?>
+                if(typeof wffn_ev_custom_fb_event_id === 'undefined'){
+                var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
+                }
+                var wffnEvents = [];
+                var wffn_ev_view_fb_event_id = Math.random().toString(36).substring(2, 15);
                 wffnEvents.push({event: 'PageView', 'event_id': 'PageView_'+wffn_ev_view_fb_event_id});
+				<?php
+
+			}
+
+			if ( $this->should_render() && $this->is_enable_custom_event() ) {
+				?>
+                if(typeof wffn_ev_custom_fb_event_id === 'undefined'){
+                var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
+                }
+                if(typeof wffnEvents === 'undefined'){
+                var wffnEvents = [];
+                }
+                wffnEvents.push({event: '<?php echo esc_attr( $this->get_custom_event_name() ); ?>', 'event_id': '<?php echo esc_attr( $this->get_custom_event_name() ); ?>_'+wffn_ev_custom_fb_event_id});
 				<?php
 
 			}
@@ -549,8 +578,8 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		public function render_tiktok() {
 
 			if ( $this->tiktok_code() ) {
-				$get_each_pixel_id = explode( ',', $this->tiktok_code() );
-				$advanced_pixel_data = $this->get_advanced_pixel_data('tiktok' );
+				$get_each_pixel_id   = explode( ',', $this->tiktok_code() );
+				$advanced_pixel_data = $this->get_advanced_pixel_data( 'tiktok' );
 
 				?>
                 <!-- Tiktok Pixel Base Code -->
@@ -591,7 +620,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 
                             ttq.load('<?php echo esc_js( $id ) ?>');
 							<?php if ( count( $advanced_pixel_data ) > 0 ) { ?>
-                            ttq.instance('<?php echo $id; ?>' ).identify(<?php echo wp_json_encode($advanced_pixel_data); ?>);
+                            ttq.instance('<?php echo esc_js( $id ); ?>').identify(<?php echo wp_json_encode( $advanced_pixel_data ); ?>);
 							<?php } ?>
 							<?php if ( $this->should_render_view( 'tiktok' ) ) { ?>
                             ttq.page();
@@ -630,7 +659,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			return false;
 		}
 
-		public function maybe_print_tiktok_ecomm( $id, $purchase = false, $complete_payment = false ) {  //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function maybe_print_tiktok_ecomm( $id, $purchase = false, $complete_payment = false ) {  //phpcs:ignore
 			echo '';
 		}
 
@@ -734,8 +763,8 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			$request_uri = null;
 			if ( true === $is_ajax ) {
 
-				if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-					return $_SERVER['HTTP_REFERER'];
+				if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {//phpcs:ignore
+					return $_SERVER['HTTP_REFERER'];//phpcs:ignore
 				}
 
 				$current_step = WFFN_Core()->data->get_current_step();
@@ -890,7 +919,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 							$instance->set_event_id( $event_id );
 							$instance->set_user_data( $this->get_user_data( $type ) );
 							$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
-							$getEventName   = $this->admin_general_settings->get_option( 'general_event_name' );
+							$getEventName = $this->admin_general_settings->get_option( 'general_event_name' );
 							$instance->set_event_data( $getEventName, $getEventparams );
 							break;
 						default:
@@ -1006,14 +1035,10 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		public function maybe_track_custom_steps_event() {//phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 
 			if ( $this->should_render() && $this->is_enable_custom_event() ) {
-
 				?>
-                if(typeof wffnEvents === 'undefined'){
-                var wffnEvents = [];
-                }
+                var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
                 var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
                 fbq('trackCustom', '<?php echo esc_attr( $this->get_custom_event_name() ); ?>', (typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent(<?php echo $this->get_custom_event_params(); ?>):<?php echo $this->get_custom_event_params(); ?>,{'eventID': '<?php echo esc_attr( $this->get_custom_event_name() ); ?>_'+wffn_ev_custom_fb_event_id}); <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                wffnEvents.push({event: '<?php echo esc_attr( $this->get_custom_event_name() ); ?>', 'event_id': '<?php echo esc_attr( $this->get_custom_event_name() ); ?>_'+wffn_ev_custom_fb_event_id});
 				<?php
 
 			}
@@ -1078,8 +1103,8 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 
 		}
 
-		public function get_generic_event_params_for_conv_api(){
-            return [];
+		public function get_generic_event_params_for_conv_api() {
+			return [];
 		}
 
 		/**
@@ -1095,7 +1120,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			if ( $this->should_render() ) {
 				?>
                 <script type="text/javascript">
-                    document.addEventListener('DOMContentLoaded', function() {
+                    document.addEventListener('DOMContentLoaded', function () {
                         if (typeof wffnFbTrackingIn === 'function') {
                             wffnFbTrackingIn();
                         }

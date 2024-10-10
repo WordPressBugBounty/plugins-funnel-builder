@@ -274,7 +274,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				foreach ( $plugin_log_files as $file_slug => $file_name ) {
 					$option_value = $plugin_folder . '/' . $file_slug;
 					$file_list[]  = array(
-						'label' => $file_name,
+						'label' => $this->extractFilename($file_name),
 						'value' => $option_value,
 						'key'   => $option_value
 					);
@@ -283,6 +283,22 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 			}
 
 			return rest_ensure_response( $file_list );
+		}
+
+		/**
+		 * Extract the filename correct
+		 * @param $filename
+		 *
+		 * @return string
+		 */
+		public function extractFilename($filename) {
+			$pattern = '/^(.*?-\d{4}-\d{2}-\d{2})(?:-[a-f0-9]{32})?$/';
+
+			if (preg_match($pattern, $filename, $matches)) {
+				return $matches[1];
+			}
+
+			return $filename; // Return original if no match
 		}
 
 		public function view_log_files( $request ) {

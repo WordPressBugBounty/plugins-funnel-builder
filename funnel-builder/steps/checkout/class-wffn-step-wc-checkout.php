@@ -558,7 +558,9 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 			$template = get_post_meta( $id, '_tobe_import_template', true );
 			WFACP_Core()->template_loader->add_default_template( true );
 
+
 			return WFACP_Core()->importer->import( $id, get_post_meta( $id, '_tobe_import_template_type', true ), $template );
+
 		}
 
 		public function update_template_data( $id, $data ) {

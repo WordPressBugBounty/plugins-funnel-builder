@@ -796,7 +796,7 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		}
 
 		public static function memory_exceeded() {
-			$memory_limit   = self::get_memory_limit() * 0.9; // 90% of max memory
+			$memory_limit = self::get_memory_limit() * 0.9; // 90% of max memory
 
 			$current_memory = memory_get_usage( true );
 			$return         = false;
@@ -857,10 +857,9 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		}
 
 		public static function generate_hash_key() {
-			require_once ABSPATH . 'wp-includes/class-phpass.php';
-			$hasher = new PasswordHash( 2, false );
 
-			return bin2hex( $hasher->get_random_bytes( 4 ) );
+				return bin2hex( bwf_generate_random_bytes( 4 ) );
+
 		}
 
 		/**

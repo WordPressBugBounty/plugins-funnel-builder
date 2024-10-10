@@ -177,6 +177,14 @@
 			$domain           = $sitepress->convert_url( $sitepress->get_wp_api()->get_home_url(), $default_language );
 		}
 
+		// Check if Polylang is active
+		if ( function_exists( 'pll_default_language' ) && function_exists( 'pll_home_url' ) ) {
+			// Get the default language
+			$default_language = pll_default_language();
+			// Get the home URL in the default language
+			$domain = pll_home_url( $default_language );
+		}
+
 		/**
 		 * Get woofunnels plugins data from the options
 		 * consider multisite setups

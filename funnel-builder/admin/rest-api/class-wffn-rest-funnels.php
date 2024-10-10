@@ -1059,6 +1059,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg' => 'Block Editor',
 					'divi'      => 'Divi',
 					'oxy'       => 'Oxygen',
+					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other', 'funnel-builder' ),
 				],
 				'landing'     => [
@@ -1066,6 +1067,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg' => 'Block Editor',
 					'divi'      => 'Divi',
 					'oxy'       => 'Oxygen',
+					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other', 'funnel-builder' ),
 				],
 				'optin'       => [
@@ -1073,6 +1075,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg' => 'Block Editor',
 					'divi'      => 'Divi',
 					'oxy'       => 'Oxygen',
+					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				],
 				'optin_ty'    => [
@@ -1080,6 +1083,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg' => 'Block Editor',
 					'divi'      => 'Divi',
 					'oxy'       => 'Oxygen',
+					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				],
 				'wc_thankyou' => [
@@ -1087,6 +1091,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg' => 'Block Editor',
 					'divi'      => 'Divi',
 					'oxy'       => 'Oxygen',
+					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				],
 				'wfob'        => [
@@ -1094,6 +1099,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg'  => 'Block Editor',
 					'divi'       => 'Divi',
 					'oxy'        => 'Oxygen',
+					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer', //pre_built
 					'wp_editor'  => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				],
@@ -1102,6 +1108,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg'  => 'Block Editor',
 					'divi'       => 'Divi',
 					'oxy'        => 'Oxygen',
+					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer', //pre_built
 					'wp_editor'  => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				],
@@ -1110,6 +1117,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					'gutenberg'  => 'Block Editor',
 					'divi'       => 'Divi',
 					'oxy'        => 'Oxygen',
+					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer',
 					'wp_editor'  => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
 				]
@@ -1156,6 +1164,11 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 			$json_data = isset( $templates['funnel'] ) ? $templates['funnel'] : [];
 
 			if ( empty( $json_data ) || isset( $json_data['divi']['divi_funnel_1']['import_button_text'] ) ) {
+				$templates = WooFunnels_Dashboard::get_all_templates( true );
+				$json_data = isset( $templates['funnel'] ) ? $templates['funnel'] : [];
+			}
+
+			if ( ! empty( $json_data ) && ! isset( $json_data['bricks'] ) ) {
 				$templates = WooFunnels_Dashboard::get_all_templates( true );
 				$json_data = isset( $templates['funnel'] ) ? $templates['funnel'] : [];
 			}
@@ -1337,6 +1350,10 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 
 			$activate = activate_plugin( $plugin_init, '', false, true );
 
+			if($plugin_init === 'elementor/elementor.php') {
+				\Elementor\Maintenance::activation(false);
+				delete_transient( 'elementor_activation_redirect' );
+			}
 			if ( is_wp_error( $activate ) ) {
 				$resp = array(
 					'success' => false,
@@ -1398,12 +1415,11 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 
 
 			if ( isset( $templates['upsell']['customizer'] ) ) {
-				$all_customizer = $templates['upsell']['customizer'];
-				$templates['upsell']['customizer'] = [];
+				$all_customizer                                        = $templates['upsell']['customizer'];
+				$templates['upsell']['customizer']                     = [];
 				$templates['upsell']['customizer']['customizer-empty'] = [ 'name' => '', 'slug' => 'customizer-empty', 'build_from_scratch' => true, 'allow_new' => false ];
-				$templates['upsell']['customizer'] = array_merge( $templates['upsell']['customizer'],$all_customizer );
+				$templates['upsell']['customizer']                     = array_merge( $templates['upsell']['customizer'], $all_customizer );
 			}
-
 
 
 			return $templates;
@@ -1490,18 +1506,18 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 		}
 
 		public function get_funnel_list_revenue( $request ) {
-			$response              = array(
+			$response   = array(
 				'status'  => true,
 				'msg'     => __( 'success', 'funnel-builder-powerpack' ),
 				'funnels' => array()
 			);
-			$funnel_ids            = isset( $request['funnel_ids'] ) ? $request['funnel_ids'] : '';
+			$funnel_ids = isset( $request['funnel_ids'] ) ? $request['funnel_ids'] : '';
 
 			if ( empty( $funnel_ids ) ) {
 				return $response;
 			}
 
-			$funnel_ids = ! is_array( $funnel_ids ) ? explode( ',', $funnel_ids ) : $funnel_ids;
+			$funnel_ids  = ! is_array( $funnel_ids ) ? explode( ',', $funnel_ids ) : $funnel_ids;
 			$all_funnels = [];
 			foreach ( $funnel_ids as $fid ) {
 				$all_funnels[ $fid ] = array(

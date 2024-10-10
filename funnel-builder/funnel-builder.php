@@ -3,16 +3,16 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.5.2
+ * Version: 3.6.0
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: funnel-builder
- * Elementor tested up to: 3.23.4
+ * Elementor tested up to: 3.24.5
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.6.1
+ * Tested up to: 6.6.2
  * Requires PHP: 7.4
  * WooFunnels: true
  *
@@ -154,12 +154,12 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		public function define_plugin_properties() {
 
 
-			define( 'WFFN_VERSION', '3.5.2' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.26' );
+			define( 'WFFN_VERSION', '3.6.0' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.34' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
-			define( 'WFFN_DB_VERSION', '3.3.4' );
+			define( 'WFFN_DB_VERSION', '3.3.5' );
 			define( 'WFFN_SLUG', 'wffn' );
 			define( 'WFFN_PLUGIN_FILE', __FILE__ );
 			define( 'WFFN_PLUGIN_DIR', __DIR__ );
@@ -195,6 +195,12 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			add_action( 'plugins_loaded', [ $this, 'init_oxygen' ], 10 );
 			add_action( 'wp_loaded', [ $this, 'load_divi_importer' ], 150 );
 			add_action( 'activated_plugin', array( $this, 'check_activation' ) );
+
+
+			// Define a constant for the plugin file, if not already defined.
+			define( 'FUNNELKIT_BRICKS_INTEGRATION_FILE', __DIR__ . '/includes/bricks-builder/' );
+			// Require the class file for Funnelkit Bricks Integration.
+			require_once __DIR__ . '/includes/bricks-builder/includes/class-bricks-integration.php';
 
 		}
 
@@ -503,4 +509,3 @@ if ( ! function_exists( 'WFFN_Core' ) ) {
 }
 
 $GLOBALS['WFFN_Core'] = WFFN_Core();
-

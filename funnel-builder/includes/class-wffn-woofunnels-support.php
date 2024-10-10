@@ -10,12 +10,7 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 
 		public function __construct() {
 
-			add_filter( 'woofunnels_default_reason_' . WFFN_PLUGIN_BASENAME, function () {
-				return 1;
-			} );
-			add_filter( 'woofunnels_default_reason_default', function () {
-				return 1;
-			} );
+
 			$this->encoded_basename = sha1( WFFN_PLUGIN_BASENAME );
 
 			add_action( 'admin_menu', array( $this, 'register_admin_menu' ), 85 );
@@ -24,6 +19,8 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 			}
 			add_action( 'admin_menu', array( $this, 'register_menu_for_pro' ), 999 );
 			add_action( 'admin_menu', array( $this, 'add_menus' ), 81 );
+
+
 
 		}
 

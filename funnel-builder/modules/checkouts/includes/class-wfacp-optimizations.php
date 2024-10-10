@@ -21,7 +21,7 @@
 		}
 
 		$countries_str = $settings['preferred_countries'];
-		if ( empty( $countries_str ) ) {
+		if ( empty( $countries_str ) || ! is_array( $countries_str ) ) {
 			return;
 		}
 		self::$preferred_countries = $countries_str;
@@ -40,10 +40,6 @@
 	}
 
 	public static function preferred_country( $countries ) {
-
-		if ( empty( self::$preferred_countries ) ) {
-			return $countries;
-		}
 
 		$top_countries = [];
 		foreach ( self::$preferred_countries as $val ) {

@@ -103,7 +103,7 @@ abstract class WFACP_Analytics {
 	public function get_cart_item_id( $item ) {
 		$product_id = $item['product_id'];
 
-		if ( false == wc_string_to_bool( $this->variable_as_simple ) && isset( $item['variation_id'] ) && $item['variation_id'] !== 0 ) {
+		if ( false === wc_string_to_bool( $this->variable_as_simple ) && isset( $item['variation_id'] ) && $item['variation_id'] !== 0 ) {
 
 			$product_id = $item['variation_id'];
 		}

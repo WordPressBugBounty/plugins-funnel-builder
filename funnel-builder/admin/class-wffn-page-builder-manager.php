@@ -7,8 +7,7 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFFN_Page_Builder_Manager' ) ) {
 	#[AllowDynamicProperties]
-
-class WFFN_Page_Builder_Manager {
+	class WFFN_Page_Builder_Manager {
 
 		private static $ins = null;
 		private $funnel = null;
@@ -87,6 +86,17 @@ class WFFN_Page_Builder_Manager {
 						$button_text   = __( 'Install Oxygen Builder', 'funnel-builder' );
 						$no_install    = 'yes';
 						$builder_link  = esc_url( 'https://oxygenbuilder.com/' );
+					} else {
+						$plugin_string .= $string;
+					}
+				}else if ( 'bricks' === $builder ) {
+
+					if ( false ===  $theme_status ) {
+						$plugin_string = __('This template needs <strong>Bricks Theme</strong> activated. Please Install and Activate Bricks.', 'funnel-builder');
+						$button_text   = __( 'Install Bricks Theme', 'funnel-builder' );
+						$no_install    = 'yes';
+						$builder_link  = esc_url( 'https://bricksbuilder.io/' );
+						$plugin_status = 'install';
 					} else {
 						$plugin_string .= $string;
 					}
@@ -193,30 +203,24 @@ class WFFN_Page_Builder_Manager {
 				),
 			);
 
-			$plugins['beaver-builder'] = array(
-				'title'   => 'Beaver Builder',
-				'plugins' => array(),
-			);
 
-			// Check if Pro Exist.
-			if ( file_exists( WP_PLUGIN_DIR . '/' . 'bb-plugin/fl-builder.php' ) && ! is_plugin_active( 'beaver-builder-lite-version/fl-builder.php' ) ) {
-				$plugins['beaver-builder']['plugin-status'] = WFFN_Common::get_plugin_status( 'bb-plugin/fl-builder.php' );
-				$plugins['beaver-builder']['plugins'][]     = array(
-					'slug'   => 'bb-plugin',
-					'init'   => 'bb-plugin/fl-builder.php',
-					'status' => WFFN_Common::get_plugin_status( 'bb-plugin/fl-builder.php' ),
-				);
-			} else {
-				$plugins['beaver-builder']['plugin-status'] = WFFN_Common::get_plugin_status( 'beaver-builder-lite-version/fl-builder.php' );
-				$plugins['beaver-builder']['plugins'][]     = array(
-					'slug'   => 'beaver-builder-lite-version', // For download from wordpress.org.
-					'init'   => 'beaver-builder-lite-version/fl-builder.php',
-					'status' => WFFN_Common::get_plugin_status( 'beaver-builder-lite-version/fl-builder.php' ),
-				);
-			}
+
 			$plugins['wp_editor']['plugins'][] = array(
 				'slug'   => '',
 				'status' => null,
+			);
+
+			$plugins['bricks'] = array(
+				'title'         => 'Bricks',
+				'theme-status'  => $this->is_bricks_theme_enabled(),
+				'plugin-status' => 'install',
+				'plugins'       => array(
+					array(
+						'slug'   => '',
+						'init'   => '',
+						'status' => $this->is_bricks_theme_enabled() ? 'activated' : 'install',
+					),
+				),
 			);
 
 			return $plugins;
@@ -245,13 +249,33 @@ class WFFN_Page_Builder_Manager {
 		 *
 		 * @return boolean
 		 */
-		public function is_divi_theme_enabled( $theme = false ) {
+		public function is_divi_theme_enabled() {
 
-			if ( ! $theme ) {
-				$theme = wp_get_theme();
-			}
+
+			$theme = wp_get_theme();
+
 
 			if ( 'Divi' === $theme->name || 'Divi' === $theme->parent_theme || 'Extra' === $theme->name || 'Extra' === $theme->parent_theme ) {
+				return true;
+			}
+
+			return false;
+		}
+
+
+		/**
+		 * Check if Bricks theme enabled for post id.
+		 *
+		 * @param object $theme theme data.
+		 *
+		 * @return boolean
+		 */
+		public function is_bricks_theme_enabled() {
+
+			$theme = wp_get_theme();
+
+
+			if ( 'Bricks' === $theme->name || 'Bricks' === $theme->parent_theme ) {
 				return true;
 			}
 
@@ -268,11 +292,7 @@ class WFFN_Page_Builder_Manager {
 					'name'  => 'Divi',
 					'value' => 'divi',
 				),
-				/**array(
-				 * 'name'  => 'Beaver Builder',
-				 * 'value' => 'beaver-builder',
-				 * ),
-				 */
+
 			);
 		}
 

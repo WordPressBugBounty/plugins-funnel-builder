@@ -69,7 +69,7 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 				$lastId = $this->wp_db->insert_id;
 			}
 			if ( ! empty( $this->wp_db->last_error ) ) {
-				WFFN_Core()->logger->log( 'Get last error in insert_contact: ' . print_r( $this->wp_db->last_error, true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+				WFFN_Core()->logger->log( 'Get last error in insert_contact: ' . print_r( $this->wp_db->last_error, true ) . ' posted data ' . print_r( $optin_data, true ), 'wffn', true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 			}
 
 			return $lastId;

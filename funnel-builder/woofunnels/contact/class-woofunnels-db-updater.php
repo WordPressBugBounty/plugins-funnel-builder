@@ -42,6 +42,8 @@ class WooFunnels_DB_Updater {
 	);
 	private $_user_address_meta_updated = array();
 
+	public $order_status_change = [];
+
 	/**
 	 * WooFunnels_DB_Updater constructor.
 	 */
@@ -62,7 +64,7 @@ class WooFunnels_DB_Updater {
 		add_action( 'woocommerce_store_api_checkout_order_processed', array( $this, 'wc_order_create_contact_blocks' ) );
 
 		/** Creating updating customer on order statuses paid */
-		add_action( 'woocommerce_order_status_changed', array( $this, 'woofunnels_status_change_create_update_contact_customer' ), 10, 3 );
+		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_change_async_call' ), 10, 3 );
 
 		/** Updating customer and customer meta on accepting offer */
 		add_action( 'wfocu_offer_accepted_and_processed', array( $this, 'woofunnels_offer_accept_create_update_customer' ), 1, 4 );
@@ -123,19 +125,72 @@ class WooFunnels_DB_Updater {
 		}
 	}
 
-	/** Creating/updating contacts and  customers on order status change */
+	/**
+	 * WC order status change async call callback
+	 *
+	 * @param $request
+	 *
+	 * @return void
+	 */
 	public static function capture_order_status_change_event( $request ) {
+		self::nocache_headers();
+
 		$posted_data = $request->get_body_params();
+
+		$ins = WooFunnels_DB_Updater::get_instance();
+		$ins->event_advanced_logs( "Order status change endpoint data received" );
+		$ins->event_advanced_logs( $posted_data );
+
 		$order_id    = isset( $posted_data['order_id'] ) ? $posted_data['order_id'] : 0;
+		$status_from = isset( $posted_data['from'] ) ? $posted_data['from'] : '';
+		$status_to   = isset( $posted_data['to'] ) ? $posted_data['to'] : '';
+
+		/** If data not passed */
+		if ( empty( $order_id ) || empty( $status_from ) || empty( $status_to ) ) {
+			return;
+		}
+
+		/** If order is not valid */
+		$order = wc_get_order( $order_id );
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
 		try {
-			bwf_create_update_contact( $order_id, array(), 0, true );
+			do_action( 'fk_order_status_change_async_capture', $posted_data );
+
+			$paid_status = $order->has_status( wc_get_is_paid_statuses() );
+			if ( false === $paid_status ) {
+				return;
+			}
+			$temp_cid = BWF_WC_Compatibility::get_order_meta( $order, '_woofunnel_custid' );
+			if ( empty( $temp_cid ) ) {
+				/** Update customer when order is paid and not indexed */
+				bwf_create_update_contact( $order_id, array(), 0, true );
+			}
 		} catch ( Error $r ) {
-			BWF_Logger::get_instance()->log( print_R( $r->getMessage(), true ), 'woofunnels_indexing' ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+			$ins->event_advanced_logs( "Error occurred: " . $r->getMessage() );
 		}
 	}
 
 	public function needs_upgrade() {
 		return apply_filters( 'bwf_init_db_upgrade', false );
+	}
+
+	/**
+	 * Set headers to prevent caching
+	 *
+	 * @return void
+	 */
+	public static function nocache_headers() {
+		if ( headers_sent() ) {
+			return;
+		}
+
+		header( 'Cache-Control: no-cache, no-store, must-revalidate, max-age=0' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT' );
+		header( 'Last-Modified: false' );
 	}
 
 	public function woofunnels_handle_db_upgrade_actions() {
@@ -447,7 +502,8 @@ class WooFunnels_DB_Updater {
 	}
 
 	/**
-	 * Creating or updating contact and customer on order status changed to paid statuses
+	 * Run on WC order status change
+	 * Fire async call
 	 *
 	 * @param $order_id
 	 * @param $from
@@ -455,26 +511,89 @@ class WooFunnels_DB_Updater {
 	 *
 	 * @return void
 	 */
-	public function woofunnels_status_change_create_update_contact_customer( $order_id, $from, $to ) {
-		if ( apply_filters( 'bwf_woofunnel_skip_sub_order', true ) && wp_get_post_parent_id( $order_id ) ) {
+	public function order_status_change_async_call( $order_id, $from, $to ) {
+		/** Avoid duplicate run on a single call */
+		$arr = [ $order_id, $from, $to ];
+		if ( isset( $this->order_status_change[ md5( wp_json_encode( $arr ) ) ] ) ) {
 			return;
 		}
-		$order            = wc_get_order( $order_id );
-		$paid_status      = $order->has_status( wc_get_is_paid_statuses() );
-		$woofunnel_custid = BWF_WC_Compatibility::get_order_meta( $order, '_woofunnel_custid' );
-		if ( $paid_status && empty( $woofunnel_custid ) ) {
-			$data = array( 'order_id' => $order_id, '_nonce' => self::create_nonce( 'bwf_rest_order_status_changed' ), 'nonce_action' => 'bwf_rest_order_status_changed' );
-			$url  = home_url() . '/?rest_route=/woofunnel_customer/v1/order_status_changed';
-			$args = bwf_get_remote_rest_args( $data );
 
-			wp_remote_post( $url, $args );
+		$this->order_status_change[ md5( wp_json_encode( $arr ) ) ] = 1;
+
+		$extra_data = apply_filters( 'fk_before_sending_order_status_change_async_request', [], $order_id, $from, $to );
+
+		/** Send async call */
+		$data = array(
+			'order_id'     => $order_id,
+			'from'         => $from,
+			'to'           => $to,
+			'_nonce'       => self::create_nonce( 'bwf_rest_order_status_changed' ),
+			'nonce_action' => 'bwf_rest_order_status_changed'
+		);
+		if ( ! empty( $extra_data ) && is_array( $extra_data ) ) {
+			$data = array_merge( $extra_data, $data );
 		}
 
-		//Reducing total_value with remaining order total (if partial earlier refund made)
+		$url  = home_url() . '/?rest_route=/woofunnel_customer/v1/order_status_changed';
+		$args = bwf_get_remote_rest_args( $data );
+
+		$this->event_advanced_logs( "Sending data for order status change JSON endpoint. URL: " . $url );
+		$this->event_advanced_logs( $data );
+
+		$start_time = microtime( true );
+		$response   = wp_remote_post( $url, $args );
+		$end_time   = microtime( true );
+
+		if ( ( $end_time - $start_time ) > 0.2 ) {
+			/** Curl took minimum 0.2 secs */
+			$flag_saved_val = get_transient( 'bwfan_stop_async_call' );
+			if ( empty( $flag_saved_val ) ) {
+				set_transient( 'bwfan_stop_async_call', 1, WEEK_IN_SECONDS );
+			}
+		}
+
+		$this->event_advanced_logs( "Order status change async call response" );
+		if ( is_wp_error( $response ) ) {
+			$this->event_advanced_logs( $response->get_error_message() );
+		} elseif ( isset( $response['body'] ) ) {
+			$this->event_advanced_logs( $response['body'] );
+			$this->event_advanced_logs( $response['response'] );
+		}
+
+		/** Reducing total_value with remaining order total (if partial earlier refund made) */
 		if ( 'cancelled' === $to ) {
 			BWF_Logger::get_instance()->log( "Order status changes from $from to $to for order id: $order_id", 'woofunnels_indexing' );
 			bwf_reduce_customer_total_on_cancel( $order_id );
 		}
+	}
+
+	public function event_advanced_logs( $log ) {
+		if ( empty( $log ) || false === $this->event_cb_advanced_log_enabled() ) {
+			return;
+		}
+		$log = array(
+			't' => microtime( true ),
+			'm' => $log,
+		);
+
+		add_filter( 'bwf_logs_allowed', array( $this, 'overriding_bwf_logging' ), 99999 );
+		BWF_Logger::get_instance()->log( print_r( $log, true ), 'event-endpoint-check', 'autonami' );
+		remove_filter( 'bwf_logs_allowed', array( $this, 'overriding_bwf_logging' ), 99999 );
+	}
+
+	public function event_cb_advanced_log_enabled() {
+		if ( defined( 'BWFAN_ALLOW_EVENT_ENDPOINT_LOGS' ) && true === BWFAN_ALLOW_EVENT_ENDPOINT_LOGS ) {
+			return true;
+		}
+		if ( true === apply_filters( 'bwfan_allow_event_endpoint_logs', false ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function overriding_bwf_logging() {
+		return true;
 	}
 
 	/**

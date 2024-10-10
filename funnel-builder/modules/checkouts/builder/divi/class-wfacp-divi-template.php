@@ -262,7 +262,8 @@
 	}
 
 	public function change_place_order_button_text( $text ) {
-		if ( did_action( 'woocommerce_checkout_update_order_review' ) > 0 && current_action() === 'woocommerce_order_button_text' ) {
+		$status = $this->exclude_place_order_text_update_order_review( $text );
+		if ( true === $status ) {
 			return $text;
 		}
 		if ( ! empty( $_GET['woo-paypal-return'] ) && ! empty( $_GET['token'] ) && ! empty( $_GET['PayerID'] ) ) {

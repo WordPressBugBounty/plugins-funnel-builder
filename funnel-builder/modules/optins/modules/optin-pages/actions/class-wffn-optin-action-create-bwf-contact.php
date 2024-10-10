@@ -7,8 +7,7 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFFN_Optin_Action_Create_BWF_Contact' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFFN_Optin_Action_Create_BWF_Contact extends WFFN_Optin_Action {
+	class WFFN_Optin_Action_Create_BWF_Contact extends WFFN_Optin_Action {
 
 		private static $slug = 'create_bwf_contact';
 		private static $ins = null;
@@ -79,13 +78,16 @@ if ( ! class_exists( 'WFFN_Optin_Action_Create_BWF_Contact' ) ) {
 			$bwf_contact->save( true );
 
 			$form_data            = [];
-			$current_step         = WFFN_Core()->data->get_current_step();
-			$form_data['step_id'] = $current_step['id'];
+			$form_data['step_id'] = $posted_data['optin_page_id'];
 			$funnel               = WFFN_Core()->data->get_session_funnel();
-			if ( isset( $funnel->id ) && absint( $funnel->id ) ) {
-				$form_data['funnel_id'] = $funnel->id;
+			if ( isset( $funnel->id ) && absint( $funnel->id ) > 0 ) {
+				$funnel_id = $funnel->id;
+			} else {
+				$funnel_id = get_post_meta( $form_data['step_id'], '_bwf_in_funnel', true );
 			}
-			$form_data['cid'] = $bwf_contact->get_id();
+
+			$form_data['funnel_id'] = ! empty( $funnel_id ) ? $funnel_id : 0;
+			$form_data['cid']       = $bwf_contact->get_id();
 
 			if ( $posted_data[ WFFN_Optin_Pages::WFOP_EMAIL_FIELD_SLUG ] && $posted_data[ WFFN_Optin_Pages::WFOP_EMAIL_FIELD_SLUG ] !== '' ) {
 				$form_data['email'] = $posted_data[ WFFN_Optin_Pages::WFOP_EMAIL_FIELD_SLUG ];
@@ -102,9 +104,9 @@ if ( ! class_exists( 'WFFN_Optin_Action_Create_BWF_Contact' ) ) {
 				if ( is_numeric( $last_id ) && $last_id > 0 ) {
 					WFFN_Core()->logger->log( 'Optin form save successfully: ' . print_r( $form_data['email'], true ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 
-					$posted_data['opid'] = $form_data['opid'];
+					$posted_data['opid']           = $form_data['opid'];
 					$posted_data['optin_entry_id'] = $last_id;
-					$bwf_obj = BWF_Optin_Tags::get_instance();
+					$bwf_obj                       = BWF_Optin_Tags::get_instance();
 					$bwf_obj->maybe_set_optin( $posted_data['opid'] );
 
 					WFFN_Core()->data->set( 'opid', $get_hash );

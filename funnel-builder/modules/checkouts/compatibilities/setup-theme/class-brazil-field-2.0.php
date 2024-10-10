@@ -1,13 +1,12 @@
 <?php
 
 /*
- * Plugin: Brazilian Market on WooCommerce by Claudio Sanches v.4.0.0
+ * Plugin: Brazilian Market on WooCommerce by Claudio Sanches v.4.0.2
  */
-#[AllowDynamicProperties]
+
 class WFACP_Brazil_Field_2 {
 	private static $instance = null;
 	private $settings = [];
-
 	private $billing_new_fields = [
 		'billing_persontype',
 		'billing_cpf',
@@ -23,9 +22,14 @@ class WFACP_Brazil_Field_2 {
 
 	];
 
+
 	private $shipping_new_fields = [
 		'shipping_number',
 		'shipping_house_number_suffix',
+	];
+
+	private $merge_default_classess = [
+		'billing_company',
 	];
 
 	public static function get_instance() {
@@ -38,15 +42,8 @@ class WFACP_Brazil_Field_2 {
 
 	private function __construct() {
 		$this->settings = get_option( 'wcbcf_settings' );
-
-		if ( WFACP_Common::is_funnel_builder_3() ) {
-			add_action( 'wffn_rest_checkout_form_actions', [ $this, 'setup_fields_billing' ] );
-			add_action( 'wffn_rest_checkout_form_actions', [ $this, 'setup_fields_shipping' ] );
-		} else {
-			$this->setup_fields_billing();
-			$this->setup_fields_shipping();
-		}
-
+		$this->setup_fields_billing();
+		$this->setup_fields_shipping();
 
 		add_filter( 'wfacp_update_posted_data_vice_versa_keys', [ $this, 'update_address_data' ] );
 		add_filter( 'wfacp_unset_vice_versa_keys_shipping_keys', [ $this, 'unset_shipping_address_data' ] );
@@ -70,6 +67,10 @@ class WFACP_Brazil_Field_2 {
 		add_filter( 'wfacp_third_party_billing_fields', [ $this, 'disabled_third_party_billing_fields' ] );
 		add_filter( 'wfacp_third_party_shipping_fields', [ $this, 'disabled_third_party_shipping_fields' ] );
 
+		/**
+		 * Merge default billing class for specific fields
+		 */
+		add_filter( 'wfacp_merge_default_billing_fields_classes', [ $this, 'merge_default_billing_fields_classes' ], 11, 2 );
 
 	}
 
@@ -86,6 +87,8 @@ class WFACP_Brazil_Field_2 {
 		$settings    = $this->settings;
 		if ( 0 !== $person_type ) {
 			if ( 1 === $person_type ) {
+
+
 				new WFACP_Add_Address_Field( 'persontype', [
 					'type'        => 'select',
 					'label'       => __( 'Person type', 'woocommerce-extra-checkout-fields-for-brazil' ),
@@ -452,6 +455,17 @@ class WFACP_Brazil_Field_2 {
 		}
 
 		return $fields;
+	}
+
+	public function merge_default_billing_fields_classes( $status, $key ) {
+
+		if ( in_array( $key, $this->merge_default_classess ) ) {
+			return true;
+		}
+
+
+		return $status;
+
 	}
 }
 

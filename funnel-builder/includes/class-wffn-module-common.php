@@ -12,6 +12,8 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'remove_conflicted_themes_styles' ), 9999 );
 			add_action( 'wp_print_scripts', array( $this, 'print_custom_css_in_head' ), 1000 );
 			add_action( 'wp_footer', array( $this, 'print_custom_js_in_footer' ) );
+			add_filter( 'bwf_general_settings_default_config', array( $this, 'migrate_modify_allowed_theme_settings' ) );
+
 		}
 
 		public function remove_conflicted_themes_styles() {
@@ -24,14 +26,12 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 			$get_template   = 'themes/' . get_template() . '/';
 
 			$allowed_post_types = $this->get_post_type_slug();
-			$allowed_themes     = apply_filters( 'wffn_allowed_themes', [ 'flatsome', 'Extra', 'divi', 'Divi', 'astra', 'jupiterx', 'kadence' ] );
-
 
 			if ( is_null( $post ) || ! $post instanceof WP_Post ) {
 				return;
 			}
 			$post_type = $post->post_type;
-			if ( $post_type !== $allowed_post_types ) {
+			if ( $post_type !== $allowed_post_types && ! $this->maybe_checkout_page( $post ) ) {
 				return;
 			}
 
@@ -44,15 +44,12 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				return;
 			}
 
-			if ( true === apply_filters( 'wffn_allow_themes_css', false, $post->ID, $this ) ) {
-				return;
+			if ( class_exists( 'BWF_Admin_General_Settings' ) ) {
+				$allowed_steps = BWF_Admin_General_Settings::get_instance()->get_option( 'allow_theme_css' );
+				if ( is_array( $allowed_steps ) && in_array( $post->post_type, $allowed_steps, true ) || $this->maybe_save_allowed_theme_settings() ) {
+					return;
+				}
 			}
-
-			// Only Remove CSS & JS For Canvas type template
-			if ( in_array( get_template(), $allowed_themes, true ) ) {
-				return;
-			}
-
 
 			/**
 			 * By default when we prevent theme css we need to dequeue frontend and load only template style which covers minimal
@@ -211,5 +208,87 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			return $edit_link_href;
 		}
+
+		/**
+		 * @param $args
+		 *
+		 * @return mixed
+		 */
+		public function migrate_modify_allowed_theme_settings( $args ) {
+			$db_options = get_option( 'bwf_gen_config', [] );
+
+			if ( ! empty( $db_options ) && ! empty( $db_options['allow_theme_css'] ) ) {
+				return $args;
+			}
+			if ( ! isset( $args['allow_theme_css'] ) ) {
+				$args['allow_theme_css'] = [];
+			}
+
+			$allowed_steps = array(
+				'wfacp_checkout',
+				'wfocu_offer',
+				'wffn_ty',
+				'wffn_landing',
+				'wffn_optin',
+				'wffn_oty'
+			);
+
+			/**
+			 * Allow default theme script if user use any snippet
+			 */
+			if ( true === apply_filters( 'wffn_allow_themes_css', false, '', $this ) ) {
+				$args['allow_theme_css'] = $allowed_steps;
+
+				return $args;
+			}
+
+			return $args;
+		}
+
+		/**
+		 * Save allow theme script settings
+		 * And it's a one time process
+		 * @return bool
+		 */
+		public function maybe_save_allowed_theme_settings() {
+			$db_options = get_option( 'bwf_gen_config', [] );
+
+			if ( ! empty( $db_options ) && ! empty( $db_options['allow_theme_css'] ) ) {
+				return false;
+			}
+
+			/**
+			 * Allow default theme script if user use any snippet
+			 */
+			$allowed_themes = apply_filters( 'wffn_allowed_themes', [ 'flatsome', 'Extra', 'divi', 'Divi', 'astra', 'jupiterx', 'kadence' ] );
+
+			if ( in_array( get_template(), $allowed_themes, true ) || WFFN_Core()->page_builders->is_divi_theme_enabled() ) {
+				$general_settings              = BWF_Admin_General_Settings::get_instance();
+				$db_options['allow_theme_css'] = array(
+					'wfacp_checkout',
+					'wfocu_offer',
+					'wffn_ty',
+					'wffn_landing',
+					'wffn_optin',
+					'wffn_oty'
+				);
+				$general_settings->update_global_settings_fields( $db_options );
+
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Check checkout page for handle allow and remove theme css on checkout page
+		 *
+		 * @param $post
+		 * @return bool
+		 */
+		public function maybe_checkout_page( $post ) {
+			return ( ( $post->post_type === 'wfacp_checkout' ) || 0 !== did_action( 'wfacp_after_checkout_page_found' ) );
+		}
+
 	}
 }
