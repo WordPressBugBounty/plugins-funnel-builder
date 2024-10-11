@@ -166,11 +166,12 @@ if ( ! function_exists( 'wffn_alter_conversion_table_add_source' ) ) {
 
 			$conv_table = BWF_Ecomm_Tracking_Common::get_instance()->conversion_table_name();
 			$table_name = $wpdb->prefix . $conv_table;
-			$is_col     = $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = %s AND column_name = 'source_id'", $table_name ) );
+			$is_col     = defined( 'DB_NAME' ) ? $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND table_name = %s AND column_name = 'source_id'", DB_NAME, $table_name ) ) : false;
 			/**
 			 * Check if column already exists
 			 */
 			if ( ! empty( $is_col ) ) {
+				WFFN_Core()->logger->log( __FUNCTION__ . ' source_id already created ', 'wffn', true );
 				return;
 			}
 
@@ -184,12 +185,12 @@ if ( ! function_exists( 'wffn_alter_conversion_table_add_source' ) ) {
 
 			// Log database errors or success
 			if ( $wpdb->last_error ) {
-				WFFN_Core()->logger->log( 'Database error during add source id in conversion: ' . $wpdb->last_error, 'wffn', true );
+				WFFN_Core()->logger->log( __FUNCTION__ . ' Database error during add source id in conversion: ' . $wpdb->last_error, 'wffn', true );
 			} else {
-				WFFN_Core()->logger->log( 'Successfully add source id in conversion table.', 'wffn', true );
+				WFFN_Core()->logger->log( __FUNCTION__ . ' Successfully add source id in conversion table.', 'wffn', true );
 			}
 		} catch ( Exception|Error $e ) {
-			WFFN_Core()->logger->log( 'error during during add source id in conversion table: ' . $e->getMessage(), 'wffn', true );
+			WFFN_Core()->logger->log( __FUNCTION__ . ' error during during add source id in conversion table: ' . $e->getMessage(), 'wffn', true );
 
 		}
 

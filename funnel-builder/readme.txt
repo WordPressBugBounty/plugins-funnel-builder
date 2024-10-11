@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -376,6 +376,9 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.6.1 (Oct 10, 2024) =
+* Fixed: MySQL error of Unknown column coming on analytics API requests. (#6775)
 
 = 3.6.0 (Oct 10, 2024) =
 * Added:  Deep Integration with Bricks Page builder with 6 new elements and pre-built templates:
