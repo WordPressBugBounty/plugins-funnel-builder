@@ -47,7 +47,7 @@ class WFACP_Plugin_Compatibilities {
 			'gateways/class-woocommerce-paypal-payments.php'                 => class_exists( '\WooCommerce\PayPalCommerce\PluginModule', true ),
 			'gateways/class-woocommerce-quickpay.php'                        => function_exists( 'init_quickpay_gateway' ),
 			'plugins/class-aioseo.php'                                       => function_exists( 'aioseo' ),
-			'plugins/class-borlabs-cookie.php'                               => function_exists( 'BorlabsCookieHelper' ),
+			'plugins/class-borlabs-cookie.php'                               => defined( 'BORLABS_COOKIE_VERSION' ),
 			'plugins/class-breakdance-builder.php'                           => defined( 'BREAKDANCE_WOO_DIR' ),
 			'plugins/class-complianz-gdpr-ccpa-cookie-consent.php'           => class_exists( 'COMPLIANZ' ),
 			'plugins/class-conditional-discounts-for-wc-by-orion.php'        => function_exists( 'run_wad' ),

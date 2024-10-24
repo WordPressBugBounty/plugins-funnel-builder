@@ -717,7 +717,7 @@ final class WFACP_template_Bricks extends WFACP_Template_Common {
 	public function get_elementor_localize_data() {
 		$localData = array();
 		if ( isset( $this->form_data['wfacp_make_button_sticky_on_mobile'] ) ) {
-			$localData['wfacp_make_button_sticky_on_mobile'] = $this->form_data['wfacp_make_button_sticky_on_mobile'];
+			$localData['wfacp_make_button_sticky_on_mobile'] = "yes";
 		}
 
 		wp_localize_script( 'wfacp_checkout_js', 'wfacp_elementor_data', $localData );
@@ -1454,26 +1454,52 @@ final class WFACP_template_Bricks extends WFACP_Template_Common {
 			return $fragments;
 		}
 
-		ob_start();
-		include $path . '/views/template-parts/order-review.php';
-		$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_item_details'] = ob_get_clean();
 
-		ob_start();
-		include $path . '/views/template-parts/order-total.php';
-		$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_total_details'] = ob_get_clean();
+		if ( wfacp_pro_dependency() ) {
+			ob_start();
+			include $path . '/views/template-parts/order-review.php';
+			$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_item_details'] = ob_get_clean();
 
-		ob_start();
-		include $path . '/views/template-parts/order-total.php';
-		$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_mini_cart_reviews'] = ob_get_clean();
+			ob_start();
+			include $path . '/views/template-parts/order-total.php';
+			$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_total_details'] = ob_get_clean();
 
-		ob_start();
-		wc_cart_totals_order_total_html();
-		$fragments['.wfacp_cart_mb_fragment_price'] = ob_get_clean();
+			ob_start();
+			include $path . '/views/template-parts/order-total.php';
+			$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_mini_cart_reviews'] = ob_get_clean();
 
-		$order_summary_cart_price            = apply_filters( 'wfacp_collapsible_order_summary_cart_price', wc_price( WC()->cart->total ) );
-		$fragments['.wfacp_show_price_wrap'] = '<div class="wfacp_show_price_wrap">' . do_action( 'wfacp_before_mini_price' ) . '<strong>' . $order_summary_cart_price . '</strong>' . do_action( 'wfacp_after_mini_price' ) . '</div>';
+			ob_start();
+			wc_cart_totals_order_total_html();
+			$fragments['.wfacp_cart_mb_fragment_price'] = ob_get_clean();
 
-		return $fragments;
+			$order_summary_cart_price            = apply_filters( 'wfacp_collapsible_order_summary_cart_price', wc_price( WC()->cart->total ) );
+			$fragments['.wfacp_show_price_wrap'] = '<div class="wfacp_show_price_wrap">' . do_action( 'wfacp_before_mini_price' ) . '<strong>' . $order_summary_cart_price . '</strong>' . do_action( 'wfacp_after_mini_price' ) . '</div>';
+
+			return $fragments;
+		} else {
+			$path = WFACP_PLUGIN_DIR . '/public/global/collapsible-order-summary/';
+			ob_start();
+			include $path . '/order-review.php';
+			$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_item_details'] = ob_get_clean();
+
+			ob_start();
+			include $path . '/order-total.php';
+			$fragments['.wfacp_mb_mini_cart_sec_accordion_content .wfacp_template_9_cart_total_details'] = ob_get_clean();
+
+			ob_start();
+			wc_cart_totals_order_total_html();
+			$fragments['.wfacp_cart_mb_fragment_price'] = ob_get_clean();
+
+			$order_summary_cart_price            = apply_filters( 'wfacp_collapsible_order_summary_cart_price', wc_price( WC()->cart->total ) );
+			$fragments['.wfacp_show_price_wrap'] = '<div class="wfacp_show_price_wrap">' . do_action( "wfacp_before_mini_price" ) . '<strong>' . $order_summary_cart_price . '</strong>' . do_action( 'wfacp_after_mini_price' ) . '</div>';
+
+
+			return $fragments;
+		}
+
+
+
+
 	}
 
 	/**

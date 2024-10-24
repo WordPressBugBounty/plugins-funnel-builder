@@ -281,6 +281,7 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 		/**
 		 * Funnel Post Type
 		 */
+
 		register_post_type( self::get_post_type_slug(), apply_filters( 'wfacp_post_type_args', array(
 			'labels'              => array(
 				'name'          => __( 'Checkout', 'funnel-builder' ),

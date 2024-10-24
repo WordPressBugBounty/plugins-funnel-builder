@@ -6,13 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * PPEC
- * #[AllowDynamicProperties] 
-
-  class WFACP_Compatibility_With_Paypal_Express
+ * #[AllowDynamicProperties]
+ *
+ * class WFACP_Compatibility_With_Paypal_Express
  */
-#[AllowDynamicProperties] 
-
-  class WFACP_Compatibility_With_Paypal_Express {
+#[AllowDynamicProperties]
+class WFACP_Compatibility_With_Paypal_Express {
 	private $payer_details;
 
 	public function __construct() {
@@ -58,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			return;
 		}
 
-		if ( function_exists( 'wc_gateway_ppec' ) && WFACP_Common::get_id() > 0 && wc_gateway_ppec()->checkout->has_active_session() ) {
+		if ( function_exists( 'wc_gateway_ppec' ) && WFACP_Common::get_id() > 0 && method_exists( wc_gateway_ppec()->checkout, 'has_active_session' ) && wc_gateway_ppec()->checkout->has_active_session() ) {
 			add_action( 'woocommerce_before_checkout_form', array( wc_gateway_ppec()->checkout, 'paypal_billing_details' ) );
 			add_action( 'woocommerce_before_checkout_form', array( wc_gateway_ppec()->checkout, 'paypal_shipping_details' ) );
 		}

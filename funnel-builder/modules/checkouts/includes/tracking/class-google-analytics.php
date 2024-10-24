@@ -72,75 +72,24 @@ class WFACP_Analytics_GA extends WFACP_Analytics {
 		if ( ! $product instanceof WC_Product ) {
 			return parent::get_item( $product, $cart_item );
 		}
-
-		$is_cart = false;
-
-		if ( isset( $cart_item['is_cart'] ) ) {
-			unset( $cart_item['is_cart'] );
-			$is_cart = true;
-		}
-		$product_id = $this->get_cart_item_id( $cart_item );
-		$content_id = $this->get_product_content_id( $product_id );
-		$name       = $product->get_title();
-		if ( $cart_item['variation_id'] ) {
-			$product = wc_get_product( $cart_item['variation_id'] );
-			if ( $product->get_type() === 'variation'  ) {
-				$variation_name = implode( "/", $product->get_variation_attributes() );
-				$categories     = $this->get_object_terms( 'product_cat', $product->get_parent_id() );
-			} else {
-				$variation_name = null;
-				$categories     = $this->get_object_terms( 'product_cat', $product_id );
-			}
-		} else {
-			$variation_name = null;
-			$categories     = $this->get_object_terms( 'product_cat', $product_id );
-		}
-
-		if ( true === $is_cart ) {
-			$sub_total = $cart_item['line_subtotal'];
-			$sub_total = $this->number_format( $sub_total );
-			$price     = $sub_total;
-		} else {
-			$sub_total = $cart_item['line_subtotal'];
-			$sub_total = $this->number_format( $sub_total );
-			$price     = $sub_total;
-			$quantity  = absint( $cart_item['quantity'] );
-			if ( $quantity > 0 ) {
-				$price     = $sub_total;
-				$sub_total = WFACP_Common::wfacp_round( $sub_total / $quantity );
-			}
-		}
-		$currency = get_woocommerce_currency();
-
-		$item = array(
-			'item_id'   => $content_id,
-			'item_name' => $name,
-			'quantity'  => absint( $cart_item['quantity'] ),
-			'price'     => floatval( $sub_total ),
-			'currency'  => $currency
-		);
-
-		if ( ! is_null( $variation_name ) ) {
-			$item['item_variant'] = $variation_name;
-		}
-		$cat_count = 0;
-		if ( is_array( $categories ) && count( $categories ) > 0 ) {
-			foreach ( $categories as $cat ) {
-				$item_category          = ( 0 === $cat_count ) ? 'item_category' : 'item_category' . $cat_count;
-				$item[ $item_category ] = $cat;
-				$cat_count ++;
-			}
-		}
-
-		$event_data = [
-			'value'        => floatval( $price ),
-			'content_type' => 'product',
-			'currency'     => get_woocommerce_currency(),
-			'items'        => [ $item ],
-			'user_roles'   => WFACP_Common::get_current_user_role(),
+		$data = [
+			'price' => 0,
+			'items' => []
 		];
 
-		return $event_data;
+		$product_data = $this->prepare_product_data( $cart_item );
+		if ( ! empty( $product_data ) ) {
+			$data['price']   += floatval( $product_data['price'] );
+			$data['items'][] = $product_data['item'];
+		}
+
+		return [
+			'value'        => $data['price'],
+			'content_type' => 'product',
+			'currency'     => get_woocommerce_currency(),
+			'items'        => $data['items'],
+			'user_roles'   => WFACP_Common::get_current_user_role(),
+		];
 	}
 
 
@@ -163,28 +112,114 @@ class WFACP_Analytics_GA extends WFACP_Analytics {
 	}
 
 	public function get_items_data( $is_cart = false ) {
-
-		$items = array();
-		if ( is_null( WC()->cart ) ) {
-			return $items;
+		$output = new stdClass();
+		if ( ! function_exists( 'WC' ) || is_null( WC()->cart ) ) {
+			return $output;
 		}
-		foreach ( WC()->cart->cart_contents as $cart_item ) {
-			if ( $cart_item['data'] instanceof WC_Product ) {
-				$product_id = $this->get_cart_item_id( $cart_item );
-				$product    = wc_get_product( $product_id );
 
+		$contents = WC()->cart->get_cart_contents();
+		if ( empty( $contents ) ) {
+			return $output;
+		}
+		$data = [
+			'price' => 0,
+			'items' => []
+		];
+		foreach ( $contents as $cart_item ) {
+			if ( $cart_item['data'] instanceof WC_Product ) {
 				if ( true === $is_cart ) {
 					$cart_item['is_cart'] = true;
 				}
-				$item = $this->get_item( $product, $cart_item );
-				if ( empty( $item ) ) {
-					continue;
+				$product_data = $this->prepare_product_data( $cart_item );
+				if ( ! empty( $product_data ) ) {
+					$data['price']   += floatval( $product_data['price'] );
+					$data['items'][] = $product_data['item'];
 				}
-				$items[] = $item;
+
 			}
 		}
 
-		return $items;
+		return array(
+			[
+				'value'        => $data['price'],
+				'content_type' => 'product',
+				'currency'     => get_woocommerce_currency(),
+				'items'        => $data['items'],
+				'user_roles'   => WFACP_Common::get_current_user_role(),
+			]
+		);
+	}
+
+	public function prepare_product_data( $cart_item ) {
+		$data   = [
+			'price' => 0,
+			'item' => []
+		];
+		$is_cart = false;
+		if ( $cart_item['data'] instanceof WC_Product ) {
+			$product = $cart_item['data'];
+			if ( isset( $cart_item['is_cart'] ) ) {
+				unset( $cart_item['is_cart'] );
+				$is_cart = true;
+			}
+			$product_id = $this->get_cart_item_id( $cart_item );
+			$content_id = $this->get_product_content_id( $product_id );
+			$name       = $product->get_title();
+			if ( $cart_item['variation_id'] ) {
+				$product = wc_get_product( $cart_item['variation_id'] );
+				if ( $product->get_type() === 'variation' && false === ( $this->do_treat_variable_as_simple( 'google_ua' ) ) ) {
+					$variation_name = implode( "/", $product->get_variation_attributes() );
+					$categories     = $this->get_object_terms( 'product_cat', $product->get_parent_id() );
+				} else {
+					$variation_name = null;
+					$categories     = $this->get_object_terms( 'product_cat', $product_id );
+				}
+			} else {
+				$variation_name = null;
+				$categories     = $this->get_object_terms( 'product_cat', $product_id );
+			}
+
+			if ( true === $is_cart ) {
+				$sub_total = $cart_item['line_subtotal'];
+				$sub_total = $this->number_format( $sub_total );
+				$price     = $sub_total;
+			} else {
+				$sub_total = $cart_item['line_subtotal'];
+				$sub_total = $this->number_format( $sub_total );
+				$price     = $sub_total;
+				$quantity  = absint( $cart_item['quantity'] );
+				if ( $quantity > 0 ) {
+					$price     = $sub_total;
+					$sub_total = WFACP_Common::wfacp_round( $sub_total / $quantity );
+				}
+			}
+			$currency = get_woocommerce_currency();
+
+			$item = array(
+				'item_id'   => $content_id,
+				'item_name' => $name,
+				'quantity'  => absint( $cart_item['quantity'] ),
+				'price'     => floatval( $sub_total ),
+				'currency'  => $currency
+			);
+
+			if ( ! is_null( $variation_name ) ) {
+				$item['item_variant'] = $variation_name;
+			}
+			$cat_count = 0;
+			if ( is_array( $categories ) && count( $categories ) > 0 ) {
+				foreach ( $categories as $cat ) {
+					$item_category          = ( 0 === $cat_count ) ? 'item_category' : 'item_category' . $cat_count;
+					$item[ $item_category ] = $cat;
+					$cat_count ++;
+				}
+			}
+			$data['price'] += absint( $price );
+			$data['item']        = $item;
+		}
+
+		return $data;
+
 	}
 
 	public function is_global_pageview_enabled() {

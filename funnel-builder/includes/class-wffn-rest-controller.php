@@ -406,22 +406,10 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 		 */
 		public function get_base_url( $post_data ) {
 
-			$data = [
-				'wffn_landing'   => [ "landing_page_base", 'sp' ],
-				'wfacp_checkout' => [ "checkout_page_base", 'checkouts' ],
-				'wffn_optin'     => [ "optin_page_base", 'op' ],
-				"wffn_oty"       => [ "optin_ty_page_base", 'op-confirmed' ],
-				'wfocu_offer'    => [ "wfocu_page_base", 'offer' ],
-				'wffn_ty'        => [ "ty_page_base", 'order-confirmed' ]
-			];
 
-			$base_url = '';
-			if ( isset( $data[ $post_data->post_type ] ) ) {
-				$base_data = $data[ $post_data->post_type ];
-				$base_url  = $this->base_url( $base_data[0], $base_data[1] );
-			}
+			return get_post_permalink( $post_data );
 
-			return $base_url . $post_data->post_name;
+
 		}
 
 		/**

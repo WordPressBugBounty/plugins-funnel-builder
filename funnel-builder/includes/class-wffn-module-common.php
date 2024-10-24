@@ -31,11 +31,14 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				return;
 			}
 			$post_type = $post->post_type;
+
+
 			if ( $post_type !== $allowed_post_types && ! $this->maybe_checkout_page( $post ) ) {
 				return;
 			}
 
 			$page_template = get_post_meta( $post->ID, '_wp_page_template', true );
+
 
 			/**
 			 * if our templates then prevent CSS and JS
@@ -46,6 +49,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			if ( class_exists( 'BWF_Admin_General_Settings' ) ) {
 				$allowed_steps = BWF_Admin_General_Settings::get_instance()->get_option( 'allow_theme_css' );
+
 				if ( is_array( $allowed_steps ) && in_array( $post->post_type, $allowed_steps, true ) || $this->maybe_save_allowed_theme_settings() ) {
 					return;
 				}
@@ -64,7 +68,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 			// Dequeue and deregister all of the registered styles
 			foreach ( $wp_styles->registered as $handle => $data ) {
 
-				if ( !is_null($data->src) &&  (false !== strpos( $data->src, $get_template ) || false !== strpos( $data->src, $get_stylesheet ) ) ) {
+				if ( ! is_null( $data->src ) && ( false !== strpos( $data->src, $get_template ) || false !== strpos( $data->src, $get_stylesheet ) ) ) {
 
 					wp_deregister_style( $handle );
 					wp_dequeue_style( $handle );
@@ -73,7 +77,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			// Dequeue and deregister all of the registered scripts
 			foreach ( $wp_scripts->registered as $handle => $data ) {
-				if ( !is_null($data->src) &&  ( false !== strpos( $data->src, $get_stylesheet ) || false !== strpos( $data->src, $get_template )) ) {
+				if ( ! is_null( $data->src ) && ( false !== strpos( $data->src, $get_stylesheet ) || false !== strpos( $data->src, $get_template ) ) ) {
 					wp_deregister_script( $handle );
 					wp_dequeue_script( $handle );
 				}
@@ -102,7 +106,6 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				wp_enqueue_style( 'porto-plugins' );
 			}
 		}
-
 
 
 		public function get_supported_permalink_structures_to_normalize() {
@@ -181,7 +184,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 					$default_template = ct_get_posts_template( $post_ID );
 				}
 				if ( $default_template ) {
-					$shortcodes = get_post_meta( $default_template->ID, WFFN_Common::oxy_get_meta_prefix('ct_builder_shortcodes'), true );
+					$shortcodes = get_post_meta( $default_template->ID, WFFN_Common::oxy_get_meta_prefix( 'ct_builder_shortcodes' ), true );
 					if ( $shortcodes && strpos( $shortcodes, '[ct_inner_content' ) !== false ) {
 						$post_editable  = true;
 						$template_inner = true;
@@ -192,7 +195,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 			} else if ( $post_template == - 1 ) { //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 				$post_editable = true;
 			} else { // Custom template
-				$shortcodes = get_post_meta( $post_template, WFFN_Common::oxy_get_meta_prefix('ct_builder_shortcodes'), true );
+				$shortcodes = get_post_meta( $post_template, WFFN_Common::oxy_get_meta_prefix( 'ct_builder_shortcodes' ), true );
 				if ( $shortcodes && strpos( $shortcodes, '[ct_inner_content' ) !== false ) {
 					$post_editable  = true;
 					$template_inner = true;
@@ -251,10 +254,12 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 		 * @return bool
 		 */
 		public function maybe_save_allowed_theme_settings() {
+			$is_updated = false;
 			$db_options = get_option( 'bwf_gen_config', [] );
 
-			if ( ! empty( $db_options ) && ! empty( $db_options['allow_theme_css'] ) ) {
-				return false;
+
+			if ( ! empty( $db_options ) && isset( $db_options['allow_theme_css'] ) ) {
+				return $is_updated;
 			}
 
 			/**
@@ -262,28 +267,47 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 			 */
 			$allowed_themes = apply_filters( 'wffn_allowed_themes', [ 'flatsome', 'Extra', 'divi', 'Divi', 'astra', 'jupiterx', 'kadence' ] );
 
-			if ( in_array( get_template(), $allowed_themes, true ) || WFFN_Core()->page_builders->is_divi_theme_enabled() ) {
-				$general_settings              = BWF_Admin_General_Settings::get_instance();
+			$allowed_for_upsells_themes = apply_filters( 'wfocu_allowed_themes', [ 'flatsome', 'Extra', 'divi', 'Divi', 'jupiterx', 'kadence' ] );
+
+			$general_settings = BWF_Admin_General_Settings::get_instance();
+
+			if ( function_exists( 'WFFN_Core' ) && ( in_array( get_template(), $allowed_themes, true ) || WFFN_Core()->page_builders->is_divi_theme_enabled() ) ) {
 				$db_options['allow_theme_css'] = array(
 					'wfacp_checkout',
-					'wfocu_offer',
 					'wffn_ty',
 					'wffn_landing',
 					'wffn_optin',
 					'wffn_oty'
 				);
-				$general_settings->update_global_settings_fields( $db_options );
 
-				return true;
+				$is_updated = true;
+			}
+			if ( function_exists( 'WFFN_Core' ) && (in_array( get_template(), $allowed_for_upsells_themes, true ) || WFFN_Core()->page_builders->is_divi_theme_enabled()) ) {
+				if ( ! empty( $db_options['allow_theme_css'] ) ) {
+					$db_options['allow_theme_css'][] = 'wfocu_offer';
+				} else {
+					$db_options['allow_theme_css'] = array(
+						'wfocu_offer',
+					);
+				}
+
+
+				$is_updated = true;
 			}
 
-			return false;
+			if ( $is_updated ) {
+				$general_settings->update_global_settings_fields( $db_options );
+
+			}
+
+			return $is_updated;
 		}
 
 		/**
 		 * Check checkout page for handle allow and remove theme css on checkout page
 		 *
 		 * @param $post
+		 *
 		 * @return bool
 		 */
 		public function maybe_checkout_page( $post ) {

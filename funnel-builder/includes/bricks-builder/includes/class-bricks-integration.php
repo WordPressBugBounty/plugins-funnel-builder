@@ -145,7 +145,6 @@ final class Bricks_Integration {
 		add_action( 'wfacp_template_import', array( $this, 'on_checkout_import' ), 9, 2 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		add_filter( 'bricks/registered_post_types_args', array( $this, 'registered_post_types_args' ) );
 		add_filter( 'bricks/element/render', array( $this, 'maybe_setup_template' ), 10 );
 		add_filter( 'bricks/frontend/render_data', array( $this, 'maybe_render_shortcodes' ), 10, 2 );
 		add_filter( 'bricks/builder/i18n', array( $this, 'i18n_strings' ) );
@@ -217,21 +216,7 @@ final class Bricks_Integration {
 		return $bricks_global_settings;
 	}
 
-	/**
-	 * Modifies the arguments for registered post types.
-	 *
-	 * This method is responsible for modifying the arguments for registered post types
-	 * by setting the 'show_in_menu' parameter to true.
-	 *
-	 * @param array $post_types_args The original arguments for registered post types.
-	 *
-	 * @return array The modified arguments for registered post types.
-	 */
-	public function registered_post_types_args( $post_types_args ) {
-		$post_types_args['show_in_menu'] = true;
 
-		return $post_types_args;
-	}
 
 	/**
 	 * Registers elements based on the post type.

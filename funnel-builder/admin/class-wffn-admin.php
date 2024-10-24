@@ -78,6 +78,30 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			add_action( 'wp_ajax_wffn_blocks_incompatible_switch_to_classic', array( $this, 'blocks_incompatible_switch_to_classic_cart_checkout' ) );
 			add_action( 'wp_ajax_wffn_dismiss_notice', array( $this, 'ajax_dismiss_admin_notice' ) );
 			add_filter( 'bwf_general_settings_default_config', [ $this, 'google_map_key_migrate' ], 10, 2 );
+				add_filter( 'bwf_general_settings_default_config', function ( $config ) {
+				if ( isset( $config['allow_theme_css'] ) ) {
+
+					/**
+					 * Allow default theme script if user use any snippet
+					 */
+					$allowed_themes = apply_filters( 'wffn_allowed_themes', [ 'flatsome', 'Extra', 'divi', 'Divi', 'astra', 'jupiterx', 'kadence' ] );
+
+					if ( function_exists( 'WFFN_Core' ) && ( in_array( get_template(), $allowed_themes, true ) || WFFN_Core()->page_builders->is_divi_theme_enabled() ) ) {
+						$config['allow_theme_css'] = array(
+							'wfacp_checkout',
+							'wffn_ty',
+							'wffn_landing',
+							'wffn_optin',
+							'wffn_oty',
+							'wfocu_offer'
+						);
+
+					}
+
+				}
+
+				return $config;
+			}, 10, 2 );
 
 			if ( isset( $_GET['wfacp_id'] ) && isset( $_GET['new_ui'] ) && 'wffn' === $_GET['new_ui'] ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				add_action( 'init', array( $this, 'redirect_checkout_edit_link_on_new_ui' ) );
@@ -302,7 +326,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1728652946' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1729775746' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -343,6 +367,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				'updated_pro_version' => defined( 'WFFN_PRO_VERSION' ) && version_compare( WFFN_PRO_VERSION, '3.0.0 beta', '>=' ),
 				'get_pro_link'        => WFFN_Core()->admin->get_pro_link(),
 				'wc_add_product_url'  => admin_url( 'post-new.php?post_type=product' ),
+				'admin_url'           => admin_url(),
 			);
 			if ( class_exists( 'WooCommerce' ) ) {
 				$currency                          = get_woocommerce_currency();
@@ -356,7 +381,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'priceFormat'       => html_entity_decode( get_woocommerce_price_format() ),
 				];
 				$contact_page_data['is_wc_active'] = true;
-				$contact_page_data['admin_url']    = admin_url();
 			}
 
 			$frontend_dir = ( 0 === WFFN_REACT_ENVIRONMENT ) ? WFFN_REACT_DEV_URL : WFFN_Core()->get_plugin_url() . $this->get_local_app_path();
@@ -2181,8 +2205,9 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 		/**
-         * Helper method to detect if the wizard is available to show
-         * Check all prior conditions before showing force wizard or notice
+		 * Helper method to detect if the wizard is available to show
+		 * Check all prior conditions before showing force wizard or notice
+		 *
 		 * @param bool $force check if it's a check for force wizard open
 		 *
 		 * @return bool true if all checks are passed, false otherwise
@@ -2226,7 +2251,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				/**
 				 * This checks if user has completed wizard from automations plugin & we have stripe plugin activated
 				 */
-                return false;
+				return false;
 			}
 
 			return true;

@@ -36,7 +36,7 @@ abstract class WFACP_Analytics {
 		$this->variable_as_simple = $this->admin_general_settings->get_option( $this->slug . '_variable_as_simple' );
 		$this->id_prefix          = $this->admin_general_settings->get_option( $this->slug . '_content_id_prefix' );
 		$this->id_suffix          = $this->admin_general_settings->get_option( $this->slug . '_content_id_suffix' );
-		if ( empty( $this->variable_as_simple ) ) {
+		if ( is_array( $this->variable_as_simple ) || empty( $this->variable_as_simple ) ) {
 			$this->variable_as_simple = false;
 		}
 		$exclude_from_total = false;

@@ -141,6 +141,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		$cssHtml = "<style>";
 		$cssHtml .= $bodyClass . ".woocommerce-checkout #payment{padding: 0;}";
+		$cssHtml .= $bodyClass . ".woocommerce-form__input-checkbox {display: inline-block !important;}";
+		$cssHtml .= 'body :not(.woocommerce-checkout) [class*="woocommerce"] * + p > * + * {margin-block-start: inherit;margin-block-end: 0;}';
 		$cssHtml .= "</style>";
 		echo $cssHtml;
 

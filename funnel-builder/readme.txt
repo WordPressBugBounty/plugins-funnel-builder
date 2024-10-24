@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.6.2
 Requires PHP: 7.4
-Stable tag: 3.6.1
+Stable tag: 3.6.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -377,8 +377,19 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 
 == Change log ==
 
+= 3.6.2 (Oct 24, 2024) =
+* Improved: Checkout - Compatibility with Woodmart theme updated. (#6766)
+* Improved: Checkout - Compatibility with Borlabs Cookie by Borlabs GmbH updated. (#6777)
+* Improved: Checkout - Compatibility with PayPal Express Checkout plugin updated. (#6782)
+* Improved: Checkout- Sanitised URL query params before populating checkout billing/shipping fields. (#6772)
+* Fixed: PHP Error of undefined constant "AUTH_SALT" in a few cases with wp-config.php file modified.
+* Fixed: Coupon input value was not sustaining after applying in case of multiple coupon fields. (#6437)
+* Fixed: Checkout- Google Analytics BeginCheckout event was not sending multiple cart items. (#6779)
+* Fixed: Default values for enable theme CSS and javascript was not setting correctly in a few edge cases. (#6790)
+* Fixed: Page URL preview in admin interface was showing wrong in case of additional permalink like '/blog'. (#6762)
+
 = 3.6.1 (Oct 10, 2024) =
-* Fixed: MySQL error of Unknown column coming on analytics API requests. (#6775)
+* Fixed: MySQL error of Unknown column coming on analytics API requests since last update. (#6775)
 
 = 3.6.0 (Oct 10, 2024) =
 * Added:  Deep Integration with Bricks Page builder with 6 new elements and pre-built templates:

@@ -1449,6 +1449,10 @@ abstract class WFACP_Template_Common {
 			$new_value = $value;
 		}
 
+		if ( ! empty( $new_value ) ) {
+			$new_value = sanitize_text_field( wp_unslash( $new_value ) );
+		}
+
 		$value = apply_filters( 'wfacp_populate_default_value', $new_value, $value, $field, $this );
 
 		return $value;

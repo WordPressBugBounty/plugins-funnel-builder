@@ -414,6 +414,11 @@
             field.removeClass('wfacp_coupon_failed');
 
 
+            if (field.find('#wfacp_coupon_code_field').length > 0) {
+                field.find('#wfacp_coupon_code_field').val('');
+                field.find('.wfacp_coupon_field_box > p.form-row-first').removeClass('wfacp-anim-wrap');
+            }
+
             wc_checkout_coupon_field.coupon_code = coupon;
             if (wfacp_frontend.applied_coupons.hasOwnProperty(coupon)) {
                 delete wfacp_frontend.applied_coupons[coupon];
@@ -434,7 +439,6 @@
             let wfacp_coupon_error_msg = field.find('.wfacp_coupon_error_msg');
             field.removeClass('processing').find(".wfacp_coupon_field_box").aero_unblock();
             //field.find('.wfacp-anim-wrap').removeClass('wfacp-anim-wrap');
-
 
 
             $(document.body).trigger('wfacp_coupon_apply', [rsp]);
@@ -465,7 +469,7 @@
 
 
                     setTimeout((el) => {
-                      el.html('');
+                        el.html('');
                     }, delay_time, wfacp_coupon_error_msg);
 
                 } else {
@@ -1183,6 +1187,7 @@
         });
 
     }
+
     /* assign form=wfacp_checkout_form to input field except our field qty field inside the mini cart or collapsible summary
             some plugin add input field just below the cart item like woocommerce subscription gifting
          */

@@ -166,7 +166,7 @@ if ( ! function_exists( 'wffn_alter_conversion_table_add_source' ) ) {
 
 			$conv_table = BWF_Ecomm_Tracking_Common::get_instance()->conversion_table_name();
 			$table_name = $wpdb->prefix . $conv_table;
-			$is_col     = defined( 'DB_NAME' ) ? $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND table_name = %s AND column_name = 'source_id'", DB_NAME, $table_name ) ) : false;
+			$is_col     =  $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND table_name = %s AND column_name = 'source_id'", $wpdb->dbname, $table_name )); 
 			/**
 			 * Check if column already exists
 			 */
