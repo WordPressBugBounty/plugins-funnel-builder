@@ -1418,6 +1418,19 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 
 			return $key;
 		}
+
+		/**
+		 * @param $array
+		 *
+		 * @return array|false
+		 */
+		public static function array_flatten( $array ) {
+			if ( ! is_array( $array ) ) {
+				return $array;
+			}
+
+			return iterator_to_array( new RecursiveIteratorIterator( new RecursiveArrayIterator( $array ) ), false );
+		}
 	}
 
 }

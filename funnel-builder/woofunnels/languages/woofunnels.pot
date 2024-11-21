@@ -7,7 +7,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-24T18:47:03+05:30\n"
+"POT-Creation-Date: 2024-11-21T14:17:41+05:30\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: woofunnels\n"
@@ -169,7 +169,7 @@ msgstr ""
 #: contact/class-woofunnels-db-updater.php:199
 #: contact/class-woofunnels-db-updater.php:215
 #: contact/class-woofunnels-db-updater.php:231
-#: contact/class-woofunnels-db-updater.php:1101
+#: contact/class-woofunnels-db-updater.php:1123
 #: includes/class-woofunnels-admin-notifications.php:44
 #: includes/class-woofunnels-process.php:62
 #: includes/class-woofunnels-process.php:156
@@ -179,7 +179,7 @@ msgstr ""
 #: contact/class-woofunnels-db-updater.php:203
 #: contact/class-woofunnels-db-updater.php:219
 #: contact/class-woofunnels-db-updater.php:235
-#: contact/class-woofunnels-db-updater.php:1105
+#: contact/class-woofunnels-db-updater.php:1127
 msgid "You don&#8217;t have permission to do this."
 msgstr ""
 

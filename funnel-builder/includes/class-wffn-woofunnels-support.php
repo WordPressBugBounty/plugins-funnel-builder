@@ -21,7 +21,6 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 			add_action( 'admin_menu', array( $this, 'add_menus' ), 81 );
 
 
-
 		}
 
 		/**
@@ -85,6 +84,22 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 			WFFN_Core()->admin->add_automations_menu();
 		}
 
+
+		private function get_campaign_url( $campaign ) {
+			$url = "https://funnelkit.com/exclusive-offer/";
+
+			return add_query_arg( [
+				'utm_source'   => 'WordPress',
+				'utm_medium'   => 'Admin+Menu+FB',
+				'utm_campaign' => $campaign
+			], $url );
+		}
+
+		private function add_admin_submenu( $title, $link ) {
+			add_submenu_page( 'woofunnels', '', '<a href="' . esc_url( $link ) . '" target="_blank">' . esc_html( $title ) . '</a>', 'manage_options', 'upgrade_pro', function () {
+			}, 100 );
+		}
+
 		public function register_menu_for_pro() {
 
 			if ( ! defined( 'WFFN_PRO_VERSION' ) ) {
@@ -97,37 +112,37 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 				}, 99 );
 
 
-				/**
-				 * Sale promotional menus, according to the timestamps
-				 */
+				$year = gmdate( 'Y' );
 
+				if ( WFFN_Core()->admin_notifications->show_pre_black_friday_header_notification() ) {
+					$campaign = 'BF' . $year;
+					$title    = "Black Friday 🔥";
+					$link     = $this->get_campaign_url( $campaign );
+					$this->add_admin_submenu( $title, $link );
 
-				$url  = "https://funnelkit.com/exclusive-offer/";
-				$time = strtotime( gmdate( 'c' ) );
-				if ( $time >= 1700456400 && $time < 1701493200 ) {
-					$utm_campaign = 'CM' . gmdate( 'Y' );
-					$title        = "Cyber Monday";
-					if ( $time < 1701061200 ) {
-						$utm_campaign = 'BF' . gmdate( 'Y' );
-						$title        = "Black Friday";
-					}
-					$title .= " 🔥";
-					$link  = add_query_arg( [
-						'utm_source'   => 'WordPress',
-						'utm_medium'   => 'Admin+Menu+FKA',
-						'utm_campaign' => $utm_campaign
-					], $url );
-					add_submenu_page( 'woofunnels', '', '<a href="' . $link . '"  target="_blank">' . $title . '</a>', 'manage_options', 'upgrade_pro', function () {
-					}, 100 );
-				} elseif ( $time >= 1702270800 && $time < 1702357200 ) {
-					$link  = add_query_arg( [
-						'utm_source'   => 'WordPress',
-						'utm_medium'   => 'Admin+Menu+FKA',
-						'utm_campaign' => 'GM' . gmdate( 'Y' )
-					], $url );
-					$title = "Green Monday 🔥";
-					add_submenu_page( 'woofunnels', '', '<a href="' . $link . '"  target="_blank">' . $title . '</a>', 'manage_options', 'upgrade_pro', function () {
-					}, 100 );
+				} elseif ( WFFN_Core()->admin_notifications->show_black_friday_header_notification() ) {
+					$campaign = 'BF' . $year;
+					$title    = "Black Friday 🔥";
+					$link     = $this->get_campaign_url( $campaign );
+					$this->add_admin_submenu( $title, $link );
+
+				} elseif ( WFFN_Core()->admin_notifications->show_cyber_monday_header_notification() ) {
+					$campaign = 'CM' . $year;
+					$title    = "Cyber Monday 🔥";
+					$link     = $this->get_campaign_url( $campaign );
+					$this->add_admin_submenu( $title, $link );
+
+				} elseif ( WFFN_Core()->admin_notifications->show_extended_cyber_monday_header_notification() ) {
+					$campaign = 'CM' . $year;
+					$title    = "Cyber Monday Extended 🔥";
+					$link     = $this->get_campaign_url( $campaign );
+					$this->add_admin_submenu( $title, $link );
+
+				} elseif ( WFFN_Core()->admin_notifications->show_green_monday_header_notification() ) {
+					$campaign = 'GM' . $year;
+					$title    = "Green Monday 🔥";
+					$link     = $this->get_campaign_url( $campaign );
+					$this->add_admin_submenu( $title, $link );
 				}
 
 

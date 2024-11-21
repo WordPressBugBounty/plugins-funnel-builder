@@ -131,7 +131,7 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 		public function get_tables_in_db() {
 			$version           = get_option( '_wfopp_db_version', '0.0.0' );
 			$table_of_versions = array(
-				'5.0.0' => array( 'bwf_optin_entries' ),
+				'5.0.1' => array( 'bwf_optin_entries' ),
 			);
 
 			$tables      = [];
@@ -185,7 +185,10 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 				`data` LONGTEXT NULL DEFAULT NULL,
  		        `date` datetime NOT NULL,
 				PRIMARY KEY (`id`),
-				KEY `id` (`id`),			
+				KEY `id` (`id`),
+				KEY `step_id` (`step_id`),
+				KEY `cid` (`cid`),
+				KEY `funnel_id` (`funnel_id`),		
 				KEY `date` (`date`)
                 ) " . $collate . ';';
 			dbDelta( $values_table );

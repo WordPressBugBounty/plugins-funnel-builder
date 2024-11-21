@@ -96,6 +96,10 @@ class WFACP_Class_Register_Third_Party_Fields {
 
 	public function add_wrapper() {
 
+		if ( true !== apply_filters( 'wfacp_add_billing_shipping_wrapper', true ) ) {
+		}
+
+
 		/**
 		 * Add default Hook for billing wrapper
 		 */
@@ -283,14 +287,14 @@ class WFACP_Class_Register_Third_Party_Fields {
 			$offset ++;
 		}
 
-		if ( in_array( 'billing_wc_custom_field', $temp ) ) {
+		$extra_fields = [];
+		if ( in_array( 'billing_wc_custom_field', $temp ) && isset( $this->checkout_fields['shipping'] ) ) {
 			$extra_fields = $this->checkout_fields['shipping'];
 
-		} else {
+		} elseif ( isset( $this->checkout_fields['billing'] ) ) {
 			$extra_fields = $this->checkout_fields['billing'];
 
 		}
-
 
 		$section['fields'] = apply_filters( 'wfacp_detect_extra_fields', $fields, $extra_fields, $temp );
 
@@ -345,7 +349,7 @@ class WFACP_Class_Register_Third_Party_Fields {
 
 		$other_address_fields = WFACP_Common::get_aero_registered_checkout_fields();
 
-		if ( isset( $args['class'] ) && is_array( $args['class'] ) && ! in_array( 'wfacp-col-full', $args['class'] ) ) {
+		if ( ! in_array( $key, $other_address_fields ) && isset( $args['class'] ) && is_array( $args['class'] ) && ! in_array( 'wfacp-col-full', $args['class'] ) ) {
 			$args['class'] = array_merge( [ 'wfacp-form-control-wrapper', 'wfacp-col-full' ], $args['class'] );
 			if ( false !== strpos( $args['type'], 'hidden' ) ) {
 				$args['class'][] = 'wfacp_type_hidden_field';
@@ -373,14 +377,16 @@ class WFACP_Class_Register_Third_Party_Fields {
 			}
 		}
 
-		if ( ! isset( $args['is_wfacp_field'] ) && 'select' !== $args['type'] && ( isset( $args['placeholder'] ) && empty( $args['placeholder'] ) ) && isset( $args['label'] ) ) {
 
+		if ( ! isset( $args['is_wfacp_field'] ) && 'select' !== $args['type'] && ( isset( $args['placeholder'] ) && empty( $args['placeholder'] ) ) && isset( $args['label'] ) ) {
 			$args['placeholder'] = $args['label'];
 		}
+
 
 		if ( ! in_array( $key, $other_address_fields ) && isset( $args['type'] ) && 'select' === $args['type'] && count( $this->wc_fields_under_billing ) > 0 && array_key_exists( $key, $this->wc_fields_under_billing ) && isset( $this->wc_fields_under_billing[ $key ]['options'] ) ) {
 			$args['options'] = $this->wc_fields_under_billing[ $key ]['options'];
 		}
+
 		/**
 		 * Merge Default Classes under billing and shipping address fields
 		 */

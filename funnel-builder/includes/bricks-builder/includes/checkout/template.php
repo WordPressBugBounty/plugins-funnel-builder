@@ -716,7 +716,7 @@ final class WFACP_template_Bricks extends WFACP_Template_Common {
 	 */
 	public function get_elementor_localize_data() {
 		$localData = array();
-		if ( isset( $this->form_data['wfacp_make_button_sticky_on_mobile'] ) ) {
+		if ( isset( $this->form_data['wfacp_make_button_sticky_on_mobile'] ) && true === $this->form_data['wfacp_make_button_sticky_on_mobile'] ) {
 			$localData['wfacp_make_button_sticky_on_mobile'] = "yes";
 		}
 
@@ -1496,8 +1496,6 @@ final class WFACP_template_Bricks extends WFACP_Template_Common {
 
 			return $fragments;
 		}
-
-
 
 
 	}

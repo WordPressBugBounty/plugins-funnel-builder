@@ -77,7 +77,13 @@ if ( ! class_exists( 'WooFunnels_Create_DB_Tables' ) ) {
 
 					dbDelta( $schema );
 
-					if ( ! empty( $this->wp_db->last_error ) ) {
+					/**
+					 * Handle unique key error
+					 * if table exists and try re-attempt to create table
+					 */
+					$table_name = $this->wp_db->prefix . $table['name'];
+					$esc_unique_key = "ALTER TABLE {$table_name} ADD UNIQUE KEY";
+					if ( ! empty( $this->wp_db->last_error ) && ( strpos( $this->wp_db->last_query, $esc_unique_key ) === false ) ) {
 						BWF_Logger::get_instance()->log( "bwf failed create table {$table['name']}: " . print_r( $this->wp_db->last_error, true ), 'woofunnel-failed-actions', 'buildwoofunnels', true ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 					} else {
 						$this->last_created_table[]     = $table['name'];

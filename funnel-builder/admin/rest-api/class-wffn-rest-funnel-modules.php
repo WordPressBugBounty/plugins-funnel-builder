@@ -812,9 +812,10 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 			return $tabs;
 		}
 
-		public function upsell_get_customsettings( $values ) {
-
+		public function upsell_get_customsettings( $values, $upsell_id ) {
+			WFOCU_Core()->funnels->setup_funnel_options($upsell_id);
 			$prop_image = WFOCU_PLUGIN_URL . '/assets/img/funnel-settings-prop.jpg';
+
 
 			$tabs = [
 				'upsell_orders' => [
@@ -924,12 +925,46 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 					],
 					'priority'       => 15,
 					'values'         => [
-						'offer_success_message_pop' => ! empty( $values['offer_success_message_pop'] ) ? wffn_clean( $values['offer_success_message_pop'] ) : __( 'Congratulations! Your item has been successfully added to the order.', 'funnel-builder' ),
-						'offer_failure_message_pop' => ! empty( $values['offer_failure_message_pop'] ) ? wffn_clean( $values['offer_failure_message_pop'] ) : __( 'Sorry! We are unable to add this item to your order.', 'funnel-builder' ),
-						'offer_wait_message_pop'    => ! empty( $values['offer_wait_message_pop'] ) ? wffn_clean( $values['offer_wait_message_pop'] ) : __( 'Updating your order...', 'funnel-builder' ),
+						'offer_success_message_pop' => WFOCU_Core()->funnels->get_funnel_option( 'offer_success_message_pop' ),
+						'offer_failure_message_pop' => WFOCU_Core()->funnels->get_funnel_option( 'offer_failure_message_pop' ),
+						'offer_wait_message_pop'    => WFOCU_Core()->funnels->get_funnel_option( 'offer_wait_message_pop' ),
 					],
 				],
-				'tracking_code'         => [
+
+				'upsell_failed_recovery' => [
+					'title'          => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
+					'heading'        => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
+					'hint'           => __( 'In upsell recovery feature we show credit card fields to customers in case the charge attempt fails. <a href="'.admin_url('admin.php?page=bwf&path=/settings/stripe').'" data-link="react">Click here to activate Funnelkit Stripe</a>', 'funnel-builder' ),
+
+					'slug'           => 'upsell_failed_recovery',
+					'fields'         => [
+						0 => [
+							'key'         => 'upsell_failed_recovery_heading',
+							'type'        => 'textInput',
+							'label'       => __( 'Heading', 'funnel-builder' ),
+							'placeholder' => '',
+						],
+						1 => [
+							'key'         => 'upsell_failed_recovery_btn_text',
+							'type'        => 'textInput',
+							'label'       => __( 'Button Text', 'funnel-builder' ),
+							'placeholder' => '',
+						],
+						2 => [
+							'key'         => 'upsell_failed_recovery_btn_fail_msg',
+							'type'        => 'textInput',
+							'label'       => __( 'Failure Message', 'funnel-builder' ),
+							'placeholder' => '',
+						],
+					],
+					'priority'       => 15,
+					'values'         => [
+						'upsell_failed_recovery_heading'      => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_heading' ),
+						'upsell_failed_recovery_btn_text'     => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_btn_text' ),
+						'upsell_failed_recovery_btn_fail_msg' => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_btn_fail_msg' ),
+					],
+				],
+				'tracking_code'          => [
 					'title'    => __( 'External Tracking Code', 'funnel-builder' ),
 					'heading'  => __( 'External Tracking Code', 'funnel-builder' ),
 					'hint'     => '',
@@ -1503,7 +1538,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 					if ( 'WFOCU_Common' === $page_class_instance && 'wc_upsells' === $type ) {
 						$custom_settings = get_post_meta( $step_id, '_wfocu_settings', true );
-						$tabs            = $this->upsell_get_customsettings( $custom_settings );
+						$tabs            = $this->upsell_get_customsettings( $custom_settings,$step_id );
 					}
 
 					if ( 'WFOCU_Common' === $page_class_instance && 'offer' === $type ) {

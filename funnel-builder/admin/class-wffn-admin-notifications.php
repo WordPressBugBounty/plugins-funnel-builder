@@ -40,70 +40,262 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			return $this->notifs;
 		}
 
+		public function get_black_friday_day_data( $day = 'bf' ) {
+			// Get the current year
+			$year = gmdate( 'Y' );
+			// Create a DateTime object for November 30 of the current year
+			$blackFriday = new DateTimeImmutable( "{$year}-11-30 00:00:00" );
+
+			// Find the last Friday of November
+			while ( $blackFriday->format( 'N' ) != 5 ) { //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+				$blackFriday = $blackFriday->modify( '-1 day' );
+			}
+
+			// Initialize data variable to store the resulting date
+			$data = '';
+
+			switch ( $day ) {
+				case 'pre':
+					// Pre-Black Friday: 5 days before
+					$data = $blackFriday->modify( '-5 days' )->format( 'M d' );
+					break;
+				case 'sbs':
+					// Small Business Saturday: 1 day after
+					$data = $blackFriday->modify( '+1 day' )->format( 'M d' );
+					break;
+				case 'bfext':
+					// Black Friday Extended: 2 days after
+					$data = $blackFriday->modify( '+2 days' )->format( 'M d' );
+					break;
+				case 'cm':
+					// Cyber Monday: 3 days after
+					$data = $blackFriday->modify( '+3 days' )->format( 'M d' );
+					break;
+				case 'cmext':
+					// Cyber Monday Extended: 7 days after
+					$data = $blackFriday->modify( '+7 days' )->format( 'M d' );
+					break;
+				default:
+					// Black Friday itself
+					$data = $blackFriday->format( 'M d' );
+					break;
+			}
+
+			return $data;
+		}
+
+		public function show_pre_black_friday_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+			// Check if the difference falls within the range for showing the notification
+			// (-11 days in minutes to -4 days in minutes)
+			if ( $blackFridayDifference >= - ( 11 * 1440 ) && $blackFridayDifference < - ( 4 * 1440 ) ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function show_black_friday_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (-4 days in minutes to the day after Black Friday)
+			if ( $blackFridayDifference >= - ( 4 * 1440 ) && $blackFridayDifference < 1440 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function show_small_business_saturday_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (1 day to 2 days after Black Friday)
+			if ( $blackFridayDifference >= 1440 && $blackFridayDifference < 2880 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		public function show_black_friday_extended_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (2 days to 3 days after Black Friday)
+			if ( $blackFridayDifference >= 2880 && $blackFridayDifference < 4320 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function show_cyber_monday_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (3 days to 4 days after Black Friday)
+			if ( $blackFridayDifference >= 4320 && $blackFridayDifference < 5760 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function show_extended_cyber_monday_header_notification() {
+			// Get the difference in minutes between today and Black Friday
+			$blackFridayDifference = $this->get_black_friday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (4 days to 8 days after Black Friday)
+			if ( $blackFridayDifference >= 5760 && $blackFridayDifference < 11520 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public function show_green_monday_header_notification() {
+			// Get the difference in minutes between today and the second Monday of December
+			$secondDecMondayDayDiff = $this->get_second_dec_monday_day_diff();
+
+			// Check if the difference falls within the range for showing the notification
+			// (0 to 1 day after the second Monday of December)
+			if ( $secondDecMondayDayDiff >= 0 && $secondDecMondayDayDiff < 1440 ) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+
+		public function get_black_friday_day_diff() {
+			// Set the timezone to 'America/New_York'
+			$timezone = new DateTimeZone( 'America/New_York' );
+			// Create DateTime object for today's date and time in the specified timezone
+			$today = new DateTime( 'now', $timezone );
+
+			// Get the current year
+			$year = $today->format( 'Y' );
+			// Start from November 30 at midnight UTC and calculate Black Friday
+			$blackFriday = new DateTime( "{$year}-11-30 00:00:00", new DateTimeZone( 'UTC' ) );
+
+			// Find the last Friday of November
+			while ( $blackFriday->format( 'N' ) != 5 ) { //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+				$blackFriday = $blackFriday->modify( '-1 day' );
+			}
+
+			// Convert Black Friday date to 'America/New_York' timezone for accurate diff
+			$blackFriday = $blackFriday->setTimezone( $timezone );
+
+			// Calculate the difference in minutes between today and Black Friday
+			$differenceInMinutes = $today->getTimestamp() - $blackFriday->getTimestamp();
+			$differenceInMinutes = round( $differenceInMinutes / 60 );
+
+			return $differenceInMinutes;
+		}
+
+		public function get_second_dec_monday_day_diff( $diff = true ) {
+			// Set the timezone to 'America/New_York'
+			$timezone = new DateTimeZone( 'America/New_York' );
+			// Get today's date and time in the specified timezone
+			$today = new DateTime( 'now', $timezone );
+
+			// Get the current year
+			$year = $today->format( 'Y' );
+			// Create a DateTime object for November 30 at midnight UTC
+			$lastNovDay = new DateTime( "{$year}-11-30 00:00:00", new DateTimeZone( 'UTC' ) );
+
+			// Move to December 1
+			$decFirstDay = $lastNovDay->modify( '+1 day' );
+			// Get the day of the week (0 = Sunday, 1 = Monday, etc.)
+			$dayOfWeek = $decFirstDay->format( 'w' );
+			// Calculate days to add to reach the first Monday of December
+			$daysToAdd = ( $dayOfWeek == 0 ) ? 1 : 8 - $dayOfWeek; //phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+			// Move to the first Monday of December
+			$firstDecMonday = $decFirstDay->modify( "+{$daysToAdd} days" );
+			// Move to the second Monday of December
+			$secondDecMonday = $firstDecMonday->modify( '+7 days' );
+
+			if ( $diff ) {
+				// Calculate the difference in minutes between today and the second Monday of December
+				$differenceInMinutes = round( ( $today->getTimestamp() - $secondDecMonday->getTimestamp() ) / 60 );
+
+				return $differenceInMinutes;
+			} else {
+				// Return the formatted date of the second Monday of December
+				return $secondDecMonday->format( 'M d' );
+			}
+		}
+
+		private function get_notification_buttons( $campaign ) {
+			return [
+				[
+					'label'     => __( "Get FunnelKit PRO", "funnel-builder" ),
+					'href'      => add_query_arg( [
+						'utm_source'   => 'WordPress',
+						'utm_medium'   => 'Notice+FKFB',
+						'utm_campaign' => $campaign
+					], "https://funnelkit.com/exclusive-offer/" ),
+					'className' => 'is-primary',
+					'target'    => '__blank',
+				],
+				[
+					'label'     => __( "Learn More", "funnel-builder" ),
+					'href'      => add_query_arg( [
+						'utm_source'   => 'WordPress',
+						'utm_medium'   => 'Notice+FKFB',
+						'utm_campaign' => $campaign
+					], "https://funnelkit.com/wordpress-funnel-builder/" ),
+					'className' => 'is-secondary',
+					'target'    => '__blank',
+				],
+				[
+					'label'  => __( "Dismiss", "funnel-builder" ),
+					'action' => 'close_notice',
+				]
+			];
+		}
+
+		private function add_notification( $key, $content ) {
+			$this->notifs[] = [
+				'key'           => $key,
+				'content'       => $content,
+				'customButtons' => $this->get_notification_buttons( 'BFCM' . gmdate( 'Y' ) )
+			];
+		}
 
 		public function prepare_notifications() {
 
 
 			if ( ! defined( 'WFFN_PRO_VERSION' ) ) {
-				$time = strtotime( gmdate( 'c' ) );
+				$yearKey = 'promo_bf_' . gmdate( 'Y' );
 
-				if ( ( $time >= 1700456400 && $time < 1701493200 ) || ( $time >= 1702270800 && $time < 1702357200 ) ) {
-					$promotion_buttons_bfcm = [
-						[
-							'label'     => __( "Get FunnelKit PRO", "funnel-builder" ),
-							'href'      => add_query_arg( [
-								'utm_source'   => 'WordPress',
-								'utm_medium'   => 'Notice+FKFB',
-								'utm_campaign' => 'BFCM2023'
-							], "https://funnelkit.com/exclusive-offer/" ),
-							'className' => 'is-primary',
-							'target'    => '__blank',
-						],
-						[
-							'label'     => __( "Learn More", "funnel-builder" ),
-							'href'      => add_query_arg( [
-								'utm_source'   => 'WordPress',
-								'utm_medium'   => 'Notice+FKFB',
-								'utm_campaign' => 'BFCM2023'
-							], "https://funnelkit.com/wordpress-funnel-builder/" ),
-							'className' => 'is-secondary',
-							'target'    => '__blank',
-						],
-						[
-							'label'  => __( "Dismiss", "funnel-builder" ),
-							'action' => 'close_notice',
-
-						]
-					];
-					/**
-					 * Sale promotional menus, according to the timestamps
-					 */
-
-
-					if ( $time >= 1700456400 && $time < 1701493200 ) {
-						if ( $time < 1701061200 ) {
-							$this->notifs[] = array(
-								'key'           => 'promo_bf_2023',
-								'content'       => $this->promo_bfcm(),
-								'customButtons' => $promotion_buttons_bfcm
-							);
-						} else {
-							$this->notifs[] = array(
-								'key'           => 'promo_cm_2023',
-								'content'       => $this->promo_cmonly(),
-								'customButtons' => $promotion_buttons_bfcm
-							);
-						}
-					} elseif ( $time >= 1702270800 && $time < 1702357200 ) {
-						$this->notifs[] = array(
-							'key'           => 'promo_gm_2023',
-							'content'       => $this->promo_gm(),
-							'customButtons' => $promotion_buttons_bfcm
-						);
-					}
-
+				if ( $this->show_pre_black_friday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_pre_bfcm() );
+				} elseif ( $this->show_black_friday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_bfcm() );
+				} elseif ( $this->show_small_business_saturday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_small_business_saturday() );
+				} elseif ( $this->show_black_friday_extended_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_ext_bfcm() );
+				} elseif ( $this->show_cyber_monday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_cmonly() );
+				} elseif ( $this->show_extended_cyber_monday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_ext_cmonly() );
 				}
 
+				// Show Green Monday notification independently
+				if ( $this->show_green_monday_header_notification() ) {
+					$this->add_notification( $yearKey, $this->promo_gm() );
+				}
 			}
 
 
@@ -326,24 +518,52 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		}
 
 
+		public function promo_pre_bfcm() {
+			return '<div class="bwf-notifications-message current">
+					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Pre Black Friday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'pre' ) ) . '</p>
+				</div>';
+		}
+
 		public function promo_bfcm() {
 			return '<div class="bwf-notifications-message current">
 					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . __( "<strong>Get started using FunnelKit to grow your revenue today for up to 55% OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Sunday, Nov 26, at midnight ET.", "funnel-builder" ) . '</p>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bf' ) ) . '</p>
+				</div>';
+		}
+
+		public function promo_small_business_saturday() {
+			return '<div class="bwf-notifications-message current">
+					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Small Business Saturday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Saturday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'sbs' ) ) . '</p>
+				</div>';
+		}
+
+		public function promo_ext_bfcm() {
+			return '<div class="bwf-notifications-message current">
+					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bfext' ) ) . '</p>
 				</div>';
 		}
 
 		public function promo_cmonly() {
 			return '<div class="bwf-notifications-message current">
 					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Cyber Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . __( "<strong>Get started using FunnelKit to grow your revenue today for up to 55% OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Friday, Dec 01, at midnight ET.", "funnel-builder" ) . '</p>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cm' ) ) . '</p>
+				</div>';
+		}
+
+		public function promo_ext_cmonly() {
+			return '<div class="bwf-notifications-message current">
+					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Cyber Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cmext' ) ) . '</p>
 				</div>';
 		}
 
 		public function promo_gm() {
 			return '<div class="bwf-notifications-message current">
 					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Green Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . __( "<strong>Get started using FunnelKit to grow your revenue today for up to 55% OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Monday, Dec 11, at midnight ET.", "funnel-builder" ) . '</p>
+					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_second_dec_monday_day_diff( false ) ) . '</p>
 				</div>';
 		}
 

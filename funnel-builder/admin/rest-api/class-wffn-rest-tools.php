@@ -123,7 +123,9 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 		}
 
 		public function get_index_orders() {
-			$get_threshold_order = get_option( '_bwf_order_threshold', BWF_THRESHOLD_ORDERS );
+
+			$threshold_order     = defined( 'BWF_THRESHOLD_ORDERS' ) ? BWF_THRESHOLD_ORDERS : 0;
+			$get_threshold_order = get_option( '_bwf_order_threshold', $threshold_order );
 			$bwf_db_upgrade      = WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state();
 			$index_orders        = [];
 			global $wpdb;
@@ -166,9 +168,9 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=Lite+Plugin">Learn more</a>', 'funnel-builder' );
 
 			if ( '1' === $bwf_db_upgrade || '6' === $bwf_db_upgrade ) {
-				$description .= esc_html__( 'Unable to complete indexing of orders.', 'woofunnels' );
+				$description .= esc_html__( ' Unable to complete indexing of orders.', 'woofunnels' );
 
-				$description .= '<a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=Lite+Plugin">contact support to get the issue resolved.</a>';
+				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=Lite+Plugin">Contact support to get the issue resolved.</a>';
 
 			}
 			if ( true === apply_filters( 'bwf_needs_order_indexing', false ) ) {
@@ -274,7 +276,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				foreach ( $plugin_log_files as $file_slug => $file_name ) {
 					$option_value = $plugin_folder . '/' . $file_slug;
 					$file_list[]  = array(
-						'label' => $this->extractFilename($file_name),
+						'label' => $this->extractFilename( $file_name ),
 						'value' => $option_value,
 						'key'   => $option_value
 					);
@@ -287,14 +289,15 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 		/**
 		 * Extract the filename correct
+		 *
 		 * @param $filename
 		 *
 		 * @return string
 		 */
-		public function extractFilename($filename) {
+		public function extractFilename( $filename ) {
 			$pattern = '/^(.*?-\d{4}-\d{2}-\d{2})(?:-[a-f0-9]{32})?$/';
 
-			if (preg_match($pattern, $filename, $matches)) {
+			if ( preg_match( $pattern, $filename, $matches ) ) {
 				return $matches[1];
 			}
 
@@ -395,16 +398,19 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 				return rest_ensure_response( $resp );
 			}
-
+			
 			if ( $index_orders !== '' ) {
 
 				if ( 'yes' === $index_orders && '0' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
 					WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->set_upgrade_state( '2' );
 				}
+				if ( 'yes' === $index_orders && '1' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
+					WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->reset_indexing_data( true );
+					WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->set_upgrade_state( '2' );
+				}
 				if ( '2' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
 					WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->bwf_start_indexing();
 				}
-
 
 				$get_index_array = $this->get_all_tools_array();
 				$resp['tool']    = $get_index_array[0];

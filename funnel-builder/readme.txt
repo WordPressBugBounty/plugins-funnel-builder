@@ -2,9 +2,9 @@
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.6.2
+Tested up to: 6.7.0
 Requires PHP: 7.4
-Stable tag: 3.6.2
+Stable tag: 3.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -376,6 +376,16 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.6.3 (Nov 21, 2024) =
+* Improved: compatibility with WordPress 6.7 . (#6851)
+* Improved: Better handling for SQL error when creating a table if it already exists. (#6857)
+* Improved: Order indexing buttons under tools were not clickable in a certain state. (#6832, #6831)
+* Improved: Checkout - Compatibility updated with Tickera forms. (#6817)
+* Improved: Checkout- Styling improved for conversion filters in backend or Safari Browser. (#6863)
+* Fixed: Checkout- PHP notice in case of WooCommerce advanced field used in checkout but no billing fields exists. (#6818)
+* Fixed: Checkout- The sticky place order button on mobile devices is not working correctly for bricks integration. (#6812)
+* Fixed: PHP Error in analytics when WooCommerce is not active. (#6855)
 
 = 3.6.2 (Oct 24, 2024) =
 * Improved: Checkout - Compatibility with Woodmart theme updated. (#6766)

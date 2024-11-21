@@ -71,7 +71,6 @@ class Tickera_Bridge_For_WC {
 		?>
         <div class="tickera_wrap" id="tickera_wrap">
 			<?php
-			$this->instance->add_standard_tc_fields_to_checkout();
 			$this->instance->render_tc_owner_fields();
 
 			?>
