@@ -232,6 +232,31 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
 							<?php } ?>
                         </div>
                     </div>
+
+					<?php
+					if ( ! defined( 'WFFN_PRO_VERSION' ) ) {
+						$yearKey = 'promo_bf_' . gmdate( 'Y' );
+						if ( WFFN_Core()->admin_notifications->show_pre_black_friday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_pre_bfcm( false ) );
+						} elseif ( WFFN_Core()->admin_notifications->show_black_friday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_bfcm( false ) );
+						} elseif ( WFFN_Core()->admin_notifications->show_small_business_saturday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_small_business_saturday( false ) );
+						} elseif ( WFFN_Core()->admin_notifications->show_black_friday_extended_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_ext_bfcm( false ) );
+						} elseif ( WFFN_Core()->admin_notifications->show_cyber_monday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_cmonly( false ) );
+						} elseif ( WFFN_Core()->admin_notifications->show_extended_cyber_monday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_ext_cmonly( false ) );
+						}
+
+						// Show Green Monday notification independently
+						if ( WFFN_Core()->admin_notifications->show_green_monday_header_notification() ) {
+							$this->add_bfcm_widget_row( $yearKey, WFFN_Core()->admin_notifications->promo_gm( false ) );
+						}
+					}
+
+					?>
                     <div class="bwf-widget-action-box" id="bwf-d-stripe" data-index="1" style="display:none;">
                         <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" class="bwf-widget-action-box-icon">
                             <rect width="44" height="44" rx="8" fill="#6C63FF"/>
@@ -330,7 +355,10 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                         function showHideWidget() {
                             jQuery('.bwf-widget-action-box').hide();
 
-
+                            if (jQuery('.bwf-widget-action-box.bfcm-widget').length > 0) {
+                                jQuery('.bwf-widget-action-box.bfcm-widget').show();
+                                return;
+                            }
                             if (fkwidget.is_wc === 'yes' && jQuery.inArray("wizard_close_1", fkwidget.dismissed) === -1 && fkwidget.stripe.status !== 'connected') {
                                 jQuery('#bwf-d-stripe').show();
                                 return;
@@ -358,6 +386,9 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
 
 
                         function ShowWidgetState() {
+                            if (jQuery('.bwf-widget-action-box.bfcm-widget').length > 0) {
+                                return;
+                            }
                             const statusMapping = {
                                 1: {
                                     'not_installed': {text: '<?php echo esc_html__( 'Install', 'funnel-builder' ); ?>', action: 'activate'},
@@ -520,7 +551,8 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                     });
                 })(jQuery);
             </script>
-            <style>.bwf-widget-content-wrap {
+            <style>
+                .bwf-widget-content-wrap {
                     padding: 24px 16px
                 }
 
@@ -781,6 +813,110 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                     margin: 0
                 }
 
+                /* Latest Css black friday */
+                .bwf-widget-action-box.bfcm-widget {
+                    background-color: #171740;
+                    padding: 16px 32px 16px 16px;
+                    color: white;
+                    position: relative;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-bfcm-widget-wrap {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 16px;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-bfcm-bell-icon-wrapper {
+                    border-radius: 50%;
+                    background: rgba(171, 173, 191, .3);
+
+                    width: 44px;
+                    height: 44px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-bfcm-bell-icon-wrapper svg {
+                    width: 20px;
+                    height: 24px;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-bfcm-bell-icon-wrapper svg path {
+                    fill: white;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-widget-action-box-title {
+                    font-size: 15px;
+                    line-height: 1.5;
+                    font-weight: bold;
+                    display: block;
+                    margin-bottom: 0;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-widget-action-box-subtitle {
+                    display: block;
+                    margin: 0;
+                    font-size: 13px;
+                    line-height: 20px;
+                    font-weight: 400;
+                    color: #fff;
+
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-button {
+                    background-color: #FFC65C;
+                    color: #000;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    margin-top: 15px;
+                    font-size: 16px;
+                }
+                .bwf-widget-action-box.bfcm-widget .bwf-button a {
+                    color: #000;
+                    text-decoration: none;
+                    font-size: 16px;
+                    outline: none;
+                    box-shadow: none;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-widget-action-box-r {
+                    position: absolute;
+                    top: 16px;
+                    right: 16px;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-bfcm-widget-wrap .emoji {
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    margin: 0 5px;
+                }
+
+                .bwf-widget-action-box.bfcm-widget h2.bwf-widget-action-box-title {
+                    color: #fff;
+                    font-size: 15px;
+                    font-weight: 500;
+                    margin: 0 0 2px;
+                    padding: 0;
+                    line-height: 1.5;
+                }
+
+
+                .bwf-widget-action-box.bfcm-widget .bwf-widget-action-box-remove:focus {
+                    outline: none;
+                }
+
+                .bwf-widget-action-box.bfcm-widget .bwf-widget-action-box-remove svg {
+                    outline: none;
+                }
+
+
                 @media (max-width: 1280px) and (min-width: 1025px) {
                     .bwf-tiles-value {
                         font-size: 18px
@@ -938,6 +1074,55 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
 			return false;
 
 
+		}
+
+		public function add_bfcm_widget_row( $a, $content ) {
+
+			if ( WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), "wizard_close_bfcm2024-wd-$a" ) ) {
+				return;
+			}
+			?>
+            <div class="bwf-widget-action-box bfcm-widget" id="bwf-d-bfcm" data-index="0" style="">
+
+                <div class="bwf-bfcm-widget-wrap">
+
+                    <div class="bwf-bfcm-bell-icon-wrapper">
+                        <svg width="23" height="28" viewBox="0 0 23 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.3699 17.5822C19.0675 16.1609 18.4829 14.7124 18.4829 12.9383L18.4827 10.9309C18.4807 9.71178 18.1594 8.51518 17.5517 7.46305C16.9441 6.41097 16.0717 5.5413 15.0237 4.94245V4.1077C15.0237 2.87853 14.3765 1.74254 13.3258 1.12785C12.2753 0.513374 10.9809 0.513374 9.93047 1.12785C8.87973 1.74254 8.23256 2.87853 8.23256 4.1077V4.99172C6.09647 6.29603 4.78562 8.634 4.77361 11.1611V12.9413C4.77361 14.7154 4.18896 16.161 2.88661 17.5852H2.8864C2.19379 17.6298 1.54391 17.9404 1.06954 18.4538C0.595 18.9671 0.3315 19.6445 0.333014 20.3478V21.0569V21.0567C0.333014 21.7894 0.620151 22.4921 1.13148 23.0102C1.64279 23.5283 2.3362 23.8193 3.05905 23.8193H7.73586C7.88397 25.1206 8.65602 26.2641 9.79947 26.8754C10.943 27.4864 12.3104 27.4864 13.4538 26.8754C14.5971 26.2642 15.3693 25.1206 15.5172 23.8193H20.1972C20.92 23.8193 21.6134 23.5283 22.1247 23.0102C22.6361 22.4921 22.9232 21.7894 22.9232 21.0567V20.3356C22.9224 19.6338 22.6578 18.9588 22.1837 18.4475C21.7094 17.936 21.0609 17.6268 20.3698 17.5823L20.3699 17.5822Z" fill="#353030"></path>
+                        </svg>
+                    </div>
+
+                    <div class="bwf-bfcm-description">
+                        <h2 class="bwf-widget-action-box-title">
+                            <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"><?php echo wp_kses_post( $content['title'] ); ?>
+                            <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                        </h2>
+                        <p class="bwf-widget-action-box-subtitle">
+							<?php echo wp_kses_post( sprintf( __( "Grow your revenue with FunnelKit! Unlock tools like optimized checkouts, upsells, order bumps, and more. Offer ends %s, midnight ET", "funnel-builder" ), esc_html( $content['date'] ) ) ); ?>
+
+                        </p>
+
+                        <button class="bwf-button">
+                            <span><a target="_blank" href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=Lite+Plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html__( 'Get FunnelKit Pro', 'funnel-builder' ); ?></a></span>
+                        </button>
+                    </div>
+                </div>
+                <span class="bwf-widget-action-box-r">
+
+                    <span data-type="bfcm2024-wd-<?php echo esc_attr( $a ); ?>" class="bwf-widget-action-box-remove">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_676_13273)">
+                                <path d="M2.76782 2.87703L2.8178 2.81914C3.00103 2.6359 3.28777 2.61924 3.48983 2.76917L3.54771 2.81914L7.99996 7.27115L12.4522 2.81914C12.6538 2.61758 12.9806 2.61758 13.1821 2.81914C13.3837 3.0207 13.3837 3.3475 13.1821 3.54906L8.73011 8.0013L13.1821 12.4535C13.3654 12.6368 13.382 12.9235 13.2321 13.1256L13.1821 13.1835C12.9989 13.3667 12.7121 13.3834 12.5101 13.2334L12.4522 13.1835L7.99996 8.73145L3.54771 13.1835C3.34615 13.385 3.01936 13.385 2.8178 13.1835C2.61624 12.9819 2.61624 12.6551 2.8178 12.4535L7.26981 8.0013L2.8178 3.54906C2.63456 3.36582 2.6179 3.07908 2.76782 2.87703L2.8178 2.81914L2.76782 2.87703Z" fill="#82838E"/></g>
+                            <defs>
+                                <clipPath id="clip0_676_13273">
+                                    <rect width="16" height="16" fill="white"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </span>
+                </span>
+            </div>
+			<?php
 		}
 
 

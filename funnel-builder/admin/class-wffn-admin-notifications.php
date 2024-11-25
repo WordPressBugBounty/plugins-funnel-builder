@@ -268,6 +268,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			$this->notifs[] = [
 				'key'           => $key,
 				'content'       => $content,
+				'className'     => 'bwf-notif-bwfcm',
 				'customButtons' => $this->get_notification_buttons( 'BFCM' . gmdate( 'Y' ) )
 			];
 		}
@@ -518,54 +519,146 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		}
 
 
-		public function promo_pre_bfcm() {
+		public function promo_pre_bfcm( $html = true ) {
+			$title   = __( "Pre Black Friday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'pre' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'pre' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Pre Black Friday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'pre' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_bfcm() {
+		public function promo_bfcm( $html = true ) {
+			$title   = __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bf' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'bf' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bf' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_small_business_saturday() {
+		public function promo_small_business_saturday( $html = true ) {
+			$title   = __( "Small Business Saturday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Saturday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'sbs' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'sbs' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Small Business Saturday Sale is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Saturday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'sbs' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_ext_bfcm() {
+		public function promo_ext_bfcm( $html = true ) {
+			$title   = __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bfext' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'bfext' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Black Friday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Sunday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'bfext' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_cmonly() {
+		public function promo_cmonly( $html = true ) {
+			$title   = __( "Cyber Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cm' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'cm' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Cyber Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cm' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_ext_cmonly() {
+		public function promo_ext_cmonly( $html = true ) {
+			$title   = __( "Cyber Monday Extended is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cmext' ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_black_friday_day_data( 'cmext' )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Cyber Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Friday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_black_friday_day_data( 'cmext' ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
 
-		public function promo_gm() {
+		public function promo_gm( $html = true ) {
+			$title   = __( "Green Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" );
+			$content = sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_second_dec_monday_day_diff( false ) );
+
+			if ( $html === false ) {
+				return [
+					'title'   => $title,
+					'content' => $content,
+					'date' => $this->get_second_dec_monday_day_diff( false )
+				];
+			}
+
 			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title"><img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . __( "Green Monday is HERE - Subscribe Now for Up To 55% Off ", "funnel-builder" ) . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg"></h3>
-					<p class="bwf-notifications-content">' . sprintf( __( "<strong>Get started using FunnelKit to grow your revenue today for up to %s OFF!</strong> Get access to money-making solutions like Conversion Optimized Checkout, One Click Upsells Order Bumps, Analytics, A/B Testing  and much more! Expires Monday, %s, at midnight ET.", "funnel-builder" ), '55%', $this->get_second_dec_monday_day_diff( false ) ) . '</p>
-				</div>';
+                <h3 class="bwf-notifications-title">
+                    <img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">' . $title . '<img draggable="false" role="img" class="emoji" alt="💰" src="https://s.w.org/images/core/emoji/14.0.0/svg/1f4b0.svg">
+                </h3>
+                <p class="bwf-notifications-content">' . $content . '</p>
+            </div>';
 		}
+
 
 		public function update_available( $version = '0.0.0' ) {
 			return '<div class="bwf-notifications-message current">
@@ -628,7 +721,6 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		public function is_user_dismissed( $id, $key ) {
 			$userdata = get_user_meta( $id, '_bwf_notifications_close', true );
 			$userdata = empty( $userdata ) && ! is_array( $userdata ) ? [] : $userdata;
-
 			return in_array( $key, $userdata, true );
 		}
 

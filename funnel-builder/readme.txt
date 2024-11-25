@@ -2,9 +2,9 @@
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.7.0
+Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 3.7.0
+Stable tag: 3.7.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -377,7 +377,10 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 
 == Change log ==
 
-= 3.6.3 (Nov 21, 2024) =
+= 3.7.1 (Nov 25, 2024) =
+* Fixed: Issue with conversion meta box in order not showing correct info in case of optin and order ID is same. (#6866)
+
+= 3.7.0 (Nov 21, 2024) =
 * Improved: compatibility with WordPress 6.7 . (#6851)
 * Improved: Better handling for SQL error when creating a table if it already exists. (#6857)
 * Improved: Order indexing buttons under tools were not clickable in a certain state. (#6832, #6831)
