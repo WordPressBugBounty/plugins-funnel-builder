@@ -78,7 +78,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			add_action( 'wp_ajax_wffn_blocks_incompatible_switch_to_classic', array( $this, 'blocks_incompatible_switch_to_classic_cart_checkout' ) );
 			add_action( 'wp_ajax_wffn_dismiss_notice', array( $this, 'ajax_dismiss_admin_notice' ) );
 			add_filter( 'bwf_general_settings_default_config', [ $this, 'google_map_key_migrate' ], 10, 2 );
-				add_filter( 'bwf_general_settings_default_config', function ( $config ) {
+			add_filter( 'bwf_general_settings_default_config', function ( $config ) {
 				if ( isset( $config['allow_theme_css'] ) ) {
 
 					/**
@@ -182,6 +182,12 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 				'priority' => 70,
 			) );
+			array_push( $menu, array(
+				'title'    => __( 'Notifications', 'woofunnels' ),
+				'slug'     => 'funnelkit_notifications',
+				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
+				'priority' => 70,
+			) );
 
 			return $menu;
 
@@ -189,11 +195,94 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 		public function add_settings_fields_array( $settings ) {
 
-			$temp_settings        = $settings['woofunnels_general_settings'];
-			$pixel_tracking       = [];
-			$first_party_tracking = [];
-			$funnelkit_advanced   = [];
-			$filter_setting       = array_filter( $temp_settings, function ( $v, $k ) use ( &$pixel_tracking, &$first_party_tracking, &$funnelkit_advanced ) {
+			$temp_settings         = $settings['woofunnels_general_settings'];
+			$pixel_tracking        = [];
+			$first_party_tracking  = [];
+			$funnelkit_advanced    = [];
+			$notification_settings = [
+				'title'   => 'Email Performance Summary',
+				'heading' => 'Email Performance Summary',
+				'slug'    => 'email_performance_summary',
+				'fields'  => [
+					[
+						'key'          => 'bwf_enable_notification',
+						'label'        => __( 'Enable Email Performance Summary', 'woofunnels' ),
+						'styleClasses' => 'wffn-tools-toggle bwf-tooglecontrol-advance',
+						'type'         => 'toggle',
+					],
+					[
+						'key'         => 'bwf_notification_frequency',
+						'label'       => __( 'Frequency', 'woofunnels' ),
+						'type'        => 'checkbox_grid',
+						'class'       => '',
+						'placeholder' => '',
+						'required'    => false,
+						'options'     => [
+							'weekly'  => __( 'Weekly', 'woofunnels' ),
+							'monthly' => __( 'Monthly', 'woofunnels' ),
+						],
+						'hint'        => __( 'Emails will be skipped if there are no metrics to show', 'woofunnels' ),
+						'toggler'     => [
+							'key'   => 'bwf_enable_notification',
+							'value' => true,
+						],
+					],
+					[
+						'key'                 => 'bwf_notification_user_selector',
+						'label'               => __( 'Users', 'woofunnels' ),
+						'type'                => 'search',
+						'autocompleter'       => 'users',
+						'allowFreeTextSearch' => false,
+						'required'            => false,
+						'wrap_before'         => '',
+						'toggler'             => [
+							'key'   => 'bwf_enable_notification',
+							'value' => true,
+						],
+					],
+					[
+						'key'      => 'bwf_external_user',
+						'label'    => __( 'Other Recipient', 'woofunnels' ),
+						'type'     => 'addrecipient',
+						'class'    => '',
+						'required' => false,
+						'toggler'  => [
+							'key'   => 'bwf_enable_notification',
+							'value' => true,
+						],
+					],
+
+					[
+						'key'     => 'bwf_notification_time',
+						'type'    => 'timeselector',
+						'label'   => __( 'Send Time', 'funnel-builder' ),
+						'toggler' => [
+							'key'   => 'bwf_enable_notification',
+							'value' => true,
+						],
+					],
+					[
+						'key'     => 'send_test_mail',
+						'type'    => 'testmail',
+						'label'   => '',
+						'class'   => 'bwf-position-test-mail-bottom',
+						'toggler' => [
+							'key'   => 'bwf_enable_notification',
+							'value' => true,
+						],
+					]
+				]
+			];
+
+			$values = [];
+			foreach ( $notification_settings['fields'] as &$field ) {
+
+				$values[ $field['key'] ] = BWF_Admin_General_Settings::get_instance()->get_option( $field['key'] );
+			}
+			$notification_settings['values'] = $values;
+
+
+			$filter_setting = array_filter( $temp_settings, function ( $v, $k ) use ( &$pixel_tracking, &$first_party_tracking, &$funnelkit_advanced ) {
 				if ( in_array( $k, [ 'general', 'permalinks', 'fk_stripe_gateway', 'funnelkit_google_maps' ], true ) ) {
 					return true;
 				}
@@ -221,8 +310,14 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'tabs' => $pixel_tracking
 				],
 			];
-
-			$settings['funnelkit_advanced'] = [
+			$settings['funnelkit_notifications']  = [
+				[
+					'tabs' => [
+						'funnelkit_notifications' => $notification_settings
+					]
+				],
+			];
+			$settings['funnelkit_advanced']       = [
 				[
 					'tabs' => $funnelkit_advanced
 				],
@@ -326,7 +421,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1732556808' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1732719646' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -807,7 +902,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					if ( isset( $args['need_steps_data'] ) ) {
 						$item['steps_data'] = $steps;
 					}
-					if ( ! isset ( $args['context'] ) || 'listing' !== $args['context'] ) {
+					if ( ! isset( $args['context'] ) || 'listing' !== $args['context'] ) {
 						$item['__funnel'] = $funnel;
 					}
 					$items[] = $item;
@@ -1133,71 +1228,82 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 * Iterates over define callbacks and passes it to background updater class
 		 */
 		public function maybe_update_database_update() {
-			$task_list          = array(
-				'3.3.1' => array( 'wffn_handle_store_checkout_config' ),
-				'3.3.3' => array( 'wffn_alter_conversion_table' ),
-				'3.3.4' => array( 'wffn_add_utm_columns_in_conversion_table' ),
-				'3.3.5' => array( 'wffn_update_migrate_data_for_currency_switcher' ),
-				'3.3.6' => array( 'wffn_alter_conversion_table_add_source' )
-			);
-			$current_db_version = get_option( '_wffn_db_version', '0.0.0' );
 
-			/**
-			 * 1. Fresh customer with no DB data. -
-			 * - no task should run
-			 * - direct update
-			 * 2. Existing customer with db version less than current with task.
-			 * - remaining tasks should run
-			 * - update
-			 * 3. Existing customer with db version less than current but no task.
-			 * - no tasks should run
-			 * - update
-			 * 4. db version is update with current version.
-			 * - return
-			 * 5. db version is more than the current version.
-			 * - return
-			 */
+			try {
+				$task_list = array(
+					'3.3.1' => array( 'wffn_handle_store_checkout_config' ),
+					'3.3.3' => array( 'wffn_alter_conversion_table' ),
+					'3.3.4' => array( 'wffn_add_utm_columns_in_conversion_table' ),
+					'3.3.5' => array( 'wffn_update_migrate_data_for_currency_switcher' ),
+					'3.3.6' => array( 'wffn_alter_conversion_table_add_source' ),
+					'3.3.7' => array( 'wffn_update_email_default_settings' ),
+				);
 
-			/**
-			 * if the current db version is greater than or equal to the current version then no need to update the database
-			 * case 4 and 5
-			 */
-			if ( version_compare( $current_db_version, WFFN_DB_VERSION, '>=' ) ) {
-				return;
-			}
+				$task_list_for_new_install = array( 'wffn_update_email_default_settings' );
+				$current_db_version        = get_option( '_wffn_db_version', '0.0.0' );
 
-			/**
-			 * if the current db version is 0.0.0
-			 * case 1
-			 */
-			if ( $current_db_version === '0.0.0' ) {
-				update_option( '_wffn_db_version', WFFN_DB_VERSION, true );
+				/**
+				 * 1. Fresh customer with no DB data. -
+				 * - no task should run
+				 * - direct update
+				 * 2. Existing customer with db version less than current with task.
+				 * - remaining tasks should run
+				 * - update
+				 * 3. Existing customer with db version less than current but no task.
+				 * - no tasks should run
+				 * - update
+				 * 4. db version is update with current version.
+				 * - return
+				 * 5. db version is more than the current version.
+				 * - return
+				 */
 
-				return;
-			}
-
-
-			if ( ! empty( $task_list ) ) {
-				foreach ( $task_list as $version => $tasks ) {
-					if ( version_compare( $current_db_version, $version, '<' ) ) {
-						foreach ( $tasks as $update_callback ) {
-
-							call_user_func( $update_callback );
-							update_option( '_wffn_db_version', $version, true );
-							$current_db_version = $version;
-						}
-					}
+				/**
+				 * if the current db version is greater than or equal to the current version then no need to update the database
+				 * case 4 and 5
+				 */
+				if ( version_compare( $current_db_version, WFFN_DB_VERSION, '>=' ) ) {
+					return;
 				}
 
 				/**
-				 * If we do not have any task for the specific DB version then directly update option
+				 * if the current db version is 0.0.0
+				 * case 1
 				 */
-				if ( version_compare( $current_db_version, WFFN_DB_VERSION, '<' ) ) {
+				if ( $current_db_version === '0.0.0' ) {
+					foreach ( $task_list_for_new_install as $task ) {
+						call_user_func( $task );
+					}
 					update_option( '_wffn_db_version', WFFN_DB_VERSION, true );
+
+					return;
 				}
 
-				$this->clear_endpoints_from_cache();
 
+				if ( ! empty( $task_list ) ) {
+					foreach ( $task_list as $version => $tasks ) {
+						if ( version_compare( $current_db_version, $version, '<' ) ) {
+							foreach ( $tasks as $update_callback ) {
+
+								call_user_func( $update_callback );
+								update_option( '_wffn_db_version', $version, true );
+								$current_db_version = $version;
+							}
+						}
+					}
+
+					/**
+					 * If we do not have any task for the specific DB version then directly update option
+					 */
+					if ( version_compare( $current_db_version, WFFN_DB_VERSION, '<' ) ) {
+						update_option( '_wffn_db_version', WFFN_DB_VERSION, true );
+					}
+
+					$this->clear_endpoints_from_cache();
+
+				}
+			} catch ( Exception|Error $e ) {
+				BWF_Logger::get_instance()->log( $e->getMessage(), 'wffn-db-update-exception', 'buildwoofunnels', true );
 			}
 
 		}
@@ -2130,7 +2236,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'f'  => array(
 						'ed' => $this->get_license_expiry()
 					),
-					'gp' => [ 2, 2 ]
+					'gp' => [ 1, 1 ]
 				];
 			} else {
 				return [
@@ -2319,14 +2425,21 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 						$time = $current->modify( '+7 days' )->format( 'F j, Y' );
 						?>
-                        <tr class="plugin-update-tr fb_license_notice active fbk_renew" id="cart-for-woocommerce-update" data-slug="cart-for-woocommerce" data-plugin="cart-for-woocommerce/plugin.php">
+                        <tr class="plugin-update-tr fb_license_notice active fbk_renew" id="cart-for-woocommerce-update"
+                            data-slug="cart-for-woocommerce" data-plugin="cart-for-woocommerce/plugin.php">
                             <td colspan="4" class="plugin-update colspanchange">
                                 <div class="update-message notice inline notice-error notice-alt">
 
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M21.8012 18.6522L13.336 3.78261C13.0546 3.28702 12.5687 3 12.0061 3C11.4435 3 10.9575 3.28702 10.6763 3.78261L2.21104 18.6522C1.92965 19.1478 1.92965 19.7218 2.21104 20.2174C2.49242 20.713 2.97829 21 3.54089 21H20.4459C21.0085 21 21.4946 20.713 21.7758 20.2174C22.0572 19.7218 22.0827 19.1478 21.8013 18.6522H21.8012ZM20.9317 19.6956C20.8805 19.7739 20.7527 19.9564 20.4969 19.9564L3.56641 19.9566C3.31071 19.9566 3.15726 19.774 3.13157 19.6958C3.08036 19.6175 3.00363 19.4088 3.13157 19.174L11.5968 4.3044C11.7247 4.06962 11.9549 4.04359 12.0316 4.04359C12.1084 4.04359 12.3385 4.06962 12.4665 4.3044L20.9317 19.174C21.0596 19.4088 20.9829 19.6173 20.9317 19.6956V19.6956Z" fill="#d63638" stroke="#d63638" stroke-width="0.3"/>
-                                        <path d="M12.0316 10.5216C11.7502 10.5216 11.52 10.7564 11.52 11.0434V17.0435C11.52 17.3306 11.7502 17.5653 12.0316 17.5653C12.313 17.5653 12.5431 17.3306 12.5431 17.0435V11.0434C12.5431 10.7564 12.313 10.5216 12.0316 10.5216Z" fill="#d63638" stroke="#d63638" stroke-width="0.3"/>
-                                        <path d="M12.5433 8.95637C12.5433 9.24461 12.3141 9.47817 12.0317 9.47817C11.7493 9.47817 11.5201 9.24461 11.5201 8.95637C11.5201 8.66831 11.7493 8.43475 12.0317 8.43475C12.3141 8.43475 12.5433 8.66832 12.5433 8.95637Z" fill="#d63638" stroke="#d63638" stroke-width="0.5"/>
+                                        <path
+                                            d="M21.8012 18.6522L13.336 3.78261C13.0546 3.28702 12.5687 3 12.0061 3C11.4435 3 10.9575 3.28702 10.6763 3.78261L2.21104 18.6522C1.92965 19.1478 1.92965 19.7218 2.21104 20.2174C2.49242 20.713 2.97829 21 3.54089 21H20.4459C21.0085 21 21.4946 20.713 21.7758 20.2174C22.0572 19.7218 22.0827 19.1478 21.8013 18.6522H21.8012ZM20.9317 19.6956C20.8805 19.7739 20.7527 19.9564 20.4969 19.9564L3.56641 19.9566C3.31071 19.9566 3.15726 19.774 3.13157 19.6958C3.08036 19.6175 3.00363 19.4088 3.13157 19.174L11.5968 4.3044C11.7247 4.06962 11.9549 4.04359 12.0316 4.04359C12.1084 4.04359 12.3385 4.06962 12.4665 4.3044L20.9317 19.174C21.0596 19.4088 20.9829 19.6173 20.9317 19.6956V19.6956Z"
+                                            fill="#d63638" stroke="#d63638" stroke-width="0.3"/>
+                                        <path
+                                            d="M12.0316 10.5216C11.7502 10.5216 11.52 10.7564 11.52 11.0434V17.0435C11.52 17.3306 11.7502 17.5653 12.0316 17.5653C12.313 17.5653 12.5431 17.3306 12.5431 17.0435V11.0434C12.5431 10.7564 12.313 10.5216 12.0316 10.5216Z"
+                                            fill="#d63638" stroke="#d63638" stroke-width="0.3"/>
+                                        <path
+                                            d="M12.5433 8.95637C12.5433 9.24461 12.3141 9.47817 12.0317 9.47817C11.7493 9.47817 11.5201 9.24461 11.5201 8.95637C11.5201 8.66831 11.7493 8.43475 12.0317 8.43475C12.3141 8.43475 12.5433 8.66832 12.5433 8.95637Z"
+                                            fill="#d63638" stroke="#d63638" stroke-width="0.5"/>
                                     </svg>
 
                                     <p>
@@ -2349,7 +2462,9 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
                             <td colspan="4" class="plugin-update colspanchange">
                                 <div class="update-message notice inline notice-error notice-alt">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47716 6.47715 2 12 2C17.5228 2 22 6.47716 22 12ZM16.119 9.45234C16.5529 9.01843 16.5529 8.31491 16.119 7.88099C15.6851 7.44708 14.9816 7.44708 14.5477 7.88099L12 10.4287L9.45234 7.88099C9.01843 7.44708 8.31491 7.44708 7.88099 7.88099C7.44708 8.31491 7.44708 9.01843 7.88099 9.45234L10.4287 12L7.88099 14.5477C7.44708 14.9816 7.44708 15.6851 7.88099 16.119C8.31491 16.5529 9.01842 16.5529 9.45234 16.119L12 13.5714L14.5477 16.119C14.9816 16.5529 15.6851 16.5529 16.119 16.119C16.5529 15.6851 16.5529 14.9816 16.119 14.5477L13.5713 12L16.119 9.45234Z" fill="#d63638"/>
+                                        <path
+                                            d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47716 6.47715 2 12 2C17.5228 2 22 6.47716 22 12ZM16.119 9.45234C16.5529 9.01843 16.5529 8.31491 16.119 7.88099C15.6851 7.44708 14.9816 7.44708 14.5477 7.88099L12 10.4287L9.45234 7.88099C9.01843 7.44708 8.31491 7.44708 7.88099 7.88099C7.44708 8.31491 7.44708 9.01843 7.88099 9.45234L10.4287 12L7.88099 14.5477C7.44708 14.9816 7.44708 15.6851 7.88099 16.119C8.31491 16.5529 9.01842 16.5529 9.45234 16.119L12 13.5714L14.5477 16.119C14.9816 16.5529 15.6851 16.5529 16.119 16.119C16.5529 15.6851 16.5529 14.9816 16.119 14.5477L13.5713 12L16.119 9.45234Z"
+                                            fill="#d63638"/>
                                     </svg>
 
                                     <p>
@@ -2368,7 +2483,8 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 				if ( $render_css ) { ?>
                     <style>
-                        tr[data-slug="funnelkit-funnel-builder-pro"] th, tr[data-slug="funnelkit-funnel-builder-pro"] td {
+                        tr[data-slug="funnelkit-funnel-builder-pro"] th,
+                        tr[data-slug="funnelkit-funnel-builder-pro"] td {
                             box-shadow: none !important;
                         }
 
@@ -2472,8 +2588,9 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			}
 
-
 		}
+
+
 	}
 
 	if ( class_exists( 'WFFN_Core' ) ) {

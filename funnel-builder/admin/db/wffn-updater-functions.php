@@ -166,12 +166,13 @@ if ( ! function_exists( 'wffn_alter_conversion_table_add_source' ) ) {
 
 			$conv_table = BWF_Ecomm_Tracking_Common::get_instance()->conversion_table_name();
 			$table_name = $wpdb->prefix . $conv_table;
-			$is_col     =  $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND table_name = %s AND column_name = 'source_id'", $wpdb->dbname, $table_name )); 
+			$is_col     = $wpdb->get_col( $wpdb->prepare( "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND table_name = %s AND column_name = 'source_id'", $wpdb->dbname, $table_name ) );
 			/**
 			 * Check if column already exists
 			 */
 			if ( ! empty( $is_col ) ) {
 				WFFN_Core()->logger->log( __FUNCTION__ . ' source_id already created ', 'wffn', true );
+
 				return;
 			}
 
@@ -266,7 +267,7 @@ if ( ! function_exists( 'wffn_update_currency_switcher_data' ) ) {
 		 * This query below will only update the value column for all the rows where checkout_total or bump_total or offer_total is not 0
 		 */
 		$wpdb->query( $wpdb->prepare( "UPDATE {$table_name}
-			 SET value = IFNULL(checkout_total, %d) + IFNULL(bump_total, %d) + IFNULL(offer_total, %d) WHERE IFNULL(checkout_total, 0) <> 0 OR IFNULL(bump_total, 0) <> 0;", 0,0,0 ) );
+			 SET value = IFNULL(checkout_total, %d) + IFNULL(bump_total, %d) + IFNULL(offer_total, %d) WHERE IFNULL(checkout_total, 0) <> 0 OR IFNULL(bump_total, 0) <> 0;", 0, 0, 0 ) );
 		WFFN_Core()->logger->log( 'Time after query:: ' . current_time( 'timestamp' ), 'wffn', true );
 
 		// Log database errors or success
@@ -275,5 +276,46 @@ if ( ! function_exists( 'wffn_update_currency_switcher_data' ) ) {
 		} else {
 			WFFN_Core()->logger->log( 'Successfully migrated data for currency switcher.', 'wffn', true );
 		}
+	}
+}
+
+if ( ! function_exists( 'wffn_update_email_default_settings' ) ) {
+	/**
+	 * Function to set the default settings for notification settings
+	 *
+	 * @return void
+	 */
+
+	function wffn_update_email_default_settings() {
+		$bwf_settings = BWF_Admin_General_Settings::get_instance();
+
+
+		$new_settings = array(
+			'bwf_enable_notification'    => true,
+			'bwf_notification_frequency' => array( 'weekly', 'monthly' ),
+			'bwf_notification_time'      => array(
+				'hours'   => '10',
+				'minutes' => '00',
+				'ampm'    => 'am',
+			),
+			'bwf_external_user'          => array(),
+		);
+
+		$bwf_notif_settings = array_merge( $bwf_settings->get_option(), $new_settings );
+
+		$users         = get_users( array( 'role' => 'administrator' ) );
+		$user_selector = array();
+
+		foreach ( $users as $user ) {
+			$user_selector[] = array(
+				'id'   => $user->ID,
+				'name' => $user->display_name . ' ( ' . $user->user_email . ' )',
+			);
+		}
+
+		$bwf_notif_settings['bwf_notification_user_selector'] = $user_selector;
+
+
+		$bwf_settings->update_global_settings_fields( $bwf_notif_settings );
 	}
 }

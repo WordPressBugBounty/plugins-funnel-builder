@@ -366,17 +366,23 @@ use Elementor\Controls_Manager as Controls_Manager;
 
 
 		];
+
 		if ( defined( 'ELEMENTOR_VERSION' ) ) {
-			if ( version_compare( ELEMENTOR_VERSION, '2.8.0', '>=' ) ) {
-				$args['scheme'] = \Elementor\Core\Schemes\Typography::TYPOGRAPHY_4;
-			} elseif ( version_compare( ELEMENTOR_VERSION, '3.15.0', '>=' ) ) {
+			if ( version_compare( ELEMENTOR_VERSION, '3.15.0', '>=' ) ) {
+				// For version 3.15.0 and above
 				$args['global'] = [
 					'default' => Elementor\Core\Kits\Documents\Tabs\Global_Typography::TYPOGRAPHY_ACCENT,
 				];
+			} elseif ( version_compare( ELEMENTOR_VERSION, '2.8.0', '>=' ) ) {
+				// For versions between 2.8.0 and 3.14.x
+				$args['scheme'] = \Elementor\Core\Schemes\Typography::TYPOGRAPHY_4;
 			} else {
+				// For versions below 2.8.0
 				$args['scheme'] = \Elementor\Scheme_Typography::TYPOGRAPHY_4;
 			}
+
 		}
+
 		if ( is_array( $fields_options ) && count( $fields_options ) > 0 ) {
 			$args['fields_options'] = $fields_options;
 

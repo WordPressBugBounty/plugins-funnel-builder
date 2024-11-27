@@ -3,16 +3,16 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.7.1
+ * Version: 3.7.2
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: funnel-builder
- * Elementor tested up to: 3.25.9
+ * Elementor tested up to: 3.26.0
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.7.0
+ * Tested up to: 6.7.1
  * Requires PHP: 7.4
  * WooFunnels: true
  *
@@ -154,12 +154,12 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		public function define_plugin_properties() {
 
 
-			define( 'WFFN_VERSION', '3.7.1' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.38' );
+			define( 'WFFN_VERSION', '3.7.2' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.39' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
-			define( 'WFFN_DB_VERSION', '3.3.6' );
+			define( 'WFFN_DB_VERSION', '3.3.7' );
 			define( 'WFFN_SLUG', 'wffn' );
 			define( 'WFFN_PLUGIN_FILE', __FILE__ );
 			define( 'WFFN_PLUGIN_DIR', __DIR__ );
@@ -295,6 +295,8 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			require __DIR__ . '/merge-tags/class-bwf-contact-tags.php';
 			require __DIR__ . '/includes/class-wffn-rest-controller.php';
 			require __DIR__ . '/includes/class-wffn-role-capability.php';
+			require_once __DIR__ . '/includes/class-wffn-email-notification.php';
+			require_once __DIR__ . '/includes/class-wffn-api-send-test-notification.php';
 		}
 
 		/**
@@ -305,6 +307,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			require __DIR__ . '/modules/landing-pages/class-wffn-landing-pages.php';
 			require __DIR__ . '/modules/thankyou-pages/class-wffn-thank-you-wc-pages.php';
 			do_action( 'wffn_core_modules_loaded' );
+
 		}
 
 		/**
