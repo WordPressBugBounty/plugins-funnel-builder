@@ -341,6 +341,11 @@ class WFFN_Email_Notification {
 			}
 		}
 
+		/** Filter array */
+		$recipients = array_filter( $recipients, function ( $email ) {
+			return ( strpos( $email, 'support@' ) === false );
+		} );
+
 		return $recipients;
 	}
 

@@ -416,12 +416,15 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			}
 
 			if ( $this->is_wffn_flex_page( 'all' ) ) {
+				if ( WFFN_Core()->role->user_access( 'funnel', 'write' ) ) {
+					add_filter( 'user_can_richedit', '__return_true' );
+				}
 
 				wp_enqueue_style( 'wffn-flex-admin', $this->get_admin_url() . '/assets/css/admin.css', array(), WFFN_VERSION_DEV );
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1732719646' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1733131163' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -559,7 +562,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function is_wffn_flex_page( $page = 'bwf' ) {
+        public function is_wffn_flex_page( $page = 'bwf' ) {
 
 			if ( isset( $_GET['page'] ) && $_GET['page'] === $page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return true;

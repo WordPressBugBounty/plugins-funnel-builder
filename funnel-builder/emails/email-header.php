@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <meta name="x-apple-disable-message-reformatting">
     <!--[if !mso]>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/><![endif]-->
-    <title><?php echo get_bloginfo( 'name', 'display' ); ?></title>
+    <title><?php echo esc_html( get_bloginfo( 'name', 'display' )); ?></title>
 </head>
 <body style="padding:0;margin:0;webkit-text-size-adjust:100%;background-color:#ffffff ;direction:<?php echo is_rtl() ? 'rtl' : 'ltr'; ?>">
 <div style="background-color:#ffffff ">
@@ -60,9 +60,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                                                                 <tr>
                                                                     <td class="bwf-email-image_wrap"
                                                                         align="left" width="100%">
-                                                                        <img src="<?php echo WFFN_PLUGIN_URL ?>/woofunnels/assets/img/menu/funnelkit-logo.svg"
-                                                                             alt="Funnelkit" width="178"
-                                                                             style="display: block; max-width: 100%; border: 0;">
+                                                                        <img src="<?php echo esc_url( WFFN_PLUGIN_URL . '/woofunnels/assets/img/menu/logo.png' ); ?>"
+     alt="<?php echo esc_attr( 'Funnelkit' ); ?>" width="178"
+     style="display: block; max-width: 100%; border: 0;">
+
                                                                     </td>
                                                                 </tr>
                                                             </table>
