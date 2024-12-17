@@ -20,6 +20,7 @@ if ( ! class_exists( 'WFTY_Shortcodes' ) ) {
 			add_shortcode( 'wfty_customer_details', array( WFFN_Core()->thank_you_pages->data, 'get_customer_info' ) );
 			add_shortcode( 'wfty_order_details', array( WFFN_Core()->thank_you_pages->data, 'get_order_details' ) );
 			add_shortcode( 'wfty_order_total', array( WFFN_Core()->thank_you_pages->data, 'get_order_total' ) );
+			add_shortcode( 'wfty_order_meta', array( WFFN_Core()->thank_you_pages->data, 'wfty_order_meta' ) );
 		}
 	}
 }
@@ -47,4 +48,8 @@ function wfty_order_number() {
 
 function wfty_order_total( $args ) {
 	return WFFN_Core()->thank_you_pages->data->get_order_total( $args );
+}
+
+function wfty_order_meta( $args ) {
+	return WFFN_Core()->thank_you_pages->data->wfty_order_meta( $args );
 }

@@ -363,7 +363,8 @@ class WFACP_Plugin_Compatibilities {
 			'plugins/class-lumise-customized-product.php'                             => class_exists( 'Fancy_Product_Designer' ) || isset( $GLOBALS['lumise'] ),
 			'library/class-subscriptions.php'                                         => class_exists( 'WC_Subscriptions' ),
 			'template-found/weglot.php'                                               => defined( 'WEGLOT_NAME' ),
-			'template-found/class-yaycurrency.php'                                    => defined( 'YAY_CURRENCY_FILE' )
+			'template-found/class-yaycurrency.php'                                    => defined( 'YAY_CURRENCY_FILE' ),
+			'template-found/class-storeapps-coupons.php'                              => class_exists( 'WC_SC_Coupon_Actions' )
 		);
 		self::add_files( $files );
 

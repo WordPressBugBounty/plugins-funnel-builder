@@ -17,6 +17,31 @@
 
 	public function add_action() {
 		WFACP_Common::remove_actions( 'rank_math/frontend/robots', 'RankMath\WooCommerce\WooCommerce', 'robots' );
+		add_filter( 'rank_math/frontend/description', [ $this, 'modify_rank_math_description' ], 10, 1 );
+
+	}
+
+	/**
+	 * Add Checkout data to the Rank Math description
+	 * Return post title if empty description
+	 *
+	 * @param $description
+	 *
+	 * @return mixed|string
+	 */
+	public function modify_rank_math_description( $description ) {
+		if ( ! empty( $description ) ) {
+			return $description;
+		}
+
+		global $post;
+
+		if ( ! ( $post instanceof WP_Post ) || ( WFACP_Common::get_post_type_slug() !== $post->post_type ) ) {
+			return $description;
+		}
+
+		return $post->post_title;
+
 	}
 }
 

@@ -40,9 +40,17 @@ if ( ! class_exists( 'WFFN_Compatibility_With_WoodMart_Theme' ) ) {
 			}
 
 			if ( ! is_null( $post->page_template ) && false !== strpos( $post->page_template, '-canvas.php' ) ) {
-				remove_action( 'wp_enqueue_scripts', 'woodmart_enqueue_base_styles', 10000 );
+
+				if ( class_exists( 'BWF_Admin_General_Settings' ) ) {
+					$allowed_steps = BWF_Admin_General_Settings::get_instance()->get_option( 'allow_theme_css' );
+					if ( ! is_array( $allowed_steps ) || ! in_array( $post->post_type, $allowed_steps, true ) ) {
+						remove_action( 'wp_enqueue_scripts', 'woodmart_enqueue_base_styles', 10000 );
+						remove_action( 'wp_enqueue_scripts', 'woodmart_dequeue_elementor_frontend', 6 );
+					}
+				}
+
+
 				remove_action( 'wp_footer', 'woodmart_sticky_toolbar_template' );
-				remove_action( 'wp_enqueue_scripts', 'woodmart_dequeue_elementor_frontend', 6 );
 				if ( function_exists( 'woodmart_search_full_screen' ) ) {
 					remove_action( 'wp_footer', 'woodmart_search_full_screen', 1 );
 				}

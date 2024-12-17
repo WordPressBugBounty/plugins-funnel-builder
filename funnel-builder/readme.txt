@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 3.7.3
+Stable tag: 3.8.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -376,6 +376,17 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.8.0 (Dec 17, 2024) =
+* Added: Introduced a new shortcode on the WooCommerce thankyou page `[wfty_order_meta key=""]` to easily display order meta based on a specific key. (#6915)
+* Added: Enhanced checkout functionality with compatibility for WooCommerce Smart Coupons by StoreApps. (#5680)
+* Improved: Updated compatibility with the Woodmart theme to ensure seamless performance. (#6758)
+* Improved: Enhanced compatibility with Facturare - Persoana Fizica sau Juridica for a smoother checkout experience. (#6919)
+* Improved: Updated compatibility with the Rank Math plugin to better support GA events during checkout. (#6922)
+* Improved: Streamlined translations for global admin settings for better clarity and usability. (#6926)
+* Improved: Refined styling for Express checkout buttons to enhance usability with "PayPal for WooCommerce". (#6930)
+* Improved: Optimized date filters in analytics to avoid discrepancies related to machine timezone settings. (#6938)
+* Fixed: Adjusted Optin functionality to resolve compatibility with the updated Typography method in Elementor v3.26.x. (#6939)
 
 = 3.7.3 (Dec 02, 2024) =
 * Fixed: FunnelKit Brand logo modified for performance notification to .png format to work on all email clients. (#6891)

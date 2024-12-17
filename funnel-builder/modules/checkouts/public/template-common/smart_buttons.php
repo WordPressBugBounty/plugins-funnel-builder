@@ -109,6 +109,15 @@ if ( ! $show_smart_button_shimmer ) {
             height: 42px !important;
             display: block !important;
         }
+
+        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium{
+            width: 100%;
+        }
+
+        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium .paypal-buttons.paypal-buttons-context-iframe{
+            height: 40px;
+            margin-top: 8px;
+        }
     }
 
 </style>

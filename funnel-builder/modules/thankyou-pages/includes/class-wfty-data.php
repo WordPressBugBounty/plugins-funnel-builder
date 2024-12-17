@@ -278,11 +278,11 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 			), $atts );
 
 			$order_id = absint( $atts['order_id'] );
-			if ( $order_id == 0 ) {
+			if ( $order_id === 0 ) {
 				$order_id = $this->maybe_get_order_id( $order_id );
 			}
 			$order_id = apply_filters( 'wfty_custom_field_order_id', $order_id );
-			if ( $order_id == 0 ) {
+			if ( absint( $order_id ) === 0 ) {
 				return '';
 			}
 			$metadata = BWF_WC_Compatibility::get_order_meta( wc_get_order( $order_id ), '_order_total' );
@@ -293,13 +293,45 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 			return '';
 		}
 
-		public function maybe_get_order_id( $order_id ) {
-			if ( isset( $_REQUEST['order_id'] ) && $_REQUEST['order_id'] > 0 ) {
-				$order_id = absint( wffn_clean( $_REQUEST['order_id'] ) );
+		/**
+		 * @param $atts
+		 *
+		 * @return string
+		 */
+		public function wfty_order_meta($atts) {
+			if ( is_array( $atts ) && isset( $atts['key'] ) ) {
+				$key = $atts['key'];
+			} else {
+				$key = $atts;
 			}
 
-			if ( isset( $_REQUEST['order'] ) && $_REQUEST['order'] > 0 ) {
-				$order_id = absint( wffn_clean( $_REQUEST['order'] ) );
+			if ( empty( $key ) ) {
+				return '';
+			}
+			$order_id = $this->maybe_get_order_id( 0 );
+
+			if ( $order_id === 0 ) {
+				$order_id = $this->maybe_get_order_id( $order_id );
+			}
+			$order_id = apply_filters( 'wfty_custom_field_order_id', $order_id );
+			if ( absint( $order_id ) === 0 ) {
+				return '';
+			}
+			$metadata = BWF_WC_Compatibility::get_order_meta( wc_get_order( $order_id ), $key );
+			if ( is_string( $metadata ) ) {
+				return $metadata;
+			}
+
+			return '';
+		}
+
+		public function maybe_get_order_id( $order_id ) {
+			if ( isset( $_REQUEST['order_id'] ) && $_REQUEST['order_id'] > 0 ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$order_id = absint( wffn_clean( $_REQUEST['order_id'] ) );//phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			}
+
+			if ( isset( $_REQUEST['order'] ) && $_REQUEST['order'] > 0 ) {//phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$order_id = absint( wffn_clean( $_REQUEST['order'] ) );//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
 
 			return $order_id;

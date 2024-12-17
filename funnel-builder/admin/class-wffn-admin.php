@@ -162,7 +162,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 		public function add_global_setting_tabs( $menu ) {
 			$f_tracking = array(
-				'title'    => __( 'First Party Tracking', 'woofunnels' ),
+				'title'    => __( 'First Party Tracking', 'funnel-builder' ),
 				'slug'     => 'funnelkit_first_party_tracking',
 				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 				'priority' => 6,
@@ -171,19 +171,19 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			array_push( $menu, $f_tracking );
 			array_push( $menu, array(
-				'title'    => __( 'Pixel Tracking', 'woofunnels' ),
+				'title'    => __( 'Pixel Tracking', 'funnel-builder' ),
 				'slug'     => 'funnelkit_pixel_tracking',
 				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 				'priority' => 7,
 			) );
 			array_push( $menu, array(
-				'title'    => __( 'Advanced', 'woofunnels' ),
+				'title'    => __( 'Advanced', 'funnel-builder' ),
 				'slug'     => 'funnelkit_advanced',
 				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 				'priority' => 70,
 			) );
 			array_push( $menu, array(
-				'title'    => __( 'Notifications', 'woofunnels' ),
+				'title'    => __( 'Notifications', 'funnel-builder' ),
 				'slug'     => 'funnelkit_notifications',
 				'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 				'priority' => 70,
@@ -206,22 +206,22 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				'fields'  => [
 					[
 						'key'          => 'bwf_enable_notification',
-						'label'        => __( 'Enable Email Performance Summary', 'woofunnels' ),
+						'label'        => __( 'Enable Email Performance Summary', 'funnel-builder' ),
 						'styleClasses' => 'wffn-tools-toggle bwf-tooglecontrol-advance',
 						'type'         => 'toggle',
 					],
 					[
 						'key'         => 'bwf_notification_frequency',
-						'label'       => __( 'Frequency', 'woofunnels' ),
+						'label'       => __( 'Frequency', 'funnel-builder' ),
 						'type'        => 'checkbox_grid',
 						'class'       => '',
 						'placeholder' => '',
 						'required'    => false,
 						'options'     => [
-							'weekly'  => __( 'Weekly', 'woofunnels' ),
-							'monthly' => __( 'Monthly', 'woofunnels' ),
+							'weekly'  => __( 'Weekly', 'funnel-builder' ),
+							'monthly' => __( 'Monthly', 'funnel-builder' ),
 						],
-						'hint'        => __( 'Emails will be skipped if there are no metrics to show', 'woofunnels' ),
+						'hint'        => __( 'Emails will be skipped if there are no metrics to show', 'funnel-builder' ),
 						'toggler'     => [
 							'key'   => 'bwf_enable_notification',
 							'value' => true,
@@ -229,7 +229,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					],
 					[
 						'key'                 => 'bwf_notification_user_selector',
-						'label'               => __( 'Users', 'woofunnels' ),
+						'label'               => __( 'Users', 'funnel-builder' ),
 						'type'                => 'search',
 						'autocompleter'       => 'users',
 						'allowFreeTextSearch' => false,
@@ -242,7 +242,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					],
 					[
 						'key'      => 'bwf_external_user',
-						'label'    => __( 'Other Recipient', 'woofunnels' ),
+						'label'    => __( 'Other Recipient', 'funnel-builder' ),
 						'type'     => 'addrecipient',
 						'class'    => '',
 						'required' => false,
@@ -424,7 +424,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1733131163' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1734430872' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -1356,7 +1356,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				$field_no_license = array(
 					'type'         => 'label',
 					'key'          => 'label_no_license',
-					'label'        => __( 'FunnelKit Funnel Builder Pro', 'woofunnels' ),
+					'label'        => __( 'FunnelKit Funnel Builder Pro', 'funnel-builder' ),
 					'styleClasses' => [ 'wfacp_setting_track_and_events_start', 'bwf_wrap_custom_html_tracking_general' ],
 				);
 				array_unshift( $fields, $field_no_license );
@@ -1382,7 +1382,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 						$field_no_license = array(
 							'type'         => 'label',
 							'key'          => 'label_no_license',
-							'label'        => __( 'FunnelKit Funnel Builder Pro', 'woofunnels' ),
+							'label'        => __( 'FunnelKit Funnel Builder Pro', 'funnel-builder' ),
 							'styleClasses' => [ 'wfacp_setting_track_and_events_start', 'bwf_wrap_custom_html_tracking_general' ],
 						);
 						array_unshift( $fields, $field_no_license );

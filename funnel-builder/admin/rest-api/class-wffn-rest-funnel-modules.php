@@ -3140,6 +3140,11 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 									'value' => "[oxygen data='phpfunction' function='wfty_order_number']",
 									'id'    => 'wfty_order_number'
 								],
+								[
+									'label' => __( 'Order Custom Meta', 'funnel-builder' ),
+									'value' => "[oxygen data='phpfunction' function='wfty_order_meta' arguments='']",
+									'id'    => 'wfty_order_meta'
+								],
 							);
 						} else {
 							$fields = array(
@@ -3172,6 +3177,11 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 									'label' => __( 'Order Total', 'funnel-builder' ),
 									'value' => '[wfty_order_total]',
 									'id'    => 'wfty_order_total'
+								],
+								[
+									'label' => __( 'Order Custom Meta', 'funnel-builder' ),
+									'value' => '[wfty_order_meta key=""]',
+									'id'    => 'wfty_order_meta'
 								],
 							);
 						}

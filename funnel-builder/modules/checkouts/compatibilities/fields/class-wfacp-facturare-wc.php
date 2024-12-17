@@ -13,13 +13,13 @@ class WFACP_Compatibility_Facturare_WC {
 	public function __construct() {
 
 		/* Register Add field */ //
-		add_action( 'wfacp_after_checkout_page_found', [ $this, 'remove_action' ] );
+		add_action( 'wfacp_after_checkout_page_found', [ $this, 'actions' ] );
 		add_filter( 'wfacp_advanced_fields', [ $this, 'add_field' ], 20 );
 		add_filter( 'wfacp_html_fields_wfacp_tip_facturare', '__return_false' );
 
 		add_filter( 'wfacp_html_fields_tip_facturare_fields', '__return_false' );
 		add_action( 'process_wfacp_html', [ $this, 'process_wfacp_html' ], 10, 2 );
-		add_filter( 'woocommerce_form_field_args', [ $this, 'add_default_wfacp_styling' ], 10, 2 );
+
 		add_action( 'wfacp_internal_css', [ $this, 'internal_css' ] );
 
 		/* prevent third party fields and wrapper*/
@@ -30,8 +30,9 @@ class WFACP_Compatibility_Facturare_WC {
 	}
 
 
-	public function remove_action() {
+	public function actions() {
 		$this->obj = WFACP_Common::remove_actions( 'woocommerce_billing_fields', 'Woo_Facturare_Public', 'override_checkout_fields' );
+		add_filter( 'woocommerce_form_field_args', [ $this, 'add_default_wfacp_styling' ], 10, 2 );
 	}
 
 	public function add_field( $fields ) {
@@ -140,6 +141,13 @@ class WFACP_Compatibility_Facturare_WC {
 	}
 
 	public function add_default_wfacp_styling( $args, $key ) {
+
+		// Ensure $args is array
+		if ( ! is_array( $args ) ) {
+			return $args;
+		}
+
+
 		if ( ! in_array( $key, $this->facturare_arr ) ) {
 			return $args;
 		}
@@ -150,14 +158,26 @@ class WFACP_Compatibility_Facturare_WC {
 			$width_class = 'wfacp-col-full';
 		}
 
+
+		// Initialize arrays if not set
+		$args['class']       = isset( $args['class'] ) && is_array( $args['class'] ) ? $args['class'] : [];
+		$args['input_class'] = isset( $args['input_class'] ) && is_array( $args['input_class'] ) ? $args['input_class'] : [];
+		$args['label_class'] = isset( $args['label_class'] ) && is_array( $args['label_class'] ) ? $args['label_class'] : [];
+
+
 		if ( ! in_array( 'av_tip_facturare_radio', $args['class'] ) ) {
-			$all_cls             = array_merge( [ 'wfacp-form-control-wrapper ', $width_class ], $args['class'] );
-			$input_class         = array_merge( [ 'wfacp-form-control' ], $args['input_class'] );
-			$label_class         = array_merge( [ 'wfacp-form-control-label' ], $args['label_class'] );
-			$args['class']       = $all_cls;
-			$args['cssready']    = [ $width_class ];
-			$args['input_class'] = $input_class;
-			$args['label_class'] = $label_class;
+
+
+			try {
+				$args['class']       = array_merge( [ 'wfacp-form-control-wrapper', $width_class ], $args['class'] );
+				$args['cssready']    = [ $width_class ];
+				$args['input_class'] = array_merge( [ 'wfacp-form-control' ], $args['input_class'] );
+				$args['label_class'] = array_merge( [ 'wfacp-form-control-label' ], $args['label_class'] );
+			} catch ( Exception $e ) {
+				// Handle or log error if needed
+				error_log( 'Error in add_default_wfacp_styling: ' . $e->getMessage() );
+			}
+
 		}
 
 
@@ -186,23 +206,25 @@ class WFACP_Compatibility_Facturare_WC {
             body .wfacp_main_form.woocommerce .form-row.av-hide {
                 display: none;
             }
-            #wfacp-e-form .wfacp_main_form p#tip_facturare_field >label{
+
+            #wfacp-e-form .wfacp_main_form p#tip_facturare_field > label {
                 position: relative;
-                padding-left:0 !important;
+                padding-left: 0 !important;
                 left: auto;
                 right: auto;
                 bottom: auto;
                 top: auto !important;
                 font-size: 14px !important;
             }
+
             #wfacp-e-form .wfacp_main_form p#tip_facturare_field label span input[type="radio"] {
                 position: relative;
                 display: none !important;
-                left:auto;
-                top:auto;
-                bottom:auto;
-                right:auto;
-                margin-right:10px !important;
+                left: auto;
+                top: auto;
+                bottom: auto;
+                right: auto;
+                margin-right: 10px !important;
             }
 
             body #wfacp-sec-wrapper .wfacp_main_form.woocommerce p#tip_facturare_field input[type="radio"] + label {
