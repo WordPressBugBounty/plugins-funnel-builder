@@ -17,9 +17,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 		public $admin;
 		protected $options;
 		protected $custom_options;
-		protected $optin_form_option;
 		protected $action_options;
-		protected $action_webhook;
 		protected $template_type = [];
 		protected $design_template_data = [];
 		protected $templates = [];
@@ -108,7 +106,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 		public function register_template_type( $data ) {
 
-			if ( isset( $data['slug'] ) && ! empty( $data['slug'] ) && isset( $data['title'] ) && ! empty( $data['title'] ) ) {
+			if ( ! empty( $data['slug'] ) && ! empty( $data['title'] ) ) {
 				$slug  = sanitize_title( $data['slug'] );
 				$title = esc_html( trim( $data['title'] ) );
 				if ( ! isset( $this->template_type[ $slug ] ) ) {
@@ -209,7 +207,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 		public function parse_request_for_optin() {
 			global $post;
 
-			if ( is_null( $post ) || ! $post instanceof WP_Post ) {
+			if ( empty( $post ) || ! $post instanceof WP_Post ) {
 				return;
 			}
 
@@ -685,14 +683,12 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 				}
 			}
 
-			$design = array_merge( [
+			return array_merge( [
 				'designs'         => $this->templates,
 				'design_types'    => $this->template_type,
 				'template_active' => "yes"
 			], $design, $data );
-
-			return $design;
-		}
+        }
 
 
 		public function localize_action_data() {
@@ -784,22 +780,6 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 			return apply_filters( 'wfopp_localized_data', $data );
 		}
-
-		public static function get_user_role() {
-			global $wp_roles;
-			$users     = array();
-			$get_roles = $wp_roles->roles;
-
-			foreach ( $get_roles as $key => $value ) {
-				$user         = [];
-				$user['id']   = $key;
-				$user['name'] = $value['name'];
-				$users[]      = $user;
-			}
-
-			return $users;
-		}
-
 
 		/**
 		 * @param $page_id
@@ -1009,18 +989,13 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 		public function toggle_state() {
 			check_ajax_referer( 'wffn_op_toggle_state', '_nonce' );
-			$resp = [
-				'status' => false,
-				'msg'    => __( 'Unable to change state', 'funnel-builder' ),
-			];
-
 			$state   = isset( $_POST['toggle_state'] ) ? sanitize_text_field( $_POST['toggle_state'] ) : '';
 			$wfop_id = isset( $_POST['wfop_id'] ) ? sanitize_text_field( $_POST['wfop_id'] ) : '';
 
 			$status = ( 'true' === $state ) ? 'publish' : 'draft';
 
 			wp_update_post( [ 'ID' => $wfop_id, 'post_status' => $status ] );
-
+			$resp           = array();
 			$resp['status'] = true;
 			$resp['msg']    = __( 'Status changed successfully', 'funnel-builder' );
 
@@ -1071,13 +1046,11 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 		}
 
 		/**
-		 * Modify permalink
+         * Modify permalink
+		 * @param $post_link
+		 * @param $post
 		 *
-		 * @param string $post_link post link.
-		 * @param array $post post data.
-		 * @param string $leavename leave name.
-		 *
-		 * @return string
+		 * @return array|mixed|string|string[]
 		 */
 		public function post_type_permalinks( $post_link, $post ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 
@@ -1235,7 +1208,8 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 		/**
 		 * Remove Selected field from available checkout fields
-		 * @return array|mixed
+         *
+		 * @return array|null
 		 */
 		private function manage_input_fields() {
 			$page_data        = $this->get_page_layout( $this->edit_id );
@@ -1281,10 +1255,8 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 				'input_fields'     => $input_fields,
 				'available_fields' => $available_fields,
 			];
-			$data         = array_merge( $page_data, $input_fields );
-
-			return $data;
-		}
+			return array_merge( $page_data, $input_fields );
+        }
 
 		public function get_optin_fields() {
 			$output = [
@@ -1343,10 +1315,9 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 
 		/**
 		 * Merge Custom created field with real fields;
-		 *
 		 * @param $input_fields
 		 *
-		 * @return mixed
+		 * @return array
 		 */
 		private function merge_custom_fields( $input_fields ) {
 
@@ -1527,7 +1498,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 				$field_type          = ( isset( $_POST['fields'] ) && isset( $_POST['fields']['field_type'] ) ) ? wffn_clean( $_POST['fields']['field_type'] ) : '';
 				$section_type        = ( isset( $_POST['fields'] ) && isset( $_POST['fields']['section_type'] ) ) ? wffn_clean( $_POST['fields']['section_type'] ) : '';
 				$default             = ( isset( $_POST['fields'] ) && isset( $_POST['fields']['default'] ) ) ? stripslashes( wffn_clean( $_POST['fields']['default'] ) ) : '';
-				$options             = ( isset( $_POST['fields'] ) && isset( $_POST['fields']['options'] ) && ! empty( $_POST['fields']['options'] ) ) ? ( explode( '|', trim( wffn_clean( $_POST['fields']['options'] ) ) ) ) : [];
+				$options             = ( isset( $_POST['fields'] ) && ! empty( $_POST['fields']['options'] ) ) ? ( explode( '|', trim( wffn_clean( $_POST['fields']['options'] ) ) ) ) : [];
 				$name                = apply_filters( 'wffn_optin_advanced_field_name', $section_type . '_' . WFFN_Common::generate_hash_key(), wffn_clean( $_POST['fields'] ) );
 				$new_sanitize_option = [];
 				if ( is_array( $options ) && count( $options ) > 0 ) {
@@ -1566,15 +1537,11 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 			self::send_resp( $resp );
 		}
 
-
-
-
 		/**
 		 * @param $page_id
 		 * @param $data
-		 * @param bool $update_switcher
 		 *
-		 * @return mixed
+		 * @return void
 		 */
 		public static function update_page_layout( $page_id, $data ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 			if ( $page_id < 1 ) {
@@ -1783,7 +1750,6 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 			// Check if WP Fusion is active, change tab Order accordingly
 			$tab_order        = ( WFFN_Common::wffn_is_funnel_pro_active() && wffn_is_plugin_active( 'wp-fusion/wp-fusion.php' ) ) ? 5 : 4;
 			$lifterlms_active = $hide_class_lifterlms = $affiliatewp_active = $hide_class_affiliatewp = '';
-			'';
 
 			$lifterlms_obj = WFOPP_Core()->optin_actions->get_integration_object( 'assign_lifter_course' );
 

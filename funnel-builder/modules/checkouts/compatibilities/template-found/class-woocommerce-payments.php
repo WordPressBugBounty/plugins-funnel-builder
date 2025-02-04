@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /*
- * plugin Name: WooPayments by Automattic (v.7.8.1)
+ * plugin Name: WooPayments by Automattic (v.8.8.0)
  *
  */
 
@@ -14,6 +14,7 @@ class WFACP_Compatibility_With_WooCommerce_Payments {
 		add_action( 'wfacp_internal_css', [ $this, 'enqueue_scripts' ] );
 		add_action( 'wfacp_outside_header', [ $this, 'detect_woo_payment' ] );
 		add_filter( 'wfacp_product_switcher_price_data', [ $this, 'wfacp_product_switcher_price_data' ], 10, 2 );
+		add_action( 'wfacp_after_checkout_page_found', [ $this, 'action' ] );
 	}
 
 	/*
@@ -83,6 +84,44 @@ class WFACP_Compatibility_With_WooCommerce_Payments {
 
 		return $price_data;
 	}
+
+	/**
+	 * @param $args
+	 * @param $key
+	 * @param $billing_fields
+	 *
+	 * @return mixed one of condition check the required key which was throwing the notice
+	 */
+	public function action() {
+		add_action( 'woocommerce_checkout_fields', [ $this, 'checkout_fields' ], 9 );
+
+
+	}
+
+	public function checkout_fields( $fields ) {
+		if ( ! is_array( $fields ) || count( $fields ) == 0 ) {
+			return $fields;
+		}
+
+
+		foreach ( $fields as $i => $field ) {
+
+			if ( $i !== 'billing' && $i !== 'shipping' ) {
+				continue;
+			}
+
+			foreach ( $field as $k => $value ) {
+				if ( ! isset( $fields[ $i ][ $k ]['required'] ) ) {
+					$fields[ $i ][ $k ]['required'] = false;
+				}
+			}
+
+		}
+
+
+		return $fields;
+	}
+
 
 }
 

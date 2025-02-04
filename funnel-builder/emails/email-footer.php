@@ -11,7 +11,7 @@ $settings_text    = '<u style="text-decoration: underline;"><a rel="noreferrer n
     <tbody>
     <tr style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px;">
         <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0px; background-color: #ffffff;"
-            bgcolor="#ffffff">
+            bgcolor="#ffffff"> 
             <!--[if mso | IE]>
             <table cellpadding="0" cellspacing="0" border="0" align="center" style="width:100%" role="presentation" width="640">
                 <tr>
@@ -69,7 +69,7 @@ $settings_text    = '<u style="text-decoration: underline;"><a rel="noreferrer n
 																							<span
                                                                                                 style="mso-line-height-alt: 130%; font-size: 12px;"
                                                                                                 class="has-font-size">
-                                                                                                <?php echo sprintf( __( 'This performance report email was sent from you site %s for period %s.', 'Funnelkit' ), $business_details, $date ); ?>
+                                                                                                <?php echo sprintf( esc_html__( 'This performance report email was sent from you site %s for period %s.', 'Funnelkit' ), wp_kses($business_details , 'funnelkit'), esc_html($date) ); ?>
 																							</span>
 																						</span>
                                                     <br/>
@@ -78,7 +78,7 @@ $settings_text    = '<u style="text-decoration: underline;"><a rel="noreferrer n
                                                         class="has-inline-color">
 																							<span
                                                                                                 style="mso-line-height-alt: 130%; font-size: 12px;"
-                                                                                                class="has-font-size"><?php echo sprintf( __( '%s to manage the frequency and recipients.', 'Funnelkit' ), $settings_text ); ?>
+                                                                                                class="has-font-size"><?php echo sprintf( esc_html__( '%s to manage the frequency and recipients.', 'Funnelkit' ), wp_kses($settings_text , 'funnelkit')); ?>
 																							</span>
 																						</span>
                                                 </p>

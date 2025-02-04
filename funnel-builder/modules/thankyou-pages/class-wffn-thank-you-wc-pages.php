@@ -1109,7 +1109,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		public function maybe_redirect_funnel_thankyou( $wp_obj ) {
 
 			// Check if on the funnel thank you page or if the thankyou page reattempt is in progress
-			if ( ! empty( filter_input( INPUT_GET, 'wfty_sources', FILTER_SANITIZE_NUMBER_INT ) ) || ! empty( filter_input( INPUT_GET, 'nt', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
+			if ( ! empty( filter_input( INPUT_GET, 'wfty_source', FILTER_SANITIZE_NUMBER_INT ) ) || ! empty( filter_input( INPUT_GET, 'nt', FILTER_SANITIZE_SPECIAL_CHARS ) ) ) {
 				return;
 			}
 

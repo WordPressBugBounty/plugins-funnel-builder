@@ -5267,13 +5267,19 @@ body:not(.cartflows-canvas):not(.cartflows-default) #wfacp-sec-wrapper .form-row
 
 /* -------------------------------------------Live Validation---------------------------------------------*/
 
-body #wfacp-sec-wrapper span.wfacp_inline_field_error {
+body #wfacp-sec-wrapper span.wfacp_inline_field_error,
+body #wfacp-sec-wrapper .checkout-inline-error-message {
     position: relative;
     font-size: 12px;
     line-height: 1;
     color: #e15334;
     display: block;
     margin-top: 8px;
+}
+
+body.wfacp_active_live_validation #wfacp-sec-wrapper .checkout-inline-error-message,
+body:not(.wfacp_active_live_validation) #wfacp-sec-wrapper .billing_email_field_error {
+    display: none;
 }
 
 body #wfacp-sec-wrapper .wfacp-inside .form-row:not(.wfacp-anim-wrap) .select2-container .select2-selection--single .select2-selection__rendered {
@@ -5776,6 +5782,10 @@ body #wfacp-sec-wrapper .wfacp_main_form #payment .place-order .bwfan_user_conse
 }
 body #wfacp-e-form .wc-credit-card-form.wc-payment-form input[hidden] {
     display: none;
+}
+body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a,
+body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a:hover{
+    color: #e15334 !important;
 }
 /* -----------------------------------------------MEDIA QUERY---------------------------------------- */
 @media (min-width: 993px) {

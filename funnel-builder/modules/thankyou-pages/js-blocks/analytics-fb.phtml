@@ -25,7 +25,8 @@ if ( $this->do_track_fb_synced_purchase() && is_array( $data ) && isset( $data['
     content_name: <?php echo wp_json_encode( implode( ',', $data['fb']['content_name'] ) ); ?>,
     category_name: <?php echo wp_json_encode( implode( ',', $data['fb']['category_name'] ) ); ?>,
     num_items: <?php echo esc_js( $data['fb']['num_qty'] ); ?>,
-    transaction_id: '<?php echo esc_js( $data['fb']['transaction_id'] ); ?>'
+    transaction_id: '<?php echo esc_js( $data['fb']['transaction_id'] ); ?>',
+    order_id: '<?php echo esc_js( $data['fb']['order_id'] ); ?>'
     };
 
 	<?php if ( isset( $data['fb']['additional']['town'] ) && ! empty( $data['fb']['additional']['town'] ) ) { ?>
@@ -68,7 +69,8 @@ if ( false === $this->do_track_fb_synced_purchase() && $this->do_track_fb_purcha
     'content_name': <?php echo wp_json_encode( implode( ',', $data['fb']['content_name'] ) ); ?>,
     'category_name': <?php echo wp_json_encode( implode( ',', $data['fb']['category_name'] ) ); ?>,
     'num_items': <?php echo esc_js( $data['fb']['num_qty'] ); ?>,
-    'transaction_id': '<?php echo esc_js( $data['fb']['transaction_id'] ); ?>'
+    'transaction_id': '<?php echo esc_js( $data['fb']['transaction_id'] ); ?>',
+    order_id: '<?php echo esc_js( $data['fb']['order_id'] ); ?>'
     };
 
     wffnfbDataPurchaseTrack = (typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent(wffnfbDataPurchaseTrack ):wffnfbDataPurchaseTrack;

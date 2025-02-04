@@ -291,15 +291,6 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				),
 			) );
 
-			register_rest_route( $this->namespace, '/' . $this->rest_base . '/fix-tables/', array(
-				array(
-					'methods'             => WP_REST_Server::CREATABLE,
-					'callback'            => array( $this, 'fix_tables' ),
-					'permission_callback' => array( $this, 'get_write_api_permission_check' ),
-					'args'                => []
-				),
-			) );
-
 			register_rest_route( 'funnelkit-app', '/migrate-conversion/', array(
 				'args'                => [],
 				'methods'             => WP_REST_Server::EDITABLE,
@@ -1468,27 +1459,6 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				return in_array( $key, $steps, true );
 			}, ARRAY_FILTER_USE_KEY );
 
-		}
-
-		/**
-		 * Delete All DB option then run table create command
-		 * @return WP_REST_Response|WP_Error
-		 */
-		public function fix_tables() {
-
-			delete_option( '_wfocu_db_version' );
-			delete_option( '_wffn_db_version' );
-			delete_option( '_wfopp_db_version' );
-			delete_option( '_bwf_db_version' );
-			delete_option( 'wfco_as_table_created_v2' );
-			delete_option( 'wfco_v1_0' );
-			delete_option( 'wfob_db_ver_3_0' );
-			delete_option( 'wfacp_dynamic_update' );
-			delete_option( 'wfacp_db_update' );
-			delete_option( 'wfacp_db_ver_2_0' );
-			delete_option( '_bwf_db_table_list' );
-
-			return rest_ensure_response( [ 'status' => true ] );
 		}
 
 		public function conversion_migrator_run() {

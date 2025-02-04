@@ -2286,6 +2286,10 @@ abstract class WFACP_Common extends WFACP_Common_Helper {
 			if ( 'elementor' === $design_data['selected_type'] && ! class_exists( '\Elementor\Plugin' ) ) {
 				$design_data = self::default_design_data();
 			}
+
+			if ( 'oxy' === $design_data['selected_type'] && ! defined( 'CT_VERSION' ) ) {
+				$design_data = self::default_design_data();
+			}
 		}
 
 		return $design_data;

@@ -5,8 +5,8 @@
  * Plugin URI: https://www.omnisend.com
  */
 
-#[AllowDynamicProperties] 
- class WFACP_Omnisend_For_WC {
+#[AllowDynamicProperties]
+class WFACP_Omnisend_For_WC {
 	public $instance = null;
 
 	public function __construct() {
@@ -25,6 +25,8 @@
 		/* prevent third party fields and wrapper*/
 
 		add_action( 'wfacp_add_billing_shipping_wrapper', '__return_false' );
+
+		add_action( 'wfacp_after_checkout_page_found', [ $this, 'action' ], 10 );
 	}
 
 	public function add_field( $fields ) {
@@ -50,11 +52,11 @@
 
 
 		?>
-		<div class="wfacp_omnisend_wc" id="wfacp_omnisend_wc">
+        <div class="wfacp_omnisend_wc" id="wfacp_omnisend_wc">
 			<?php
 			omnisend_checkbox_custom_checkout_field( WC()->checkout() );
 			?>
-		</div>
+        </div>
 		<?php
 
 	}
@@ -92,7 +94,16 @@
 		return $args;
 	}
 
+	public function action() {
+		if ( ! class_exists( 'Omnisend_Settings' ) ) {
+			return;
+		}
+		if ( Omnisend_Settings::get_checkout_opt_in_status() === Omnisend_Settings::STATUS_ENABLED && Omnisend_Settings::get_checkout_opt_in_text() ) {
+			remove_action( 'woocommerce_after_checkout_billing_form', 'omnisend_checkbox_custom_checkout_field' );
+		}
+	}
+
 
 }
-WFACP_Plugin_Compatibilities::register( new WFACP_Omnisend_For_WC(), 'wfacp-ominisend-wc' );
 
+WFACP_Plugin_Compatibilities::register( new WFACP_Omnisend_For_WC(), 'wfacp-ominisend-wc' );

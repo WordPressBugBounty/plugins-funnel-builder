@@ -487,7 +487,6 @@
             }
             this.gtag('config', this.track_id, {});
 
-
         }
 
         load() {
@@ -646,13 +645,15 @@
 
             if (window.pintrk) {
                 data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent(data) : data;
+                delete data['traffic_source'];
                 pintrk('track', event, data);
             }
         }
 
         event_checkout(checkout_data) {
             let c_data = JSON.parse(checkout_data);
-            this.pint('InitiateCheckout', c_data);
+            this.pint('InitiateCheckout', c_data[0]);
+
         }
 
         event_single_add_to_cart(data) {

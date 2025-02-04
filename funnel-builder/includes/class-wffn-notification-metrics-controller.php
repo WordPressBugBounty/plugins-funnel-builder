@@ -71,7 +71,7 @@ class WFFN_Notification_Metrics_Controller {
 					'text'                       => __( ucfirst( str_replace( '_', ' ', $metric ) ), 'Funnelkit' ),
 					'previous_text'              => sprintf( __( '- Previous %s', 'FunnelKit' ), $this->get_frequency_text() ),
 					'count'                      => round( $current_value, 2 ),
-					'count_suffix'               => in_array( $metric, [ 'revenue', 'upsell_revenue', 'bump_revenue', 'average_order_value' ] ) ? $this->get_currency() : '',// @codingStandardsIgnoreLine
+					'count_suffix'               => in_array( $metric, [ 'revenue', 'upsell_revenue', 'bump_revenue', 'average_order_value' ] ) ? $this->get_currency() : '', // @codingStandardsIgnoreLine
 					'previous_count'             => $previous_value,
 					'percentage_change'          => sprintf( '%s%%', round( $percentage_change, 2 ) ),
 					'percentage_change_positive' => $percentage_change >= 0,
@@ -87,10 +87,10 @@ class WFFN_Notification_Metrics_Controller {
 	 */
 	public function is_valid() {
 		$is_valid = false;
-		foreach ( $this->data['metrics'] as $metric ) {
-			if ( $metric['count'] > 0 || $metric['previous_count'] > 0 ) {
+		if ( isset( $this->data['metrics']['total_orders'] ) ) {
+			$total_orders = $this->data['metrics']['total_orders'];
+			if ( $total_orders['count'] > 0 || $total_orders['previous_count'] > 0 ) {
 				$is_valid = true;
-				break;
 			}
 		}
 

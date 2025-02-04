@@ -6,22 +6,13 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFOPP_DB_Tables {
+	class WFOPP_DB_Tables {
 
 		/**
 		 * instance of class
 		 * @var null
 		 */
 		private static $ins = null;
-		/**
-		 * WPDB instance
-		 *
-		 * @since 2.0
-		 *
-		 * @var $wp_db
-		 */
-		protected $wp_db;
 		/**
 		 * Character collation
 		 *
@@ -51,8 +42,6 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 		 * WFFN_DB_Tables constructor.
 		 */
 		public function __construct() {
-			global $wpdb;
-			$this->wp_db = $wpdb;
 			$this->define_tables();
 		}
 
@@ -65,7 +54,7 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 		}
 
 		/**
-		 * Get the list of woofunnels tables, with wp_db prefix
+		 * Get the list of woofunnels tables, with wpdb prefix
 		 *
 		 * @return array
 		 * @since 2.0
@@ -73,11 +62,9 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 		 */
 		protected function get_tables_list() {
 
-			$tables = array(
+			return array(
 				'bwf_optin_entries',
 			);
-
-			return $tables;
 		}
 
 		/**
@@ -171,11 +158,11 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
 		 */
 		public function optin_entries() {
 			$collate = '';
-
-			if ( $this->wp_db->has_cap( 'collation' ) ) {
-				$collate = $this->wp_db->get_charset_collate();
+			global $wpdb;
+			if ( $wpdb->has_cap( 'collation' ) ) {
+				$collate = $wpdb->get_charset_collate();
 			}
-			$values_table = 'CREATE TABLE `' . $this->wp_db->prefix . "bwf_optin_entries` (
+			$values_table = 'CREATE TABLE `' . $wpdb->prefix . "bwf_optin_entries` (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 				`step_id` bigint(20) unsigned NOT NULL,
 				`funnel_id` bigint(20) unsigned NOT NULL,
@@ -193,8 +180,8 @@ if ( ! class_exists( 'WFOPP_DB_Tables' ) ) {
                 ) " . $collate . ';';
 			dbDelta( $values_table );
 
-			if ( ! empty( $this->wp_db->last_error ) ) {
-				WFFN_Core()->logger->log( "bwf failed create table bwf_optin_entries : " . print_r( $this->wp_db->last_error, true ), 'woofunnel-failed-actions', true );
+			if ( ! empty( $wpdb->last_error ) ) {
+				WFFN_Core()->logger->log( "bwf failed create table bwf_optin_entries : " . print_r( $wpdb->last_error, true ), 'woofunnel-failed-actions', true );
 			}
 		}
 	}

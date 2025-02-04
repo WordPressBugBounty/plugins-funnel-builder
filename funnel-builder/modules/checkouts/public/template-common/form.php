@@ -11,6 +11,7 @@ if ( apply_filters( 'wfacp_skip_form_printing', false ) ) {
 }
 do_action( 'wfacp_outside_header' );
 if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
+	do_action( 'wfacp_woocommerce_checkout_must_be_logged_in' );
 	echo apply_filters( 'woocommerce_checkout_must_be_logged_in_message', __( 'You must be logged in to checkout.', 'woocommerce' ) );
 
 	return;

@@ -1,16 +1,18 @@
-=== Funnel Builder for WordPress by FunnelKit – Customize WooCommerce Checkout Pages, Create Sales Funnels, Order Bumps & One Click Upsells ===
+=== WooCommerce Checkout & Funnel Builder by FunnelKit ===
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 3.8.0
+Stable tag: 3.9.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Create high-converting WooCommerce checkout pages, WooCommerce thank you pages & sales funnels with the highest-rated WordPress funnel builder.
 
 == Description ==
+
+Create high-converting WooCommerce checkout pages, WooCommerce thank you pages & sales funnels with the highest-rated WordPress funnel builder.
 
 == Funnel Builder for WordPress ==
 
@@ -376,6 +378,28 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.9.0 (Feb 04, 2025) =
+* Added: Enhanced admin notices to guide users in excluding required pages from caching across multiple CDN and hosting platforms. (#5529)
+* Added: Introduced a new tool to verify and regenerate missing database tables for improved system reliability. (#6905)
+* Added: Added a filter hook, `wfacp_subscription_price_display`, to enable strike-through price displays for better clarity. (#7011)
+* Added: New feature to delete order conversions directly from conversion analytics for better data management. (#5541)
+* Improved: Opt-in submitted data is now accessible for third-party JavaScript events after form submissions, enhancing integration flexibility. (#6953)
+* Improved: Optimized code to eliminate delays in the checkout process for servers without async request support. (#6870)
+* Improved: Updated compatibility with the PixelYourSite Pro plugin for custom data layer settings in Google Tags. (#6901)
+* Improved: Database query optimization for accurate FunnelKit revenue display under WooCommerce order listings. (#6921)
+* Improved: Checkout - Compatibility with Omnisend for WooCommerce has been updated to ensure smooth functionality. (#6968)
+* Improved: Code optimized to utilize the global `wpdb` object for better performance and reduced overhead. (#6903)
+* Improved: Checkout - Updated compatibility with Lumise for enhanced user experience. (#6999)
+* Improved: Pinterest events integration now includes `product_id` in `add_to_cart` and `PageVisit` events for better tracking. (#6965)
+* Improved: Conversion tracking for analytics has been improved to address edge cases where users couldn’t access the thankyou page. (#6972)
+* Improved: Admin App loading improved to handle edge cases when Javascript and CSS was not loading from server with a particular version path. ()
+* Fixed: Resolved an issue where the `add_to_cart` event didn’t trigger when product names contained special characters. (#6991)
+* Fixed: Checkout - Strike-through price and coupon color styling refined for Oxygen Builder. (#6970)
+* Fixed: Checkout - Addressed a PHP error when using the Divi Builder with Intasend Gateway, ensuring smooth functionality. (#6977)
+* Fixed: Checkout - Enable/Disabled Tag on optimizations section was not working correctly for Smart login and MultiStep Preview. (#7048)
+* Fixed: Email performance summary notification styles have been polished for better readability. (#6933)
+* Fixed: Resolved PHP errors in scheduled async calls when `_nonce` was missing from requests. (#7016)
 
 = 3.8.0 (Dec 17, 2024) =
 * Added: Introduced a new shortcode on the WooCommerce thankyou page `[wfty_order_meta key=""]` to easily display order meta based on a specific key. (#6915)

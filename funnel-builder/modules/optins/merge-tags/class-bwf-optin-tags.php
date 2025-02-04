@@ -29,6 +29,7 @@ if ( ! class_exists( 'BWF_Optin_Tags' ) ) {
 			foreach ( $this->shortcodes as $code ) {
 				add_shortcode( 'wfop_' . $code, array( $this, 'get_' . $code ) );
 			}
+            add_action( 'wp_head', array( $this, 'localize_optin_submitted_data' ) );
 
 		}
 
@@ -149,6 +150,36 @@ if ( ! class_exists( 'BWF_Optin_Tags' ) ) {
 			$this->set_optin( $data );
 
 		}
+
+		/**
+		 * localize optin form posted data for support js for compatible send data in js variable
+		 * @return void
+		 */
+		public function localize_optin_submitted_data() {
+			if ( empty( $this->get_optin() ) ) {
+                return;
+			}
+			/**
+			 * not set default value
+			 */
+			$is_default = [];
+
+			$wffnOptinData = apply_filters( 'wffn_localize_optin_submitted_data', array(
+				'id'         => $this->get_id( $is_default ),
+				'first_name' => $this->get_first_name( $is_default ),
+				'last_name'  => $this->get_last_name( $is_default ),
+				'email'      => $this->get_email( $is_default ),
+				'phone'      => $this->get_phone( $is_default ),
+			), $this->optin );
+
+			if ( is_array( $wffnOptinData ) && count( $wffnOptinData ) > 0 ) { ?>
+				<script type="text/javascript">
+                    let wffnOptinData =<?php echo wp_json_encode( $wffnOptinData ); ?>;
+				</script>
+				<?php
+			};
+		}
+
 	}
 
 	BWF_Optin_Tags::get_instance();

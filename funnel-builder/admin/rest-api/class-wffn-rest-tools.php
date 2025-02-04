@@ -112,6 +112,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 					),
 				),
 			) );
+
 		}
 
 		public function get_read_api_permission_check() {
@@ -232,6 +233,15 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 						'type' => 'button',
 						'text' => __( 'Clear Transients', 'funnel-builder' ),
 						'slug' => 'woofunnels_transient',
+					),
+				),
+				array(
+					'title' => __( 'Verify Base Tables', 'funnel-builder' ),
+					'desc'  => __( 'This will verify FunnelKit all the base tables which are required for smooth functioning.', 'funnel-builder' ),
+					'cta'   => array(
+						'type' => 'button',
+						'text' => __( 'Verify', 'funnel-builder' ),
+						'slug' => 'woofunnels_verify',
 					),
 				),
 				array(
@@ -368,9 +378,10 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				'status' => false,
 			);
 
-			$transient    = ( isset( $request['woofunnels_transient'] ) && $request['woofunnels_transient'] === 'yes' ) ? $request['woofunnels_transient'] : '';
-			$tracking     = ( isset( $request['woofunnels_tracking'] ) ) ? $request['woofunnels_tracking'] : '';
-			$index_orders = ( isset( $request['index_past_order'] ) && $request['index_past_order'] === 'yes' ) ? $request['index_past_order'] : '';
+			$transient         = ( isset( $request['woofunnels_transient'] ) && $request['woofunnels_transient'] === 'yes' ) ? $request['woofunnels_transient'] : '';
+			$woofunnels_verify = ( isset( $request['woofunnels_verify'] ) && $request['woofunnels_verify'] === 'yes' ) ? $request['woofunnels_verify'] : '';
+			$tracking          = ( isset( $request['woofunnels_tracking'] ) ) ? $request['woofunnels_tracking'] : '';
+			$index_orders      = ( isset( $request['index_past_order'] ) && $request['index_past_order'] === 'yes' ) ? $request['index_past_order'] : '';
 
 			if ( $transient !== '' ) {
 				$woofunnels_transient_obj = WooFunnels_Transient::get_instance();
@@ -378,6 +389,28 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				$resp['status'] = true;
 				$resp['tool']   = $this->get_index_orders();
 				$resp['msg']    = __( 'All Plugins transients cleared.', 'woofunnels' );
+
+				return rest_ensure_response( $resp );
+			}
+			if ( $woofunnels_verify !== '' ) {
+				global $wpdb;
+				$tables          = $this->get_tables_list();
+				$filtered_tables = $this->get_filtered_tables( $tables );
+				$missing_tables  = $this->check_missing_tables( $filtered_tables );
+
+				if ( empty( array_filter( $missing_tables ) ) ) {
+					return rest_ensure_response( [ 'status' => true, 'msg' => 'All required tables are present in the database.' ] );
+				}
+
+				$missing_table_names             = array_merge( ...array_values( array_filter( $missing_tables ) ) );
+				$missing_table_names_with_prefix = array_map( function ( $table ) use ( $wpdb ) {
+					return $wpdb->prefix . $table;
+				}, $missing_table_names );
+
+				return rest_ensure_response( [
+					'status' => true,
+					'msg'    => 'The following tables were created: ' . implode( ', ', $missing_table_names_with_prefix )
+				] );
 
 				return rest_ensure_response( $resp );
 			}
@@ -398,7 +431,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 				return rest_ensure_response( $resp );
 			}
-			
+
 			if ( $index_orders !== '' ) {
 
 				if ( 'yes' === $index_orders && '0' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
@@ -425,6 +458,100 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 		}
 
 
+		public function check_missing_tables( $tables ) {
+			$missing_tables = [];
+
+			foreach ( $tables as $version_key => $table_list ) {
+				$missing_tables[ $version_key ] = $this->wffn_validate_db_tables( $table_list );
+			}
+
+			return $missing_tables;
+		}
+
+		public function get_filtered_tables( array $tables ): array {
+			$is_funnel_pro_active = WFFN_Common::wffn_is_funnel_pro_active();
+
+			return array_filter( $tables, function ( $table_list, $version_key ) use ( $is_funnel_pro_active ) {
+
+				if ( $is_funnel_pro_active ) {
+					return true;
+				}
+
+				return ! in_array( $version_key, [ '_wfocu_db_version', 'wfob_db_ver_3_0', 'wfacp_db_ver_2_1' ] ); // @codingStandardsIgnoreLine
+			}, ARRAY_FILTER_USE_BOTH );
+		}
+
+
+		public function wffn_validate_db_tables( $tables ) {
+			global $wpdb;
+
+			$table_names = array_map( function ( $table ) use ( $wpdb ) {
+				return $wpdb->prefix . $table;
+			}, $tables );
+
+			$placeholders = implode( ',', array_fill( 0, count( $table_names ), '%s' ) );
+			$query        = $wpdb->prepare( "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = %s AND TABLE_NAME IN ($placeholders)", array_merge( [ $wpdb->dbname ], $table_names ) ); // @codingStandardsIgnoreLine
+
+			$existing_tables = $wpdb->get_col( $query ); // @codingStandardsIgnoreLine
+
+			$missing_tables = array_diff( $table_names, $existing_tables );
+
+			if ( ! empty( $missing_tables ) ) {
+
+				$missing_tables = array_map( function ( $table ) use ( $wpdb ) {
+					return str_replace( $wpdb->prefix, '', $table );
+				}, $missing_tables );
+
+				$option_keys_to_delete = $this->get_option_keys_for_missing_tables( $tables );
+				$option_key_map        = [
+					'_wfocu_db_version'  => [ 'class' => WFOCU_Admin::class, 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
+					'_wffn_db_version'   => [ 'class' => WFFN_ADMIN::class, 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
+					'_wfopp_db_version'  => [ 'class' => WFOPP_DB_Tables::class, 'method' => 'add_if_needed' ],
+					'wfob_db_ver_3_0'    => [ 'class' => WFOB_Reporting::class, 'method' => 'create_table' ],
+					'wfacp_db_ver_2_1'   => [ 'class' => WFACP_Reporting::class, 'method' => 'create_table' ],
+					'_bwf_db_table_list' => [ 'class' => WooFunnels_Create_DB_Tables::class, 'method' => 'create' ]
+				];
+
+				if ( ! empty( $option_keys_to_delete ) ) {
+					foreach ( $option_keys_to_delete as $option_key ) {
+						delete_option( $option_key );
+						if ( isset( $option_key_map[ $option_key ] ) ) {
+							$table_handler = $option_key_map[ $option_key ];
+							$tables        = $table_handler['class']::get_instance();
+							if ( isset( $table_handler['method'] ) ) {
+								$tables->{$table_handler['method']}();
+							}
+							if ( isset( $table_handler['update_method'] ) ) {
+								$tables->{$table_handler['update_method']}();
+							}
+						}
+					}
+				}
+			}
+
+			return ! empty( $missing_tables ) ? $missing_tables : [];
+		}
+
+		public function get_option_keys_for_missing_tables( array $tables ): array {
+			$table_to_option_map = $this->get_tables_list();
+
+			$option_keys = array_keys( array_filter( $table_to_option_map, function ( $required_tables ) use ( $tables ) {
+				return ! empty( array_intersect( $tables, $required_tables ) );
+			} ) );
+
+			return $option_keys;
+		}
+
+		private function get_tables_list(): array {
+			return [
+				'_wfocu_db_version'  => [ 'wfocu_session', 'wfocu_event', 'wfocu_event_meta' ],
+				'_wffn_db_version'   => [ 'bwf_funnels', 'bwf_funnelmeta' ],
+				'_wfopp_db_version'  => [ 'bwf_optin_entries' ],
+				'wfob_db_ver_3_0'    => [ 'wfob_stats' ],
+				'wfacp_db_ver_2_1'   => [ 'wfacp_stats' ],
+				'_bwf_db_table_list' => [ 'bwf_contact', 'bwf_contact_meta', 'bwf_wc_customers', 'wfco_report_views', 'bwf_conversion_tracking' ],
+			];
+		}
 	}
 
 

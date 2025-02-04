@@ -823,7 +823,7 @@ class Form extends Element {
 			'#wfacp-e-form .wfacp_main_form #wc_checkout_add_ons .description',
 			'#wfacp-e-form .wfacp_main_form .woocommerce-checkout-review-order h3',
 			'#wfacp-e-form .wfacp_main_form .aw_addon_wrap label',
-			'#wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading )',
+			'#wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading):not(.checkout-inline-error-message)',
 			'#wfacp-e-form .wfacp_main_form p label:not(.wfacp-form-control-label):not(.wfob_title):not(.wfob_span):not(.checkbox)',
 			'#wfacp-e-form .wfacp_main_form',
 			'#wfacp-e-form .wfacp_main_form .woocommerce-message',
@@ -1571,15 +1571,21 @@ class Form extends Element {
 
 		/* Typography  */
 		$product_switcher_typo_option = array(
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_name_inner *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_quantity_selector input',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec span bdi',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_name_inner *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_quantity_selector input',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
+
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span bdi',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec ins span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec ins span bdi',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec del',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec del *',
 		);
 
 		$this->add_typography( 'selected_item_typography', $product_switcher_typo_option, array(), array(), '', array( 'color', 'text-align' ) );
@@ -1643,15 +1649,21 @@ class Form extends Element {
 		$this->add_heading( __( 'Non-selected Items' ) );
 
 		$product_switcher_typo_optional = array(
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_name_inner *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_quantity_selector input',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec span bdi',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_subs_details span',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_subs_details *',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_name_inner *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_quantity_selector input',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_subs_details span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_subs_details *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
+
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec > span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec > span *',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec > span bdi',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec ins span',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec ins span bdi',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec del',
+			'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset:not(.wfacp-selected-product) .wfacp_product_price_sec del *',
 		);
 
 		$this->add_typography( $field_key . '_optional_item_typography', $product_switcher_typo_optional, array(), array(), '', array( 'color', 'text-align' ) );

@@ -1796,6 +1796,10 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 				$all_data = wffn_rest_api_helpers()->get_step_post( $step_id, true );
 
+				$bwf_id = get_post_meta( $step_id, '_bwf_in_funnel', true );
+				if ( ! empty( $bwf_id ) ) {
+					WFFN_Core()->admin->update_last_update_time( $bwf_id );
+				}
 
 				$resp['step_data'] = is_array( $all_data ) && isset( $all_data['step_data'] ) ? $all_data['step_data'] : false;
 

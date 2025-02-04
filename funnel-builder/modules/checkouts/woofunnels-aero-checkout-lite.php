@@ -98,7 +98,7 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 		private function definition() {
 
 
-			define( 'WFACP_VERSION', '3.16.1' );
+			define( 'WFACP_VERSION', '3.17.0' );
 			define( 'WFACP_MIN_WP_VERSION', '4.9' );
 			define( 'WFACP_MIN_WC_VERSION', '3.3' );
 			define( 'WFACP_SLUG', 'wfacp' );

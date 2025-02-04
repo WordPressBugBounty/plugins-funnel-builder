@@ -161,12 +161,6 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		}
 
 		public function do_track_gad_purchase() {
-
-			$do_track_gad_purchase = $this->admin_general_settings->get_option( 'is_gad_purchase_event' );
-			if ( is_array( $do_track_gad_purchase ) && count( $do_track_gad_purchase ) > 0 && 'yes' === $do_track_gad_purchase[0] ) {
-				return true;
-			}
-
 			return false;
 		}
 
@@ -174,7 +168,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			echo '';
 		}
 
-		public function maybe_print_gtag_script( $k, $code, $label ) { //phpcs:ignore
+		public function maybe_print_gtag_script( $k, $code, $label, $track = false, $is_gads = false ) { //phpcs:ignore
 			echo '';
 		}
 
@@ -328,46 +322,40 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		 */
 		public function render_ga() {
 			$get_tracking_code = $this->ga_code();
+
 			if ( false === $get_tracking_code ) {
 				return;
 			}
 
 			$get_tracking_code = explode( ",", $get_tracking_code );
 
-			if ( ( $this->should_render_lead( 'ga' ) || $this->should_render_view( 'ga' ) ) && is_array( $get_tracking_code ) && count( $get_tracking_code ) > 0 ) {
-				?>
-                <!-- Google Analytics Script Added By WooFunnels 22-->
+			if ( ( $this->do_track_ga_purchase() || $this->should_render_lead( 'ga' ) || $this->should_render_view( 'ga' ) ) && ( is_array( $get_tracking_code ) && ! empty( $get_tracking_code ) ) && $this->should_render() ) {
+                ?>
+                <!-- Google Analytics Script Added By WooFunnels-->
                 <script type="text/javascript">
                     function wffnGaTrackingIn() {
                         var wffn_shouldRender = 1;
-						<?php do_action( 'wffn_allow_tracking_inline_js' ) ?>
+						<?php do_action( 'wffn_allow_tracking_inline_js' ); ?>
                         if (1 === wffn_shouldRender) {
-							<?php if ( false === $this->gtag_rendered ) {
-							$this->load_gtag( $get_tracking_code[0] );
-						}
-							if ( true === $this->should_render_view( 'ga' ) ) {
-								foreach ( $get_tracking_code as $k => $code ) {
-									echo "gtag('config', '" . esc_js( trim( $code ) ) . "');";
-									$label = false;
-									esc_js( $this->render_gtag_custom_event( $code, $label, 'ga' ) );
-									esc_js( $this->maybe_print_gtag_script( $k, $code, $label, $this->do_track_ga_purchase() ) ); //phpcs:ignore
-								}
-							}
-							?>
+                            <?php if ( false === $this->gtag_rendered ) {
+                                $this->load_gtag( $get_tracking_code[0] );
+
+                            }
+                            foreach ( $get_tracking_code as $k => $code ) {
+                                echo "gtag('config', '" . esc_js( trim( $code ) ) . "');";
+                                $label = false;
+                                esc_js( $this->render_gtag_custom_event( $k, $code, $label, 'ga' ) );
+                                $this->maybe_print_gtag_script( $k, $code, $label, $this->do_track_ga_purchase() ); //phpcs:ignore
+                            }
+                            ?>
                         }
                     }
                 </script>
-
 				<?php
 			}
 		}
 
 		public function do_track_ga_purchase() {
-			$do_track_ga_purchase = $this->admin_general_settings->get_option( 'is_ga_purchase_event' );
-			if ( is_array( $do_track_ga_purchase ) && count( $do_track_ga_purchase ) > 0 && 'yes' === $do_track_ga_purchase[0] ) {
-				return true;
-			}
-
 			return false;
 		}
 
@@ -424,18 +412,20 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		}
 
 		/**
-		 * render google analytics core script to load framework
+		 * render google ads analytics core script to load framework
 		 */
 		public function render_gad() {
 			$get_tracking_code = $this->gad_code();
+
 			if ( false === $get_tracking_code ) {
 				return;
 			}
 
 			$get_tracking_code = explode( ",", $get_tracking_code );
 
-			if ( ( $this->should_render_lead( 'gad' ) || $this->should_render_view( 'gad' ) ) && is_array( $get_tracking_code ) && count( $get_tracking_code ) > 0 ) {
+			if ( ( $this->do_track_gad_purchase() || $this->should_render_lead( 'gad' ) || $this->should_render_view( 'gad' ) ) && ( is_array( $get_tracking_code ) && ! empty( $get_tracking_code ) ) && $this->should_render() ) {
 				?>
+                <!-- Google Ads Script Added By WooFunnels -->
                 <script type="text/javascript">
                     function wffnGadTrackingIn() {
                         var wffn_shouldRender = 1;
@@ -446,27 +436,25 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 								$this->load_gtag( $get_tracking_code[0] );
 
 							}
-							if ( true === $this->should_render_view( 'gad' ) ) {
-								foreach ( $get_tracking_code as $k => $code ) {
-									echo "gtag('config', '" . esc_js( trim( $code ) ) . "');";
+
+							foreach ( $get_tracking_code as $k => $code ) {
+								echo "gtag('config', '" . esc_js( trim( $code ) ) . "');";
+								if ( $this->should_render_view( 'gad' ) ) {
 									echo "gtag('event', 'page_view', {send_to: '" . esc_js( trim( $code ) ) . "'});";
-									$label = false;
-									if ( false !== $this->gad_purchase_label() ) {
-										$gad_labels = explode( ",", $this->gad_purchase_label() );
-										$label      = isset( $gad_labels[ $k ] ) ? $gad_labels[ $k ] : $gad_labels[0];
-									}
-
-									esc_js( $this->render_gtag_custom_event( $code, $label, 'gad' ) );
-									esc_js( $this->maybe_print_gtag_script( $k, $code, $label, $this->do_track_gad_purchase(), true ) ); //phpcs:ignore
-
 								}
+								$label = false;
+								if ( $this->do_track_gad_purchase() && false !== $this->gad_purchase_label() ) {
+									$gad_labels = explode( ",", $this->gad_purchase_label() );
+									$label      = isset( $gad_labels[ $k ] ) ? $gad_labels[ $k ] : $gad_labels[0];
+								}
+								esc_js( $this->render_gtag_custom_event( $k, $code, $label, 'gad' ) );
+								$this->maybe_print_gtag_script( $k . 'gad', $code, $label, $this->do_track_gad_purchase(), true );
 							}
 
 							?>
                         }
                     }
                 </script>
-
 				<?php
 			}
 		}
@@ -640,7 +628,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
                             if (1 === wffn_shouldRender) {
                                 setTimeout(function () {
 									<?php foreach ( $get_each_pixel_id as $id ) {
-									esc_js( $this->maybe_print_tiktok_ecomm( $id, $this->do_track_tiktok(), $this->do_track_cp_tiktok() ) );
+									 $this->maybe_print_tiktok_ecomm( $id, $this->do_track_tiktok(), $this->do_track_cp_tiktok() );
 								} ?>
                                 }, 1200);
                             }

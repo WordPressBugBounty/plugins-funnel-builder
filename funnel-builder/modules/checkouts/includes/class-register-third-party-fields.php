@@ -400,7 +400,7 @@ class WFACP_Class_Register_Third_Party_Fields {
 		}
 
 
-		return $args;
+		return apply_filters('wfacp_woocommerce_form_field_args',$args,$key,$this->wc_fields_under_billing,$this->wc_fields_under_shipping);
 	}
 
 

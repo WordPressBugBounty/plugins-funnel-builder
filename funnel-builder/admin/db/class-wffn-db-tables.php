@@ -7,22 +7,13 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
 
 if ( ! class_exists( 'WFFN_DB_Tables' ) ) {
 	#[AllowDynamicProperties]
-
-class WFFN_DB_Tables {
+	class WFFN_DB_Tables {
 
 		/**
 		 * instance of class
 		 * @var null
 		 */
 		private static $ins = null;
-		/**
-		 * WPDB instance
-		 *
-		 * @since 2.0
-		 *
-		 * @var $wp_db
-		 */
-		protected $wp_db;
 		/**
 		 * Character collation
 		 *
@@ -52,8 +43,6 @@ class WFFN_DB_Tables {
 		 * WFFN_DB_Tables constructor.
 		 */
 		public function __construct() {
-			global $wpdb;
-			$this->wp_db = $wpdb;
 			$this->define_tables();
 		}
 
@@ -66,7 +55,7 @@ class WFFN_DB_Tables {
 		}
 
 		/**
-		 * Get the list of woofunnels tables, with wp_db prefix
+		 * Get the list of woofunnels tables, with wpdb prefix
 		 *
 		 * @return array
 		 * @since 2.0
@@ -74,12 +63,10 @@ class WFFN_DB_Tables {
 		 */
 		protected function get_tables_list() {
 
-			$tables = array(
+			return array(
 				'bwf_funnels',
 				'bwf_funnelmeta',
 			);
-
-			return $tables;
 		}
 
 		/**
@@ -141,12 +128,12 @@ class WFFN_DB_Tables {
 		 *  Warning: check if it exists first, which could cause SQL errors.
 		 */
 		public function funnels() {
+			global $wpdb;
 			$collate = '';
-
-			if ( $this->wp_db->has_cap( 'collation' ) ) {
-				$collate = $this->wp_db->get_charset_collate();
+			if ( $wpdb->has_cap( 'collation' ) ) {
+				$collate = $wpdb->get_charset_collate();
 			}
-			$values_table = 'CREATE TABLE `' . $this->wp_db->prefix . "bwf_funnels` (
+			$values_table = 'CREATE TABLE `' . $wpdb->prefix . "bwf_funnels` (
 				`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 				`title` text NOT NULL,
 				`desc` text NOT NULL,
@@ -157,19 +144,20 @@ class WFFN_DB_Tables {
                 ) " . $collate . ';';
 			dbDelta( $values_table );
 
-			if ( ! empty( $this->wp_db->last_error ) ) {
-				WFFN_Core()->logger->log( "bwf failed create table bwf_funnels : " . print_r( $this->wp_db->last_error, true ), 'woofunnel-failed-actions', true );
+			if ( ! empty( $wpdb->last_error ) ) {
+				WFFN_Core()->logger->log( "bwf failed create table bwf_funnels : " . print_r( $wpdb->last_error, true ), 'woofunnel-failed-actions', true );
 			}
 		}
 
 		public function funnelmeta() {
+			global $wpdb;
 			$collate = '';
 
-			if ( $this->wp_db->has_cap( 'collation' ) ) {
-				$collate = $this->wp_db->get_charset_collate();
+			if ( $wpdb->has_cap( 'collation' ) ) {
+				$collate = $wpdb->get_charset_collate();
 			}
 			$max_index_length = 191;
-			$_meta_table      = "CREATE TABLE {$this->wp_db->prefix}bwf_funnelmeta (
+			$_meta_table      = "CREATE TABLE {$wpdb->prefix}bwf_funnelmeta (
 			meta_id bigint(20) unsigned NOT NULL auto_increment,
 			bwf_funnel_id bigint(20) unsigned NOT NULL default '0',
 			meta_key varchar(255) default NULL,
@@ -181,8 +169,8 @@ class WFFN_DB_Tables {
 
 			dbDelta( $_meta_table );
 
-			if ( ! empty( $this->wp_db->last_error ) ) {
-				WFFN_Core()->logger->log( "bwf failed create table bwf_funnelmeta : " . print_r( $this->wp_db->last_error, true ), 'woofunnels-failed-actions', true );
+			if ( ! empty( $wpdb->last_error ) ) {
+				WFFN_Core()->logger->log( "bwf failed create table bwf_funnelmeta : " . print_r( $wpdb->last_error, true ), 'woofunnels-failed-actions', true );
 			}
 		}
 	}

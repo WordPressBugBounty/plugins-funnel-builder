@@ -588,7 +588,7 @@ class WFACP_Blocks_Frontend_CSS {
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form #wc_checkout_add_ons .description,
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form .woocommerce-checkout-review-order h3,
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form .aw_addon_wrap label,
-			{{WRAPPER}} #wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading ),
+			{{WRAPPER}} #wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading):not(.checkout-inline-error-message),
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form p label:not(.wfacp-form-control-label):not(.wfob_title):not(.wfob_span):not(.checkbox),
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form,
 			{{WRAPPER}} #wfacp-e-form .wfacp_main_form .woocommerce-message,

@@ -10,13 +10,13 @@ defined( 'ABSPATH' ) || exit;
                 <tbody>
 				<?php foreach ( $todolist as $list ):
 					$border_bottom = isset( $list['last'] ) && $list['last'] === true ? 'none' : '1px solid #e0e0e0'; ?>
-                    <tr style="border-bottom: <?php echo htmlspecialchars( $border_bottom, ENT_QUOTES, 'UTF-8' ); ?>; line-height: 1.5;">
-                        <td style="line-height: 1.5; padding: 10px 0; font-family: Arial, sans-serif; font-size: 14px; color: #333333;">
-							<?php echo htmlspecialchars( $list['title'], ENT_QUOTES, 'UTF-8' ); ?>
+                    <tr style="border-bottom: <?php echo esc_attr( $border_bottom ); ?>; line-height: 1.5;">
+                        <td style="line-height: 1.5; padding: 10px 0; font-family: Arial, sans-serif; font-size: 14px; color: #333333;"> 
+							<?php echo esc_html( $list['title'] ); ?>
                         </td>
 						<?php if ( $list['status'] === 'pro' ): ?>
                             <td style="width: 130px; text-align: right;">
-                                <a href="<?php echo htmlspecialchars( $upgrade_link, ENT_QUOTES, 'UTF-8' ); ?>"
+                                <a href="<?php echo esc_url( $upgrade_link ); ?>"
                                    target="_blank"
                                    style="color: #0073aa; text-decoration: underline; font-family: Arial, sans-serif; font-size: 14px;">
                                     <b><?php echo esc_html( __( 'Upgrade to Pro', 'Funnelkit' ) ); ?></b>
@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || exit;
                             </td>
 						<?php else: ?>
                             <td style="width: 50px; text-align: right;">
-                                <a href="<?php echo htmlspecialchars( $list['link'], ENT_QUOTES, 'UTF-8' ); ?>"
+                                <a href="<?php echo esc_url( $list['link'] ); ?>"
                                    target="_blank"
                                    style="color: #0073aa; text-decoration: underline; font-family: Arial, sans-serif; font-size: 14px;">
                                     <b><?php echo esc_html( __( 'Setup', 'Funnelkit' ) ); ?></b>

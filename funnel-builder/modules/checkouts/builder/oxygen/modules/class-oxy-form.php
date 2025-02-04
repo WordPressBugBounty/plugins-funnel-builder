@@ -731,14 +731,13 @@ class WFACP_OXY_Form extends WFACP_OXY_HTML_BLOCK {
 
 		$this->add_heading( $tab_id, __( 'Steps Buttons', 'woofunnels-aero-checkout' ), 2 );
 
-		$selector        = [
+		$selector = [
 			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp-next-btn-wrap button',
 			'#wfacp-e-form .wfacp_main_form.woocommerce button#place_order',
-			'#wfacp-e-form .wfacp_main_form.woocommerce  #ppcp-hosted-fields .button',
-			'#wfacp-e-form .wfacp_main_form.woocommerce .button.button#place_order',
+			'#wfacp-e-form .wfacp_main_form.woocommerce .wfacp_payment #ppcp-hosted-fields .button',
 			'#wfacp-e-form .wfacp_main_form.woocommerce .button.wfacp_next_page_button',
-
 		];
+
 		$selector        = implode( ',', $selector );
 		$button_selector = $selector;
 
@@ -1084,7 +1083,7 @@ class WFACP_OXY_Form extends WFACP_OXY_HTML_BLOCK {
 			'#wfacp-e-form .wfacp_main_form #wc_checkout_add_ons .description',
 			'#wfacp-e-form .wfacp_main_form .woocommerce-checkout-review-order h3',
 			'#wfacp-e-form .wfacp_main_form .aw_addon_wrap label',
-			'#wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading )',
+			'#wfacp-e-form .wfacp_main_form p:not(.woocommerce-shipping-contents):not(.wfacp_dummy_preview_heading):not(.checkout-inline-error-message)',
 			'#wfacp-e-form .wfacp_main_form p label:not(.wfacp-form-control-label):not(.wfob_title):not(.wfob_span):not(.checkbox)',
 			'#wfacp-e-form .wfacp_main_form .woocommerce-error',
 			'#wfacp-e-form .wfacp_main_form .wfacp_payment h4',

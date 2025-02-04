@@ -119,45 +119,48 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 				// Prepare line item details including category information
 				$line_item = [
 					'product_id'       => $this->get_woo_product_content_id( $product_id, $mode ), // Ensure product ID is treated as a string
-					'product_name'     => $product->get_name(),
+					'product_name'     => esc_html( $product->get_name() ),
 					'product_price'    => floatval( $price ),
 					'product_quantity' => $quantity,
 					'product_category' => $category_names,
 				];
 
-				if ( $product->is_type( 'variation' ) ) {
-
-					$variation_name                  = implode( ",", $product->get_variation_attributes() );
-					$line_item['product_variant_id'] = $product->get_id();
-					$line_item['product_variant']    = $variation_name;
-
-
-					$tag_list = $this->get_product_tags( 'product_tag', $product->get_id() );
-					if ( count( $tag_list ) > 0 ) {
-						$line_item['tags'] = implode( ', ', $tag_list );
+				if ( ! empty( $variation_id ) && $variation_id > 0 ) {
+					$variation_product = wc_get_product( $variation_id );
+					if ( ! empty ( $variation_product ) ) {
+						$variation_name                  = implode( ",", $variation_product->get_variation_attributes() );
+						$line_item['product_variant_id'] = $variation_product->get_id();
+						$line_item['product_variant']    = $variation_name;
 					}
-
-					// Prepare Pinterest-specific event data
-					$event_data = [
-						'event_id'       => $this->get_event_id( 'AddToCart' ),
-						'value'          => floatval( $price ) * floatval( $quantity ),
-						'order_quantity' => $quantity,
-						'currency'       => get_woocommerce_currency(),
-						'content_type'   => 'product',
-						'line_items'     => [ $line_item ], // Include line item in an array
-						'traffic_source' => $this->get_traffic_source( 'source' ),
-						'user_role'      => $this->get_current_user_role(),
-						'event_url'      => $this->getEventRequestUri(),
-						'user_roles'     => $this->get_current_user_role(),
-					];
-
-					return $event_data;
 				}
+
+
+				$tag_list = $this->get_product_tags( 'product_tag', $product->get_id() );
+				if ( count( $tag_list ) > 0 ) {
+					$line_item['tags'] = implode( ', ', $tag_list );
+				}
+
+				// Prepare Pinterest-specific event data
+				$event_data = [
+					'event_id'       => $this->get_event_id( 'AddToCart' ),
+					'value'          => floatval( $price ) * floatval( $quantity ),
+					'order_quantity' => $quantity,
+					'currency'       => get_woocommerce_currency(),
+					'content_type'   => 'product',
+					'line_items'     => [ $line_item ], // Include line item in an array
+					'traffic_source' => $this->get_traffic_source( 'source' ),
+					'user_role'      => $this->get_current_user_role(),
+					'event_url'      => $this->getEventRequestUri(),
+					'user_roles'     => $this->get_current_user_role(),
+				];
+
+
+				return $event_data;
 			}
 
 			$event_data = [
 				'value'        => $price,
-				'content_name' => $product->get_name(),
+				'content_name' => esc_html( $product->get_name() ),
 				'content_type' => 'product',
 				'currency'     => get_woocommerce_currency(),
 				'content_ids'  => [ $this->get_woo_product_content_id( $product_id, $mode ) ],
@@ -172,7 +175,7 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 				'user_roles'   => $this->get_current_user_role(),
 			];
 
-			if ( ( 'pixel' === $mode ) ) {
+			if ( 'pixel' === $mode ) {
 				unset( $event_data['contents'][0]['value'] );
 
 				if ( true !== $this->is_fb_enable_content_on() ) {
@@ -208,14 +211,14 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 					$total_price = (float) wc_get_price_to_display( $product, array( 'qty' => $quantity, 'price' => $price ) );
 				}
 				$event_data['items'][0]['id']       = $product_id;
-				$event_data['items'][0]['name']     = $product->get_name();
+				$event_data['items'][0]['name']     = esc_html( $product->get_name() );
 				$event_data['items'][0]['category'] = $category_names;
 				$event_data['items'][0]['quantity'] = $quantity;
 				$event_data['items'][0]['price']    = floatval( $price );
 				if ( $this->is_ga4_tracking() ) {
 					$event_data['value']                 = floatval( $total_price );
 					$event_data['items'][0]['item_id']   = $event_data['items'][0]['id'];
-					$event_data['items'][0]['item_name'] = $event_data['items'][0]['name'];
+					$event_data['items'][0]['item_name'] = esc_html( $event_data['items'][0]['name'] );
 					$event_data['items'][0]['currency']  = get_woocommerce_currency();
 					if ( $product->is_type( 'variation' ) ) {
 						$event_data['items'][0]['item_variant'] = implode( "/", $product->get_variation_attributes() );

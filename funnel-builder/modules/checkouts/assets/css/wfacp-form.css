@@ -530,7 +530,7 @@ body #wfacp-e-form .wfacp_main_form .wfacp-comm-title {
     position: relative;
 }
 
-body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .wfacp_main_form #payment .wfacp-order-place-btn-wrap,
+body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .wfacp_main_form .wfacp-order-place-btn-wrap,
 body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .wfacp_main_form .wfacp-next-btn-wrap button {
     color: #ffffff;
     font-weight: bold;
@@ -5136,13 +5136,13 @@ body .wfob_bump_wrapper.wfacp_below_mini_cart_items:empty + .shop_table {
 }
 
 
-body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce #payment button#place_order, body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce .wfacp-next-btn-wrap button {
+body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce #place_order,
+body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce .wfacp-next-btn-wrap button {
     padding-top: 16px;
     padding-bottom: 16px;
     padding-right: 24px;
     padding-left: 24px;
 }
-
 /* Social Login, Social Sharing by miniOrange  */
 .mo-openid-app-icons + br {
     display: none;
@@ -5670,9 +5670,15 @@ body button.button.wfacp-coupon-btn {
         margin: 0;
     }
 
+
     #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout button.wfacp_next_page_button,
-    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout #payment button#place_order,
-    #wfacp-e-form .wfacp_main_form .woocommerce-checkout .button.button#place_order {
+    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout  #place_order{
+        margin: 0;
+        padding: 14px 20px;
+        width: 100%;
+    }
+    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout button.wfacp_next_page_button,
+    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout #place_order {
         margin: 0;
         padding: 14px 20px;
         width: 100%;

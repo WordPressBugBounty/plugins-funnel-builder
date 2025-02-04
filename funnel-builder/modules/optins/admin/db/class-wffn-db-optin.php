@@ -6,20 +6,14 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFFN_DB_Optin {
+	class WFFN_DB_Optin {
 		/**
 		 * @var $ins
 		 */
 		public static $ins;
 
 		/**
-		 * @var $wp_db
-		 */
-		public $wp_db;
-
-		/**
-		 * @var $contact_tbl
+		 * @var $optin_tbl
 		 */
 		public $optin_tbl;
 
@@ -27,9 +21,7 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 		 * WFFN_DB_Optin constructor.
 		 */
 		public function __construct() {
-			global $wpdb;
-			$this->wp_db     = $wpdb;
-			$this->optin_tbl = $this->wp_db->prefix . 'bwf_optin_entries';
+			$this->optin_tbl = 'bwf_optin_entries';
 		}
 
 		/**
@@ -52,6 +44,7 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 		 * @SuppressWarnings(PHPMD.DevelopmentCodeFragment)
 		 */
 		public function insert_optin( $optin ) {
+			global $wpdb;
 			$optin_data = array(
 				'step_id'   => $optin['step_id'],
 				'funnel_id' => $optin['funnel_id'],
@@ -61,54 +54,39 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 				'data'      => wp_json_encode( $optin['data'] ),
 				'date'      => current_time( 'mysql' ),
 			);
-
-			$inserted = $this->wp_db->insert( $this->optin_tbl, $optin_data );
+			$table      = $wpdb->prefix . 'bwf_optin_entries';
+			$inserted   = $wpdb->insert( $table, $optin_data );
 
 			$lastId = 0;
 			if ( $inserted ) {
-				$lastId = $this->wp_db->insert_id;
+				$lastId = $wpdb->insert_id;
 			}
-			if ( ! empty( $this->wp_db->last_error ) ) {
-				WFFN_Core()->logger->log( 'Get last error in insert_contact: ' . print_r( $this->wp_db->last_error, true ) . ' posted data ' . print_r( $optin_data, true ), 'wffn', true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+			if ( ! empty( $wpdb->last_error ) ) {
+				WFFN_Core()->logger->log( 'Get last error in insert_contact: ' . print_r( $wpdb->last_error, true ) . ' posted data ' . print_r( $optin_data, true ), 'wffn', true ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
 			}
 
 			return $lastId;
 		}
 
 
-
-
 		/**
 		 * Get contact for given opid if it exists
 		 */
 		public function get_contact_by_opid( $opid ) {
-			$sql = "SELECT * FROM `$this->optin_tbl` WHERE `opid` = '$opid' ";
+			global $wpdb;
+			$table = $wpdb->prefix . $this->optin_tbl;
 
-			$contact = $this->wp_db->get_row( $sql ); //WPCS: unprepared SQL ok
-
-			return $contact;
+			return $wpdb->get_row( "SELECT * FROM `$table` WHERE `opid` = '$opid' " );//phpcs:ignore
 		}
 
 		/**
 		 * Get contact for given id if it exists
 		 */
 		public function get_contact( $id ) {
-			$sql = "SELECT * FROM `$this->optin_tbl` WHERE `id` = '$id' ";
+			global $wpdb;
+			$table = $wpdb->prefix . $this->optin_tbl;
 
-			$contact = $this->wp_db->get_row( $sql ); //WPCS: unprepared SQL ok
-
-			return $contact;
-		}
-
-		/**
-		 * Get contact for given funnel id if it exists
-		 */
-		public function get_contact_by_funnels( $funnel_id ) {
-			$sql = "SELECT * FROM `$this->optin_tbl` WHERE `funnel_id` = '$funnel_id' ORDER BY `$this->optin_tbl`.`id` ASC";
-
-			$contact = $this->wp_db->get_results( $sql, ARRAY_A ); //WPCS: unprepared SQL ok
-
-			return $contact;
+			return $wpdb->get_row( "SELECT * FROM `$table` WHERE `id` = '$id' " ); //phpcs:ignore
 		}
 
 

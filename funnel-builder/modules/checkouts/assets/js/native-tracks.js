@@ -503,6 +503,7 @@
             super(data);
             this.track_name = 'google_ua';
             window.dataLayer = window.dataLayer || [];
+            this.gtag('config', this.track_id);
         }
 
         static enqueue_js(analytics_id) {
@@ -617,7 +618,6 @@
             super(data);
             this.track_name = 'google_ads';
             window.dataLayer = window.dataLayer || [];
-            this.gtag('config', this.track_id);
         }
 
         event_single_add_to_cart(data) {

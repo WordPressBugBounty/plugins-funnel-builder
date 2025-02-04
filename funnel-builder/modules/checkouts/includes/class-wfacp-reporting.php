@@ -175,7 +175,6 @@ class WFACP_Reporting {
 		}
 
 		$order->update_meta_data( '_wfacp_report_data', array( 'wfacp_total' => $wfacp_used_total, 'funnel_id' => $funnel_id ) );
-		$order->save();
 	}
 
 	/**
@@ -437,7 +436,28 @@ class WFACP_Reporting {
 	}
 
 	public function get_ipn_gateways() {
-		return apply_filters( 'wfacp_ipn_gateways_list', array( 'paypal', 'mollie_wc_gateway_ideal', 'mollie_wc_gateway_bancontact', 'mollie_wc_gateway_sofort', 'infusionsoft_cc' ) );
+
+		$ipn_gateways = array(
+			'paypal',
+			'mollie_wc_gateway_ideal',
+			'mollie_wc_gateway_bancontact',
+			'mollie_wc_gateway_sofort',
+			'infusionsoft_cc',
+			'valitor',
+			'payplus-payment-gateway',
+			'bayarcash',
+			'duitnownets',
+			'directdebit',
+			'duitnowboost',
+			'duitnow',
+			'duitnowshopee',
+			'linecredit',
+			'duitnowqriswallet',
+			'duitnowqr',
+			'duitnowqris'
+		);
+
+		return apply_filters( 'wfacp_ipn_gateways_list', $ipn_gateways );
 	}
 }
 

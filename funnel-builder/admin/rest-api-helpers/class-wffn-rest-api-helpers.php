@@ -68,7 +68,6 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 						} else {
 							$step_data['view_link'] = 'javascript:void(0);';
 						}
-
 					}
 
 					if ( 'wfocu_offer' === $post_data->post_type && class_exists( 'WFOCU_Core' ) ) {
@@ -157,7 +156,14 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 
 					}
 
-					$control_id = get_post_meta( $step_id, '_bwf_ab_variation_of', true );
+					$control_id             = get_post_meta( $step_id, '_bwf_ab_variation_of', true );
+					$step_data['post_slug'] = $post_data->post_name;
+					if ( 'wfacp_checkout' === $post_data->post_type || 'wfocu_offer' === $post_data->post_type ) {
+						$bwb_admin_setting_obj    = BWF_Admin_General_Settings::get_instance();
+						$step_base                = ( 'wfocu_offer' === $post_data->post_type ) ? 'wfocu_page_base' : 'checkout_page_base';
+						$step_data['global_slug'] = $bwb_admin_setting_obj->get_option( $step_base );
+					}
+
 					if ( ! empty( $control_id ) && absint( $control_id ) > 0 ) {
 						$step_data               = apply_filters( 'wffn_rest_get_step_post', $step_data, $control_id );
 						$step_data['control_id'] = $control_id;

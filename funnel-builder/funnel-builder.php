@@ -3,13 +3,13 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.8.0
+ * Version: 3.9.0
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: funnel-builder
- * Elementor tested up to: 3.26.0
+ * Elementor tested up to: 3.27.3
  *
  * Requires at least: 5.4.0
  * Tested up to: 6.7.1
@@ -132,6 +132,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 * WFFN_Core constructor.
 		 */
 		public function __construct() {
+
 			/**
 			 * Load important variables and constants
 			 */
@@ -154,8 +155,8 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		public function define_plugin_properties() {
 
 
-			define( 'WFFN_VERSION', '3.8.0' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.43' );
+			define( 'WFFN_VERSION', '3.9.0' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.45' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
@@ -175,9 +176,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 * Load classes on plugins_loaded hook
 		 */
 		public function load_hooks() {
-			/**
-			 * Initialize Localization
-			 */
+
 			add_action( 'init', array( $this, 'localization' ) );
 			add_action( 'plugins_loaded', array( $this, 'load_classes' ), 1 );
 			add_action( 'plugins_loaded', array( $this, 'register_classes' ), 1 );
@@ -296,6 +295,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			require __DIR__ . '/includes/class-wffn-rest-controller.php';
 			require __DIR__ . '/includes/class-wffn-role-capability.php';
 			require_once __DIR__ . '/includes/class-wffn-email-notification.php';
+
 			require_once __DIR__ . '/includes/class-wffn-api-send-test-notification.php';
 		}
 

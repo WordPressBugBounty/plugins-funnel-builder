@@ -24,7 +24,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 */
 		public function __construct() {
 
-
+		
 			/** Admin enqueue scripts*/
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_assets' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'js_variables' ), 0 );
@@ -424,7 +424,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1734430872' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1738673283' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -664,6 +664,31 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 				?>
                 <script>window.wffn = <?php echo wp_json_encode( apply_filters( 'wffn_localize_admin', $data ) ); ?>;</script>
+				<script>
+					<?php echo '
+						(function() {
+							setTimeout(() => {
+							const scriptElement = document.getElementById("wffn-contact-admin-js");
+							if (scriptElement) {
+							     
+								scriptElement.onerror = function() {
+									if (typeof window.wffn_loaded === "undefined") {
+										console.warn("Main JS not loaded, retrying with version parameter...");
+
+										const newScript = document.createElement("script");
+										const version = `?ver=${new Date().getTime()}`;
+										newScript.src = `${scriptElement.src.split("?")[0]}${version}`;
+										newScript.id = "wffn-contact-admin-js";
+										newScript.async = true;
+
+										document.body.appendChild(newScript);
+									}
+								};
+							}
+							}, 3000)
+						})();
+					' ?>
+				</script>
 				<?php
 			}
 		}
@@ -833,6 +858,14 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			}
 
 			/*
+			 * Sort list with meta key.
+			 */
+			if ( ! empty( $args['order_by_meta'] ) ) {
+				$sql_query .= " LEFT JOIN {table_name_meta} as order_by_meta 
+                ON ( {table_name}.id = order_by_meta.bwf_funnel_id AND order_by_meta.meta_key = '" . $args['order_by_meta']['key'] . "' )";
+			}
+
+			/*
 			 * where clause start here in query
 			 */
 			$sql_query .= ' WHERE 1=1';
@@ -859,8 +892,14 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					$sql_query .= ' AND ( {table_name_meta}.meta_key = \'' . $args['meta']['key'] . '\' AND {table_name_meta}.meta_value = \'' . $args['meta']['value'] . '\' )';
 				}
 			}
-			$sql_query .= " ORDER BY {table_name}.id DESC";
 
+			if ( ! empty( $args['order_by_meta'] ) ) {
+				$sql_query .= " ORDER BY 
+                    CASE WHEN order_by_meta.meta_value IS NULL THEN 1 ELSE 0 END, 
+                    order_by_meta.meta_value " . $args['order_by_meta']['order'];
+			}else{
+				$sql_query .= " ORDER BY {table_name}.id DESC";
+            }
 
 			if ( false === $is_total_query_required ) {
 				$sql_query .= ' LIMIT ' . $args['offset'] . ', ' . $limit;

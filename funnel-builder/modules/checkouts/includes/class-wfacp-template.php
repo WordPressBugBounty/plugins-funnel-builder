@@ -212,6 +212,7 @@ abstract class WFACP_Template_Common {
 
 	private function woocommerce_field_hooks() {
 		add_action( 'woocommerce_before_checkout_form', [ $this, 'checkout_form_login' ] );
+		add_action( 'wfacp_woocommerce_checkout_must_be_logged_in', [ $this, 'display_form_login' ] );
 		add_action( 'woocommerce_before_checkout_form', [ $this, 'checkout_form_coupon' ] );
 
 		add_filter( 'wfacp_default_field', [ $this, 'wfacp_default_field' ], 10, 2 );
@@ -671,6 +672,18 @@ abstract class WFACP_Template_Common {
 			return;
 		}
 		include WFACP_TEMPLATE_COMMON . '/checkout/form-login.php';
+	}
+
+	public function display_form_login() {
+		echo '<div id="wfacp-e-form">';
+		echo '<div id="wfacp-sec-wrapper">';
+		echo '<div class="wfacp-form wfacp-modern-label">';
+		echo '<div class="wfacp_main_form woocommerce">';
+		$this->checkout_form_login();
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
+		echo '</div>';
 	}
 
 	public function checkout_form_coupon() {
@@ -1756,8 +1769,8 @@ abstract class WFACP_Template_Common {
 </svg>';
 
 
-		$coupon_text=__( 'Coupon', 'woocommerce' );
-		$label = apply_filters( 'woocommerce_cart_totals_coupon_label', $coupon_text.sprintf( esc_html__( '%1$s %2$s', 'woocommerce' ), $svg, "<span class='wfacp_coupon_code'>" . $coupon->get_code() . '</span>' ), $coupon );
+		$coupon_text = __( 'Coupon', 'woocommerce' );
+		$label       = apply_filters( 'woocommerce_cart_totals_coupon_label', $coupon_text . sprintf( esc_html__( '%1$s %2$s', 'woocommerce' ), $svg, "<span class='wfacp_coupon_code'>" . $coupon->get_code() . '</span>' ), $coupon );
 		if ( $echo ) {
 			echo $label;
 		} else {
@@ -1848,7 +1861,8 @@ abstract class WFACP_Template_Common {
 		if ( isset( $field['input_class'] ) && ! is_array( $field['input_class'] ) ) {
 			$field['input_class'] = [];
 		}
-		if ( isset( $field['input_class'] ) && ( ! isset( $field['label_class'] ) || ! is_array( $field['label_class'] ) ) ) {
+
+		if ( ! isset( $field['label_class'] ) || ! is_array( $field['label_class'] ) ) {
 			$field['label_class'] = [];
 		}
 		$field['class'][]       = $wrapper_class;
@@ -1981,6 +1995,7 @@ abstract class WFACP_Template_Common {
 
 		return $text;
 	}
+
 	public function exclude_place_order_text_update_order_review( $text ) {
 		if ( apply_filters( 'wfacp_exclude_place_order_text_update_order_review', true ) && did_action( 'woocommerce_checkout_update_order_review' ) > 0 && current_action() === 'woocommerce_order_button_text' ) {
 			return true;

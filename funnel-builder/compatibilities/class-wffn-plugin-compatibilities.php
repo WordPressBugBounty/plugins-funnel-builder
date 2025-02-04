@@ -23,6 +23,7 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 				'class-wffn-wc-deposite.php'                             => function_exists( 'wc_deposits_woocommerce_is_active' ) && wc_deposits_woocommerce_is_active(),
 				'class-wffn-weglot-compatibility.php'                    => ( defined( 'WEGLOT_VERSION' ) || class_exists( 'WeglotWP\Third\Woocommerce\WC_Filter_Urls_Weglot' ) ),
 				'class-wffn-breakdance-builder-compatibility.php'        => defined( 'BREAKDANCE_WOO_DIR' ),
+				'class-wffn-pys-compatibility.php'                       => class_exists( 'PixelYourSite\EventsManager' ),
 				'rest/class-bwfan-compatibility-with-sg-cache.php'       => function_exists( 'sg_cachepress_purge_cache' ),
 				'rest/class-wffn-clearfy-compatibility.php'              => class_exists( 'Clearfy_Plugin' ),
 				'rest/class-wffn-force-login-compability.php'            => function_exists( 'v_forcelogin_rest_access' ),

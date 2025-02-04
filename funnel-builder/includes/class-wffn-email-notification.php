@@ -28,13 +28,6 @@ class WFFN_Email_Notification {
 	public function __construct() {
 		/** global settings */
 		$this->global_settings = $this->load_settings();
-
-		/** Fetch the saved notifications data */
-		$this->executed_last = get_option( 'wffn_email_notification_updated', array(
-			'weekly'  => '',
-			'monthly' => '',
-		) );
-
 		$this->init();
 	}
 
@@ -244,6 +237,10 @@ class WFFN_Email_Notification {
 		if ( 'monthly' === $frequency && 1 !== intval( $today->format( 'd' ) ) ) {
 			return true;
 		}
+		$this->executed_last = get_option( 'wffn_email_notification_updated', array(
+			'weekly'  => '',
+			'monthly' => '',
+		) );
 
 		/** Check if the last execution time for the given frequency is not set */
 		if ( ! isset( $this->executed_last[ $frequency ] ) || empty( $this->executed_last[ $frequency ] ) ) {
@@ -252,21 +249,16 @@ class WFFN_Email_Notification {
 
 		try {
 			$last_sent = new DateTime( $this->executed_last[ $frequency ] );
-		} catch ( Exception $e ) {
+		} catch ( Exception|Error $e ) {
 			WFFN_Core()->logger->log( "Frequency {$frequency} and value {$this->executed_last[$frequency]}", 'notification-error', true );
 			WFFN_Core()->logger->log( "Exception {$e->getMessage()}", 'notification-error', true );
-
-			return false;
-		} catch ( Error $e ) {
-			WFFN_Core()->logger->log( "Frequency {$frequency} and value {$this->executed_last[$frequency]}", 'notification-error', true );
-			WFFN_Core()->logger->log( "Error {$e->getMessage()}", 'notification-error', true );
 
 			return false;
 		}
 
 		switch ( $frequency ) {
 			case 'weekly':
-				return ! ( intval( $last_sent->format( 'W' ) ) < intval( $today->format( 'W' ) ) );
+				return ! ( intval( $last_sent->format( 'oW' ) ) < intval( $today->format( 'oW' ) ) );
 
 			case 'monthly':
 				return ! ( intval( $last_sent->format( 'Ym' ) ) < intval( $today->format( 'Ym' ) ) );
@@ -309,6 +301,11 @@ class WFFN_Email_Notification {
 
 		// Update the last execution time if the email was sent.
 		if ( $sent ) {
+			/** Fetch the saved notifications data */
+			$this->executed_last = get_option( 'wffn_email_notification_updated', array(
+				'weekly'  => '',
+				'monthly' => '',
+			) );
 			$this->executed_last[ $frequency ] = date( 'c' ); // @codingStandardsIgnoreLine
 			update_option( 'wffn_email_notification_updated', $this->executed_last );
 		}

@@ -16,6 +16,30 @@ if ( ! class_exists( 'WFFN_Stripe_Admin_Controller' ) ) {
 			}
 
 
+
+
+			if ( current_user_can( 'install_plugins' ) ) {
+				add_action( 'wp_before_admin_bar_render', [ $this, 'custom_add_fk_stripe_menu' ] );
+			}
+
+		}
+
+		public static function get_instance() {
+			if ( null === self::$instance ) {
+				self::$instance = new self;
+			}
+
+			return self::$instance;
+		}
+
+		public function custom_add_fk_stripe_menu() {
+			global $wp_admin_bar;
+			$get_stripe_state = $this->stripe_state();
+
+			if ( $get_stripe_state['status'] === 'connected' || WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'stripe-menu-button' ) ) {
+				return;
+			}
+
 			$first_version = get_option( 'wffn_first_v', '0.0.0' );
 
 			/**
@@ -37,29 +61,6 @@ if ( ! class_exists( 'WFFN_Stripe_Admin_Controller' ) ) {
 
 			}
 
-			if ( current_user_can( 'install_plugins' ) ) {
-				add_action( 'wp_before_admin_bar_render', [ $this, 'custom_add_fk_stripe_menu' ] );
-				add_action( 'admin_footer', [ $this, 'admin_print_script' ] );
-			}
-
-		}
-
-		public static function get_instance() {
-			if ( null === self::$instance ) {
-				self::$instance = new self;
-			}
-
-			return self::$instance;
-		}
-
-		public function custom_add_fk_stripe_menu() {
-			global $wp_admin_bar;
-			$get_stripe_state = $this->stripe_state();
-
-			if ( $get_stripe_state['status'] === 'connected' || WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'stripe-menu-button' ) ) {
-				return;
-			}
-
 			$indicator = "<svg width='21' height='20' viewBox='0 0 21 20' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='0.259888' width='20.6504' height='20' rx='4' fill='white'/><path fill-rule='evenodd' clip-rule='evenodd' d='M9.96241 7.79563C9.96241 7.32809 10.3585 7.14827 11.0145 7.14827C11.9552 7.14827 13.1435 7.424 14.0842 7.91551V5.09832C13.0569 4.70272 12.0419 4.54688 11.0145 4.54688C8.50182 4.54687 6.83081 5.8176 6.83081 7.93948C6.83081 11.2482 11.5344 10.7207 11.5344 12.1473C11.5344 12.6987 11.0393 12.8785 10.3461 12.8785C9.31876 12.8785 8.00671 12.471 6.96697 11.9195V14.7726C8.11811 15.2522 9.28163 15.456 10.3461 15.456C12.9207 15.456 14.6908 14.2212 14.6908 12.0753C14.6784 8.50292 9.96241 9.13828 9.96241 7.79563Z'/></svg> Stripe";
 			$this->get_style();
 			$get_stripe_state = $this->stripe_state();
@@ -71,6 +72,9 @@ if ( ! class_exists( 'WFFN_Stripe_Admin_Controller' ) ) {
 					'href'  => site_url() . '/wp-admin/admin.php?page=bwf&path=/stripe-connect',
 				) );
 			}
+
+			add_action( 'admin_footer', [ $this, 'admin_print_script' ] );
+
 
 		}
 

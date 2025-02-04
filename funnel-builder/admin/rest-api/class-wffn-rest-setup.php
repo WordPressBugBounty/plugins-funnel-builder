@@ -52,9 +52,7 @@ if ( ! class_exists( 'WFFN_REST_Setup' ) ) {
 					'args'                => array(),
 				),
 			) );
-
-		}
-
+		}	
 		public function get_read_api_permission_check() {
 			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'read' );
 		}

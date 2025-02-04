@@ -18,8 +18,7 @@ if (!class_exists('WFFN_Common')) {
 			/**
 			 * schedule setup to remove expired transients
 			 */
-			add_action('wffn_remove_orphaned_transients', array(__CLASS__, 'remove_orphaned_transients'), 999999);
-			add_action('wffn_remove_orphaned_transients', array(__CLASS__, 'remove_wffn_logs_files'), 999999);
+			add_action('wffn_remove_orphaned_transients', array(__CLASS__, 'remove_wffn_logs_and_transients'), 999999);
 			add_filter('bwf_fb_templates', array(__CLASS__, 'update_template_list'), 10, 1);
 		}
 
@@ -729,51 +728,13 @@ if (!class_exists('WFFN_Common')) {
 			}
 		}
 
-		public static function remove_orphaned_transients()
-		{
-
-			if (!class_exists('WooFunnels_File_Api')) {
-				return;
-			}
-
-			clearstatcache();
-			$file_api = new WooFunnels_File_Api('wffn-transient');
-
-			$woofunnels_core_dir = $file_api->woofunnels_core_dir . '/wffn-transient';
-			$dir = @opendir($woofunnels_core_dir . '/'); //phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-
-			if (empty($dir)) {
-				return;
-			}
-			$yesdate = strtotime('-2 hours');
-
-			self::$start_time = time();
-			$i = 0;
-			if (is_dir($woofunnels_core_dir)) {
-				while (false !== ($file = @readdir($dir))) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition, Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition
-
-					if ($file === '.' || $file === '..') {
-						continue;
-					}
-					if (@filemtime($woofunnels_core_dir . '/' . '' . $file) <= $yesdate) { //phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-						$file_api->delete($woofunnels_core_dir . '/' . '' . $file);
-						$i++;
-					}
-
-					if (true === self::time_exceeded() || true === self::memory_exceeded()) {
-						break;
-					}
-				}
-			}
-		}
 
 		/**
-		 * Remove logs files before 4 days
+		 * Remove logs files and orphaned transients
 		 * @return void
 		 */
-		public static function remove_wffn_logs_files()
+		public static function remove_wffn_logs_and_transients()
 		{
-
 			if (!class_exists('WooFunnels_File_Api')) {
 				return;
 			}
@@ -781,44 +742,81 @@ if (!class_exists('WFFN_Common')) {
 			clearstatcache();
 			$file_api = new WooFunnels_File_Api('funnel-builder-logs');
 
-			$woofunnels_core_dir = $file_api->woofunnels_core_dir . '/funnel-builder-logs';
-			$dir = @opendir($woofunnels_core_dir . '/'); //phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+			// Define directories to process
+			$log_directories = [
+				$file_api->woofunnels_core_dir . '/funnel-builder-logs'
+			];
 
-			if (empty($dir)) {
-				return;
-			}
+			$transient_directory = $file_api->woofunnels_core_dir . '/wffn-transient';
 
-			/**
-			 * delete old woofunnels folder
-			 */
 			$upload = wp_upload_dir();
 			$folder_path = $upload['basedir'] . '/woofunnels';
 
+			// Delete old woofunnels folder
 			if (is_dir($folder_path)) {
 				$file_api->delete_folder($folder_path, true);
 			}
 
-			$yesdate = strtotime('-4 day');
+			$log_cutoff_time = strtotime('-4 days');
+			$transient_cutoff_time = strtotime('-2 hours');
 
 			self::$start_time = time();
-			$i = 0;
-			if (is_dir($woofunnels_core_dir)) {
-				while (false !== ($file = @readdir($dir))) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
 
-					if ($file === '.' || $file === '..') {
+			// Remove old log files
+			foreach ($log_directories as $log_dir) {
+				if (is_dir($log_dir)) {
+					$dir = @opendir($log_dir . '/'); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+
+					if (empty($dir)) {
 						continue;
 					}
-					if (@filemtime($woofunnels_core_dir . '/' . '' . $file) <= $yesdate) { //phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-						$file_api->delete($woofunnels_core_dir . '/' . '' . $file);
-						$i++;
-					}
 
-					if (true === self::time_exceeded() || true === self::memory_exceeded()) {
-						break;
+					while (false !== ($file = @readdir($dir))) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
+
+						if ($file === '.' || $file === '..') {
+							continue;
+						}
+
+						$file_path = $log_dir . '/' . $file;
+						if (@filemtime($file_path) <= $log_cutoff_time) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+							$file_api->delete($file_path);
+						}
+
+						if (true === self::time_exceeded() || true === self::memory_exceeded()) {
+							break;
+						}
 					}
+					closedir($dir);
+				}
+			}
+
+			// Remove orphaned transients
+			if (is_dir($transient_directory)) {
+				$dir = @opendir($transient_directory . '/'); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+
+				if (!empty($dir)) {
+					while (false !== ($file = @readdir($dir))) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
+
+						if ($file === '.' || $file === '..') {
+							continue;
+						}
+
+						$file_path = $transient_directory . '/' . $file;
+						if (@filemtime($file_path) <= $transient_cutoff_time) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+							$file_api->delete($file_path);
+						}
+
+						if (true === self::time_exceeded() || true === self::memory_exceeded()) {
+							break;
+						}
+					}
+					closedir($dir);
 				}
 			}
 		}
+
+
+
 
 		public static function time_exceeded()
 		{

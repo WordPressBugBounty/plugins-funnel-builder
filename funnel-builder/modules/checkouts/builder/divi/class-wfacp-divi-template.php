@@ -1,8 +1,7 @@
 <?php
 
 #[AllowDynamicProperties]
-
- abstract class WFACP_Divi_Template extends WFACP_Template_Common {
+abstract class WFACP_Divi_Template extends WFACP_Template_Common {
 	public $default_setting_el = [];
 	public $set_bredcrumb_data = [];
 	public $stepsData = [];
@@ -73,6 +72,8 @@
 
 		/* for step Two */
 		add_action( 'wfacp_before_step_next_button_two_step', [ $this, 'display_button_icon_step_2' ] );
+
+		add_action( 'wfacp_after_checkout_page_found', [ $this, 'maybe_unset_mini_cart_block_scripts' ] );
 	}
 
 
@@ -127,7 +128,7 @@
 			$this->breadcrumb_start();
 
 			if ( is_array( $this->form_data ) ) {
-				$mbDevices = [ 'wfacp_collapsible_order_summary_wrap' ,$label_position];
+				$mbDevices = [ 'wfacp_collapsible_order_summary_wrap', $label_position ];
 
 				if ( isset( $this->form_data['enable_callapse_order_summary'] ) && "on" === $this->form_data['enable_callapse_order_summary'] ) {
 					$mbDevices[] = 'wfacp_desktop';
@@ -513,7 +514,7 @@
 		$progress_form_data = [];
 
 		//_tablet append for tablet _phone append for Mobile Devices
-		if (!isset($this->form_data['enable_progress_bar']) || $this->form_data['enable_progress_bar'] == '' || $this->form_data['enable_progress_bar'] == 'off' ) {
+		if ( ! isset( $this->form_data['enable_progress_bar'] ) || $this->form_data['enable_progress_bar'] == '' || $this->form_data['enable_progress_bar'] == 'off' ) {
 			return;
 		}
 
@@ -721,7 +722,6 @@
 		$steps_arr       = [ 'single_step', 'two_step', 'third_step' ];
 
 		$devices = [];
-
 
 
 		if ( $number_of_steps <= 1 || ! isset( $this->form_data['enable_progress_bar'] ) || $this->form_data['enable_progress_bar'] == '' || $this->form_data['enable_progress_bar'] == 'no' ) {
@@ -1187,6 +1187,23 @@
 		return $black_backbtn_cls;
 	}
 
+
+
 	/*------------------ End  Sub Text----------------------------*/
+
+
+	/**
+	 * Unset mini cart block scripts if the theme builder is active.
+	 *
+	 * This function checks if the theme builder is active and, if so, removes the
+	 * action that prints lazy load scripts for the WooCommerce MiniCart block.
+	 *
+	 * @return void
+	 */
+	public function maybe_unset_mini_cart_block_scripts() {
+		if ( WFACP_Common::is_theme_builder() ) {
+			WFACP_Common::remove_actions( 'wp_print_footer_scripts', 'Automattic\WooCommerce\Blocks\BlockTypes\MiniCart', 'print_lazy_load_scripts' );
+		}
+	}
 
 }

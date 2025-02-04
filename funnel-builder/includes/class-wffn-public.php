@@ -227,7 +227,6 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' )
 			) ) );
 
-
 		}
 
 
