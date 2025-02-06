@@ -1,10 +1,10 @@
 === WooCommerce Checkout & Funnel Builder by FunnelKit ===
-Contributors: amans2k, xlplugins, teamwoofunnels
+Contributors: teamwoofunnels, amans2k, xlplugins
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.7.1
 Requires PHP: 7.4
-Stable tag: 3.9.0
+Stable tag: 3.9.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,10 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+= 3.9.1 (Feb 06, 2025) =
+* Improved: Enhanced plugin security for CSRF and LFI in scenarios where an administrator is logged in, ensuring stronger protection. (#7075)
+* Fixed: Improved compatibility with PixelYourSite by addressing a PHP error for setups using older versions (v9.3 or lower). (#7079)
+* Fixed: Email Performance Summary settings was not saving since last update. (#7080)
 
 = 3.9.0 (Feb 04, 2025) =
 * Added: Enhanced admin notices to guide users in excluding required pages from caching across multiple CDN and hosting platforms. (#5529)
@@ -393,7 +397,7 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 * Improved: Checkout - Updated compatibility with Lumise for enhanced user experience. (#6999)
 * Improved: Pinterest events integration now includes `product_id` in `add_to_cart` and `PageVisit` events for better tracking. (#6965)
 * Improved: Conversion tracking for analytics has been improved to address edge cases where users couldn’t access the thankyou page. (#6972)
-* Improved: Admin App loading improved to handle edge cases when Javascript and CSS was not loading from server with a particular version path. ()
+* Improved: Admin App loading improved to handle edge cases when Javascript and CSS was not loading from server with a particular version path. (#7050)
 * Fixed: Resolved an issue where the `add_to_cart` event didn’t trigger when product names contained special characters. (#6991)
 * Fixed: Checkout - Strike-through price and coupon color styling refined for Oxygen Builder. (#6970)
 * Fixed: Checkout - Addressed a PHP error when using the Divi Builder with Intasend Gateway, ensuring smooth functionality. (#6977)

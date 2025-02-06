@@ -1492,20 +1492,6 @@ final class WFACP_admin {
 					include __DIR__ . '/views/view.php';
 				}
 
-			} else {
-				/**
-				 * No need here to save it in transient as we are not removing the transients at appropriate places
-				 */
-				$path = __DIR__ . '/views/admin.php';
-
-				$tab = filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW );
-				if ( ! is_null( $tab ) ) {
-					$tab  = trim( $tab );
-					$path = __DIR__ . "/views/{$tab}.php";
-				}
-				if ( file_exists( $path ) ) {
-					include_once $path;
-				}
 			}
 		}
 	}

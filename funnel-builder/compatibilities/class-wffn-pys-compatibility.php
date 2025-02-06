@@ -19,6 +19,11 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 			if ( true !== $this->is_enable() ) {
 				return;
 			}
+
+			if ( ! class_exists( 'PixelYourSite\GATags' ) ) {
+				return;
+			}
+
 			global $post;
 			if ( is_null( $post ) || empty( $post->post_type ) || ! in_array( $post->post_type, array(
 					'wffn_landing',
@@ -33,6 +38,7 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 			/**
 			 * Check if datalayer override setting enabled
 			 */
+
 			if ( empty( PixelYourSite\GATags() ) || PixelYourSite\GATags()->getOption( 'gtag_datalayer_type' ) === 'disable' ) {
 				return;
 			}
@@ -40,7 +46,7 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 			if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 				return;
 			}
-
+			
 			$instance = BWF_Admin_General_Settings::get_instance();
 
 			/**
