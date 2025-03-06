@@ -5,6 +5,7 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  * Class WFACP_Importer
  * Handles Importing of Aero Checkout Pages Export JSON file
  */
+if ( ! class_exists( 'WFACP_Importer' ) ) {
 #[AllowDynamicProperties]
 
   class WFACP_Importer {
@@ -283,7 +284,7 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
 
 }
 
-
-if ( class_exists( 'WFACP_Core' ) ) {
-	WFACP_Core::register( 'import', 'WFACP_Importer' );
+	if ( class_exists( 'WFACP_Core' ) ) {
+		WFACP_Core::register( 'import', 'WFACP_Importer' );
+	}
 }

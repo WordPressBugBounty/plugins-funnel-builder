@@ -7,12 +7,11 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFFN_Optin_Action_Webhook' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFFN_Optin_Action_Webhook extends WFFN_Optin_Action {
+	class WFFN_Optin_Action_Webhook extends WFFN_Optin_Action {
 
 		private static $slug = 'op_webhook_url';
 		private static $ins = null;
-		public $priority = 50;
+		public $priority = 45;
 
 		/**
 		 * WFFN_Optin_Action_Webhook constructor.
@@ -55,6 +54,8 @@ if ( ! class_exists( 'WFFN_Optin_Action_Webhook' ) ) {
 			if ( isset( $optin_action_settings['op_webhook_enable'] ) && wffn_string_to_bool( $optin_action_settings['op_webhook_enable'] ) === true && ! empty( $optin_action_settings['op_webhook_url'] ) ) {
 
 				$op_webhook_url = urldecode( $optin_action_settings['op_webhook_url'] );
+				$post_fields    = $this->send_utm_tracking_data( $post_fields );
+				$post_fields    = apply_filters( 'wffn_optin_posted_data_before_send_webhook', $post_fields, $fields_settings, $optin_action_settings );
 
 				$optin_webhook_request = wp_remote_post( $op_webhook_url, array( 'body' => apply_filters( 'wffn_optin_filter_webhook_fields', $post_fields ) ) );
 
@@ -68,6 +69,38 @@ if ( ! class_exists( 'WFFN_Optin_Action_Webhook' ) ) {
 			return $posted_data;
 
 		}
+
+		/**
+		 * Attach utm tracking data
+		 *
+		 * @param $post_fields
+		 *
+		 * @return array
+		 */
+		public function send_utm_tracking_data( $post_fields ) {
+			try {
+				if ( ! class_exists( 'BWF_Ecomm_Tracking_Common' ) ) {
+					return $post_fields;
+				}
+
+				$utm_data = BWF_Ecomm_Tracking_Common::get_instance()->get_common_tracking_data();
+
+				if ( empty( $utm_data ) || ! is_array( $utm_data ) ) {
+					return $post_fields;
+				}
+
+				// Remove unnecessary keys directly
+				unset( $utm_data['journey'], $utm_data['source_id'] );
+				$utm_data['timestamp'] = current_time( 'mysql' );
+
+				return array_merge( $post_fields, $utm_data );
+			} catch ( Exception $e ) {
+
+			}
+
+			return $post_fields;
+		}
+
 	}
 
 	if ( class_exists( 'WFOPP_Core' ) ) {

@@ -3,26 +3,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'WFACP_Checkout_WC_Objectiv' ) ) {
+	#[AllowDynamicProperties]
+	class WFACP_Checkout_WC_Objectiv {
+		public function __construct() {
 
-#[AllowDynamicProperties] 
+			/* checkout page */
+			add_action( 'wfacp_checkout_page_found', [ $this, 'actions' ] );
+			add_action( 'wfacp_after_checkout_page_found', [ $this, 'actions' ] );
+		}
 
-  class WFACP_Checkout_WC_Objectiv {
-	public function __construct() {
+		public function actions() {
+			add_filter( 'cfw_checkout_is_enabled', '__return_false' );
+			add_filter( 'cfw_is_checkout', '__return_false' );
+			add_filter( 'wfacp_css_js_removal_paths', function ( $paths ) {
+				$paths[] = 'checkout-for-woocommerce';
 
-		/* checkout page */
-		add_action( 'wfacp_checkout_page_found', [ $this, 'actions' ] );
-		add_action( 'wfacp_after_checkout_page_found', [ $this, 'actions' ] );
+				return $paths;
+			} );
+		}
 	}
 
-	public function actions() {
-		add_filter( 'cfw_checkout_is_enabled', '__return_false' );
-		add_filter( 'cfw_is_checkout', '__return_false' );
-		add_filter( 'wfacp_css_js_removal_paths', function ( $paths ) {
-			$paths[] = 'checkout-for-woocommerce';
-
-			return $paths;
-		} );
-	}
+	WFACP_Plugin_Compatibilities::register( new WFACP_Checkout_WC_objectiv(), 'objectiv' );
 }
-
-WFACP_Plugin_Compatibilities::register( new WFACP_Checkout_WC_objectiv(), 'objectiv' );

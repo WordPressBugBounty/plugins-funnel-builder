@@ -1573,6 +1573,11 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				$options = $this->sanitize_custom( $settings, true );
 
 				if ( is_array( $options ) ) {
+					$update_step_id = $step_id;
+					if ( 'offer' === $type ) {
+						$update_step_id = get_post_meta( $step_id, '_funnel_id', true );
+					}
+					$this->update_last_update_time( 0, $update_step_id );
 
 					if ( 'landing' === $type || 'optin' === $type || 'optin_ty' === $type || 'wc_thankyou' === $type || 'optin-confirmation' === $type || 'thankyou' === $type ) {
 						return $this->save_pg_settings( $step_id, $options, $type );
@@ -1744,6 +1749,12 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				}
 
 				if ( true === $response['status'] ) {
+
+					if ( 'offer' === $type ) {
+						$step_id = get_post_meta( $step_id, '_funnel_id', true );
+					}
+					$this->update_last_update_time( 0, $step_id );
+
 					$resp = array(
 						'msg'     => __( 'Design Saved Successfully', 'funnel-builder' ),
 						'success' => true,
@@ -1796,10 +1807,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 				$all_data = wffn_rest_api_helpers()->get_step_post( $step_id, true );
 
-				$bwf_id = get_post_meta( $step_id, '_bwf_in_funnel', true );
-				if ( ! empty( $bwf_id ) ) {
-					WFFN_Core()->admin->update_last_update_time( $bwf_id );
-				}
+				$this->update_last_update_time( 0, $step_id );
 
 				$resp['step_data'] = is_array( $all_data ) && isset( $all_data['step_data'] ) ? $all_data['step_data'] : false;
 
@@ -2055,6 +2063,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				if ( ! empty( $customization_data['form_field_width'] ) ) {
 					WFFN_Optin_Pages::get_instance()->form_builder->save_form_field_width( $optin_id, wp_json_encode( $customization_data['form_field_width'] ) );
 				}
+
+				$this->update_last_update_time( 0, $step_id );
 
 				$resp['success'] = true;
 				$resp['msg']     = __( 'Customizations saved', 'funnel-builder' );
@@ -2386,6 +2396,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				update_post_meta( $step_id, '_shortcode_settings', $options );
 
 				if ( is_array( $options ) ) {
+					$this->update_last_update_time( 0, $step_id );
 					$resp = array(
 						'msg'     => __( 'Form Setting Saved', 'funnel-builder' ),
 						'success' => true,
@@ -2933,8 +2944,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 							'class'   => 'bwf-field-one-half bwf-field-one-half-last',
 							'default' => 'no_sticky',
 							'options' => [
-								[ 'key' => 'yes_sticky', 'value' => 'yes_sticky', 'label' => 'Yes' ],
-								[ 'key' => 'no_sticky', 'value' => 'no_sticky', 'label' => 'No' ],
+								[ 'key' => 'yes_sticky', 'value' => 'yes_sticky', 'label' => __( 'Yes', 'funnel-builder' ) ],
+								[ 'key' => 'no_sticky', 'value' => 'no_sticky', 'label' => __( 'No', 'funnel-builder' ) ],
 
 							],
 							'key'     => 'wfacp_form_section_embed_forms_2_' . 'btn_order-place_make_button_sticky_on_mobile'

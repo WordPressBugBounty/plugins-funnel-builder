@@ -1,5 +1,5 @@
 <?php
-
+if ( ! class_exists( 'WFOP_Optin_Form' ) ) {
 #[AllowDynamicProperties]
 
   class WFOP_Optin_Form extends WFOP_Divi_HTML_BLOCK {
@@ -221,7 +221,7 @@
 		return $this->get_the_ID();
 	}
 
-	protected function html( $attrs, $content = null, $render_slug = '' ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+	protected function html( $attrs, $content = null, $render_slug = '' ) { // phpcs:ignore
 
 		ob_start();
 		$settings                       = $this->props;
@@ -268,3 +268,4 @@
 }
 
 return new WFOP_Optin_Form;
+}

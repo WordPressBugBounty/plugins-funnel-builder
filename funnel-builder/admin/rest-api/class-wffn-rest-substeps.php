@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! class_exists( 'WFFN_REST_Substeps' ) ) {
 	#[AllowDynamicProperties]
-	class WFFN_REST_Substeps extends WP_REST_Controller {
+	class WFFN_REST_Substeps extends WFFN_REST_Controller {
 
 		public static $_instance = null;
 
@@ -235,6 +235,7 @@ if ( ! class_exists( 'WFFN_REST_Substeps' ) ) {
 			BWF_Admin_Breadcrumbs::register_ref( 'funnel_id', $funnel_id );
 			if ( $funnel_id > 0 && ! empty( $type ) ) {
 				$get_substep = WFFN_Core()->substeps->get_integration_object( $type );
+				$this->update_last_update_time( $funnel_id, 0 );
 				if ( $get_substep instanceof WFFN_Substep ) {
 					$switched         = $get_substep->switch_status( $substep_id, $new_status );
 					$resp['status']   = true;

@@ -8,12 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class WFFN_REST_Funnel_Settings
  *
- * * @extends WP_REST_Controller
+ * * @extends WFFN_REST_Controller
  */
 if ( ! class_exists( 'WFFN_REST_Funnel_Settings' ) ) {
 	#[AllowDynamicProperties]
 
-  class WFFN_REST_Funnel_Settings extends WP_REST_Controller {
+  class WFFN_REST_Funnel_Settings extends WFFN_REST_Controller {
 
 		public static $_instance = null;
 
@@ -132,6 +132,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Settings' ) ) {
 			}
 
 			WFFN_Core()->get_dB()->update_meta( $funnel_id, '_settings', $settings );
+			$this->update_last_update_time( $funnel_id, 0 );
 			$resp = array(
 				'success' => true,
 				'msg'     => __( 'Success', 'funnel-builder' )

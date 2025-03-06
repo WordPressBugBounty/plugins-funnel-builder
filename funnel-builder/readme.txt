@@ -1,10 +1,10 @@
 === WooCommerce Checkout & Funnel Builder by FunnelKit ===
-Contributors: teamwoofunnels, amans2k, xlplugins
+Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.7.1
+Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 3.9.1
+Stable tag: 3.10.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,21 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+= 3.10.0 (Feb 06, 2025) =
+* Added: Checkout - New feature billing/shipping address fields to allow house numbers for better user experience. (#6928)
+* Improved: Checkout - Enhanced compatibility with the Divi Menu and Divi Bar plugins for seamless integration. (#7124)
+* Improved: Improved translations for admin pages to enhance clarity and usability. (#6955)
+* Improved: Enhanced the "Product in Stock" tag in the admin UI to cover additional edge cases. (#7108)
+* Improved: Checkout - Updated compatibility with WooCommerce Checkout Manager (QuadLayers v7.6.5) for improved checkout flow. (#7111)
+* Improved: Enhanced the admin UI zero states in funnel analytics for better visibility and interaction. (#7118)
+* Improved: Performance optimizations implemented for both admin and front pages, boosting overall speed & improved experience. (#7077)
+* Fixed: Resolved an issue where custom CSS settings were not working when using single or double quotes. (#7112)
+* Fixed: Checkout - Handled PHP errors in the checkout template when using Divi Builder, even if the theme/plugin was later disabled. (#7150)
+* Fixed: Checkout - Improved compatibility with the PostNL plugin for a smoother checkout experience. (#7163)
+* Fixed: Checkout - Addressed the subscription price string issue in the product switcher when the product was not in the cart. (#7152)
+* Fixed: Checkout - Resolved the "Invalid recurring shipping method" error when using WooCommerce subscriptions with a single recurring shipping method. (#7172)
+* Fixed: Corrected contact metrics in the performance email summary for accurate reporting. (#7133)
+
 = 3.9.1 (Feb 06, 2025) =
 * Improved: Enhanced plugin security for CSRF and LFI in scenarios where an administrator is logged in, ensuring stronger protection. (#7075)
 * Fixed: Improved compatibility with PixelYourSite by addressing a PHP error for setups using older versions (v9.3 or lower). (#7079)

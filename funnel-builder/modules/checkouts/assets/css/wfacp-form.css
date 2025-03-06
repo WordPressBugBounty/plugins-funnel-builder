@@ -315,7 +315,8 @@ body #wfacp-e-form a:not(.button-social-login):not(.wfob_read_more_link) {
     background-color: transparent;
     text-decoration: none;
 }
-body:not(.wfacpef_page) #wfacp-e-form a:not(.button-social-login):not(.wfob_read_more_link){
+
+body:not(.wfacpef_page) #wfacp-e-form a:not(.button-social-login):not(.wfob_read_more_link) {
     color: #dd7575;
 }
 
@@ -1375,6 +1376,71 @@ body #wfacp-e-form .wfacp_main_form.woocommerce .text-center {
     margin-right: 0;
 }
 
+
+/*-------------------------------------show-password-input------------------------------*/
+
+
+.woocommerce form .show-password-input,
+.woocommerce-page form .show-password-input {
+    background-color: transparent;
+    border-radius: 0;
+    border: 0;
+    color: #353030;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 8px;
+    text-decoration: none;
+    top: 0;
+    bottom: 0;
+    -webkit-appearance: none;
+    -webkit-font-smoothing: inherit;
+}
+
+body #wfacp-sec-wrapper div#password_strength,
+body #wfacp-sec-wrapper .woocommerce-password-hint {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+    display: block;
+}
+
+
+body #wfacp-sec-wrapper #account_password_field label.wfacp-form-control-label {
+    right: 40px;
+}
+
+body #wfacp-sec-wrapper #account_password_field span.woocommerce-input-wrapper.password-input {
+    position: relative;
+}
+body #wfacp-sec-wrapper  #account_password_field span.woocommerce-input-wrapper.password-input input#account_password {
+    padding-right: 32px !important;
+}
+
+#wfacp-sec-wrapper .show-password-input::after {
+    background: url("../img/icon-eye-open.svg") no-repeat center center;
+    display: block;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    content: "";
+    text-decoration: none;
+    margin-left: 0;
+    margin-top: 0;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+}
+#wfacp-sec-wrapper .show-password-input.display-password::after {
+    background: url("../img/icon-eye-close.svg") no-repeat center center;
+}
+
+#wfacp-sec-wrapper .show-password-input.display-password::after,
+#wfacp-sec-wrapper .show-password-input.display-password::after {
+    color: #585858
+}
 
 /* ORDER SUMMARY SECTION CSS */
 #wfacp-e-form .wfacp-order-summary-label {
@@ -2821,7 +2887,7 @@ body #wfacp-e-form .woocommerce-form-coupon-toggle.wfacp-woocom-coupon .woocomme
 body #wfacp-e-form .woocommerce-form-login-toggle .woocommerce-info:before,
 body #wfacp-e-form .woocommerce-info:before,
 #wfacp-e-form .wfacp_main_form button:before,
-#wfacp-e-form .wfacp_main_form button:after,
+#wfacp-e-form .wfacp_main_form button:not(.show-password-input):after,
 body #wfacp-e-form .wfacp_main_form .woocommerce-error li:before,
 .wfacp_checkout-template-wfacp-canvas p.wpml-ls-statics-post_translations.wpml-ls,
 body #wfacp-e-form .wfacp_main_form .processing:before,
@@ -5143,6 +5209,7 @@ body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce .
     padding-right: 24px;
     padding-left: 24px;
 }
+
 /* Social Login, Social Sharing by miniOrange  */
 .mo-openid-app-icons + br {
     display: none;
@@ -5209,7 +5276,7 @@ body #wfacp-sec-wrapper .wfacp_main_form #wfacp_checkout_form .wfacp_coupon_remo
     box-shadow: 0 0 0 1px #e15334;
 }
 
-body #wfacp-sec-wrapper .wfacp_main_form #wfacp_checkout_form .wfacp_coupon_remove_msg{
+body #wfacp-sec-wrapper .wfacp_main_form #wfacp_checkout_form .wfacp_coupon_remove_msg {
     margin-left: 8px;
     margin-right: 8px;
 }
@@ -5235,6 +5302,7 @@ body #wfacp-e-form .wfacp_collapsible_order_summary_wrap.wfacp .wfacp-top label.
 body button.button.wfacp-coupon-btn {
     border: none;
 }
+
 /*-------------------------------------------Media Query--------------------------------------------*/
 
 @media (pointer: coarse) {
@@ -5672,11 +5740,12 @@ body button.button.wfacp-coupon-btn {
 
 
     #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout button.wfacp_next_page_button,
-    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout  #place_order{
+    #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout #place_order {
         margin: 0;
         padding: 14px 20px;
         width: 100%;
     }
+
     #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout button.wfacp_next_page_button,
     #wfacp-e-form .wfacp-form .wfacp_main_form .woocommerce-checkout #place_order {
         margin: 0;

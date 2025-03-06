@@ -25,7 +25,7 @@ class WooFunnels_OptIn_Manager {
 		add_action( 'bwf_track_usage_scheduled_single', array( __CLASS__, 'maybe_track_usage' ), 10, 2 );
 
 		//initializing schedules
-		add_action( 'wp', array( __CLASS__, 'initiate_schedules' ) );
+		add_action( 'admin_footer', array( __CLASS__, 'initiate_schedules' ) );
 
 		// For testing license notices, uncomment this line to force checks on every page load
 
@@ -239,18 +239,27 @@ class WooFunnels_OptIn_Manager {
 	}
 
 	/**
-	 * Initiate schedules in order to start tracking data regularly
+	 * Initiate schedules in order to start tracking data regularly,
+	 * only on Mondays and only on the admin dashboard (index.php).
 	 */
 	public static function initiate_schedules() {
-		/** Clearing scheduled hook */
-		if ( wp_next_scheduled( 'woofunnels_maybe_track_usage_scheduled' ) ) {
-			wp_clear_scheduled_hook( 'woofunnels_maybe_track_usage_scheduled' );
+
+		// Run only in the admin dashboard
+		if ( ! is_admin() || get_current_screen()->base !== 'dashboard' ) {
+			return; // Exit if not in the admin dashboard's index.php
 		}
 
-		if ( true === self::is_optin_allowed() && 'yes' === self::get_optIn_state() && ! wp_next_scheduled( 'bwf_maybe_track_usage_scheduled' ) ) {
+
+		if ( current_user_can('administrator')
+		     && true === self::is_optin_allowed()
+		     && 'yes' === self::get_optIn_state()
+		     && ! wp_next_scheduled( 'bwf_maybe_track_usage_scheduled' ) ) {
+
 			wp_schedule_event( current_time( 'timestamp' ), 'weekly_bwf', 'bwf_maybe_track_usage_scheduled' );
 		}
 	}
+
+
 
 	public static function is_optin_allowed() {
 		return apply_filters( 'buildwoofunnels_optin_allowed', true );

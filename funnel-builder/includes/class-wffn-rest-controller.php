@@ -1211,7 +1211,7 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 		 * @return string
 		 * @throws Exception
 		 */
-		function get_two_date_interval( $startDate, $endDate ) {
+		public function get_two_date_interval( $startDate, $endDate ) {
 			// Convert the date strings to DateTime objects
 			$startDateTime = new DateTime( $startDate );
 			$endDateTime   = new DateTime( $endDate );
@@ -1229,6 +1229,24 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 			}
 		}
 
+		/**
+		 * Update Last Updated on Meta Data
+		 *
+		 * @param $funnel_id
+		 * @param $step_id
+		 *
+		 * @return void
+		 */
+		public function update_last_update_time( $funnel_id, $step_id ) {
+
+			if ( absint( $funnel_id ) === 0 && absint( $step_id ) !== 0 ) {
+				$funnel_id = get_post_meta( $step_id, '_bwf_in_funnel', true );
+			}
+			if ( empty( $funnel_id ) ) {
+				return;
+			}
+			WFFN_Core()->get_dB()->update_meta( $funnel_id, '_last_updated_on', current_time( 'mysql' ) );
+		}
 
 	}
 }

@@ -186,6 +186,7 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 				}
 
 				update_post_meta( $step_id, '_wfop_page_layout', $data );
+				$this->update_last_update_time( 0, $step_id );
 
 				$resp['success']        = true;
 				$resp['msg']            = __( 'Fields Updated', 'funnel-builder' );
@@ -294,6 +295,7 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 					$custom_fields[ $section_type ][ $name ] = $data;
 
 					update_post_meta( $step_id, '_wfop_page_custom_field', $custom_fields );
+					$this->update_last_update_time( 0, $step_id );
 
 					$data['id']         = $name;
 					$data['unique_id']  = $name;
@@ -416,6 +418,7 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 					if ( is_array( $options ) ) {
 						$options = apply_filters( 'wffn_update_optin_actions_settings', $options, $step_id );
 						update_post_meta( $step_id, 'wffn_actions_custom_settings', $options );
+						$this->update_last_update_time( 0, $step_id );
 					}
 
 					$resp['success'] = true;
@@ -802,11 +805,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -865,11 +868,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -900,11 +903,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -969,11 +972,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -1005,11 +1008,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -1044,11 +1047,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -1083,11 +1086,11 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],

@@ -127,6 +127,8 @@ if ( ! function_exists( 'wfacp_form_field' ) ) {
 		);
 
 		$args = wp_parse_args( $args, $defaults );
+
+		$key  = apply_filters( 'wfacp_form_field_key', $key, $args, $value );
 		$args = apply_filters( 'woocommerce_form_field_args', $args, $key, $value );
 
 		if ( $args['required'] ) {

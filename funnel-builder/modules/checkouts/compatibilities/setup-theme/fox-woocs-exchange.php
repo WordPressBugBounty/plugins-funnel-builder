@@ -14,7 +14,6 @@ if ( ! class_exists( 'WFACP_With_Fox_WOOCS' ) ) {
 		}
 
 		/**
-		 * @hooked into `wcct_deal_amount_fixed_amount_{$type}` | `wcct_regular_price_event_value_fixed`
 		 * Modifies the amount for the fixed discount given by the admin in the currency selected.
 		 *
 		 * @param integer|float $price

@@ -165,43 +165,7 @@ if ( ! class_exists( 'WFOCU_Contacts_Analytics' ) ) {
 			return $data;
 		}
 
-		/**
-		 * @param $funnel_id
-		 * @param $start_date
-		 * @param $end_date
-		 * @param $is_interval
-		 * @param $int_request
-		 *
-		 * @return array|false[]|object|stdClass[]|null
-		 */
-		public function get_total_revenue( $funnel_id, $start_date, $end_date, $is_interval = '', $int_request = '' ) {
-			global $wpdb;
-			$funnel_id = ( $funnel_id !== '' ) ? " AND fid = " . $funnel_id . " " : ' AND sess.fid != 0 ';
-			$date      = ( '' !== $start_date && '' !== $end_date ) ? " AND ev.timestamp >= '" . $start_date . "' AND ev.timestamp < '" . $end_date . "' " : '';
 
-			$interval_query = '';
-			$group_by       = '';
-			if ( class_exists( 'WFFN_REST_Controller' ) ) {
-				$rest_con = new WFFN_REST_Controller();
-
-				if ( 'interval' === $is_interval ) {
-					$get_interval   = $rest_con->get_interval_format_query( $int_request, 'ev.timestamp' );
-					$interval_query = $get_interval['interval_query'];
-					$interval_group = $get_interval['interval_group'];
-					$group_by       = " GROUP BY " . $interval_group;
-
-				}
-			}
-
-			$query    = "SELECT SUM(ev.value) as sum_upsells " . $interval_query . " FROM `" . $wpdb->prefix . "wfocu_event` as ev LEFT JOIN `" . $wpdb->prefix . "wfocu_session` as sess on sess.id = ev.sess_id WHERE ev.action_type_id = 4 " . $funnel_id . " AND sess.total > 0  " . $date . $group_by . " ORDER BY sess.id DESC";
-			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
-			if ( true === $db_error['db_error'] ) {
-				return $db_error;
-			}
-
-			return $data;
-		}
 
 		/**
 		 * @param $limit

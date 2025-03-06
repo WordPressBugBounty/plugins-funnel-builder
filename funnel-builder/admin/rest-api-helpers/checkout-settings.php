@@ -14,11 +14,11 @@ return [
 				'values' => [
 					0 => [
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					1 => [
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -45,11 +45,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -65,11 +65,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -102,11 +102,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -139,11 +139,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -170,11 +170,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -190,11 +190,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -227,11 +227,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -264,11 +264,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -295,11 +295,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -315,11 +315,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -363,11 +363,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -383,11 +383,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -420,11 +420,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -451,11 +451,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -471,11 +471,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -508,11 +508,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -557,11 +557,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -577,11 +577,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],
@@ -614,11 +614,11 @@ return [
 				'values'  => [
 					[
 						'value' => 'true',
-						'name'  => 'Yes',
+						'name'  => __( 'Yes', 'funnel-builder' ),
 					],
 					[
 						'value' => 'false',
-						'name'  => 'No',
+						'name'  => __( 'No', 'funnel-builder' ),
 					],
 				],
 			],

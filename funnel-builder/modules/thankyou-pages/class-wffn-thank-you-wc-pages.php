@@ -1338,11 +1338,11 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],

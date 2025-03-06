@@ -24,7 +24,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 */
 		public function __construct() {
 
-		
+
 			/** Admin enqueue scripts*/
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_assets' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'js_variables' ), 0 );
@@ -66,9 +66,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			add_action( 'admin_bar_menu', array( $this, 'add_menu_in_admin_bar' ), 99 );
 
-			add_action( 'updated_postmeta', [ $this, 'update_last_edit_time' ], 10, 2 );
-			add_action( 'wffn_funnel_update', [ $this, 'update_last_update_time' ] );
-
 			add_action( 'wffn_rest_plugin_activate_response', array( $this, 'maybe_add_auth_link_stripe' ), 10, 2 );
 
 			add_filter( 'woofunnels_global_settings', [ $this, 'add_global_setting_tabs' ], 5 );
@@ -77,7 +74,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			add_action( 'wp_ajax_wffn_blocks_incompatible_switch_to_classic', array( $this, 'blocks_incompatible_switch_to_classic_cart_checkout' ) );
 			add_action( 'wp_ajax_wffn_dismiss_notice', array( $this, 'ajax_dismiss_admin_notice' ) );
-			add_filter( 'bwf_general_settings_default_config', [ $this, 'google_map_key_migrate' ], 10, 2 );
 			add_filter( 'bwf_general_settings_default_config', function ( $config ) {
 				if ( isset( $config['allow_theme_css'] ) ) {
 
@@ -139,6 +135,16 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			add_action( 'plugin_action_links', [ $this, 'plugin_action_link' ], 10, 2 );
 			add_action( 'current_screen', array( $this, 'conditional_includes' ), 1 );
 
+			add_action( 'fk_optimize_conversion_table_analytics', array( $this, 'optimize_conversion_table_analytics' ) );
+			add_action( 'fk_remove_optimize_conversion_table_schedule', array( $this, 'remove_optimize_conversion_table_schedule' ) );
+
+
+			/** Email notification callback */
+			add_action( 'wffn_performance_notification', array( $this, 'run_notifications' ) );
+			add_action( 'admin_init', array( $this, 'test_notification_admin' ) );
+			add_action( 'bwf_global_save_settings_funnelkit_notifications', array( $this, 'save_settings_for_email_notification' ), 10, 1 );
+
+
 		}
 
 
@@ -153,12 +159,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			return self::$ins;
 		}
 
-		public function google_map_key_migrate( $settings ) {
-			$global_settings                      = get_option( '_wfacp_global_settings', [] );
-			$settings['funnelkit_google_map_key'] = isset( $global_settings['wfacp_google_address_key'] ) ? $global_settings['wfacp_google_address_key'] : '';
-
-			return $settings;
-		}
 
 		public function add_global_setting_tabs( $menu ) {
 			$f_tracking = array(
@@ -343,7 +343,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function add_automations_menu() {
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( $user ) {
 				add_submenu_page( 'woofunnels', __( 'Automations', 'funnel-builder' ), __( 'Automations', 'funnel-builder' ) . '<span style="padding-left: 2px;color: #f18200; vertical-align: super; font-size: 9px;"> NEW!</span>', $user, 'bwf&path=/automations', array(
 					$this,
@@ -358,7 +358,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				return;
 			}
 
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( $user ) {
 
 
@@ -416,7 +416,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			}
 
 			if ( $this->is_wffn_flex_page( 'all' ) ) {
-				if ( WFFN_Core()->role->user_access( 'funnel', 'write' ) ) {
+				if ( WFFN_Role_Capability::get_instance()->user_access( 'funnel', 'write' ) ) {
 					add_filter( 'user_can_richedit', '__return_true' );
 				}
 
@@ -424,7 +424,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1738836484' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1741260255' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -562,7 +562,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 *
 		 * @return bool
 		 */
-        public function is_wffn_flex_page( $page = 'bwf' ) {
+		public function is_wffn_flex_page( $page = 'bwf' ) {
 
 			if ( isset( $_GET['page'] ) && $_GET['page'] === $page ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return true;
@@ -664,7 +664,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 				?>
                 <script>window.wffn = <?php echo wp_json_encode( apply_filters( 'wffn_localize_admin', $data ) ); ?>;</script>
-				<script>
+                <script>
 					<?php echo '
 						(function() {
 							setTimeout(() => {
@@ -688,7 +688,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 							}, 3000)
 						})();
 					' ?>
-				</script>
+                </script>
 				<?php
 			}
 		}
@@ -897,9 +897,9 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				$sql_query .= " ORDER BY 
                     CASE WHEN order_by_meta.meta_value IS NULL THEN 1 ELSE 0 END, 
                     order_by_meta.meta_value " . $args['order_by_meta']['order'];
-			}else{
+			} else {
 				$sql_query .= " ORDER BY {table_name}.id DESC";
-            }
+			}
 
 			if ( false === $is_total_query_required ) {
 				$sql_query .= ' LIMIT ' . $args['offset'] . ', ' . $limit;
@@ -1089,7 +1089,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 		public function admin_footer_text( $footer_text ) {
-			if ( false === WFFN_Core()->role->user_access( 'funnel', 'read' ) ) {
+			if ( false === WFFN_Role_Capability::get_instance()->user_access( 'funnel', 'read' ) ) {
 				return $footer_text;
 			}
 
@@ -1160,6 +1160,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 */
 		public function wffn_maybe_init_background_updater() {
 			if ( class_exists( 'WFFN_Background_Importer' ) ) {
+
 				$this->wffn_updater = new WFFN_Background_Importer();
 			}
 
@@ -1279,10 +1280,17 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'3.3.5' => array( 'wffn_update_migrate_data_for_currency_switcher' ),
 					'3.3.6' => array( 'wffn_alter_conversion_table_add_source' ),
 					'3.3.7' => array( 'wffn_update_email_default_settings' ),
+					'3.3.8' => array( 'wffn_set_default_value_in_autoload_option' ),
+					'3.3.9' => array( 'wffn_cleanup_data_for_conversion' ),
 				);
 
-				$task_list_for_new_install = array( 'wffn_update_email_default_settings' );
+				$task_list_for_new_install = array(
+					'wffn_update_email_default_settings',
+					'wffn_set_default_value_in_autoload_option'
+
+				);
 				$current_db_version        = get_option( '_wffn_db_version', '0.0.0' );
+
 
 				/**
 				 * 1. Fresh customer with no DB data. -
@@ -1648,7 +1656,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 * @throws Exception
 		 */
 		public function add_menu_in_admin_bar( WP_Admin_Bar $wp_admin_bar ) {
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( ! $user ) {
 				return;
 			}
@@ -1844,27 +1852,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		public function wizard_url() {
 			return admin_url( 'admin.php?page=bwf&path=/user-setup' );
 		}
-
-		/**
-		 * Update Last Updated on Meta Data
-		 *
-		 * @param $meta_id
-		 * @param $object_id
-		 *
-		 * @return void
-		 */
-		public function update_last_edit_time( $meta_id, $object_id ) {
-			$bwf_id = get_post_meta( $object_id, '_bwf_in_funnel', true );
-			if ( ! empty( $bwf_id ) ) {
-				$this->update_last_update_time( $bwf_id );
-				remove_action( 'updated_postmeta', [ $this, 'updated_post_meta' ], 10, 2 );
-			}
-		}
-
-		public function update_last_update_time( $bwf_id ) {
-			WFFN_Core()->get_dB()->update_meta( $bwf_id, '_last_updated_on', current_time( 'mysql' ) );
-		}
-
 
 		/**
 		 * Filter CB to alter response data to pass connect link to the REST cll
@@ -2270,7 +2257,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 *
 		 * @return array a complete array for every product to handle license related info
 		 */
-		public function get_license_config( $expiry_only = false ) {
+		public function get_license_config( $expiry_only = false, $get_ad = true ) {
 
 
 			if ( $expiry_only ) {
@@ -2278,17 +2265,16 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'f'  => array(
 						'ed' => $this->get_license_expiry()
 					),
-					'gp' => [ 1, 1 ]
+					'gp' => [ 2, 2 ]
 				];
 			} else {
-				return [
+				$license_config = [
 					'f'  => array(
 						'e'   => defined( 'WFFN_PRO_VERSION' ),
 						'la'  => $this->is_license_active(),  //false on not exist
 						//true when activated
 						//false when manually deactivated
 						// on expiry it could be both true and false, not recommended checking this value
-						'ad'  => $this->get_pro_activation_date(),
 						'ed'  => $this->get_license_expiry(),
 						'ib'  => $this->is_basic_exists(),
 						'adl' => $this->get_lite_activation_date(),
@@ -2296,18 +2282,23 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					'ck' => array(
 						'e'  => wfacp_pro_dependency(), //should cover aero, basic and pro addon
 						'la' => $this->is_license_active_for_checkout(),
-						'ad' => $this->get_pro_activation_date(),
 						'ed' => $this->get_license_expiry_for_checkout()
 
 					),
 					'ul' => array(
 						'e'  => function_exists( 'WFOCU_Core' ), //should cover upstroke & pro addon
 						'la' => $this->is_license_active_for_upsell(),
-						'ad' => $this->get_pro_activation_date(),
 						'ed' => $this->get_license_expiry_for_upsell()
 					),
 					'gp' => [ 2, 2 ]
 				];
+				if ( $get_ad === true ) {
+					$license_config['f']['ad']  = $this->get_pro_activation_date();
+					$license_config['ck']['ad'] = $this->get_pro_activation_date();
+					$license_config['ul']['ad'] = $this->get_pro_activation_date();
+
+				}
+                return $license_config;
 			}
 		}
 
@@ -2371,6 +2362,13 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				return false;
 			}
 
+			if ( WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'onboarding_wizard' ) ) {
+				/**
+				 * This flag tells us that the wizard notice has already been dismissed
+				 */
+				return false;
+			}
+
 			$status = get_option( '_wffn_onboarding_completed', false );
 			if ( false !== $status ) {
 				/**
@@ -2388,19 +2386,13 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				return false;
 			}
 
-			if ( WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'onboarding_wizard' ) ) {
-				/**
-				 * This flag tells us that the wizard notice has already been dismissed
-				 */
-				return false;
-			}
-
 			if ( false !== get_option( '_bwfan_onboarding_completed', false ) && 'activated' === WFFN_Common::get_plugin_status( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' ) ) {
 				/**
 				 * This checks if user has completed wizard from automations plugin & we have stripe plugin activated
 				 */
 				return false;
 			}
+
 
 			return true;
 
@@ -2632,6 +2624,244 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 		}
 
+		/**
+		 * Function run on schedule for clean up data
+		 * duplicate entry and remove subscription form conversion
+		 * @return void
+		 */
+		public function optimize_conversion_table_analytics() {
+
+			global $wpdb;
+			try {
+				if ( ! class_exists( 'BWF_WC_Compatibility' ) ) {
+					return;
+				}
+				$conv_table              = $wpdb->prefix . 'bwf_conversion_tracking';
+				$order_table             = $wpdb->prefix . 'wc_orders';
+				$aero_table              = $wpdb->prefix . 'wfacp_stats';
+				$limit                   = 100;
+				$is_clear_schedule       = true;
+				WFFN_Common::$start_time = time();
+
+				while ( true ) {
+					// Stop if time or memory exceeded
+					if ( ( WFFN_Common::time_exceeded() || WFFN_Common::memory_exceeded() ) ) {
+						$is_clear_schedule = false;
+						break;
+					}
+
+					// Query Setup
+					if ( BWF_WC_Compatibility::is_hpos_enabled() ) {
+						$order_meta_table = $wpdb->prefix . 'wc_orders_meta';
+						$conv_query       = "SELECT conv.source as ID FROM {$conv_table} AS conv
+                        INNER JOIN {$order_meta_table} AS om ON (conv.source = om.order_id AND om.meta_key = '_subscription_renewal')
+                        WHERE conv.type = %s
+                        ORDER BY conv.timestamp DESC LIMIT 0, %d";//phpcs:ignore
+
+					} else {
+						$conv_query = "SELECT conv.source as ID FROM {$conv_table} AS conv
+                        INNER JOIN {$wpdb->postmeta} AS pm ON (conv.source = pm.post_id AND pm.meta_key = '_subscription_renewal')
+                        WHERE conv.type = %s
+                        ORDER BY conv.timestamp DESC LIMIT 0, %d";
+					}
+
+					$get_ids = $wpdb->get_col( $wpdb->prepare( $conv_query, 2, $limit ) );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+					// Stop loop if no more data
+					if ( empty( $get_ids ) || ! is_array( $get_ids ) ) {
+						/*
+						 * Attempt duplicate query
+						 */
+						$duplicate_row = $wpdb->get_col( $wpdb->prepare( "SELECT source FROM {$conv_table} WHERE type = 2 AND source != 0 GROUP BY source HAVING COUNT(*) > %d ", 1 ) );//phpcs:ignore
+
+						if ( ! empty( $duplicate_row ) && is_array( $duplicate_row ) ) {
+							$is_clear_schedule = false;
+							$delete_query      = "DELETE FROM {$conv_table} WHERE id IN ( SELECT id FROM ( 
+                                        SELECT id FROM {$conv_table} WHERE source IN ( 
+                                        SELECT source FROM {$conv_table} WHERE type = 2 AND source != 0
+                                        GROUP BY source HAVING COUNT(*) > 1 ) AND id NOT IN (
+                                        SELECT MAX(id) FROM {$conv_table} GROUP BY source ) LIMIT 100 ) AS subquery )";
+							$wpdb->query( $delete_query );  //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+							WFFN_Core()->logger->log( 'Clear duplicate rows.', 'wffn_ay', true );
+							continue;
+
+						} else {
+							WFFN_Core()->logger->log( 'No more data to clear from conversion tracking.', 'wffn_ay', true );
+							break;
+						}
+					}
+
+					$is_clear_schedule = false;
+					$delete_query      = "DELETE FROM {$conv_table} WHERE type = %d AND source IN (" . implode( ',', array_map( 'intval', $get_ids ) ) . ")";
+					$wpdb->query( $wpdb->prepare( $delete_query, 2 ) );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+					if ( ! empty( $wpdb->last_error ) ) {
+						$is_clear_schedule = true;
+						WFFN_Core()->logger->log( 'Conversion tracking cleanup last error: ' . $wpdb->last_error, 'wffn_ay', true );
+					}
+
+					$update_query = "UPDATE {$conv_table} AS conv LEFT JOIN {$aero_table} AS stats ON conv.source = stats.order_id SET conv.checkout_total = stats.total_revenue 
+                                              WHERE 1=1 AND conv.funnel_id != 0 
+                                                AND conv.checkout_total = 0
+                                                AND stats.total_revenue != 0
+                                                AND conv.type = %d
+                                                AND conv.timestamp > '2025-01-01 00:00:00'";
+
+					$wpdb->query( $wpdb->prepare( $update_query, 2 ) );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+					if ( ! empty( $wpdb->last_error ) ) {
+						$is_clear_schedule = true;
+						WFFN_Core()->logger->log( 'Conversion tracking update last error: ' . $wpdb->last_error, 'wffn_ay', true );
+					}
+				}
+
+				if ( ( WFFN_Common::time_exceeded() || WFFN_Common::memory_exceeded() ) ) {
+					return;
+				}
+
+				/**
+				 * Remove all subscription order from aero
+				 */
+				$aero_table = $wpdb->prefix . 'wfacp_stats';
+
+				if ( BWF_WC_Compatibility::is_hpos_enabled() ) {
+					$aero_query = "SELECT ch.order_id as ID FROM {$aero_table} AS ch
+                        INNER JOIN {$order_table} AS ot ON (ch.order_id = ot.id )
+                        WHERE ot.type = %s
+                        ORDER BY ch.date DESC LIMIT 0, %d";
+
+				} else {
+					$aero_query = "SELECT ch.order_id as ID FROM {$aero_table} AS ch
+                        INNER JOIN {$wpdb->posts} AS p ON (ch.order_id = p.ID)
+                        WHERE p.post_type = %s
+                        ORDER BY ch.date DESC LIMIT 0, %d";
+				}
+
+				$get_aero_ids = $wpdb->get_col( $wpdb->prepare( $aero_query, 'shop_subscription', $limit ) );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				if ( is_array( $get_aero_ids ) && count( $get_aero_ids ) > 0 ) {
+					$is_clear_schedule = false;
+					$wpdb->query( "DELETE FROM {$aero_table} WHERE order_id IN (" . implode( ',', $get_aero_ids ) . " )" );//phpcs:ignore
+					if ( ! empty ( $wpdb->last_error ) ) {
+						$is_clear_schedule = true;
+						WFFN_Core()->logger->log( 'Conversion aero tracking cleanup last error: ' . $wpdb->last_error, 'wffn_ay', true );
+					}
+				}
+
+				/**
+				 * Remove duplicate entry
+				 */
+				$duplicate_query = "SELECT order_id as ID FROM {$aero_table} 
+                	WHERE order_id IN ( SELECT order_id  FROM {$aero_table} 
+    					GROUP BY order_id 
+    					HAVING COUNT(order_id) > %d
+					)
+					ORDER BY order_id, ID LIMIT 0, %d";
+
+				$duplicate_aero_ids = $wpdb->get_col( $wpdb->prepare( $duplicate_query, 1, $limit ) );//phpcs:ignore
+
+				if ( is_array( $duplicate_aero_ids ) && count( $duplicate_aero_ids ) > 0 ) {
+					$is_clear_schedule = false;
+					$delete_query      = "DELETE FROM {$aero_table} WHERE ID IN (
+                        SELECT ID FROM (
+                            SELECT ID
+                            FROM {$aero_table} t1
+                            WHERE ID NOT IN (
+                                SELECT MAX(ID) FROM {$aero_table} t2 GROUP BY order_id
+                            )
+                            AND order_id IN (
+                                SELECT order_id FROM {$aero_table} GROUP BY order_id HAVING COUNT(order_id) > %d
+                            )
+                            ORDER BY ID DESC
+                            LIMIT %d
+                        ) AS subquery
+                    )";
+					$wpdb->query( $wpdb->prepare( $delete_query, 1, $limit ) );//phpcs:ignore
+					if ( ! empty ( $wpdb->last_error ) ) {
+						$is_clear_schedule = true;
+						WFFN_Core()->logger->log( 'Conversion duplicate tracking cleanup last error: ' . $wpdb->last_error, 'wffn_ay', true );
+					}
+				}
+
+				/**
+				 * Remove all subscription order from bump
+				 */
+				if ( class_exists( 'WFOB_Core' ) ) {
+					$bump_table = $wpdb->prefix . 'wfob_stats';
+					if ( BWF_WC_Compatibility::is_hpos_enabled() ) {
+						$bump_query = "SELECT ch.oid as ID FROM {$bump_table} AS ch
+                        INNER JOIN {$order_table} AS ot ON (ch.oid = ot.id )
+                        WHERE ot.type = %s
+                        ORDER BY ch.date DESC LIMIT 0, %d";
+
+					} else {
+						$bump_query = "SELECT ch.oid as ID FROM {$bump_table} AS ch
+                        INNER JOIN {$wpdb->posts} AS p ON (ch.oid = p.ID)
+                        WHERE p.post_type = %s
+                        ORDER BY ch.date DESC LIMIT 0, %d";
+					}
+
+					$get_bump_ids = $wpdb->get_col( $wpdb->prepare( $bump_query, 'shop_subscription', $limit ) );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					if ( is_array( $get_bump_ids ) && count( $get_bump_ids ) > 0 ) {
+						$is_clear_schedule = false;
+						$wpdb->query( "DELETE FROM {$bump_table} WHERE oid IN (" . implode( ',', $get_bump_ids ) . " )" );//phpcs:ignore
+						if ( ! empty ( $wpdb->last_error ) ) {
+							$is_clear_schedule = true;
+							WFFN_Core()->logger->log( 'Conversion bump tracking cleanup last error: ' . $wpdb->last_error, 'wffn_ay', true );
+						}
+					}
+				}
+
+				// If no remaining rows, schedule a single action to remove the recurring action
+				if ( $is_clear_schedule ) {
+					wp_schedule_single_event( time(), 'fk_remove_optimize_conversion_table_schedule' );
+				}
+			} catch ( Exception|Error $e ) {
+				// Schedule a single action to delete the recurring action
+				wp_schedule_single_event( time(), 'fk_remove_optimize_conversion_table_schedule' );
+				WFFN_Core()->logger->log( 'Exception occurred in : ' . __FUNCTION__ . $e->getMessage(), 'wffn_ay', true );
+
+			}
+
+		}
+
+		public function remove_optimize_conversion_table_schedule() {
+			// Clear the scheduled action
+			wp_clear_scheduled_hook( 'fk_optimize_conversion_table_analytics' );
+			WFFN_Core()->logger->log( 'Recurring action "fk_optimize_conversion_table_analytics" cleared : ' . __FUNCTION__, 'wffn_ay', true );
+
+		}
+
+		/**
+		 * Runs the email notifications.
+		 *
+		 * @return void
+		 */
+		public function run_notifications() {
+			WFFN_Email_Notification::run_notifications();
+		}
+
+		/**
+		 * Tests the email notification in the admin area.
+		 *
+		 * @return void
+		 */
+		public function test_notification_admin() {
+			if ( ! current_user_can( 'administrator' ) ) {
+				return;
+			}
+			if ( ! isset( $_GET['wffn_email_preview'] ) ) { // @codingStandardsIgnoreLine
+				return;
+			}
+			WFFN_Email_Notification::test_notification_admin();
+		}
+
+		/**
+		 * save settings for email notification
+		 **/
+		public function save_settings_for_email_notification( $settings ) {
+			WFFN_Email_Notification::save_settings( $settings );
+
+		}
 
 	}
 
@@ -2639,7 +2869,3 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		WFFN_Core::register( 'admin', 'WFFN_Admin' );
 	}
 }
-
-
-
-

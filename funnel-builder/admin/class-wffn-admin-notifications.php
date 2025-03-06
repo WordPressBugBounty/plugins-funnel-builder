@@ -676,9 +676,9 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 
 				$identifier = 'bwf_conversion_1_migrator_cron';
 				if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wffn_conversion_tracking_migrator' ) && ! wp_next_scheduled( $identifier ) ) {
-					wffn_conversion_tracking_migrator()->push_to_queue( 'wffn_run_conversion_migrator' );
-					wffn_conversion_tracking_migrator()->dispatch();
-					wffn_conversion_tracking_migrator()->save();
+					WFFN_Conversion_Tracking_Migrator::get_instance()->push_to_queue( 'wffn_run_conversion_migrator' );
+					WFFN_Conversion_Tracking_Migrator::get_instance()->dispatch();
+					WFFN_Conversion_Tracking_Migrator::get_instance()->save();
 				}
 
 			} else {
@@ -725,7 +725,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		}
 
 		public function register_notices() {
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( ! $user ) {
 				return;
 			}
@@ -813,21 +813,21 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			if ( ! defined( 'WFFN_PRO_VERSION' ) || version_compare( WFFN_PRO_VERSION, '3.0.0', '<' ) ) {
 				return 4;
 			}
-			$upgrade_state = wffn_conversion_tracking_migrator()->get_upgrade_state();
+			$upgrade_state = WFFN_Conversion_Tracking_Migrator::get_instance()->get_upgrade_state();
 
 			if ( 0 === $upgrade_state ) {
 				if ( ! wffn_is_wc_active() || version_compare( get_option( 'wffn_first_v', '0.0.0' ), '3.0.0', '>=' ) ) {
-					wffn_conversion_tracking_migrator()->set_upgrade_state( 4 );
+					WFFN_Conversion_Tracking_Migrator::get_instance()->set_upgrade_state( 4 );
 					$upgrade_state = 4;
 				} else {
 					global $wpdb;
 					$count_wc_orders = $wpdb->get_var( "SELECT COUNT(`order_id`) FROM {$wpdb->prefix}wc_order_stats" ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
 					if ( empty( $count_wc_orders ) ) {
-						wffn_conversion_tracking_migrator()->set_upgrade_state( 4 );
+						WFFN_Conversion_Tracking_Migrator::get_instance()->set_upgrade_state( 4 );
 						$upgrade_state = 4;
 					} else {
-						wffn_conversion_tracking_migrator()->set_upgrade_state( 1 );
+						WFFN_Conversion_Tracking_Migrator::get_instance()->set_upgrade_state( 1 );
 						$upgrade_state = 1;
 					}
 				}

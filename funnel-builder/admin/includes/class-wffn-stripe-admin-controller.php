@@ -480,7 +480,8 @@ if ( ! class_exists( 'WFFN_Stripe_Admin_Controller' ) ) {
 		}
 
 	}
-}
-if ( class_exists( 'WFFN_Core' ) ) {
-	WFFN_Core::register( 'stripe_controller', 'WFFN_Stripe_Admin_Controller' );
+
+	if ( class_exists( 'WFFN_Core' ) ) {
+		WFFN_Core::register( 'stripe_controller', 'WFFN_Stripe_Admin_Controller' );
+	}
 }

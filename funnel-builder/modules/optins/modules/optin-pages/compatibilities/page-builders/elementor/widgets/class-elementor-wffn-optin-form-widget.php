@@ -909,7 +909,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				$label = 'Enable';
 			}
 			if ( empty( $label_on ) ) {
-				$label_on = 'Yes';
+				$label_on = __( 'Yes', 'funnel-builder' );
 			}
 			if ( empty( $label_off ) ) {
 				$label_off = 'no';
@@ -948,7 +948,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				$label = 'Enable';
 			}
 			if ( empty( $label_on ) ) {
-				$label_on = 'Yes';
+				$label_on = __( 'Yes', 'funnel-builder' );
 			}
 			if ( empty( $label_off ) ) {
 				$label_off = 'no';

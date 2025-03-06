@@ -37,7 +37,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
 
 			$widget_key = 'funnelkit_widget';
 
-			if ( WFFN_Core()->role->user_access( 'funnel', 'read' ) ) {
+			if ( WFFN_Role_Capability::get_instance()->user_access( 'funnel', 'read' ) ) {
 				add_meta_box( $widget_key, esc_html__( 'FunnelKit', 'funnel-builder' ), array( $this, 'widget_content' ), 'dashboard', 'normal', 'high' );
 
 			}
@@ -1062,7 +1062,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
 				return WFFN_Core()->admin->compare_version( WFFN_PRO_VERSION, $plugins->response[ WFFN_PRO_PLUGIN_BASENAME ]->new_version );
 			} elseif ( 'install' !== WFFN_Common::get_plugin_status( 'wp-marketing-automations-pro/wp-marketing-automations-pro.php' ) && isset( $plugins->response ) && is_array( $plugins->response ) && isset( $plugins->response['wp-marketing-automations-pro/wp-marketing-automations-pro.php'] ) ) {
 
-				return WFFN_Core()->admin->compare_version( $all_plugins['wp-marketing-automations-pro/wp-marketing-automations-pro.php']['Version'], $plugins->response['wp-marketing-automations/wp-marketing-automations.php']->new_version );
+				return WFFN_Core()->admin->compare_version( $all_plugins['wp-marketing-automations-pro/wp-marketing-automations-pro.php']['Version'], $plugins->response['wp-marketing-automations-pro/wp-marketing-automations-pro.php']->new_version );
 			} elseif ( 'install' !== WFFN_Common::get_plugin_status( 'cart-for-woocommerce/plugin.php' ) && isset( $plugins->response ) && is_array( $plugins->response ) && isset( $plugins->response['cart-for-woocommerce/plugin.php'] ) ) {
 
 				return WFFN_Core()->admin->compare_version( $all_plugins['cart-for-woocommerce/plugin.php']['Version'], $plugins->response['cart-for-woocommerce/plugin.php']->new_version );

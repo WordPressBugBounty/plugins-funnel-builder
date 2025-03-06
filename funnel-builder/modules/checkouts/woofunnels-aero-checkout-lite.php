@@ -2,7 +2,7 @@
 if ( ! function_exists( 'wfacp_pro_dependency' ) ) {
 
 	/**
-	 * Function to check if wcct_finale pro version is loaded and activated or not?
+	 * Function to check if pro-version is loaded and activated or not?
 	 * @return bool True|False
 	 */
 	function wfacp_pro_dependency() {
@@ -15,7 +15,7 @@ if ( ! function_exists( 'wfacp_pro_dependency' ) ) {
 		$is_funnel_pro = in_array( 'funnel-builder-pro/funnel-builder-pro.php', $active_plugins, true ) || array_key_exists( 'funnel-builder-pro/funnel-builder-pro.php', $active_plugins );
 
 		$is_funnel_basic = in_array( 'funnel-builder-basic/funnel-builder-basic.php', $active_plugins, true ) || array_key_exists( 'funnel-builder-basic/funnel-builder-basic.php', $active_plugins );
-		$is_aero_pro = in_array( 'woofunnels-aero-checkout/woofunnels-aero-checkout.php', $active_plugins, true ) || array_key_exists( 'woofunnels-aero-checkout/woofunnels-aero-checkout.php', $active_plugins );
+		$is_aero_pro     = in_array( 'woofunnels-aero-checkout/woofunnels-aero-checkout.php', $active_plugins, true ) || array_key_exists( 'woofunnels-aero-checkout/woofunnels-aero-checkout.php', $active_plugins );
 
 		return $is_aero_pro || $is_funnel_basic || $is_funnel_pro;
 	}
@@ -27,8 +27,7 @@ if ( wfacp_pro_dependency() ) {
 
 if ( ! class_exists( 'WFACP_Core' ) ):
 	#[AllowDynamicProperties]
-
- final class WFACP_Core {
+	final class WFACP_Core {
 
 		private static $ins = null;
 		private static $_registered_entity = [];
@@ -98,7 +97,7 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 		private function definition() {
 
 
-			define( 'WFACP_VERSION', '3.17.0' );
+			define( 'WFACP_VERSION', '3.20.0' );
 			define( 'WFACP_MIN_WP_VERSION', '4.9' );
 			define( 'WFACP_MIN_WC_VERSION', '3.3' );
 			define( 'WFACP_SLUG', 'wfacp' );

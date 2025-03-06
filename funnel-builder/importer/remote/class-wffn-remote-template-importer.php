@@ -84,7 +84,6 @@ if ( ! class_exists( 'WFFN_Remote_Template_Importer' ) ) {
 
 				return false;
 			}
-
 			$response = json_decode( $response['body'], true );
 			if ( ! is_array( $response ) ) {
 				return [ 'error' => __( 'It seems we are unable to import this template from the cloud library. Please contact support.', 'funnel-builder' ) ];
@@ -129,6 +128,16 @@ if ( ! class_exists( 'WFFN_Remote_Template_Importer' ) ) {
 								)
 							);
 						}
+						if ( 'wc_checkout' === $type && isset( $response['wc_order_bump'] ) ) {
+
+							$order_bump_json          = $response['wc_order_bump'];
+							$order_bump_data          = json_decode( $order_bump_json, true );
+							if ( is_array( $order_bump_data ) ) {
+								$order_bump_data['products'] = [];
+							}
+							$data['meta']['substeps'] = [ 'wc_order_bump' => [ $order_bump_data ] ];
+
+						}
 
 						$funnels['steps'][] = $data;
 
@@ -152,6 +161,7 @@ if ( ! class_exists( 'WFFN_Remote_Template_Importer' ) ) {
 					}
 
 				}
+
 				if ( 0 === count( $funnels ) ) {
 					return [ 'error' => __( 'No Template found', 'funnel-builder' ) ];
 				}

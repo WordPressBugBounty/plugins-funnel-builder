@@ -73,7 +73,7 @@ if ( ! class_exists( 'BWF_Admin_Settings' ) ) {
 					}
 				}
 			}
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( $user ) {
 				if ( empty( $found ) ) {
 					add_submenu_page( 'woofunnels', __( 'Settings', 'funnel-builder' ), __( 'Settings', 'funnel-builder' ), $user, 'bwf&path=/settings', array(

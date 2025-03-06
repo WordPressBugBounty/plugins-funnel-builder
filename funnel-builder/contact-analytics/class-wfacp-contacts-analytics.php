@@ -267,44 +267,6 @@ if ( ! class_exists( 'WFACP_Contacts_Analytics' ) ) {
 			return $data;
 		}
 
-		/**
-		 * @param $funnel_id
-		 * @param $start_date
-		 * @param $end_date
-		 * @param $is_interval
-		 * @param $int_request
-		 *
-		 * @return array|false[]|object|stdClass[]|null
-		 */
-		public function get_total_revenue($funnel_id, $start_date, $end_date, $is_interval = '', $int_request = '') {
-			global $wpdb;
-			$funnel_id = ( $funnel_id !== '' ) ? " AND fid = " . $funnel_id . " " : " AND fid != 0 ";
-			$date      = ( '' !== $start_date && '' !== $end_date ) ? " AND `date` >= '" . $start_date . "' AND `date` < '" . $end_date . "' " : '';
-
-			$interval_query = '';
-			$group_by       = '';
-			if ( class_exists( 'WFFN_REST_Controller' ) ) {
-				$rest_con = new WFFN_REST_Controller();
-
-				if ( 'interval' === $is_interval ) {
-					$get_interval   = $rest_con->get_interval_format_query( $int_request, 'date' );
-					$interval_query = $get_interval['interval_query'];
-					$interval_group = $get_interval['interval_group'];
-					$group_by       = " GROUP BY " . $interval_group;
-
-				}
-			}
-
-			$query    = "SELECT SUM(total_revenue) as sum_aero " . $interval_query . " FROM `" . $wpdb->prefix . "wfacp_stats` WHERE 1=1 " . $date . $funnel_id . $group_by . " ORDER BY id DESC";
-			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
-			if ( true === $db_error['db_error'] ) {
-				return $db_error;
-			}
-
-			return $data;
-
-		}
 
 		/**
 		 * @param $limit

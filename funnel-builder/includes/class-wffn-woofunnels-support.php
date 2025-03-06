@@ -64,7 +64,7 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 		 */
 		public function add_menus() {
 
-			$user = WFFN_Core()->role->user_access( 'menu', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 
 			if ( ! WooFunnels_dashboard::$is_core_menu && false !== $user ) {
 				add_menu_page( 'WooFunnels', 'WooFunnels', $user, 'woofunnels', array(

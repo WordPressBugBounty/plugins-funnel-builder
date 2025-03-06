@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 	#[AllowDynamicProperties]
-	class WFFN_REST_Store_Checkout extends WP_REST_Controller {
+	class WFFN_REST_Store_Checkout extends WFFN_REST_Controller {
 
 		public static $_instance = null;
 
@@ -495,6 +495,7 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 
 					if ( $funnel_id > 0 ) {
 						WFFN_Common::update_store_checkout_meta( $funnel_id );
+						$this->update_last_update_time( $funnel_id, 0 );
 						if ( defined( 'ICL_LANGUAGE_CODE' ) && 'all' !== ICL_LANGUAGE_CODE ) {
 							WFFN_Core()->get_dB()->update_meta( $funnel_id, '_lang', ICL_LANGUAGE_CODE );
 						}

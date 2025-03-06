@@ -384,20 +384,12 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 				return $availability;
 			}
 
-			$availability_text = "";
-			$available         = $product->get_availability();
-			if ( ! empty( $available['class'] ) ) {
-				switch ( $available['class'] ) {
-					case 'available-on-backorder' :
-						$availability_text = __( 'On backorder', 'funnel-builder' );
-						break;
-					case 'in-stock' :
-						$availability_text = __( 'In stock', 'funnel-builder' );
-						break;
-					case 'out-of-stock' :
-						$availability_text = __( 'Out of stock', 'funnel-builder' );
-						break;
-				}
+			if ( ! $product->is_in_stock() ) {
+				$availability_text = 'out-of-stock';
+			} elseif ( ( $product->managing_stock() && $product->is_on_backorder( 1 ) ) || ( ! $product->managing_stock() && $product->is_on_backorder( 1 ) ) ) {
+				$availability_text = 'available-on-backorder';
+			} else {
+				$availability_text = 'in-stock';
 			}
 
 			$availability['text']  = $availability_text;
@@ -606,7 +598,7 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 		 * @return bool
 		 */
 		public function get_api_permission_check( $cap, $access ) {
-			if ( WFFN_Core()->role->user_access( $cap, $access ) ) {
+			if ( WFFN_Role_Capability::get_instance()->user_access( $cap, $access ) ) {
 				return true;
 			}
 

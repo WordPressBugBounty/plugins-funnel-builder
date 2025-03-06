@@ -8,6 +8,7 @@
                         <div data-tab="11" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Inline Field Validation', 'woofunnels-aero-checkout' ) ?></div>
                         <div data-tab="12" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Collapsible Optional Field', 'woofunnels-aero-checkout' ) ?></div>
                         <div data-tab="10" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Enhanced Phone Field', 'woofunnels-aero-checkout' ) ?></div>
+                        <div data-tab="13" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Enhanced Address Field', 'woofunnels-aero-checkout' ) ?></div>
                         <div data-tab="1" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Google Address Autocompletion', 'woofunnels-aero-checkout' ) ?></div>
                         <div data-tab="2" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Auto Apply Coupons', 'woofunnels-aero-checkout' ) ?></div>
                         <div data-tab="4" role="tab" class="wfacp-tab-title wfacp-tab-desktop-title"><?php _e( 'Multistep Field Preview', 'woofunnels-aero-checkout' ) ?></div>

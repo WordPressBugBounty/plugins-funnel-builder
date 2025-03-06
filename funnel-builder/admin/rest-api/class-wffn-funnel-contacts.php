@@ -1236,10 +1236,10 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 			if ( ! isset( $args['funnel_id'] ) || intval( $args['funnel_id'] ) === 0 ) {
 				$filters[0]['rules'][] = array(
 					'slug'          => 'funnels',
-					'title'         => __( 'Funnel' ),
+					'title'         => __( 'Funnel', 'funnel-builder' ),
 					'type'          => 'search',
 					'api'           => '/funnels/?s={{search}}&search_filter',
-					'op_label'      => __( 'Funnel' ),
+					'op_label'      => __( 'Funnel', 'funnel-builder' ),
 					'required'      => array( 'data' ),
 					'readable_text' => '{{rule /}} - {{value /}}',
 				);

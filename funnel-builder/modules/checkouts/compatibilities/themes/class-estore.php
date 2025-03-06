@@ -3,26 +3,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! class_exists( 'WFACP_Compatibility_With_Estore' ) ) {
+	#[AllowDynamicProperties]
+	class WFACP_Compatibility_With_Estore {
 
-#[AllowDynamicProperties] 
+		public function __construct() {
 
-  class WFACP_Compatibility_With_Estore {
+			add_action( 'wfacp_checkout_page_found', [ $this, 'unhook_customizer_register' ] );
 
-	public function __construct() {
+		}
 
-		add_action( 'wfacp_checkout_page_found', [ $this, 'unhook_customizer_register' ] );
+		public function unhook_customizer_register() {
 
-	}
+			if ( function_exists( 'estore_customize_register' ) ) {
+				remove_action( 'customize_register', 'estore_customize_register' );
+			}
 
-	public function unhook_customizer_register() {
-
-		if ( function_exists( 'estore_customize_register' ) ) {
-			remove_action( 'customize_register', 'estore_customize_register' );
 		}
 
 	}
 
+
+	WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_Estore(), 'estore' );
 }
-
-
-WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_Estore(), 'estore' );

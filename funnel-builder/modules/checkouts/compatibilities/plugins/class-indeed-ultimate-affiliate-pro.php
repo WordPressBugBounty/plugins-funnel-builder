@@ -5,31 +5,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /* Indeed Ultimate Affiliate Pro by WPIndeed Development */
+if ( ! class_exists( 'WFACP_Compatibility_With_Indeed_Ultimate_Affiliate_Pro' ) ) {
+	#[AllowDynamicProperties]
+	class WFACP_Compatibility_With_Indeed_Ultimate_Affiliate_Pro {
 
-#[AllowDynamicProperties] 
+		public function __construct() {
 
-  class WFACP_Compatibility_With_Indeed_Ultimate_Affiliate_Pro {
+			add_action( 'admin_enqueue_scripts', [ $this, 'remove_script' ], 999 );
 
-	public function __construct() {
-
-		add_action( 'admin_enqueue_scripts', [ $this, 'remove_script' ], 999 );
-
-	}
-
-
-	public function remove_script() {
-
-		if ( ! isset( $_REQUEST['page'] ) || $_REQUEST['page'] !== 'wfacp' ) {
-			return;
 		}
 
-		wp_dequeue_script( 'uap_admin_js' );
+
+		public function remove_script() {
+
+			if ( ! isset( $_REQUEST['page'] ) || $_REQUEST['page'] !== 'wfacp' ) {
+				return;
+			}
+
+			wp_dequeue_script( 'uap_admin_js' );
+
+		}
+
 
 	}
+
+	WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_Indeed_Ultimate_Affiliate_Pro(), 'wfacp-indeed-ultimate' );
 
 
 }
-
-WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_Indeed_Ultimate_Affiliate_Pro(), 'wfacp-indeed-ultimate' );
-
-

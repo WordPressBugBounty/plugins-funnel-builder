@@ -194,7 +194,7 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 			if ( is_string( $args ) ) {
 				$args = [];
 			}
-			$user = WFFN_Core()->role->user_access( 'funnel', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'funnel', 'read' );
 
 			//Unable to get Order & User or Guest doesn't have funnel read permission.
 			if ( false === $this->get_order() ) {
@@ -215,7 +215,7 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 				$args = [];
 			}
 
-			$user = WFFN_Core()->role->user_access( 'funnel', 'read' );
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'funnel', 'read' );
 
 			if ( false === $this->get_order() ) {
 				if ( ( false === $user ) && ( false === apply_filters( 'wffn_show_dummy_ty_order_data', false ) ) ) {

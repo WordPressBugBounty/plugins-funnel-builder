@@ -131,8 +131,16 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			if ( ( ! empty( $post ) && $post->post_type === $this->get_post_type_slug() ) ) {
 				$this->setup_custom_options( $post->ID );
-				printf( '<style>%s</style>', esc_html( $this->get_custom_option( 'custom_css' ) ) );
-				printf( '<style>%s</style>', esc_html( $this->get_option( 'css' ) ) );
+				$style_custom_css = $this->get_custom_option( 'custom_css' );
+				if ( ! empty( $style_custom_css ) ) {
+					$custom_css = '<style>' . $style_custom_css . '</style>';
+					echo $custom_css;//phpcs:ignore
+				}
+				$global_css = $this->get_option( 'css' );
+				if ( ! empty( $global_css ) ) {
+					$global_css = '<style>' . $global_css . '</style>';
+					echo $global_css;//phpcs:ignore
+				}
 			}
 
 		}

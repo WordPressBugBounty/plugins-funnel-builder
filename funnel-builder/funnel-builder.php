@@ -3,16 +3,16 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.9.1
+ * Version: 3.10.0
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: funnel-builder
- * Elementor tested up to: 3.27.3
+ * Elementor tested up to: 3.28.0
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.7.1
+ * Tested up to: 6.7.2
  * Requires PHP: 7.4
  * WooFunnels: true
  *
@@ -152,15 +152,15 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		/**
 		 * Defining constants
 		 */
-		public function define_plugin_properties() {
+		public function define_plugin_properties()  {
 
 
-			define( 'WFFN_VERSION', '3.9.1' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.47' );
+			define( 'WFFN_VERSION', '3.10.0' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.52' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
-			define( 'WFFN_DB_VERSION', '3.3.7' );
+			define( 'WFFN_DB_VERSION', '3.3.9' );
 			define( 'WFFN_SLUG', 'wffn' );
 			define( 'WFFN_PLUGIN_FILE', __FILE__ );
 			define( 'WFFN_PLUGIN_DIR', __DIR__ );
@@ -207,21 +207,21 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 *
 		 */
 		public function load_classes() {
-			/**
-			 * Loads all the admin
-			 */
-			$this->load_autoloader();
-			$this->load_admin();
 
-			$this->load_includes();
-
-			$this->load_modules();
-
-			$this->load_steps();
-
-			$this->load_commons();
-
-			$this->load_analytics();
+			try {
+				/**
+				 * Loads all the admin
+				 */
+				$this->load_autoloader();
+				$this->load_admin();
+				$this->load_includes();
+				$this->load_modules();
+				$this->load_steps();
+				$this->load_commons();
+				$this->load_analytics();
+			} catch ( Exception|Error $e ) {
+				//do nothing here
+			}
 
 		}
 
@@ -255,6 +255,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			include_once __DIR__ . '/admin/rest-api/class-wffn-funnel-contacts.php';
 			include_once __DIR__ . '/admin/rest-api/class-wffn-funnel-orders.php';
 			include_once __DIR__ . '/admin/rest-api/class-wffn-rest-api-dashboard-endpoint.php';
+			require_once __DIR__ . '/admin/rest-api/class-wffn-api-send-test-notification.php';
 
 
 			/*
@@ -292,11 +293,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			require __DIR__ . '/includes/class-wffn-funnel.php';
 			require __DIR__ . '/includes/class-wffn-woofunnels-support.php';
 			require __DIR__ . '/merge-tags/class-bwf-contact-tags.php';
-			require __DIR__ . '/includes/class-wffn-rest-controller.php';
-			require __DIR__ . '/includes/class-wffn-role-capability.php';
-			require_once __DIR__ . '/includes/class-wffn-email-notification.php';
 
-			require_once __DIR__ . '/includes/class-wffn-api-send-test-notification.php';
 		}
 
 		/**
@@ -349,17 +346,19 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 
 		public function load_divi_importer() {
 
-			$response = WFFN_Common::check_builder_status( 'divi' );
-
-			if ( true === $response['found'] && empty( $response['error'] ) ) {
-				require __DIR__ . '/importer/class-wffn-divi-importer.php';
+			try {
+				$response = WFFN_Common::check_builder_status( 'divi' );
+				if ( true === $response['found'] && empty( $response['error'] ) ) {
+					require __DIR__ . '/importer/class-wffn-divi-importer.php';
+				}
+				$response = WFFN_Common::check_builder_status( 'oxy' );
+				if ( true === $response['found'] && empty( $response['error'] ) ) {
+					require __DIR__ . '/importer/class-wffn-oxygen-importer.php';
+				}
+				require __DIR__ . '/importer/class-wffn-gutenberg-importer.php';
+			} catch ( Exception $e ) {
+				//do nothing here
 			}
-			$response = WFFN_Common::check_builder_status( 'oxy' );
-			if ( true === $response['found'] && empty( $response['error'] ) ) {
-				require __DIR__ . '/importer/class-wffn-oxygen-importer.php';
-			}
-
-			require __DIR__ . '/importer/class-wffn-gutenberg-importer.php';
 		}
 
 		public function load_analytics() {
@@ -397,13 +396,17 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 */
 		public function register_classes() {
 
-			$load_classes = self::get_registered_class();
-			if ( is_array( $load_classes ) && count( $load_classes ) > 0 ) {
-				foreach ( $load_classes as $access_key => $class ) {
+			try {
+				$load_classes = self::get_registered_class();
+				if ( is_array( $load_classes ) && count( $load_classes ) > 0 ) {
+					foreach ( $load_classes as $access_key => $class ) {
 
-					$this->$access_key = $class::get_instance();
+						$this->$access_key = $class::get_instance();
+					}
+					do_action( 'wffn_loaded' );
 				}
-				do_action( 'wffn_loaded' );
+			} catch ( Exception $e ) {
+				//do nothing here
 			}
 		}
 

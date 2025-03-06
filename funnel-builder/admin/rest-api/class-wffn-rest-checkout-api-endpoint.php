@@ -336,6 +336,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 				$db_settings = wp_parse_args( $settings, $saved_settings );
 				WFACP_Common::update_page_settings( $wfacp_id, $db_settings );
+				$this->update_last_update_time( 0, $wfacp_id );
 				$resp['success'] = true;
 				$resp['msg']     = __( 'Changes saved', 'woofunnels-aero-checkout' );
 			}
@@ -345,7 +346,8 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 		public function format_optimizations_data( $value, $layout_data, $multistep_form = 'single_step' ) {
 
-			$prompt_display_message = __( 'Hey there! It seems you have a {{site_title}} account.', 'woofunnel-aero-checkout' );
+			$prompt_display_message       = __( 'Hey there! It seems you have a {{site_title}} account.', 'woofunnel-aero-checkout' );
+			$display_house_number_message = __( 'House/Building number is required in {{address_field}}', 'woofunnel-aero-checkout' );
 
 			$smart_button_positions = $this->get_smart_button_positions();
 
@@ -360,6 +362,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			$smart_buttons                                              = [];
 			$preview_section                                            = [];
 			$enhanced_phone_field                                       = [];
+			$enhanced_address_field                                     = [];
 			$smart_login                                                = [];
 			$auto_fill_url                                              = [];
 			$apply_coupon_fields['coupons']                             = ! empty( $value['coupons'] ) ? bwf_clean( $value['coupons'] ) : '';
@@ -389,6 +392,10 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			$enhanced_phone_field['enable_phone_validation']            = ! empty( $value['enable_phone_validation'] ) ? wffn_clean( $value['enable_phone_validation'] ) : 'false';
 			$enhanced_phone_field['save_phone_number_type']             = ! empty( $value['save_phone_number_type'] ) ? wffn_clean( $value['save_phone_number_type'] ) : 'false';
 			$enhanced_phone_field['phone_helping_text']                 = ! empty( $value['phone_helping_text'] ) ? wffn_clean( $value['phone_helping_text'] ) : '';
+
+			$enhanced_address_field['enable_address_field_number_validation']  = ! empty( $value['enable_address_field_number_validation'] ) ? wffn_clean( $value['enable_address_field_number_validation'] ) : 'true';
+			$enhanced_address_field['address_field_number_validation_message'] = ! empty( $value['address_field_number_validation_message'] ) ? wffn_clean( $value['address_field_number_validation_message'] ) : $display_house_number_message;
+
 			$preview_section['preview_section_heading']                 = ! empty( $value['preview_section_heading'] ) ? wffn_clean( $value['preview_section_heading'] ) : '';
 			$preview_section['preview_section_subheading']              = ! empty( $value['preview_section_subheading'] ) ? wffn_clean( $value['preview_section_subheading'] ) : '';
 			$preview_section['preview_field_preview_text']              = ! empty( $value['preview_field_preview_text'] ) ? wffn_clean( $value['preview_field_preview_text'] ) : '';
@@ -540,7 +547,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			}
 
 			$optimizations = [
-				'smart_buttons'           => [
+				'smart_buttons'                            => [
 					'title'    => __( 'Express Checkout Buttons', 'funnel-builder' ),
 					'heading'  => __( 'Express Checkout Buttons', 'funnel-builder' ),
 					'hint'     => __( "Enable this to show smart buttons for $links_string and $amazonelink for express checkout. For Stripe, Payment Request Buttons should be enabled and configured.", 'funnel-builder' ),
@@ -554,11 +561,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -579,7 +586,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'priority' => 10,
 					'values'   => $smart_buttons,
 				],
-				'smart_login'             => [
+				'smart_login'                              => [
 					'title'    => __( 'Smart Login', 'funnel-builder' ),
 					'heading'  => __( 'Smart Login', 'funnel-builder' ),
 					'hint'     => __( "Enable Smart Login feature to choose login form style and show a message to returning users when they enter the email.", 'funnel-builder' ),
@@ -611,11 +618,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -640,7 +647,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $smart_login,
 					'pro'      => true,
 				],
-				'enable_live_validation'  => [
+				'enable_live_validation'                   => [
 					'title'    => __( 'Inline Field Validation', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to show the real time validation errors below the fields', 'funnel-builder' ),
 					'heading'  => '',
@@ -654,11 +661,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -667,7 +674,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'priority' => 10,
 					'values'   => $live_validation,
 				],
-				'optional_fields'         => [
+				'optional_fields'                          => [
 					'title'             => __( 'Collapsible Optional Field', 'woofunnels-aero-checkout' ),
 					'heading'           => '',
 					'hint'              => __( "Enable this to replace optional fields with a link and decrease form length ", 'funnel-builder' ),
@@ -675,7 +682,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					"values"            => $optional_field_db_values,
 					'enable_on_arr_val' => 'collapsible_optional_fields'
 				],
-				'enhanced_phone_field'    => [
+				'enhanced_phone_field'                     => [
 					'title'    => __( 'Enhanced Phone Field', 'funnel-builder' ),
 					'heading'  => __( 'Enhanced Phone Field', 'funnel-builder' ),
 					'hint'     => __( "Enable this to add enhanced Phone field with Country Code and its flags.", 'funnel-builder' ),
@@ -689,11 +696,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -710,11 +717,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -752,7 +759,45 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'priority' => 20,
 					'values'   => $enhanced_phone_field,
 				],
-				'autocomplete_google_key' => [
+				'enhanced_address_field_number_validation' => [
+					'title'    => __( 'Address Field Validation', 'funnel-builder' ),
+					'heading'  => __( 'Enhanced Address Field', 'funnel-builder' ),
+					'hint'     => __( "Enable this setting to ensure that Billing Address and Shipping Address contain a house or building number.", 'funnel-builder' ),
+					'slug'     => 'enhanced_address_field_number_validation',
+					'fields'   => [
+						0 => [
+							'type'     => 'radios',
+							'key'      => 'enable_address_field_number_validation',
+							'label'    => __( 'Enable', 'funnel-builder' ),
+							'hint'     => '',
+							'values'   => [
+								0 => [
+									'value' => 'true',
+									'name'  => 'Yes',
+								],
+								1 => [
+									'value' => 'false',
+									'name'  => 'No',
+								],
+							],
+							'required' => false,
+						],
+						1 => [
+							'type'     => 'input',
+							'key'      => 'address_field_number_validation_message',
+							'label'    => __( 'Enter Validation Message', 'funnel-builder' ),
+							'values'   => '',
+							'toggler'  => [
+								'key'   => 'enable_address_field_number_validation',
+								'value' => 'true',
+							],
+							'required' => true,
+						]
+					],
+					'priority' => 20,
+					'values'   => $enhanced_address_field,
+				],
+				'autocomplete_google_key'                  => [
 					'title'    => __( 'Google Address Autocompletion', 'funnel-builder' ),
 					'heading'  => __( 'Google Address Autocompletion', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to provide address suggestions and let buyers quickly fill up form as they enter billing and shipping address.', 'funnel-builder' ),
@@ -781,11 +826,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -808,7 +853,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $autocomplete_google_key,
 					'pro'      => true,
 				],
-				'auto_apply_coupons'      => [
+				'auto_apply_coupons'                       => [
 					'title'    => __( 'Auto Apply Coupons', 'funnel-builder' ),
 					'heading'  => __( 'Auto Apply Coupons', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to surprise your buyers with special auto applied coupon. Reduces cart abandonment rate and discourages buyers from hunting coupons else where.', 'funnel-builder' ),
@@ -822,11 +867,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -851,11 +896,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values' => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 						],
@@ -864,7 +909,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $apply_coupon_fields,
 					'pro'      => true,
 				],
-				'preferred_countries'     => [
+				'preferred_countries'                      => [
 					'title'    => __( 'Preferred Countries', 'funnel-builder' ),
 					'heading'  => __( 'Preferred Countries', 'funnel-builder' ),
 					'hint'     => __( 'By default, WooCommerce shows countries in alphabetical order. Enable this option to re-arrange the list such that your top selling countries are always on top', 'funnel-builder' ),
@@ -878,11 +923,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -904,7 +949,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $preferred_countries,
 					'pro'      => true,
 				],
-				'time_checkout_expiry'    => [
+				'time_checkout_expiry'                     => [
 					'title'    => __( 'Time Checkout Expiry', 'funnel-builder' ),
 					'heading'  => __( 'Time Checkout Expiry', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to set expiry of checkout page after certain sales or at a particular date. Used for generating scarcity during time sensitive campaigns.<br>Note: The settings are only applicable for product specific checkout pages or order forms', 'funnel-builder' ),
@@ -918,11 +963,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -961,11 +1006,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'      => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required'    => false,
@@ -998,7 +1043,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $time_checkout_expiry,
 					'pro'      => true,
 				],
-				'auto_populate_fields'    => [
+				'auto_populate_fields'                     => [
 					'title'    => __( 'Prefill Form for Abandoned Users', 'funnel-builder' ),
 					'heading'  => __( 'Prefill Form for Abandoned Users', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to populate previously entered values as abandoned users return back to checkout.', 'funnel-builder' ),
@@ -1012,11 +1057,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -1026,7 +1071,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $auto_populate_fields,
 					'pro'      => true,
 				],
-				'autopopulate_state'      => [
+				'autopopulate_state'                       => [
 					'title'    => __( 'Auto fill State from Zip Code and Country', 'funnel-builder' ),
 					'heading'  => __( 'Enable this to auto fill State from combination of Zip code and Country', 'funnel-builder' ),
 					'hint'     => __( 'Enable this to auto fill State from combination of Zip code and Country', 'funnel-builder' ),
@@ -1040,11 +1085,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 							'values'   => [
 								0 => [
 									'value' => 'true',
-									'name'  => 'Yes',
+									'name'  => __( 'Yes', 'funnel-builder' ),
 								],
 								1 => [
 									'value' => 'false',
-									'name'  => 'No',
+									'name'  => __( 'No', 'funnel-builder' ),
 								],
 							],
 							'required' => false,
@@ -1054,7 +1099,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'values'   => $autopopulate_state,
 					'pro'      => true,
 				],
-				'auto_fill_url'           => [
+				'auto_fill_url'                            => [
 					'title'    => __( 'Generate URL to populate checkout', 'funnel-builder' ),
 					'heading'  => __( 'Use these settings to pre-populate checkout with URLs parameters', 'funnel-builder' ),
 					'hint'     => __( 'Use these settings to pre-populate checkout with URLs parameters', 'funnel-builder' ),
@@ -1583,6 +1628,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					}
 
 					WFACP_Common::update_page_layout( $wfacp_id, $data );
+					$this->update_last_update_time( 0, $wfacp_id );
 
 
 					if ( ! empty( $advanced_custom_fields ) ) {
@@ -1602,7 +1648,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 						}
 
-						WFACP_Common::update_page_custom_fields( $wfacp_id, $custom_fields );;
+						WFACP_Common::update_page_custom_fields( $wfacp_id, $custom_fields );
 					}
 
 					$resp['success']        = true;
@@ -1967,6 +2013,8 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 				unset( $data['unique_id'] );
 
+				$this->update_last_update_time( 0, $wfacp_id );
+
 				$resp['success'] = true;
 				$resp['data']    = $data;
 				$resp['msg']     = __( 'Field Added Saved', 'funnel-builder' );
@@ -2265,6 +2313,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 					WFACP_Common::update_page_product( $step_id, $existing_product );
 					WFACP_Common::update_page_product_setting( $step_id, $old_settings );
+					$this->update_last_update_time( 0, $step_id );
 
 					if ( count( $resp['data']['products'] ) > 0 ) {
 						$resp['success'] = true;
@@ -2330,6 +2379,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 				$options = $this->sanitize_custom( $settings );
 
 				update_option( WFACP_SLUG . '_c_' . $step_id, $options, 'no' );
+				$this->update_last_update_time( 0, $step_id );
 
 				if ( is_array( $options ) ) {
 					$resp = array(
@@ -2444,6 +2494,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					}
 					WFACP_Common::update_page_product( $wfacp_id, $products );
 					WFACP_Common::update_page_product_setting( $wfacp_id, $settings );
+					$this->update_last_update_time( 0, $wfacp_id );
 					$resp['success'] = true;
 					$resp['msg']     = __( 'Products saved', 'funnel-builder' );
 				}

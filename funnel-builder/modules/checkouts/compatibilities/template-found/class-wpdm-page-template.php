@@ -6,19 +6,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 /*
 PluginName: WPDM - Page Template by Shaon (v.1.1)
 */
+if ( ! class_exists( 'WFACP_Compatibility_With_WPDM_Page_Template' ) ) {
+	#[AllowDynamicProperties]
+	class WFACP_Compatibility_With_WPDM_Page_Template {
 
-#[AllowDynamicProperties] 
+		public function __construct() {
+			add_action( 'wfacp_template_load', [ $this, 'action' ] );
+		}
 
-  class WFACP_Compatibility_With_WPDM_Page_Template {
+		public function action() {
 
-	public function __construct() {
-		add_action( 'wfacp_template_load', [ $this, 'action' ] );
+			WFACP_Common::remove_actions( 'template_include', 'wpdm_page_template', 'wpdm_page_template_template_include' );
+		}
 	}
 
-	public function action() {
-
-		WFACP_Common::remove_actions( 'template_include', 'wpdm_page_template', 'wpdm_page_template_template_include' );
-	}
+	WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_WPDM_Page_Template(), 'wpdm-page-temp' );
 }
-
-WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_WPDM_Page_Template(), 'wpdm-page-temp' );

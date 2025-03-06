@@ -7,43 +7,43 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-02-06T15:39:57+05:30\n"
+"POT-Creation-Date: 2025-03-06T11:25:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: woofunnels\n"
 
-#: as-data-store/class-woofunnels-as-ds.php:160
+#: as-data-store/class-woofunnels-as-ds.php:161
 msgid "Every minute"
 msgstr ""
 
-#: as-data-store/class-woofunnels-as-ds.php:378
-#: as-data-store/class-woofunnels-as-ds.php:425
-#: as-data-store/class-woofunnels-as-ds.php:473
-#: as-data-store/class-woofunnels-as-ds.php:555
-#: as-data-store/class-woofunnels-as-ds.php:592
-#: as-data-store/class-woofunnels-as-ds.php:623
+#: as-data-store/class-woofunnels-as-ds.php:379
+#: as-data-store/class-woofunnels-as-ds.php:426
+#: as-data-store/class-woofunnels-as-ds.php:474
+#: as-data-store/class-woofunnels-as-ds.php:556
+#: as-data-store/class-woofunnels-as-ds.php:593
+#: as-data-store/class-woofunnels-as-ds.php:624
 msgid "Method is called before plugins_loaded hook."
 msgstr ""
 
-#: as-data-store/class-woofunnels-as-ds.php:383
-#: as-data-store/class-woofunnels-as-ds.php:430
+#: as-data-store/class-woofunnels-as-ds.php:384
+#: as-data-store/class-woofunnels-as-ds.php:431
 msgid "Action Scheduler class not found."
 msgstr ""
 
-#: as-data-store/class-woofunnels-as-ds.php:388
-#: as-data-store/class-woofunnels-as-ds.php:435
-#: as-data-store/class-woofunnels-as-ds.php:478
-#: as-data-store/class-woofunnels-as-ds.php:513
-#: as-data-store/class-woofunnels-as-ds.php:560
-#: as-data-store/class-woofunnels-as-ds.php:628
+#: as-data-store/class-woofunnels-as-ds.php:389
+#: as-data-store/class-woofunnels-as-ds.php:436
+#: as-data-store/class-woofunnels-as-ds.php:479
+#: as-data-store/class-woofunnels-as-ds.php:514
+#: as-data-store/class-woofunnels-as-ds.php:561
+#: as-data-store/class-woofunnels-as-ds.php:629
 msgid "Hook is a required entity."
 msgstr ""
 
-#: as-data-store/class-woofunnels-as-ds.php:494
+#: as-data-store/class-woofunnels-as-ds.php:495
 msgid "No actions found for data: "
 msgstr ""
 
-#: as-data-store/class-woofunnels-as-ds.php:597
+#: as-data-store/class-woofunnels-as-ds.php:598
 msgid "Action ID is required."
 msgstr ""
 
@@ -166,91 +166,91 @@ msgstr ""
 msgid "Connector settings missing"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:205
-#: contact/class-woofunnels-db-updater.php:221
-#: contact/class-woofunnels-db-updater.php:237
-#: contact/class-woofunnels-db-updater.php:1144
+#: contact/class-woofunnels-db-updater.php:206
+#: contact/class-woofunnels-db-updater.php:222
+#: contact/class-woofunnels-db-updater.php:238
+#: contact/class-woofunnels-db-updater.php:1145
 #: includes/class-woofunnels-admin-notifications.php:44
 #: includes/class-woofunnels-process.php:62
 #: includes/class-woofunnels-process.php:156
 msgid "Action failed. Please refresh the page and retry."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:209
-#: contact/class-woofunnels-db-updater.php:225
-#: contact/class-woofunnels-db-updater.php:241
-#: contact/class-woofunnels-db-updater.php:1148
+#: contact/class-woofunnels-db-updater.php:210
+#: contact/class-woofunnels-db-updater.php:226
+#: contact/class-woofunnels-db-updater.php:242
+#: contact/class-woofunnels-db-updater.php:1149
 msgid "You don&#8217;t have permission to do this."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:284
+#: contact/class-woofunnels-db-updater.php:285
 msgid "Indexing of orders has started"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:285
+#: contact/class-woofunnels-db-updater.php:286
 msgid "It may take sometime to finish the process. We will update this notice once the process completes."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:297
+#: contact/class-woofunnels-db-updater.php:298
 msgid "Success"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:298
+#: contact/class-woofunnels-db-updater.php:299
 msgid "Order indexing completed successfully."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:302
-#: contact/class-woofunnels-db-updater.php:321
+#: contact/class-woofunnels-db-updater.php:303
+#: contact/class-woofunnels-db-updater.php:322
 #: includes/class-woofunnels-process.php:113
 msgid "Dismiss"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:315
+#: contact/class-woofunnels-db-updater.php:316
 msgid "FunnelKit Notice"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:316
+#: contact/class-woofunnels-db-updater.php:317
 msgid "Unable to complete indexing of orders. Please <a target=\"_blank\" href=\"%s\">contact support</a> to get the issue resolved."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:320
+#: contact/class-woofunnels-db-updater.php:321
 msgid "Contact Support"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:822
+#: contact/class-woofunnels-db-updater.php:823
 msgid "Index Past Orders"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:825
+#: contact/class-woofunnels-db-updater.php:826
 msgid "Unable to complete indexing of orders."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:826
+#: contact/class-woofunnels-db-updater.php:827
 msgid "Please"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:827
+#: contact/class-woofunnels-db-updater.php:828
 msgid "contact support"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:827
+#: contact/class-woofunnels-db-updater.php:828
 msgid " to get the issue resolved."
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:830
+#: contact/class-woofunnels-db-updater.php:831
 msgid "Learn more about this process"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:834
+#: contact/class-woofunnels-db-updater.php:835
 msgid "Running"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:836
+#: contact/class-woofunnels-db-updater.php:837
 msgid "Completed"
 msgstr ""
 
-#: contact/class-woofunnels-db-updater.php:839
-#: contact/class-woofunnels-db-updater.php:844
+#: contact/class-woofunnels-db-updater.php:840
+#: contact/class-woofunnels-db-updater.php:845
 msgid "Start"
 msgstr ""
 
@@ -268,7 +268,7 @@ msgid "Set Funnel as Homepage"
 msgstr ""
 
 #: helpers/settings.php:34
-msgid "Select the Funnel page you want to set as the Homepage.  <a href=\""
+msgid "Select the Funnel page you want to set as the Homepage. <a href='%s'>Go to WordPress Settings</a>"
 msgstr ""
 
 #: helpers/settings.php:40
@@ -838,12 +838,52 @@ msgid "First Party Tracking"
 msgstr ""
 
 #: helpers/settings.php:1419
-#: includes/class-bwf-ecomm-tracking-common.php:834
+#: includes/class-bwf-ecomm-tracking-common.php:862
 msgid "Conversion Tracking"
 msgstr ""
 
 #: helpers/settings.php:1425
 msgid "In the lite version, you manage UTM tracking with third-party tools. In the Pro version, we store UTM information and provide real-time analytics."
+msgstr ""
+
+#: helpers/settings.php:1434
+msgid "Theme CSS and JavaScript"
+msgstr ""
+
+#: helpers/settings.php:1435
+msgid "Enabling this setting will apply theme CSS and JavaScript for FunnelKit canvas and FunnelKit Boxed made template"
+msgstr ""
+
+#: helpers/settings.php:1441
+msgid "Enable theme CSS and JavaScript"
+msgstr ""
+
+#: helpers/settings.php:1446
+msgid "Checkout"
+msgstr ""
+
+#: helpers/settings.php:1450
+msgid "Sales"
+msgstr ""
+
+#: helpers/settings.php:1454
+msgid "One Click Upsell Offer"
+msgstr ""
+
+#: helpers/settings.php:1459
+msgid "Thank you"
+msgstr ""
+
+#: helpers/settings.php:1464
+msgid "Optin"
+msgstr ""
+
+#: helpers/settings.php:1468
+msgid "Optin Confirmation"
+msgstr ""
+
+#: helpers/settings.php:1472
+msgid "Select All Steps"
 msgstr ""
 
 #: helpers/states.php:18
@@ -7045,59 +7085,59 @@ msgstr ""
 msgid "Settings Updated"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:949
+#: includes/class-bwf-ecomm-tracking-common.php:977
 msgid "Funnel"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:954
+#: includes/class-bwf-ecomm-tracking-common.php:982
 msgid "First Interaction"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:960
+#: includes/class-bwf-ecomm-tracking-common.php:988
 msgid "Conversion Time"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:966
+#: includes/class-bwf-ecomm-tracking-common.php:994
 msgid "UTM Source"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:972
+#: includes/class-bwf-ecomm-tracking-common.php:1000
 msgid "UTM Medium"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:978
+#: includes/class-bwf-ecomm-tracking-common.php:1006
 msgid "UTM Campaign"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:984
+#: includes/class-bwf-ecomm-tracking-common.php:1012
 msgid "UTM Term"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:990
+#: includes/class-bwf-ecomm-tracking-common.php:1018
 msgid "UTM Content"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:996
+#: includes/class-bwf-ecomm-tracking-common.php:1024
 msgid "Referrer"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1002
+#: includes/class-bwf-ecomm-tracking-common.php:1030
 msgid "Click ID"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1003
+#: includes/class-bwf-ecomm-tracking-common.php:1031
 msgid "Yes"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1003
+#: includes/class-bwf-ecomm-tracking-common.php:1031
 msgid "No"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1008
+#: includes/class-bwf-ecomm-tracking-common.php:1036
 msgid "Device"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1014
+#: includes/class-bwf-ecomm-tracking-common.php:1042
 msgid "Browser"
 msgstr ""
 
@@ -7106,50 +7146,50 @@ msgstr ""
 msgid "Cheating huh?"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:574
+#: includes/class-woofunnels-dashboard-loader.php:571
 msgid "To enable this update please activate your FunnelKit license by visiting the Dashboard Page."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:595
-#: includes/class-woofunnels-dashboard-loader.php:618
-#: includes/class-woofunnels-dashboard-loader.php:639
-#: includes/class-woofunnels-dashboard-loader.php:660
+#: includes/class-woofunnels-dashboard-loader.php:592
+#: includes/class-woofunnels-dashboard-loader.php:615
+#: includes/class-woofunnels-dashboard-loader.php:636
+#: includes/class-woofunnels-dashboard-loader.php:657
 msgid "Tools"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:671
+#: includes/class-woofunnels-dashboard-loader.php:668
 msgid "All Plugins transients cleared."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:688
+#: includes/class-woofunnels-dashboard-loader.php:685
 msgid "WooFunnels transients"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:689
+#: includes/class-woofunnels-dashboard-loader.php:686
 msgid "This tool will clear all the WooFunnels plugins transients cache."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:692
+#: includes/class-woofunnels-dashboard-loader.php:689
 msgid "Clear transients"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:700
+#: includes/class-woofunnels-dashboard-loader.php:697
 msgid "Turn Off"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:703
+#: includes/class-woofunnels-dashboard-loader.php:700
 msgid "Turn On"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:708
+#: includes/class-woofunnels-dashboard-loader.php:705
 msgid "Usage Tracking"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:709
+#: includes/class-woofunnels-dashboard-loader.php:706
 msgid "This action controls Usage Tracking"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:725
+#: includes/class-woofunnels-dashboard-loader.php:722
 msgid "Logs"
 msgstr ""
 

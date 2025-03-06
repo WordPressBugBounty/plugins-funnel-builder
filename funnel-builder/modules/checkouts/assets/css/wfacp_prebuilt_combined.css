@@ -5787,6 +5787,12 @@ body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .
 body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a:hover{
     color: #e15334 !important;
 }
+body #wfacp-sec-wrapper span.wfacp_address_reminder {
+    font-size: 12px;
+    color: #e15334;
+    margin-top: 4px;
+    line-height: 1;
+}
 /* -----------------------------------------------MEDIA QUERY---------------------------------------- */
 @media (min-width: 993px) {
     body .select2-dropdown {

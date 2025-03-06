@@ -222,7 +222,7 @@ if ( ! function_exists( 'wffn_update_migrate_data_for_currency_switcher' ) ) {
 			}
 
 			// Check if the conversion tracking migration has been run
-			if ( ! function_exists( 'wffn_conversion_tracking_migrator' ) || ! in_array( absint( wffn_conversion_tracking_migrator()->get_upgrade_state() ), [ 0, 3, 4 ], true ) ) {
+			if ( ! function_exists( 'wffn_conversion_tracking_migrator' ) || ! in_array( absint( WFFN_Conversion_Tracking_Migrator::get_instance()->get_upgrade_state() ), [ 0, 3, 4 ], true ) ) {
 				WFFN_Core()->logger->log( 'Conversion migration not yet run on site', 'wffn', true );
 
 				return;
@@ -287,7 +287,6 @@ if ( ! function_exists( 'wffn_update_email_default_settings' ) ) {
 	 */
 
 	function wffn_update_email_default_settings() {
-		$bwf_settings = BWF_Admin_General_Settings::get_instance();
 
 
 		$new_settings = array(
@@ -301,7 +300,6 @@ if ( ! function_exists( 'wffn_update_email_default_settings' ) ) {
 			'bwf_external_user'          => array(),
 		);
 
-		$bwf_notif_settings = array_merge( $bwf_settings->get_option(), $new_settings );
 
 		$users         = get_users( array( 'role' => 'administrator' ) );
 		$user_selector = array();
@@ -313,9 +311,105 @@ if ( ! function_exists( 'wffn_update_email_default_settings' ) ) {
 			);
 		}
 
-		$bwf_notif_settings['bwf_notification_user_selector'] = $user_selector;
+		$new_settings['bwf_notification_user_selector'] = $user_selector;
+
+		WFFN_Email_Notification::save_settings( $new_settings );
+	}
+}
+
+if ( ! function_exists( 'wffn_set_default_value_in_autoload_option' ) ) {
+	/**
+	 * Function to set the default settings for notification settings
+	 *
+	 * @return void
+	 */
+
+	function wffn_set_default_value_in_autoload_option() {
+		try {
+
+			/**
+			 * Update site options on onload
+			 */
+			$gen_config = get_option( 'bwf_gen_config' );
+			if ( empty( $gen_config ) && class_exists( 'BWF_Admin_General_Settings' ) ) {
+				BWF_Admin_General_Settings::get_instance()->update_global_settings_fields( array( 'fb_pixel_key' => '' ) );
+			}
+
+			$global_funnel_id = get_option( '_bwf_global_funnel' );
+			if ( empty( $global_funnel_id ) && $global_funnel_id !== 0 ) {
+				update_option( '_bwf_global_funnel', 0, true );
+			}
+
+			/**
+			 * Update notice option on onload
+			 */
+			$notice = get_option( '_bwf_db_upgrade' );
+			if ( empty( $notice ) ) {
+				update_option( '_bwf_db_upgrade', '0', true );
+			}
+
+			/**
+			 * Update notice option on onload
+			 */
+			$notice = get_option( 'woofunnel_hide_update_notice' );
+			if ( empty( $notice ) ) {
+				update_option( 'woofunnel_hide_update_notice', 'no', true );
+			}
+
+			/**
+			 * Update site options on onload
+			 */
+			$fb_site_options = get_option( 'fb_site_options' );
+			if ( empty( $fb_site_options ) ) {
+				update_option( 'fb_site_options', [], true );
+			}
+
+			/**
+			 * Update default option for aero
+			 */
+			if ( class_exists( 'WFACP_Common' ) ) {
+				$g_setting = get_option( '_wfacp_global_settings' );
+				if ( empty( $g_setting ) ) {
+					$options = WFACP_Common::global_settings( true );
+					update_option( '_wfacp_global_settings', $options, true );
+				}
+
+				/**
+				 * Update google-map key which is saved in funnelkit checkout settings to new settings
+				 */
+				$options = BWF_Admin_General_Settings::get_instance()->setup_options();
+				if ( empty( $options['funnelkit_google_map_key'] ) ) {
+					$global_settings                     = get_option( '_wfacp_global_settings', [] );
+					$options['funnelkit_google_map_key'] = isset( $global_settings['wfacp_google_address_key'] ) ? $global_settings['wfacp_google_address_key'] : '';
+					BWF_Admin_General_Settings::get_instance()->update_global_settings_fields( $options );
+				}
+
+			}
 
 
-		$bwf_settings->update_global_settings_fields( $bwf_notif_settings );
+		} catch ( Exception|Error $e ) {
+
+		}
+	}
+
+}
+
+if ( ! function_exists( 'wffn_cleanup_data_for_conversion' ) ) {
+	/**
+	 * Cleanup db table entries
+	 *
+	 * @return void
+	 */
+	function wffn_cleanup_data_for_conversion() {
+		if ( ! class_exists( 'WFFN_Core' ) ) {
+			return;
+		}
+
+		// Schedule the action if not already scheduled
+		if ( ! wp_next_scheduled( 'fk_optimize_conversion_table_analytics' ) ) {
+			wp_schedule_event( time(), 'hourly', 'fk_optimize_conversion_table_analytics' );
+			WFFN_Core()->logger->log( 'Recurring schedule for fk_optimize_conversion_table_analytics.', 'wffn_ay', true );
+		}
+
 	}
 }

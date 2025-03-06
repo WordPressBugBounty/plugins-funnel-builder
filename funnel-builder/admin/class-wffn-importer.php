@@ -7,8 +7,7 @@ defined( 'ABSPATH' ) || exit; //Exit if accessed directly
  */
 if ( ! class_exists( 'WFFN_Importer' ) ) {
 	#[AllowDynamicProperties]
-
-class WFFN_Importer {
+	class WFFN_Importer {
 
 		private static $ins = null;
 		private $funnel = null;

@@ -169,7 +169,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=Lite+Plugin">Learn more</a>', 'funnel-builder' );
 
 			if ( '1' === $bwf_db_upgrade || '6' === $bwf_db_upgrade ) {
-				$description .= esc_html__( ' Unable to complete indexing of orders.', 'woofunnels' );
+				$description .= esc_html__( ' Unable to complete indexing of orders.', 'funnel-builder' );
 
 				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=Lite+Plugin">Contact support to get the issue resolved.</a>';
 
@@ -209,7 +209,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				if ( '3' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
 					$index_orders['notice'] = array(
 						'type' => 'success',
-						'text' => __( 'Indexing of orders has started. It may take sometime to finish the process. We will update this notice once the process completes.', 'woofunnels' )
+						'text' => __( 'Indexing of orders has started. It may take sometime to finish the process. We will update this notice once the process completes.', 'funnel-builder' )
 					);
 				}
 
@@ -270,7 +270,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 			$file_list   = array();
 			$file_list[] = array(
-				'label' => 'Select Log File',
+				'label' => __( 'Select Log File', 'funnel-builder' ),
 				'value' => '',
 				'key'   => ''
 			);
@@ -388,7 +388,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				$woofunnels_transient_obj->delete_force_transients();
 				$resp['status'] = true;
 				$resp['tool']   = $this->get_index_orders();
-				$resp['msg']    = __( 'All Plugins transients cleared.', 'woofunnels' );
+				$resp['msg']    = __( 'All Plugins transients cleared.', 'funnel-builder' );
 
 				return rest_ensure_response( $resp );
 			}
@@ -427,7 +427,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 					wp_clear_scheduled_hook( 'bwf_maybe_track_usage_scheduled' );
 				}
 				$resp['status'] = true;
-				$resp['msg']    = __( sprintf( 'Usage tracking successfully %s.', true === $tracking ? 'enabled' : 'disabled' ), 'woofunnels' );
+				$resp['msg']    = __( sprintf( 'Usage tracking successfully %s.', true === $tracking ? 'enabled' : 'disabled' ), 'funnel-builder' );
 
 				return rest_ensure_response( $resp );
 			}
@@ -448,7 +448,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				$get_index_array = $this->get_all_tools_array();
 				$resp['tool']    = $get_index_array[0];
 				$resp['status']  = true;
-				$resp['msg']     = __( 'Indexing started successfully', 'woofunnels' );
+				$resp['msg']     = __( 'Indexing started successfully', 'funnel-builder' );
 
 				return rest_ensure_response( $resp );
 			}

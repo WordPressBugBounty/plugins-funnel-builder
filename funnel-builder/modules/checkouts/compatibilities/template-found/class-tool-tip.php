@@ -2,42 +2,42 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+if ( ! class_exists( 'WFACP_Tool_Tip' ) ) {
+	#[AllowDynamicProperties]
+	class WFACP_Tool_Tip {
 
-#[AllowDynamicProperties] 
+		public function __construct() {
+			add_action( 'wfacp_internal_css', [ $this, 'add_js' ] );
+		}
 
-  class WFACP_Tool_Tip {
-
-	public function __construct() {
-		add_action( 'wfacp_internal_css', [ $this, 'add_js' ] );
-	}
-
-	public function add_js() {
-		?>
-        <script>
-            window.addEventListener('load', function () {
-                (function ($) {
-                    tool_tip();
-                    $(document.body).on('updated_checkout', function (e, v) {
+		public function add_js() {
+			?>
+            <script>
+                window.addEventListener('load', function () {
+                    (function ($) {
                         tool_tip();
-                    });
+                        $(document.body).on('updated_checkout', function (e, v) {
+                            tool_tip();
+                        });
 
-                    function tool_tip() {
-                        if (typeof $.fn.tooltip != "function") {
-                            return;
+                        function tool_tip() {
+                            if (typeof $.fn.tooltip != "function") {
+                                return;
+                            }
+                            if ($('.dashicons').length > 0) {
+                                $('.dashicons').tooltip({
+                                    content: function () {
+                                        return $(this).prop('title');
+                                    }
+                                });
+                            }
                         }
-                        if ($('.dashicons').length > 0) {
-                            $('.dashicons').tooltip({
-                                content: function () {
-                                    return $(this).prop('title');
-                                }
-                            });
-                        }
-                    }
-                })(jQuery);
-            });
-        </script>
-		<?php
+                    })(jQuery);
+                });
+            </script>
+			<?php
+		}
 	}
-}
 
-new WFACP_Tool_Tip();
+	new WFACP_Tool_Tip();
+}
