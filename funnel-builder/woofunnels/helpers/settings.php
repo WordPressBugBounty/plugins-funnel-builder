@@ -52,7 +52,7 @@ return apply_filters( 'bwf_settings_config', array(
 				'key'   => 'funnelkit_google_map_key',
 				'type'  => 'text',
 				'label' => 'Google Map API Key',
-				'hint'  => __( 'Enter the Google Maps API key for Google Address AutoComplete on Checkout. <a href="https://funnelkit.com/google-address-autocomplete-for-woocommerce/?utm_source=WordPress&utm_campaign=Lite+Plugin&utm_medium=Settings+Google+Map+Api+Key" target="_blank">Learn More</a>', 'woofunnels' ),
+				'hint'  => __( 'Enter the Google Maps API key for Google Address AutoComplete on Checkout. <a href="https://funnelkit.com/google-address-autocomplete-for-woocommerce/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Settings+Google+Map+Api+Key" target="_blank">Learn More</a>', 'woofunnels' ),
 				'value' => '',
 			)
 		),

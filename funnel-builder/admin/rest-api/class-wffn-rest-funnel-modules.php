@@ -2020,11 +2020,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						'inline' => $inline_form,
 						'popup'  => $pop_form,
 					];
-					if ( defined( 'WFFN_PRO_VERSION' ) ) {
-						$customization_tab['field_values'] = $this->get_form_customization_options( $customization_form, $form_fields, 'popup' );
-					} else {
-						$customization_tab['field_values'] = $this->get_form_customization_options( $customization_form, $form_fields, 'inline' );
-					}
+					$customization_tab['field_values'] = $this->get_form_customization_options( $customization_form, $form_fields, 'popup' );
+
 
 					$step['customization_tab'] = $customization_tab;
 					$resp['data']['step']      = $step;
@@ -2082,7 +2079,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				if ( 'inline' === $form_type ) {
 					$default_form_customizations = WFOPP_Core()->optin_pages->form_builder->form_customization_settings_default( 0 );
 					$customization_options       = array_intersect_key( $form_options, $default_form_customizations );
-				} elseif ( 'popup' === $form_type && class_exists( 'WFFN_Pro_Optin_Pages' ) ) {
+				} elseif ( 'popup' === $form_type ) {
 					$customization_options = $form_options;
 				}
 

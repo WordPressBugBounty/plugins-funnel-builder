@@ -2188,7 +2188,7 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 				if ( false === $user ) {
 					return $footer_text;
 				}
-				$footer_text = __( 'Over 648+ 5 star reviews show that FunnelKit users trust our top-rated support for their online business. Do you need help? <a href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Footer+Checkout&utm_campaign=Lite+Plugin" target="_blank"><b>Contact FunnelKit Support</b></a>', 'funnel-builder' );
+				$footer_text = __( 'Over 648+ 5 star reviews show that FunnelKit users trust our top-rated support for their online business. Do you need help? <a href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Footer+Checkout&utm_campaign=fb+lite+plugin" target="_blank"><b>Contact FunnelKit Support</b></a>', 'funnel-builder' );
 			}
 
 			return $footer_text;

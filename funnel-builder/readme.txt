@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 3.10.0
+Stable tag: 3.10.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,7 +378,11 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
-= 3.10.0 (Feb 06, 2025) =
+
+= 3.10.1 (Mar 07, 2025) =
+* Fixed: Styling issue with search icon position in billing/shipping address field with house number required validation message. (#7220)
+
+= 3.10.0 (Mar 06, 2025) =
 * Added: Checkout - New feature billing/shipping address fields to allow house numbers for better user experience. (#6928)
 * Improved: Checkout - Enhanced compatibility with the Divi Menu and Divi Bar plugins for seamless integration. (#7124)
 * Improved: Improved translations for admin pages to enhance clarity and usability. (#6955)

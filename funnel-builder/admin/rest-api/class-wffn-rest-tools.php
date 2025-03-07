@@ -166,12 +166,12 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				$bwf_db_upgrade = '5';
 			}
 
-			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=Lite+Plugin">Learn more</a>', 'funnel-builder' );
+			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=fb+lite+plugin">Learn more</a>', 'funnel-builder' );
 
 			if ( '1' === $bwf_db_upgrade || '6' === $bwf_db_upgrade ) {
 				$description .= esc_html__( ' Unable to complete indexing of orders.', 'funnel-builder' );
 
-				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=Lite+Plugin">Contact support to get the issue resolved.</a>';
+				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=fb+lite+plugin">Contact support to get the issue resolved.</a>';
 
 			}
 			if ( true === apply_filters( 'bwf_needs_order_indexing', false ) ) {

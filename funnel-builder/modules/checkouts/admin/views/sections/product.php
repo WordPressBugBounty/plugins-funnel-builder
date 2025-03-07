@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
 						<div class="product_settings_inner_container">
 							<div class="wfacp_learn_how_wrap">
 								<p>
-                                    <a href="https://funnelkit.com/docs/aerocheckout/getting-started/replace-default-checkout/?utm_source=WordPress&utm_medium=Checkout+Set+Global+Checkout&utm_campaign=Lite+Plugin" target="_blank" style="font-style: italic; font-weight: 500;"><?php _e( 'Learn how to set this page as a global checkout', 'woofunnels-aero-checkout' ); ?>
+                                    <a href="https://funnelkit.com/docs/aerocheckout/getting-started/replace-default-checkout/?utm_source=WordPress&utm_medium=Checkout+Set+Global+Checkout&utm_campaign=fb+lite+plugin" target="_blank" style="font-style: italic; font-weight: 500;"><?php _e( 'Learn how to set this page as a global checkout', 'woofunnels-aero-checkout' ); ?>
 										<span class="dashicons dashicons-external"></span>
 									</a>
                                 </p>

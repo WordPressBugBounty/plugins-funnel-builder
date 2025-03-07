@@ -594,7 +594,7 @@ body #wfacp-e-form .wfacp_enable_mb_style .wfacp_main_form .woocommerce-checkout
     margin-bottom: 10px;
 }
 
-#wfacp-e-form label.wfacp-form-control-label {
+#wfacp-e-form label.wfacp-form-control-label:not(.radio) {
     position: absolute;
     top: 50%;
     left: 20px;
@@ -623,7 +623,7 @@ body #wfacp-e-form .wfacp-inside p.wfacp-anim-wrap label.wfacp-form-control-labe
     line-height: 1.3 !important;
 }
 
-#wfacp-e-form .wfacp-form:not(.wfacp-top) p.wfacp-form-control-wrapper.wfacp-anim-wrap:not(.fattura24) label.wfacp-form-control-label {
+#wfacp-e-form .wfacp-form:not(.wfacp-top) p.wfacp-form-control-wrapper.wfacp-anim-wrap:not(.fattura24) label.wfacp-form-control-label:not(.radio) {
     top: 6px !important;
     font-size: 12px !important;
     background: transparent !important;

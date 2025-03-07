@@ -314,7 +314,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 						],
 						[
 							'label'  => __( 'Learn more', "funnel-builder" ),
-							'href'   => "https://funnelkit.com/whats-new/?utm_source=WordPress&utm_campaign=Lite+Plugin&utm_medium=Update+Notice+Bar",
+							'href'   => "https://funnelkit.com/whats-new/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Update+Notice+Bar",
 							'target' => '__blank',
 						]
 					]
@@ -341,7 +341,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 								],
 								[
 									'label'  => __( "Learn more", "funnel-builder" ),
-									'href'   => "https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Store+Checkout+Migrate&utm_campaign=Lite+Plugin",
+									'href'   => "https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Store+Checkout+Migrate&utm_campaign=fb+lite+plugin",
 									'target' => '__blank',
 								]
 							]
@@ -362,7 +362,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 					'customButtons' => [
 						[
 							'label'     => __( "Learn more", "funnel-builder" ),
-							'href'      => 'https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Brand+Name+Change&utm_campaign=Lite+Plugin',
+							'href'      => 'https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Brand+Name+Change&utm_campaign=fb+lite+plugin',
 							'className' => 'is-primary',
 							'target'    => '__blank',
 						],
