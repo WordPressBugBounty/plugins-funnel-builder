@@ -649,7 +649,7 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 			$filter_query = '';
 
 			if ( ! empty( $filters['s'] ) ) {
-				$filter_query .= "AND (CONCAT(contact.f_name,' ',contact.l_name) like '%" . $filters['s'] . "%' OR contact.email LIKE '%" . $filters['s'] . "%' ) ";
+				$filter_query .= esc_sql("AND (CONCAT(contact.f_name,' ',contact.l_name) like '%" . $filters['s'] . "%' OR contact.email LIKE '%" . $filters['s'] . "%' ) ");
 			}
 
 			/*

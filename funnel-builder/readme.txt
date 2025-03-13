@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.7.2
 Requires PHP: 7.4
-Stable tag: 3.10.1
+Stable tag: 3.10.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,12 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.10.2 (Mar 13, 2025) =
+* Improved: Enhanced security for the plugin to prevent SQL injection for queries run via Admin role access. (#7239)
+* Fixed: Addressed a PHP error during funnel step tracking when the funnel name contained special characters, ensuring smoother analytics. (#7225)
+* Fixed: Optin - Field label color settings now work correctly with Elementor for a more consistent design experience. (#7231)
+* Fixed: Checkout - Corrected the translation issue with the required field error message for a better multilingual experience. (#7241)
 
 = 3.10.1 (Mar 07, 2025) =
 * Fixed: Styling issue with search icon position in billing/shipping address field with house number required validation message. (#7220)

@@ -746,6 +746,23 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			$models['wfacp_checkout_global_css']    = '';
 			$models['phone_inline_number_number']   = apply_filters( 'wfacp_phone_inline_number_message', __( 'The provided phone number is not valid', 'woocommerce' ) );
 
+			if ( is_array( $save_models ) && 0 < count( $save_models ) ) {
+				$keys_to_remove = [
+					'invalid_email_field',
+					'inline_email_field',
+					'error_required_msg',
+					'field_required_msg',
+					'phone_number_invalid',
+					'phone_inline_number_number'
+				];
+
+				foreach ( $keys_to_remove as $key ) {
+					if ( isset( $save_models[ $key ] ) ) {
+						unset( $save_models[ $key ] );
+					}
+				}
+			}
+
 			return wp_parse_args( $save_models, $models );
 		}
 

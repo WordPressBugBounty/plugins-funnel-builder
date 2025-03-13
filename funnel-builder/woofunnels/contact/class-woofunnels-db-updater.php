@@ -1293,14 +1293,14 @@ if ( ! class_exists( 'WooFunnels_DB_Updater' ) ) {
 		 *
 		 * @param $cid
 		 *
-		 * @return void
+		 * @return mixed false || 0 : not completed || 1 : completed
 		 */
 		public function bwf_reindex_contact_orders( $cid ) {
 			$bwf_contact = new WooFunnels_Contact( '', '', '', $cid );
 			if ( 0 === $bwf_contact->get_id() ) {
 				$this->un_schedule_wc_recurring_actions( $cid );
 
-				return;
+				return false;
 			}
 
 			$paid_statuses = implode( ',', array_map( function ( $status ) {
@@ -1311,7 +1311,7 @@ if ( ! class_exists( 'WooFunnels_DB_Updater' ) ) {
 
 			$indexed_order_id = get_option( $key, 0 );
 			if ( 0 > $indexed_order_id ) {
-				return;
+				return 1;
 			}
 			global $wpdb;
 
@@ -1320,20 +1320,27 @@ if ( ! class_exists( 'WooFunnels_DB_Updater' ) ) {
 				$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->prefix}bwf_wc_customers WHERE cid = %d", $cid ) ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			}
 
-			if ( ! BWF_WC_Compatibility::is_hpos_enabled() ) {
-				$sql        = "SELECT p.ID FROM {$wpdb->prefix}posts AS p INNER JOIN {$wpdb->prefix}postmeta AS pm ON ( p.ID = pm.post_id ) WHERE 1=1 AND ( ( ( pm.meta_key = %s AND pm.meta_value = %s ) ) ) AND p.post_type = %s AND (p.post_status IN ($paid_statuses)) AND p.ID > %d GROUP BY p.ID ORDER BY p.ID ASC LIMIT 0, 10";
-				$orders_ids = $wpdb->get_col( $wpdb->prepare( $sql, array( '_woofunnel_cid', $cid, 'shop_order', $indexed_order_id ) ) );
-			} else {
-				$order_table      = $wpdb->prefix . 'wc_orders';
-				$order_meta_table = $wpdb->prefix . 'wc_orders_meta';
-				$sql              = ( "SELECT o.id FROM {$order_table} AS o INNER JOIN {$order_meta_table} AS om ON o.id = om.order_id AND om.meta_key = %s AND om.meta_value = %d WHERE o.status IN ({$paid_statuses}) AND o.type = %s AND o.id > %d ORDER BY o.id ASC LIMIT 0, 10" );
-				$orders_ids       = $wpdb->get_col( $wpdb->prepare( $sql, array( '_woofunnel_cid', $cid, 'shop_order', $indexed_order_id ) ) );
+			$limit = 10;
+			try {
+				if ( ! BWF_WC_Compatibility::is_hpos_enabled() ) {
+					$sql        = "SELECT p.ID FROM {$wpdb->prefix}posts AS p INNER JOIN {$wpdb->prefix}postmeta AS pm ON ( p.ID = pm.post_id ) WHERE 1=1 AND ( ( ( pm.meta_key = %s AND pm.meta_value = %s ) ) ) AND p.post_type = %s AND (p.post_status IN ($paid_statuses)) AND p.ID > %d GROUP BY p.ID ORDER BY p.ID ASC LIMIT 0, " . $limit;
+					$orders_ids = $wpdb->get_col( $wpdb->prepare( $sql, array( '_woofunnel_cid', $cid, 'shop_order', $indexed_order_id ) ) );
+				} else {
+					$order_table      = $wpdb->prefix . 'wc_orders';
+					$order_meta_table = $wpdb->prefix . 'wc_orders_meta';
+					$sql              = ( "SELECT o.id FROM {$order_table} AS o INNER JOIN {$order_meta_table} AS om ON o.id = om.order_id AND om.meta_key = %s AND om.meta_value = %d WHERE o.status IN ({$paid_statuses}) AND o.type = %s AND o.id > %d ORDER BY o.id ASC LIMIT 0, " . $limit );
+					$orders_ids       = $wpdb->get_col( $wpdb->prepare( $sql, array( '_woofunnel_cid', $cid, 'shop_order', $indexed_order_id ) ) );
+				}
+			} catch ( Error|Exception $e ) {
+				$this->un_schedule_wc_recurring_actions( $cid );
+
+				return 1;
 			}
 
 			if ( empty( $orders_ids ) ) {
 				$this->un_schedule_wc_recurring_actions( $cid );
 
-				return;
+				return 1;
 			}
 
 			$old_processed_oids = $bwf_contact->get_meta( 'processed_order_ids' );
@@ -1364,6 +1371,8 @@ if ( ! class_exists( 'WooFunnels_DB_Updater' ) ) {
 			$processed_oids = array_unique( array_merge( $old_processed_oids, $processed_oids ) );
 			sort( $processed_oids );
 			$bwf_contact->update_meta( 'processed_order_ids', maybe_serialize( $processed_oids ) );
+
+			return count( $orders_ids ) < $limit ? 1 : 0; // return 1 or 0 if more orders or not
 		}
 
 		/**

@@ -134,9 +134,6 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 			$this->add_control( 'heading_label', [
 				'label'     => __( 'Label', 'funnel-builder' ),
 				'type'      => Controls_Manager::HEADING,
-				'condition' => [
-					'show_labels!' => '',
-				],
 			] );
 
 			$this->add_control( 'label_color', [
@@ -148,9 +145,6 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				'global'    => [
 					'default' => Global_Colors::COLOR_TEXT,
 				],
-				'condition' => [
-					'show_labels!' => '',
-				],
 			] );
 
 			$this->add_control( 'mark_required_color', [
@@ -160,9 +154,6 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				'selectors' => [
 					'{{WRAPPER}} .bwfac_form_sec > label > span, {{WRAPPER}} .bwfac_form_sec .wfop_input_cont > label > span' => 'color: {{COLOR}};',
 				],
-				'condition' => [
-					'show_labels!' => '',
-				],
 			] );
 
 			$this->add_group_control( Group_Control_Typography::get_type(), [
@@ -170,9 +161,6 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				'selector'  => '{{WRAPPER}} .bwfac_form_sec > label, {{WRAPPER}} .bwfac_form_sec .wfop_input_cont > label',
 				'global'    => [
 					'default' => Global_Typography::TYPOGRAPHY_TEXT,
-				],
-				'condition' => [
-					'show_labels!' => '',
 				],
 			] );
 

@@ -938,19 +938,18 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 
 		// Fields for User select option.
 		public function input_user_select( $field = array() ) {
-
-			$this->defaults = array(
-				'multiple'      => 1,
-				'allow_null'    => 0,
-				'choices'       => array(),
-				'default_value' => '',
-				'class'         => 'ajax_chosen_select_users'
-			);
-
-			$users = get_users( array( 'number' => 5, 'fields' => array( 'ID' ) ) );
-
 			$user_ids = array();
 			$_user    = array();
+
+			if ( ! empty( $field['choices'] ) ) {
+				foreach ( $field['choices'] as $user ) {
+					$_user['name'] = get_user_by( 'id', (int) $user )->display_name;
+					$_user['id']   = ( string ) $user;
+					$user_ids[]    = $_user;
+				}
+			}
+
+			$users = get_users( array( 'number' => 5, 'fields' => array( 'ID' ) ) );
 
 			foreach ( $users as $user ) {
 				$_user['name'] = get_user_by( 'id', $user->ID )->display_name;
@@ -958,15 +957,7 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 				$user_ids[]    = $_user;
 			}
 
-			if ( isset( $field['choices'] ) && ! empty( $field['choices'] ) ) {
-				foreach ( $field['choices'] as $user ) {
-					$_user['name'] = get_user_by( 'id', (int) $user )->display_name;
-					$_user['id']   = ( string ) $user;
-					$user_ids[]    = $_user;
-				}
-			}
 			$choices = wffn_rest_api_helpers()->array_change_key( $user_ids, 'label', 'name' );
-
 
 			$fields = [
 				[
@@ -1179,6 +1170,22 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 				foreach ( $groups as $group ) {
 					foreach ( $group as $rule ) {
 						if ( 'cart_coupons' === $rule['rule_type'] || 'order_coupons' === $rule['rule_type'] ) {
+							$users = wp_parse_args( $users, $rule['condition'] );
+
+						}
+					}
+				}
+			}
+
+			return $users;
+		}
+
+		public function get_user_from_conditions( $groups ) {
+			$users = [];
+			if ( ! empty( $groups ) ) {
+				foreach ( $groups as $group ) {
+					foreach ( $group as $rule ) {
+						if ( 'customer_user' === $rule['rule_type'] ) {
 							$users = wp_parse_args( $users, $rule['condition'] );
 
 						}

@@ -412,7 +412,6 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 					'msg'    => 'The following tables were created: ' . implode( ', ', $missing_table_names_with_prefix )
 				] );
 
-				return rest_ensure_response( $resp );
 			}
 
 			if ( $tracking !== '' ) {

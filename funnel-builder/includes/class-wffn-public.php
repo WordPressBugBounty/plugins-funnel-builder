@@ -134,62 +134,66 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 			/**
 			 * Loop over all the supported steps to check if step supports open links and claiming the environment, only then we can initiate the funnel
 			 */
-			$get_all_steps = WFFN_Core()->steps->get_supported_steps();
-			foreach ( $get_all_steps as $step ) {
+			try {
 
-				/**
-				 * Skip all the other steps which cannot initiate funnel, like upsell and thank you
-				 */
-				if ( ! $step->supports( 'open_link' ) || false === $step->claim_environment( $environment ) ) {
-					continue;
-				}
+				$get_all_steps = WFFN_Core()->steps->get_supported_steps();
+				foreach ( $get_all_steps as $step ) {
 
-				/**
-				 * Ask step to find the funnel based on environment
-				 */
-				$funnel = $step->get_funnel_to_run( $environment );
-				/**
-				 * bail if no funnel found
-				 */
-				if ( ! wffn_is_valid_funnel( $funnel ) ) {
-					return ( array( 'success' => false ) );
-				}
+					/**
+					 * Skip all the other steps which cannot initiate funnel, like upsell and thank you
+					 */
+					if ( ! $step->supports( 'open_link' ) || false === $step->claim_environment( $environment ) ) {
+						continue;
+					}
 
-
-				do_action( 'wffn_before_setup_funnel', $funnel );
-				/**
-				 * Setup funnel information for future use
-				 */
-
-				if ( isset( $environment['id'] ) && $environment['id'] !== '' ) {
-					$environment['id'] = absint( $environment['id'] );
-				}
-
-				WFFN_Core()->data->set( 'funnel', $funnel );
-				WFFN_Core()->data->set( 'current_step', [
-					'id'   => $environment['id'],
-					'type' => $step->slug,
-				] );
+					/**
+					 * Ask step to find the funnel based on environment
+					 */
+					$funnel = $step->get_funnel_to_run( $environment );
+					/**
+					 * bail if no funnel found
+					 */
+					if ( ! wffn_is_valid_funnel( $funnel ) ) {
+						return ( array( 'success' => false ) );
+					}
 
 
-				WFFN_Core()->data->save();
+					do_action( 'wffn_before_setup_funnel', $funnel );
+					/**
+					 * Setup funnel information for future use
+					 */
 
+					if ( isset( $environment['id'] ) && $environment['id'] !== '' ) {
+						$environment['id'] = absint( $environment['id'] );
+					}
 
-				do_action( 'wffn_after_setup_funnel', $funnel );
-
-				/**
-				 * Return the block of info
-				 */
-				return ( array(
-					'success'       => true,
-					'current_step'  => [
+					WFFN_Core()->data->set( 'funnel', $funnel );
+					WFFN_Core()->data->set( 'current_step', [
 						'id'   => $environment['id'],
 						'type' => $step->slug,
-					],
-					'hash'          => WFFN_Core()->data->get_transient_key(),
-					'next_link'     => WFFN_Core()->data->get_next_url( $environment['id'] ),
-					'support_track' => $step->supports( 'track_views' ),
-				) );
+					] );
+
+
+					WFFN_Core()->data->save();
+
+					do_action( 'wffn_after_setup_funnel', $funnel );
+
+					/**
+					 * Return the block of info
+					 */
+					return ( array(
+						'success'       => true,
+						'current_step'  => [
+							'id'   => $environment['id'],
+							'type' => $step->slug,
+						],
+						'hash'          => WFFN_Core()->data->get_transient_key(),
+						'next_link'     => WFFN_Core()->data->get_next_url( $environment['id'] ),
+						'support_track' => $step->supports( 'track_views' ),
+					) );
+				}
+			}catch ( Exception|Error $e ) {
+				WFFN_Core()->logger->log( __FUNCTION__ . ' error during setup funnel : ' . $e->getMessage(), 'wffn', true );
 			}
 
 			return ( array( 'success' => false ) );

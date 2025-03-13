@@ -106,6 +106,13 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 				$group = $this->default_group;
 			}
 			if ( $value !== $this->get( $key, null, $group ) ) {
+				/**
+				 * unset funnel title fro session
+				 *
+				 */
+				if ( 'funnel' === $key && ! empty( $value ) && ! empty( $value->title ) ) {
+					unset( $value->title );
+				}
 
 				if ( 0 === strpos( $key, '_' ) ) {
 					$this->_data[ $group ][ sanitize_key( $key ) ] = $value;
