@@ -12,7 +12,7 @@
  * Elementor tested up to: 3.28.0
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.7.2
+ * Tested up to: 6.8.0
  * Requires PHP: 7.4
  * WooFunnels: true
  *

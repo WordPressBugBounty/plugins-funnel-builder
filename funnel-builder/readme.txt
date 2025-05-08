@@ -1,8 +1,8 @@
-=== WooCommerce Checkout & Funnel Builder by FunnelKit ===
+=== FunnelKit - Funnel Builder for WooCommerce Checkout ===
 Contributors: amans2k, xlplugins, teamwoofunnels
-Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
+Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.7.2
+Tested up to: 6.8.0
 Requires PHP: 7.4
 Stable tag: 3.10.2
 License: GPLv3
