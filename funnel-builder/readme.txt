@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Clic
 Requires at least: 5.4.0
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 3.11.0
+Stable tag: 3.11.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,7 +378,11 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
-= 3.11.0 (June 30, 2025) =
+= 3.11.0.1 (July 01, 2025) =
+* Fixed: Funnel: Site Wide pixel tracking events was not working for Facebook, Google Analytics and Google Ads. (#7782)
+* Fixed: Funnel: Prevent showing label ID for Google ads conversion labels in settings when empty. (#7786)
+
+= 3.11.0 (July 01, 2025) =
 * Added: Funnel : A new settings feature to add conversion labels on opt-in submit and add-to-cart events for Google Ads, improving tracking and insights. (#5700)
 * Added: Funnel: A new feature to download the funnel export while deleting the steps/funnel, streamlining the process. (#7525)
 * Added: Checkout: Language translations for a smoother user experience after template import, making the platform more accessible globally. (#6538)

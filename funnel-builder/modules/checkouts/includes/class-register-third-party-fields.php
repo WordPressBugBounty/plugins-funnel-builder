@@ -194,7 +194,10 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 
 							if ( ( ! empty( $field ) && ! in_array( $key, $address_fields ) || in_array( $key, $this->fields_added ) ) ) {
 								$this->fields_added[] = $key;
-								woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
+								if ( ! isset( $instance->already_printed_fields[ $key ] ) ) {
+									wfacp_form_field( $key, $field, $checkout->get_value( $key ) );
+									$instance->already_printed_fields[ $key ] = 'yes';
+								}
 							}
 						}
 					}
@@ -284,7 +287,7 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 			if ( isset( $fields['shipping'] ) && ! empty( $fields['shipping'] ) ) {
 
 				if ( is_array( $this->wc_fields_under_shipping ) && count( $this->wc_fields_under_shipping ) > 0 ) {
-					$fields['shipping'] = apply_filters( 'wfacp_third_party_shipping_fields', $this->array_merge( $fields['shipping'], $this->wc_fields_under_shipping ) );
+                            $fields['shipping'] = apply_filters( 'wfacp_third_party_shipping_fields', $this->array_merge( $fields['shipping'], $this->wc_fields_under_shipping ) );
 				}
 
 				$this->checkout_fields['shipping'] = array_filter( $fields['shipping'], function ( $v, $key ) use ( $our_fields ) {

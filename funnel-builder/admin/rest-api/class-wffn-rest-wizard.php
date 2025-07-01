@@ -148,7 +148,7 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 			$default_builder = isset( $default_builder ) ? $default_builder : '';
 
 			try {
-				$activate        = '';
+				$activate = '';
 
 				if ( $plugin_init === '' || $plugin_slug === '' ) {
 					return rest_ensure_response( $resp );
@@ -267,7 +267,7 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 
 			}
 
-			$resp                     = array(
+			$resp = array(
 				'status' => true,
 				'slug'   => '',
 				'api'    => 'get-steps-data',
@@ -320,7 +320,11 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 
 				$api_params = array(
 					'action' => 'woofunnelsapi_email_optin',
-					'data'   => array( 'email' => $op_email, 'site' => home_url() ),
+					'data'   => array(
+						'email' => $op_email,
+						'site'  => home_url(),
+						'locale'  => get_locale(),
+					),
 				);
 
 				$request_args = WooFunnels_API::get_request_args( array(
@@ -372,7 +376,7 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 				if ( ! function_exists( 'set_error_handler' ) ) {
 					return;
 				}
-				set_error_handler( function () {} );// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+				set_error_handler( function () {} ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
 			}
 		}
 	}

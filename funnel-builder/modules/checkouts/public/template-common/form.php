@@ -57,7 +57,7 @@ $is_theme_builder = WFACP_Common::is_theme_builder();
 		$have_shipping_address  = $instance->have_shipping_address();
 		$have_billing_address   = $instance->have_billing_address();
 		$shipping_billing_index = $instance->get_shipping_billing_index();
-		$already_form_field     = [];
+		$instance->already_printed_fields = [];
 		if ( ! $is_theme_builder ) {
 			do_action( 'woocommerce_before_checkout_form_cart_notices' );
 			do_action( 'woocommerce_check_cart_items' );
@@ -239,10 +239,10 @@ $is_theme_builder = WFACP_Common::is_theme_builder();
 													}
 												}
 
-												// Allow Blank key. We add Divider (Div wrapper for address field ) when form is not saved & served directly then address field wrapper div not closed
-												if ( ! isset( $already_form_field[ $key ] ) || empty( $key ) ) {
+// Allow Blank key. We add Divider (Div wrapper for address field ) when form is not saved & served directly then address field wrapper div not closed
+												if ( ! isset( $instance->already_printed_fields[ $key ] ) || empty( $key ) ) {
 													wfacp_form_field( $key, $field, $field_value );
-													$already_form_field[ $key ] = 'yes';
+													$instance->already_printed_fields[ $key ] = 'yes';
 												}
 
 

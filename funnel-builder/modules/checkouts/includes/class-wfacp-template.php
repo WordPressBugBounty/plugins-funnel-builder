@@ -12,6 +12,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 		protected $selected_register_template = [];
 		public $default_badges = [];
+		public $already_printed_fields = [];
 		public $web_google_fonts = [
 			'Open Sans' => 'Open Sans',
 		];

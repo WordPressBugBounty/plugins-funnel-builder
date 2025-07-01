@@ -278,7 +278,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			}
 
 			// Update the last execution time if the email was sent.
-			if ( $sent ) {
+			if ( isset( $sent ) && $sent ) {
 				/** Fetch the saved notifications data */
 				self::$executed_last               = get_option( 'wffn_email_notification_updated', array(
 					'weekly'  => '',
@@ -287,6 +287,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 				self::$executed_last[ $frequency ] = date( 'c' ); // @codingStandardsIgnoreLine
 				update_option( 'wffn_email_notification_updated', self::$executed_last );
 			}
+
 		}
 
 		/**
@@ -320,7 +321,8 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			$recipients = array_filter( $recipients, function ( $email ) {
 				return ( strpos( $email, 'support@' ) === false );
 			} );
-			$recipients = array_unique($recipients);
+			$recipients = array_unique( $recipients );
+
 			return $recipients;
 		}
 
@@ -473,6 +475,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 				if ( 'monthly' === $frequency && 1 === intval( $today->format( 'd' ) ) ) {
 					return true;
 				}
+
 				return false;
 			} );
 			if ( empty( $frequencies ) ) {

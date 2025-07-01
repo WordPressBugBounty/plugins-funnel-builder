@@ -279,10 +279,9 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 		public function track_event_data() {
 
 
-			$pixel          = wffn_bool_to_string($this->is_fb_pixel());
-			$ga             = wffn_bool_to_string($this->ga_code());
-			$gad            = wffn_bool_to_string($this->gad_code());
-			$gad            = $this->admin_general_settings->get_option( 'gad_key' );
+			$pixel          = false !== $this->is_fb_pixel() ? $this->is_fb_pixel() : '';
+			$ga             = false !== $this->ga_code() ? $this->ga_code() : '';
+			$gad            = false !== $this->gad_code() ? $this->gad_code() : '';
 			$gad_labels     = $this->admin_general_settings->get_option( 'gad_addtocart_global_conversion_label' );
 			$tiktok         = $this->admin_general_settings->get_option( 'tiktok_pixel' );
 			$pinterest      = $this->admin_general_settings->get_option( 'pint_key' );
@@ -319,7 +318,7 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 				],
 				'gad'            => [
 					'id'       => $gad,
-					'labels'    => $gad_labels,
+					'labels'   => $gad_labels,
 					'settings' => [
 						'page_view' => $gad_event,
 					],
@@ -413,7 +412,10 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 				return false;
 			}
 
-			wp_enqueue_script( 'wffn-tracking', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/tracks' . $suffix . '.js', [ 'jquery' ], WFFN_VERSION_DEV, array( 'is_footer' => false, 'strategy' => 'defer') );
+			wp_enqueue_script( 'wffn-tracking', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/tracks' . $suffix . '.js', [ 'jquery' ], WFFN_VERSION_DEV, array(
+				'is_footer' => false,
+				'strategy'  => 'defer'
+			) );
 			wp_localize_script( 'wffn-tracking', 'wffnTracking', $this->track_event_data() );
 
 		}
