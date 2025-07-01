@@ -5,6 +5,7 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 		public function __construct() {
 
 			add_action( 'wp_head', array( $this, 'maybe_unhook' ), - 1 );
+			add_action( 'template_redirect', array( $this, 'maybe_unhook' ), - 1 );
 		}
 
 		public function is_enable() {
@@ -46,7 +47,7 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 			if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 				return;
 			}
-			
+
 			$instance = BWF_Admin_General_Settings::get_instance();
 
 			/**
@@ -57,10 +58,10 @@ if ( ! class_exists( 'WFFN_PYS_Compatibility' ) ) {
 			}
 
 			WFFN_Common::remove_actions( 'wp_head', 'PixelYourSite\GATags', 'start_output_buffer' );
+			WFFN_Common::remove_actions( 'template_redirect', 'PixelYourSite\GATags', 'start_output_buffer' );
 
 		}
 	}
 
 	WFFN_Plugin_Compatibilities::register( new WFFN_PYS_Compatibility(), 'wffn_pys' );
 }
-

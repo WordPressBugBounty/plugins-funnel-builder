@@ -235,7 +235,7 @@ if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
 
 			if ( class_exists( 'WFACP_Common' ) && ( ( WFACP_Common::get_post_type_slug() === get_post_type( $post_id ) ) || ( WFACP_Common::get_post_type_slug() === get_post_type( $this->post_id ) ) ) ) {
 
-				if ( 0 === did_action( 'wfacp_template_class_found' ) ) {
+				if ( 0 === did_action( 'wfacp_template_class_found' ) && !is_null( WFACP_Core()->template_loader )) {
 					WFACP_Core()->template_loader::$is_checkout = true;
 					WFACP_Common::set_id( $post_id );
 					WFACP_Core()->template_loader->maybe_setup_page();

@@ -190,8 +190,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
            * XHR synchronous requests on the main threads are deprecated. We need to make it async, and after that trigger the form submission
            */
 
+          var wffnHash = '';
+
+          if (typeof window.wffnPublicVars !== "undefined" && Object.hasOwnProperty.call(window.wffnfunnelData, 'hash')) {
+            wffnHash = window.wffnfunnelData.hash;
+          }
+
           jQuery.ajax({
-            url: window.wffnfunnelVars.ajaxUrl + '?action=wffn_submit_custom_optin_form&lead_event_id=' + wffnfunnelVars.op_lead_tracking.fb.event_ID,
+            url: window.wffnfunnelVars.ajaxUrl + '?action=wffn_submit_custom_optin_form&lead_event_id=' + wffnfunnelVars.op_lead_tracking.fb.event_ID + '&wffn-si=' + wffnHash,
             data: jQuery(FormElem).serialize(),
             dataType: 'json',
             type: 'post'
@@ -284,29 +290,47 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
         var _pixelIds = wffnfunnelVars.op_lead_tracking.pint.pixels.split(',');
 
+        var _data = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
+
         $(_pixelIds).each(function (k, v) {
           pintrk('load', v, {
             np: 'woofunnels'
           });
+          pintrk('track', 'Lead', _data);
         });
-        var data = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
-        pintrk('track', 'Lead', data);
       }
 
       if (typeof gtag !== "undefined" && 'object' === _typeof(wffnfunnelVars.op_lead_tracking.ga.enable) && 'yes' === wffnfunnelVars.op_lead_tracking.ga.enable[0] && false !== wffnfunnelVars.op_lead_tracking.ga.ids) {
         var _pixelIds2 = wffnfunnelVars.op_lead_tracking.ga.ids.split(',');
 
-        var data = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
-        data.send_to = _pixelIds2[0];
-        gtag('event', 'Lead', data);
+        var _data2 = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
+
+        $(_pixelIds2).each(function (k, v) {
+          _data2.send_to = v;
+          gtag('event', 'Lead', _data2);
+        });
       }
 
       if (typeof gtag !== "undefined" && 'object' === _typeof(wffnfunnelVars.op_lead_tracking.gad.enable) && 'yes' === wffnfunnelVars.op_lead_tracking.gad.enable[0] && false !== wffnfunnelVars.op_lead_tracking.gad.ids) {
         var _pixelIds3 = wffnfunnelVars.op_lead_tracking.gad.ids.split(',');
 
-        var data = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
-        data.send_to = _pixelIds3[0];
-        gtag('event', 'Lead', data);
+        var pixelLabels = [];
+
+        if (typeof wffnfunnelVars.op_lead_tracking.gad.labels === "string") {
+          pixelLabels = wffnfunnelVars.op_lead_tracking.gad.labels.split(',');
+        }
+
+        var _data3 = typeof wffnAddTrafficParamsToEvent !== "undefined" ? wffnAddTrafficParamsToEvent({}) : {};
+
+        $(_pixelIds3).each(function (k, v) {
+          if ("undefined" !== typeof pixelLabels[k] && pixelLabels[k] !== "") {
+            _data3.send_to = v + '/' + pixelLabels[k];
+          } else {
+            _data3.send_to = v;
+          }
+
+          gtag('event', 'Lead', _data3);
+        });
       }
     }
   };

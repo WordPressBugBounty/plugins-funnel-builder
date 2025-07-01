@@ -52,13 +52,17 @@ if ( ! $show_smart_button_shimmer ) {
 
         #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="1"] #pay_with_amazon {
             background-size: 20%;
+            margin: 0 auto;
         }
+
         #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] #pay_with_amazon {
             background-size: 30%;
         }
+
         #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="3"] #pay_with_amazon {
             background-size: 45%;
         }
+
         #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="4"] #pay_with_amazon {
             background-size: 50%;
         }
@@ -110,11 +114,11 @@ if ( ! $show_smart_button_shimmer ) {
             display: block !important;
         }
 
-        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium{
+        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium {
             width: 100%;
         }
 
-        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium .paypal-buttons.paypal-buttons-context-iframe{
+        #wfacp_smart_buttons .wfacp_smart_button_outer_buttons[count="2"] .wfacp_smart_button_container .angelleye_ppcp-button-container.angelleye_ppcp_horizontal_medium .paypal-buttons.paypal-buttons-context-iframe {
             height: 40px;
             margin-top: 8px;
         }

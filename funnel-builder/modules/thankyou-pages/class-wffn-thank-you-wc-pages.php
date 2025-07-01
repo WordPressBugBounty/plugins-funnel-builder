@@ -56,7 +56,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			add_action( 'wp', array( $this, 'maybe_redirect_funnel_thankyou' ), 999 );
 
 
-
 			add_action( 'wp', array( $this, 'parse_request_for_thankyou' ), - 1 );
 
 			add_action( 'wp', array( $this, 'maybe_set_query_var' ), 1 );
@@ -289,16 +288,20 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			if ( did_action( 'wfocu_funnel_init_event' ) ) {
 				return $url;
 			}
-			$order_id = $order->get_id();
-			if ( $order_id > 0 ) {
-				$get_link = $this->data->setup_thankyou_post( $order_id )->get_page_link();
+			try {
+				$order_id = $order->get_id();
+				if ( $order_id > 0 ) {
+					$get_link = $this->data->setup_thankyou_post( $order_id )->get_page_link();
 
-				if ( false !== $get_link ) {
-					$get_link = trim( $get_link );
-					$get_link = wp_specialchars_decode( $get_link );
+					if ( false !== $get_link ) {
+						$get_link = trim( $get_link );
+						$get_link = wp_specialchars_decode( $get_link );
 
-					return ( WFTY_Common::prepare_single_post_url( $get_link, $order ) );
+						return ( WFTY_Common::prepare_single_post_url( $get_link, $order ) );
+					}
 				}
+			} catch ( Exception|Error $e ) {
+				WFFN_Core()->logger->log( 'Error in redirect_to_thankyou: ' . $e->getMessage() );
 			}
 
 			return $url;
@@ -340,7 +343,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				$order = $this->data->get_order( $get_order_id );
 
 				if ( ! $order instanceof WC_Order ) {
-                    return;
+					return;
 				}
 
 				/**
@@ -771,7 +774,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		public function may_be_change_template( $template ) {
 			global $post;
 			if ( ! is_null( $post ) && $post->post_type === $this->get_post_type_slug() ) {
-				$template = $this->get_template_url(    $template );
+				$template = $this->get_template_url( $template );
 			}
 
 			return $template;
@@ -828,7 +831,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		}
 
 
-
 		public function load_compatibility() {
 			include_once $this->get_module_path() . 'compatibilities/page-builders/gutenberg/class-wfty-gutenberg-extension.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
@@ -837,7 +839,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			include_once $this->get_module_path() . 'compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-pages-oxygen.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
 		}
-
 
 
 		public function get_edit_id() {
@@ -925,7 +926,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		 * Payment Gateways and other plugin usually use these hooks to read order data and process
 		 * Also removes native woocommerce_order_details_table() to prevent order table load
 		 */
-		public function execute_wc_thankyou_hooks() {
+		public function execute_wc_thankyou_hooks( $print = false ) {
 
 			if ( ! $this->is_wfty_page() ) {
 				return;
@@ -938,11 +939,18 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				return;
 			}
 			$order = $this->data->get_order();
-			remove_action( 'woocommerce_thankyou', 'woocommerce_order_details_table', 10 ); ?>
-            <div class="wffn_wfty_wc_thankyou" style="display: none; opacity: 0">
+			remove_action( 'woocommerce_thankyou', 'woocommerce_order_details_table', 10 );
+			$attr = '';
+			if ( $print !== true ) {
+				$attr = 'display: none; opacity: 0';
+			}
+			?>
+
+
+			<div class="wffn_wfty_wc_thankyou" style="<?php echo esc_attr( $attr ); ?>">
 				<?php do_action( 'woocommerce_before_thankyou', $order->get_id() ); ?>
 				<?php do_action( 'woocommerce_thankyou', $order->get_id() ); ?>
-            </div>
+			</div>
 			<?php
 		}
 
@@ -1080,7 +1088,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		}
 
 
-
 		public function maybe_check_for_custom_page() {
 			global $post;
 			$maybe_wfty_id = filter_input( INPUT_GET, 'wfty_source', FILTER_SANITIZE_NUMBER_INT );
@@ -1153,8 +1160,8 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				if ( empty( $url ) ) {
 					return;
 				}
-				$get_params =  $_GET; //phpcs:ignore
-				$query_var = [ 'nt' => '1' ];
+				$get_params = $_GET; //phpcs:ignore
+				$query_var  = [ 'nt' => '1' ];
 
 				if ( ! empty( $get_params ) && is_array( $get_params ) ) {
 					$query_var = array_merge( $query_var, $get_params );
@@ -1171,9 +1178,19 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			if ( ! is_null( $id ) && is_integer( $id ) ) {
 				$this->thankyoupage_id = $id;
 			}
-			if ( $this->is_wfty_page() && empty( $this->thankyoupage_id ) ) {
-				global $post;
-				$this->thankyoupage_id = $post->ID;
+			global $post;
+			/**
+			 * condition first always override thankyoupage_id for record ab test variation id
+			 * Reason:
+			 *  1. when enable in override permalink setting we change global post
+			 *  2. in this case wp hook return always control id so conversion not increase for variation
+			 */
+			if ( ( ( $this->maybe_enable_override_permalink() ) || ( $this->is_wfty_page() && empty( $this->thankyoupage_id ) ) ) && ! is_null( $post ) ) {
+
+				if ( ! is_null( $post ) ) {
+					$this->thankyoupage_id = $post->ID;
+
+				}
 			}
 		}
 
@@ -1231,7 +1248,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 
 
 			// Bail if this query doesn't match our very specific rewrite rule.
-			if ( ! isset( $query->query['page'] ) || 2 !== count( $query->query ) ) {
+			if ( ! isset( $query->query['page'] ) ) {
 				return;
 			}
 
@@ -1240,6 +1257,10 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				return;
 			}
 
+			// If query does not match (not exactly 2 parameters or 3 with 'lang'), return early.
+			if ( ! ( count( $query->query ) === 2 || ( count( $query->query ) === 3 && isset( $query->query['lang'] ) ) ) ) {
+				return;
+			}
 			// Add landing page step post type to existing post type array.
 			if ( isset( $query->query_vars['post_type'] ) && is_array( $query->query_vars['post_type'] ) ) {
 
@@ -1427,6 +1448,17 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			}
 
 			return $tabs;
+		}
+
+		public function maybe_enable_override_permalink() {
+			if ( class_exists( 'BWF_Admin_General_Settings' ) && function_exists( 'bwfabt_string_to_bool' ) ) {
+				$bwb_admin_setting = BWF_Admin_General_Settings::get_instance();
+
+				return ( ! empty( $bwb_admin_setting->get_option( 'ab_test_override_permalink' ) ) ) ? bwfabt_string_to_bool( $bwb_admin_setting->get_option( 'ab_test_override_permalink' ) ) : false;
+			}
+
+			return false;
+
 		}
 
 	}

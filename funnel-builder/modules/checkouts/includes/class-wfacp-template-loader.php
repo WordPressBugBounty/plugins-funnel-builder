@@ -629,7 +629,7 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 					),
 				),
 				'oxy'       => array(
-					'title'         => 'Oxygen',
+					'title'         => 'Oxygen Classic',
 					'plugin-status' => $oxygen_status,
 					'plugins'       => array(
 						array(
@@ -767,7 +767,7 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 				} else if ( 'oxy' === $builder ) {
 					if ( 'install' === $plugin_status ) {
 						$plugin_string .= $string;
-						$button_text   = __( 'Install Oxygen Builder', 'funnel-builder' );
+						$button_text   = __( 'Install Oxygen Classic Builder', 'funnel-builder' );
 						$no_install    = 'yes';
 						$builder_link  = esc_url( 'https://oxygenbuilder.com/' );
 					} else {

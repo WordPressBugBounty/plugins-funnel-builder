@@ -323,3 +323,31 @@ body.et-db #et-boc .bwf_pp_opt_sub_head {
 }
 
 
+.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_form_sec.bwfac_form_field_radio [type="checkbox"] + label {
+    line-height: 1.2 !important;
+    padding-bottom: 8px;
+    display: block;
+    height: auto;
+    position: relative;
+}
+
+.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_form_sec.bwfac_form_field_radio [type="radio"] + label {
+    line-height: 1.2 !important;
+}
+
+body.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_forms_outer [type="checkbox"] + label:before{
+    top: 4px;
+}
+
+body.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_forms_outer [type="checkbox"] + label:after {
+    top: 2px;
+}
+
+body.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_forms_outer [type="radio"] + label:before {
+    top: 4px;
+    transform: none;
+}
+
+body.et-db #et-boc .et-l .et_pb_module.et_wfop_optin_form #et_wfop_optin_form .bwfac_forms_outer [type="radio"]  + label:after {
+    top: 7px;
+}

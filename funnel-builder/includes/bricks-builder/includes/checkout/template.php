@@ -81,6 +81,30 @@ if ( ! class_exists( 'WFACP_template_Bricks' ) ) {
 			add_action( 'wfacp_internal_css', array( $this, 'primary_colors' ), 10 );
 
 			add_filter( 'wfacp_show_product_thumbnail_collapsible_show', '__return_true' );
+
+
+			/**
+			 * Mini Cart Strike Through Discounted Price
+			 */
+
+			add_filter( 'wfacp_order_summary_field_enable_strike_through_price', [ $this, 'order_summary_field_enable_strike_through_price' ] );
+			add_filter( 'wfacp_collapsible_mini_cart_enable_strike_through_price', [ $this, 'collapsible_mini_cart_enable_strike_through_price' ] );
+			add_filter( 'wfacp_mini_cart_enable_strike_through_price', [ $this, 'mini_cart_enable_strike_through_price' ] );
+
+			/**
+			 * Display Low Stock Trigger Message
+			 */
+			add_action( 'wfacp_mini_cart_after_product_title', [ $this, 'mini_cart_low_stock_trigger' ] );
+			add_action( 'wfacp_order_summary_field_after_product_title', [ $this, 'order_summary_field_after_product_title' ] );
+			add_action( 'wfacp_collapsible_mini_cart_after_product_title', [ $this, 'collapsible_mini_cart_field_after_product_title' ] );
+
+			/**
+			 * Display Saving Price Row After Order Total in mini cart
+			 */
+			add_action( 'wfacp_mini_cart_woocommerce_review_order_after_order_total', [ $this, 'mini_cart_saving_price' ], 9999 );
+			add_action( 'wfacp_order_summary_field_woocommerce_review_order_after_order_total', [ $this, 'order_summary_field_saving_price' ], 9999 );
+			add_action( 'wfacp_collapsible_mini_cart_woocommerce_review_order_after_order_total', [ $this, 'collapsible_mini_cart_saving_price' ], 9999 );
+
 		}
 
 		public static function get_instance() {
@@ -670,6 +694,7 @@ if ( ! class_exists( 'WFACP_template_Bricks' ) ) {
 		 * @return string The text for the coupon button.
 		 */
 		public function get_form_coupon_button_text() {
+
 			if ( isset( $this->form_data['form_coupon_button_text'] ) && '' !== $this->form_data['form_coupon_button_text'] ) {
 				return $this->form_data['form_coupon_button_text'];
 			}
@@ -1767,6 +1792,108 @@ if ( ! class_exists( 'WFACP_template_Bricks' ) ) {
 			}
 
 			echo '</style>';
+		}
+
+
+		/**
+		 *
+		 * Check this Mini cart Strike Through enable or disabled from editor
+		 *
+		 * @return mixed
+		 */
+		public function order_summary_field_enable_strike_through_price() {
+
+			if ( isset( $this->form_data['order_summary_field_enable_strike_through_price'] ) && 'yes' == $this->form_data['order_summary_field_enable_strike_through_price'] ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function collapsible_mini_cart_enable_strike_through_price() {
+
+			if ( isset( $this->form_data['collapsible_mini_cart_enable_strike_through_price'] ) && 'yes' == $this->form_data['collapsible_mini_cart_enable_strike_through_price'] ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function mini_cart_enable_strike_through_price() {
+
+
+			if ( isset( $this->mini_cart_data['mini_cart_enable_strike_through_price'] ) && 'yes' == $this->mini_cart_data['mini_cart_enable_strike_through_price'] ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function mini_cart_low_stock_trigger( $_product ) {
+
+			if ( isset( $this->mini_cart_data['mini_cart_enable_low_stock_trigger'] ) && 'yes' == $this->mini_cart_data['mini_cart_enable_low_stock_trigger'] && isset( $this->mini_cart_data['mini_cart_low_stock_message'] ) ) {
+
+				$stock_quantity = $_product->get_stock_quantity();
+
+				if ( $stock_quantity !== null ) {
+
+					echo "<div class='wfacp_stocks'>" . str_replace( '{{quantity}}', $stock_quantity, $this->mini_cart_data['mini_cart_low_stock_message'] ) . "</div>";
+				}
+			}
+		}
+
+		public function order_summary_field_after_product_title( $_product ) {
+
+			if ( isset( $this->form_data['order_summary_field_enable_low_stock_trigger'] ) && 'yes' == $this->form_data['order_summary_field_enable_low_stock_trigger'] && isset( $this->form_data['order_summary_field_low_stock_message'] ) ) {
+
+				$stock_quantity = $_product->get_stock_quantity();
+
+				if ( $stock_quantity !== null ) {
+
+					echo "<div class='wfacp_stocks'>" . str_replace( '{{quantity}}', $stock_quantity, $this->form_data['order_summary_field_low_stock_message'] ) . "</div>";
+				}
+			}
+		}
+
+		public function collapsible_mini_cart_field_after_product_title( $_product ) {
+
+
+			if ( isset( $this->form_data['collapsible_mini_cart_enable_low_stock_trigger'] ) && 'yes' == $this->form_data['collapsible_mini_cart_enable_low_stock_trigger'] && isset( $this->form_data['collapsible_mini_cart_low_stock_message'] ) ) {
+
+				$stock_quantity = $_product->get_stock_quantity();
+
+				if ( $stock_quantity !== null ) {
+
+					echo "<div class='wfacp_stocks'>" . str_replace( '{{quantity}}', $stock_quantity, $this->form_data['collapsible_mini_cart_low_stock_message'] ) . "</div>";
+				}
+			}
+		}
+
+		public function mini_cart_saving_price() {
+
+			if ( isset( $this->mini_cart_data['mini_cart_enable_saving_price_message'] ) && 'yes' == $this->mini_cart_data['mini_cart_enable_saving_price_message'] && isset( $this->mini_cart_data['mini_cart_saving_price_message'] ) ) {
+				$price_message = $this->mini_cart_data['mini_cart_saving_price_message'];
+				WFACP_Common::display_save_price( $price_message );
+			}
+
+		}
+
+		public function order_summary_field_saving_price() {
+
+			if ( isset( $this->form_data['order_summary_field_enable_saving_price_message'] ) && 'yes' == $this->form_data['order_summary_field_enable_saving_price_message'] && isset( $this->form_data['order_summary_field_saving_price_message'] ) ) {
+				$price_message = $this->form_data['order_summary_field_saving_price_message'];
+				WFACP_Common::display_save_price( $price_message );
+			}
+
+		}
+
+		public function collapsible_mini_cart_saving_price() {
+
+			if ( isset( $this->form_data['collapsible_mini_cart_enable_saving_price_message'] ) && 'yes' == $this->form_data['collapsible_mini_cart_enable_saving_price_message'] && isset( $this->form_data['collapsible_mini_cart_saving_price_message'] ) ) {
+				$price_message = $this->form_data['collapsible_mini_cart_saving_price_message'];
+				WFACP_Common::display_save_price( $price_message );
+			}
+
 		}
 	}
 

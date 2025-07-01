@@ -151,12 +151,13 @@ if ( ! class_exists( 'WFACP_Analytics' ) ) {
 			}
 
 			$locals = [
-				'id'        => $pixel_id,
-				'positions' => [
+				'id'          => $pixel_id,
+				'cart_labels' => $this->get_add_to_cart_label(),
+				'positions'   => [
 					'add_to_cart' => $add_to_cart_position,
 					'checkout'    => $checkout_ev_position,
 				],
-				'settings'  => [
+				'settings'    => [
 					'add_to_cart' => wc_string_to_bool( $add_to_cart ) ? 'true' : 'false',
 					'page_view'   => wc_string_to_bool( $page_view ) ? 'true' : 'false',
 					'checkout'    => wc_string_to_bool( $checkout_ev ) ? 'true' : 'false',
@@ -292,6 +293,10 @@ if ( ! class_exists( 'WFACP_Analytics' ) ) {
 			}
 
 			return $request_uri;
+		}
+
+		public function get_add_to_cart_label() {
+			return '';
 		}
 
 		public function do_treat_variable_as_simple( $mode = 'pixel' ) {

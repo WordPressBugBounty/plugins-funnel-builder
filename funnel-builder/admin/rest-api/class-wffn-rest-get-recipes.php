@@ -12,8 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! class_exists( 'WFFN_REST_Recipes' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFFN_REST_Recipes extends WP_REST_Controller {
+	class WFFN_REST_Recipes extends WP_REST_Controller {
 
 		public static $_instance = null;
 
@@ -25,8 +24,8 @@ if ( ! class_exists( 'WFFN_REST_Recipes' ) ) {
 
 		protected $namespace = 'funnelkit-app';
 		protected $rest_base = 'automation';
-        protected $response_code = 200;
-        protected $total_count = 0;
+		protected $response_code = 200;
+		protected $total_count = 0;
 
 		public function __construct() {
 			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -45,36 +44,13 @@ if ( ! class_exists( 'WFFN_REST_Recipes' ) ) {
 		 */
 		public function register_routes() {
 
-			register_rest_route( $this->namespace, '/' . $this->rest_base . '/recipes', array(
+
+			register_rest_route( $this->namespace, '/' . $this->rest_base . '/recent-carts', array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_all_recipes' ),
+					'callback'            => array( $this, 'get_recent_carts' ),
 					'permission_callback' => array( $this, 'get_read_api_permission_check' ),
 					'args'                => [],
-				),
-			) );
-
-			register_rest_route( $this->namespace, '/' . $this->rest_base, array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_automation_data' ),
-					'permission_callback' => array( $this, 'get_read_api_permission_check' ),
-					'args'                => [],
-				),
-			) );
-
-			register_rest_route( $this->namespace, '/' . $this->rest_base . '/recipe/', array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_selected_recipe' ),
-					'permission_callback' => array( $this, 'get_read_api_permission_check' ),
-					'args'                => [
-						'recipe_slug' => array(
-							'description'       => __( 'Recipe Slug', 'funnel-builder' ),
-							'type'              => 'string',
-							'validate_callback' => 'rest_validate_request_arg',
-						),
-					],
 				),
 			) );
 		}
@@ -83,83 +59,186 @@ if ( ! class_exists( 'WFFN_REST_Recipes' ) ) {
 			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'read' );
 		}
 
-		public function get_automation_data() {
-			$count = 0;
-			$version = defined( 'BWFAN_VERSION' ) ? BWFAN_VERSION : '';
-			if ( class_exists( 'BWFAN_Model_Automations' ) ) {
-				$count = BWFAN_Model_Automations::count_rows();
+
+		public function get_recent_carts() {
+			$recent_abandoned = $recovered_carts = [];
+			$recovered_count  = $abandoned_count = 0;
+
+			if ( function_exists( 'bwfan_is_woocommerce_active' ) && bwfan_is_woocommerce_active() ) {
+				$recovered_carts  = self::get_recovered_carts( 0, 10 );
+				$recovered_count  = $recovered_carts['total_count'] ?? 0;
+				$recovered_carts  = isset( $recovered_carts['items'] ) ? $this->get_formatted_recovered_cart( $recovered_carts['items'] ) : [];
+				$ab_carts         = self::get_recent_abandoned();
+				$recent_abandoned = $ab_carts['ab_carts'] ?? [];
+				$abandoned_count  = $ab_carts['total_count'] ?? 0;
+
 			}
 
-			$this->response_code = 200;
-            $this->total_count   = $count;
+			$carts = array_merge( $recovered_carts, $recent_abandoned );
+			uasort( $carts, function ( $a, $b ) {
+				return $a['created_on'] >= $b['created_on'] ? - 1 : 1;
+			} );
+			$carts             = array_values( $carts );
+			$carts             = count( $carts ) > 10 ? array_slice( $carts, 0, 10 ) : $carts;
+			$this->total_count = $recovered_count + $abandoned_count;
 
-		    return $this->success_response( [ 'count' => $count, 'version' => $version ], __( 'Automation Data.', 'funnel-builder' ) );
+			return $this->success_response( $carts, __( 'Got recent carts.', 'funnel-builder' ) );
 		}
 
-		public function get_selected_recipe( WP_REST_Request $request ) {
-			$recipe_slug   = $request->get_param( 'recipe_slug' );
-			if ( empty( $recipe_slug ) ) {
-				return $this->error_response( __( 'Invalid / Empty automation ID provided', 'funnel-builder' ), null, 400 );
-			}
 
-			/** Fetch Recipe data */
-			$recipe_data = $this->get_recipe_remotely( $recipe_slug );
-			if ( empty( $recipe_data ) ) {
-				return $this->error_response( __( 'Recipe not found.', 'funnel-builder' ), null, 400 );
-			}
+		public function success_response( $result_array, $message = '' ) {
+			$response                = WFFN_Common::format_success_response( $result_array, $message, $this->response_code );
+			$response['total_count'] = $this->total_count;
 
-			$this->response_code = 200;
+			$response['has_cart_automation'] = $this->get_cart_automations();
 
-			return $this->success_response( $recipe_data, ! empty( $automation_data['message'] ) ? $automation_data['message'] : '' );
+			return rest_ensure_response( $response );
+		}
+
+
+		public function get_cart_automations() {
+			global $wpdb;
+
+			$table = $wpdb->prefix . 'bwfan_automations';
+			$event = 'ab_cart_abandoned';
+			$v     = 2;
+
+			$results = $wpdb->get_var( $wpdb->prepare( "SELECT count(*) FROM $table WHERE `event` = %s AND `v` = %d", $event, $v ) ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+			return !empty($results);
 		}
 
 		/**
-		 * @param $slug recipe slug
+		 * Fetch recent 10 abandoned cart
 		 *
-		 * @return void
+		 * @param $limit
+		 *
+		 * @return array|stdClass[]
 		 */
-		public function get_recipe_remotely( $slug ) {
-			$request = wp_remote_get( "https://app.getautonami.com/recipe/$slug" );
+		public static function get_recent_abandoned( $limit = 10 ) {
+			global $wpdb;
+			$abandoned_table = $wpdb->prefix . 'bwfan_abandonedcarts';
+			$contact_table   = $wpdb->prefix . 'bwf_contact';
 
-			if ( is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) != 200 ) {
-				return false;
-			}
-			$data = wp_remote_retrieve_body( $request );
+			$query  = "SELECT abandon.email, abandon.status, abandon.checkout_data, abandon.total AS revenue, abandon.currency, COALESCE(con.id, 0) AS id, COALESCE(con.f_name, '') AS f_name, COALESCE(con.l_name, '') AS l_name,abandon.created_time AS created_on from $abandoned_table AS abandon LEFT JOIN $contact_table AS con ON abandon.email = con.email WHERE abandon.status IN (0,1,2,3,4) ORDER BY abandon.ID DESC LIMIT %d OFFSET 0";
+			$result = $wpdb->get_results( $wpdb->prepare( $query, $limit ), ARRAY_A ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared
 
-			if ( isset( $data['error'] ) ) {
-				return false;
-			}
-			return json_decode($data, true);
+			$abandoned_carts = array_map( function ( $cart ) {
+				if ( empty( $cart['f_name'] ) || empty( $cart['l_name'] ) ) {
+					$checkout_data  = ! empty( $cart['checkout_data'] ) ? json_decode( $cart['checkout_data'], true ) : [];
+					$cart['f_name'] = empty( $cart['f_name'] ) && ! empty( $checkout_data['fields']['billing_first_name'] ) ? $checkout_data['fields']['billing_first_name'] : $cart['f_name'];
+					$cart['l_name'] = empty( $cart['l_name'] ) && ! empty( $checkout_data['fields']['billing_last_name'] ) ? $checkout_data['fields']['billing_last_name'] : $cart['l_name'];
+				}
 
+				if ( isset( $cart['checkout_data'] ) ) {
+					unset( $cart['checkout_data'] );
+				}
+
+				if ( ! isset( $cart['currency'] ) ) {
+					return $cart;
+				}
+				$cart['type']     = isset( $cart['status'] ) && 2 === intval( $cart['status'] ) ? 3 : 2;
+				$cart['currency'] = class_exists( 'BWFAN_Automations' ) ? BWFAN_Automations::get_currency( $cart['currency'] ) : [];
+
+				return $cart;
+			}, $result );
+
+			$count_query = "SELECT COUNT(`ID`) FROM $abandoned_table  WHERE `status` IN (0,1,2,3,4)";
+			$total_count = $wpdb->get_var( $count_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+			return [
+				'ab_carts'    => $abandoned_carts,
+				'total_count' => intval( $total_count ),
+			];
 		}
 
-		public function get_all_recipes( WP_REST_Request $request ) {
-            $all_recipes         = WFFN_Recipe_Loader::get_recipes_array();
-            $this->response_code = 200;
-            $this->total_count   = is_array( $all_recipes ) ? count( $all_recipes ) : 0;
+		/**
+		 * Get recovered cart
+		 *
+		 * @param $offset
+		 * @param $limit
+		 *
+		 * @return array
+		 */
+		public static function get_recovered_carts( $offset = '', $limit = '' ) {
+			global $wpdb;
+			$left_join = '';
 
-		    return $this->success_response( $all_recipes, __( 'Got all recipes.', 'funnel-builder' ) );
+			$post_statuses = apply_filters( 'bwfan_recovered_cart_excluded_statuses', array(
+				'wc-pending',
+				'wc-failed',
+				'wc-cancelled',
+				'wc-refunded',
+				'trash',
+				'draft'
+			) );
+			$post_status   = "('" . implode( "','", array_filter( $post_statuses ) ) . "')";
+			$found_posts   = array();
 
+			if ( BWF_WC_Compatibility::is_hpos_enabled() ) {
+				$query = $wpdb->prepare( "SELECT p.id as id FROM {$wpdb->prefix}wc_orders as p LEFT JOIN {$wpdb->prefix}wc_orders_meta as m ON p.id = m.order_id WHERE p.type = %s AND p.status NOT IN $post_status AND m.meta_key = %s ORDER BY p.date_created_gmt DESC LIMIT $offset,$limit", 'shop_order', '_bwfan_ab_cart_recovered_a_id' ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			} else {
+				$query = $wpdb->prepare( "SELECT p.ID as id FROM {$wpdb->prefix}posts as p LEFT JOIN {$wpdb->prefix}postmeta as m ON p.ID = m.post_id $left_join WHERE p.post_type = %s AND p.post_status NOT IN $post_status AND m.meta_key = %s ORDER BY p.post_modified DESC LIMIT $offset,$limit", 'shop_order', '_bwfan_ab_cart_recovered_a_id' ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			}
+			$recovered_carts = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL
+
+			if ( empty( $recovered_carts ) ) {
+				return array();
+			}
+			$items = array();
+
+			foreach ( $recovered_carts as $recovered_cart ) {
+				if ( function_exists( 'wc_get_order' ) ) {
+					$items[] = wc_get_order( $recovered_cart['id'] );
+				}
+			}
+
+			$found_posts['items'] = $items;
+
+			if ( BWF_WC_Compatibility::is_hpos_enabled() ) {
+				$count_query                = $wpdb->prepare( "SELECT DISTINCT COUNT(p.id) FROM {$wpdb->prefix}wc_orders as p LEFT JOIN {$wpdb->prefix}wc_orders_meta as m ON p.id = m.order_id WHERE p.type = %s AND p.status NOT IN $post_status AND m.meta_key = %s ", 'shop_order', '_bwfan_ab_cart_recovered_a_id' ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$found_posts['total_count'] = $wpdb->get_var( $count_query ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL
+
+				return $found_posts;
+			}
+
+			$count_query                = $wpdb->prepare( "SELECT COUNT(p.ID) FROM {$wpdb->prefix}posts as p LEFT JOIN {$wpdb->prefix}postmeta as m ON p.ID = m.post_id $left_join WHERE p.post_type = %s AND p.post_status NOT IN $post_status AND m.meta_key = %s ", 'shop_order', '_bwfan_ab_cart_recovered_a_id' ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$found_posts['total_count'] = $wpdb->get_var( $count_query ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL
+
+			return $found_posts;
 		}
 
-        public function success_response( $result_array, $message = '' ) {
-            $response = WFFN_Common::format_success_response( $result_array, $message, $this->response_code );
-            $response['total_count'] = $this->total_count;
-            return rest_ensure_response( $response );
-        }
+		/**
+		 * Formatted recovered cart
+		 *
+		 * @param $recovered_carts
+		 *
+		 * @return array
+		 */
+		public function get_formatted_recovered_cart( $recovered_carts ) {
+			if ( empty( $recovered_carts ) ) {
+				return [];
+			}
+			$result = [];
+			foreach ( $recovered_carts as $item ) {
+				if ( ! $item instanceof WC_Order ) {
+					continue;
+				}
+				$order_date = $item->get_date_created();
+				$result[]   = [
+					'order_id'   => $item->get_id(),
+					'f_name'     => $item->get_billing_first_name(),
+					'l_name'     => $item->get_billing_last_name(),
+					'email'      => $item->get_billing_email(),
+					'created_on' => ( $order_date instanceof WC_DateTime ) ? ( $order_date->date( 'Y-m-d H:i:s' ) ) : '',
+					'revenue'    => $item->get_total(),
+					'currency'   => class_exists( 'BWFAN_Automations' ) ? BWFAN_Automations::get_currency( $item->get_currency() ) : [],
+					'id'         => $item->get_meta( '_woofunnel_cid' ),
+					'type'       => 1,
+				];
+			}
 
-		public function error_response( $message = '', $wp_error = null, $code = 0 ) {
-			if ( 0 !== absint( $code ) ) {
-				$this->response_code = $code;
-			}
-	
-			$data = array();
-			if ( $wp_error instanceof WP_Error ) {
-				$message = $wp_error->get_error_message();
-				$data    = $wp_error->get_error_data();
-			}
-	
-			return new WP_Error( $this->response_code, $message, array( 'status' => $this->response_code, 'error_data' => $data ) );
+			return $result;
 		}
 
 

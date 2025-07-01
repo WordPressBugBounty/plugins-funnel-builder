@@ -28,7 +28,7 @@ $pageLayout = [
 	'fieldsets'                   => [
 		'single_step' => [
 			[
-				'name'        => 'Customer Information',
+				'name'        => WFACP_Common::translation_string_to_check('Customer Information'),
 				'class'       => '',
 				'sub_heading' => '',
 				'fields'      => [
@@ -84,7 +84,7 @@ $pageLayout = [
 			],
 
 			[
-				'name'        => __( 'Order Summary', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [

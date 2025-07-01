@@ -78,7 +78,7 @@ if ( ! class_exists( 'WFACP_Elementor_Template' ) ) {
 		public function add_fragment_coupon_sidebar( $fragments ) {
 
 			$messages        = '';
-			$success_message = sprintf( __( 'Congrats! Coupon code %s %s applied successfully.', 'funnel-builder' ), '{{coupon_code}}', '({{coupon_value}})' );
+			$success_message = sprintf( __( 'Coupon code applied successfully.','woocommerce' ));
 
 			ob_start();
 			foreach ( WC()->cart->get_coupons() as $code => $coupon ) {
@@ -1167,7 +1167,7 @@ if ( ! class_exists( 'WFACP_Elementor_Template' ) ) {
 				'{{WRAPPER}} #wfacp-e-form  #payment li.wc_payment_method input.input-radio:checked::before'                    => 'background-color:{{VALUE}};',
 				'{{WRAPPER}} #wfacp-e-form  #payment.wc_payment_method input[type=radio]:checked:before'                        => 'background-color:{{VALUE}};',
 				'{{WRAPPER}} #wfacp-e-form  button[type=submit]:not(.white):not(.black)'                                        => 'background-color:{{VALUE}};',
-				'{{WRAPPER}} #wfacp-e-form  button[type=button]:not(.white):not(.black)'                                        => 'background-color:{{VALUE}};',
+				'{{WRAPPER}} #wfacp-e-form  button[type=button]:not(.white):not(.black):not(.woopay-express-button)'                                        => 'background-color:{{VALUE}};',
 				'{{WRAPPER}} #wfacp-e-form .wfacp-coupon-section .wfacp-coupon-page .wfacp-coupon-field-btn'                    => 'background-color:{{VALUE}};',
 				'{{WRAPPER}} #wfacp-e-form input[type=checkbox]:checked'                                                        => 'background-color:{{VALUE}};',
 				'{{WRAPPER}} #wfacp-e-form #payment input[type=checkbox]:checked'                                               => 'background-color:{{VALUE}};',
@@ -1233,6 +1233,9 @@ if ( ! class_exists( 'WFACP_Elementor_Template' ) ) {
 
 
 		}
+
+
+
 
 	}
 }

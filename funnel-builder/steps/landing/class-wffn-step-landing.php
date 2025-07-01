@@ -187,7 +187,7 @@ if ( ! class_exists( 'WFFN_Step_Landing' ) ) {
 		 * @return bool
 		 */
 		public function claim_environment( $environment ) {
-			if ( 'wffn_landing' !== $environment['post_type'] ) {
+			if ( ! is_array( $environment ) || 'wffn_landing' !== $environment['post_type'] ) {
 				return false;
 			}
 
@@ -323,36 +323,6 @@ if ( ! class_exists( 'WFFN_Step_Landing' ) ) {
 
 		public function maybe_show_footer_text( $existing, $current_screen ) {
 			return ( $current_screen === 'woofunnels_page_wf-lp' ) ? true : $existing;
-		}
-
-		/**
-		 * Find the next url to open in the funnel
-		 *
-		 * @param $landing_id
-		 * @param $funnel_id
-		 *
-		 * @return bool|false|string
-		 */
-		public function get_next_url( $landing_id, $funnel_id ) {
-
-			$get_funnel = WFFN_Core()->admin->get_funnel( $funnel_id );
-
-			$get_next_step   = WFFN_Core()->data->get_next_step( $get_funnel, $landing_id );
-			$get_step_object = WFFN_Core()->steps->get_integration_object( $get_next_step['type'] );
-
-			if ( ! empty( $get_step_object ) && $get_step_object->supports( 'open_link' ) ) {
-
-				$properties = $get_step_object->populate_data_properties( $get_next_step, $funnel_id );
-
-				if ( $get_step_object->is_disabled( $get_step_object->get_enitity_data( $properties['_data'], 'status' ) ) ) {
-
-					return $this->get_next_url( $get_next_step['id'], $funnel_id );
-				}
-
-				return $get_step_object->get_url( $get_next_step['id'] );
-			}
-
-			return false;
 		}
 
 		public function mark_step_converted( $step_data ) {

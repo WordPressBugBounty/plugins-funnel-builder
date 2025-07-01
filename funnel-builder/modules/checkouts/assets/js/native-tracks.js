@@ -12,12 +12,14 @@
             this.track_id = data.id;
             this.settings = data.settings;
             this.positions = data.positions;
+            this.all_data  = data;
             this.data = {
                 'add_to_cart': data.add_to_cart, 'checkout': data.checkout, 'payment_info': {}, 'last_checkout_data': null
             };
 
             this.add_to_cart_run = false;
             this.checkout_event_run = false;
+            this.is_bumpevent = false;
             this.init();
             this.attach_triggers();
 
@@ -32,8 +34,14 @@
 
         fire_events(type) {
             if (this.positions.add_to_cart === type && false == this.add_to_cart_run) {
-                //hide add to cart on native checkout
-                //this.add_to_cart();
+                /*
+                 *hide add to cart on native checkout
+                 * only run in case wffn_pending_event is true
+                 * when add to cart run for custom ajax
+                 */
+                if (typeof this.all_data !== 'undefined' && this.all_data.hasOwnProperty('wffn_pending_event') && 'true' === this.all_data.wffn_pending_event) {
+                    this.add_to_cart();
+                }
                 this.add_to_cart_run = true;
             }
             if (this.positions.checkout === type) {
@@ -279,6 +287,7 @@
             let present = typeof wfob_frontend == 'object' && wfob_frontend.hasOwnProperty('track');
             if (present) {
                 if ('1' == wfob_frontend.track[this.track_name].add_to_cart) {
+                    this.is_bumpevent = true;
                     this.add_item(data, true);
                 }
                 if (wfob_frontend.track[this.track_name].hasOwnProperty('custom_bump') && '1' == wfob_frontend.track[this.track_name].custom_bump) {
@@ -292,6 +301,7 @@
             let present = typeof wfob_frontend == 'object' && wfob_frontend.hasOwnProperty('track');
             if (present) {
                 if ('1' == wfob_frontend.track[this.track_name].add_to_cart) {
+                    this.is_bumpevent = true;
                     this.remove_item(data);
                 }
             }
@@ -300,10 +310,11 @@
     }
 
     class Facebook extends Events {
-        constructor(data) {
+        constructor(data,count) {
             super(data);
             this.pixel_event_data = {"AddToCart": {}, "InitiateCheckout": {}, "AddPaymentInfo": {}, "PageView": {}};
             this.track_name = 'pixel';
+            this.eventCount = count;
         }
 
         static enqueue_js() {
@@ -342,6 +353,9 @@
             let url = wfacp_analytics_data.wfacp_frontend.admin_ajax;
             if (data.hasOwnProperty('url')) {
                 url = data.url;
+            }
+            if (this.eventCount !== 0) {
+                return;
             }
             data.action = "wfacp_" + data.action;
             if (wfacp_analytics_data.wfacp_frontend.hasOwnProperty('wc_endpoints') && wfacp_analytics_data.wfacp_frontend.wc_endpoints.hasOwnProperty(data.action)) {
@@ -617,17 +631,36 @@
         constructor(data) {
             super(data);
             this.track_name = 'google_ads';
+            this.idlabel = (typeof data.idlabel !== "undefined") ? data.idlabel : '';
+            this.bumpIdlabel = (typeof data.bumpIdlabel !== "undefined") ? data.bumpIdlabel : '';
             window.dataLayer = window.dataLayer || [];
         }
 
         event_single_add_to_cart(data) {
-            data.send_to = this.track_id;
+            data = this.set_send_id( data );
             data.event_category = "ecommerce";
             data.non_interaction = true;
             var event_data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent(data) : data;
             this.gtag('event', 'add_to_cart', event_data);
         }
 
+        event_remove_add_to_cart(data, item_key) {
+            data = this.set_send_id( data );
+            data.event_category = "ecommerce";
+            data.non_interaction = true;
+            var event_data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent(data) : data;
+
+            this.gtag('event', 'remove_from_cart', event_data);
+        }
+
+        set_send_id( data ) {
+            if ( this.is_bumpevent === true ) {
+                data.send_to = (typeof this.bumpIdlabel !== "undefined") && '' !== this.bumpIdlabel ? this.bumpIdlabel : this.track_id;
+            } else {
+                data.send_to = (typeof this.idlabel !== "undefined") && '' !== this.idlabel ? this.idlabel : this.track_id;
+            }
+            return data;
+        }
         event_checkout() {
 
         }
@@ -928,7 +961,7 @@
                             let temp = JSON.stringify(wfacp_analytics_data.pixel);
                             temp = JSON.parse(temp);
                             temp.id = f_id.trim();
-                            wfacp_analytics_data.wfacp_frontend.tracks.facebook[f_id] = new Facebook(temp);
+                            wfacp_analytics_data.wfacp_frontend.tracks.facebook[f_id] = new Facebook(temp,f);
                         }
                     }
                 }
@@ -951,6 +984,21 @@
                 }
                 if (wfacp_analytics_data.hasOwnProperty('google_ads') && wfacp_analytics_data.google_ads.hasOwnProperty('id')) {
                     let ids = wfacp_analytics_data.google_ads.id.split(',');
+                    let gadLabels = [];
+
+                    if ( typeof wfacp_analytics_data.google_ads.cart_labels === "string") {
+                        gadLabels = wfacp_analytics_data.google_ads.cart_labels.split(',');
+                    }
+                    /**
+                     * get bump cart labels
+                     */
+                    let bumpGadLabels = [];
+                    if ((typeof wfob_frontend == 'object') && wfob_frontend.hasOwnProperty('track') && wfob_frontend.track.hasOwnProperty('google_ads')) {
+                        if (typeof wfob_frontend.track.google_ads.cart_labels === "string") {
+                            bumpGadLabels = wfob_frontend.track.google_ads.cart_labels.split(',');
+                        }
+                    }
+
                     if (ids.length > 0) {
                         if (!bwf_gtag_load) {
                             Google.enqueue_js(ids[0]);
@@ -962,6 +1010,18 @@
                             let temp = JSON.stringify(wfacp_analytics_data.google_ads);
                             temp = JSON.parse(temp);
                             temp.id = f_id.trim();
+                            /**
+                             * set checkout add to cart labels
+                             */
+                            if ("undefined" !== typeof gadLabels[f] && gadLabels[f] !== "") {
+                                temp.idlabel = temp.id + '/' + gadLabels[f].trim();
+                            }
+                            /**
+                             * set bump add to cart labels
+                             */
+                            if ("undefined" !== typeof bumpGadLabels[f] && bumpGadLabels[f] !== "") {
+                                temp.bumpIdlabel = temp.id + '/' + bumpGadLabels[f].trim();
+                            }
                             wfacp_analytics_data.wfacp_frontend.tracks.google_ads[f_id] = new Google_ads(temp);
                         }
                     }

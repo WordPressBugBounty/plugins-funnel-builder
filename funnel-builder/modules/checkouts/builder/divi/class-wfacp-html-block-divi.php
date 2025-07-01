@@ -46,7 +46,7 @@ if ( ! class_exists( 'WFACP_Divi_HTML_BLOCK' ) ) {
 		protected function order_summary( $field_key ) {
 
 
-			$tab_id = $this->add_tab( __( 'Order Summary', 'funnel-builder' ), 2 );
+			$tab_id = $this->add_tab( WFACP_Common::translation_string_to_check( __( 'Order Summary', 'woocommerce' ) ), 2 );
 			$this->add_heading( $tab_id, 'Product' );
 
 			$this->add_switcher( $tab_id, 'order_summary_enable_product_image', __( 'Enable Image', 'funnel-builder' ), 'on' );
@@ -77,6 +77,8 @@ if ( ! class_exists( 'WFACP_Divi_HTML_BLOCK' ) ) {
 
 
 			$this->add_border_color( $tab_id, 'mini_product_image_border_color', [ '%%order_class%% #wfacp-e-form table.shop_table.woocommerce-checkout-review-order-table tr.cart_item .product-image img' ], '', __( 'Image Border Color', 'woofunnel-aero-checkout' ), false, [ 'order_summary_enable_product_image' => 'on' ] );
+
+
 
 			$this->add_heading( $tab_id, __( 'Subtotal', 'woocommerce' ) );
 

@@ -93,6 +93,9 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Aliea_vat' ) ) {
 					if ( in_array( $key, $aero_fields ) || $key == 'billing_wfacp_vat_fields' || ! isset( $fields[ $index ][ $key ] ) ) {
 						continue;
 					}
+					if ( false === strpos( $key, 'vat' ) ) {
+						continue;
+					}
 
 					$this->new_fields[ $index ][ $key ] = $fields[ $index ][ $key ];
 					$this->new_field_keys[]             = $key;
@@ -110,6 +113,8 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Aliea_vat' ) ) {
 			if ( empty( $key ) || 'billing_wfacp_vat_fields' !== $key || 0 === count( $this->new_fields ) ) {
 				return;
 			}
+
+
 			foreach ( $this->new_fields['billing'] as $field_key => $field_val ) {
 
 				woocommerce_form_field( $field_key, $field_val );
@@ -218,6 +223,6 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Aliea_vat' ) ) {
 	}
 
 	WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_With_Aliea_vat(), 'aelia_vat' );
+
+
 }
-
-

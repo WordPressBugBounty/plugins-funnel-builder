@@ -105,6 +105,34 @@ if ( ! class_exists( 'WFACP_Compatibility_WoodMart_Theme' ) ) {
 			$cssHtml .= "</style>";
 			echo $cssHtml;
 
+			?>
+
+			<script>
+                window.addEventListener('bwf_checkout_load', function () {
+                    try {
+                        (function ($) {
+
+                            // Ensure the woodmartThemeModule is defined before triggering
+
+                            if (typeof woodmartThemeModule !== 'undefined' && woodmartThemeModule.$document) {
+
+                                $(document.body).on('wfacp_quick_view_open', function () {
+                                    woodmartThemeModule.$document.trigger('wood-images-loaded');
+                                });
+
+                                setTimeout(function () {
+                                    woodmartThemeModule.$document.trigger('wood-images-loaded');
+                                }, 500);
+
+                            }
+                        })(jQuery);
+                    } catch (e) {
+                    }
+                });
+			</script>
+
+			<?php
+
 		}
 
 		public function enable() {

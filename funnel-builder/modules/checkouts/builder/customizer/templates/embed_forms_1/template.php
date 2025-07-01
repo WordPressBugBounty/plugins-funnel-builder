@@ -547,6 +547,12 @@ if ( ! class_exists( 'WFACP_Template_Custom_Page' ) ) {
 
 		}
 
+		public function get_payment_desc() {
+
+			return WFACP_Common::get_option( 'wfacp_form_section_' . $this->template_slug . '_wfacp_form_section_text_below_placeorder_btn' );
+
+		}
+
 	}
 
 	return WFACP_Template_Custom_Page::get_instance();

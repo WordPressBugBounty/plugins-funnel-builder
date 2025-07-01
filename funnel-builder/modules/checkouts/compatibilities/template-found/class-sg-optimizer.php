@@ -33,6 +33,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Sg_optimizer' ) ) {
 
 		public function exclude_js_async_exclude( $excluded_handles ) {
 			$excluded_handles[] = 'wfacp_checkout_js';
+			$excluded_handles[] = 'wfacp-intlTelInput-js';
 			$excluded_handles[] = 'jquery-core';
 			$excluded_handles[] = 'jquery-migrate';
 

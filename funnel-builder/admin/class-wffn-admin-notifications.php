@@ -19,7 +19,6 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		public function __construct() {
 			if ( is_admin() ) {
 				add_action( 'admin_notices', array( $this, 'register_notices' ) );
-
 			}
 		}
 
@@ -269,8 +268,41 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				'key'           => $key,
 				'content'       => $content,
 				'className'     => 'bwf-notif-bwfcm',
-				'customButtons' => $this->get_notification_buttons( 'BFCM' . gmdate( 'Y' ) )
+				'customButtons' => $this->get_notification_buttons( 'BFCM' . gmdate( 'Y' ) ),
+				'index'         => 5
 			];
+		}
+
+		private function should_show_memory_limit_notice() {
+			$memory_limit = get_option( 'fk_memory_limit', false );
+
+			if ( $memory_limit !== false ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function memory_limit_notice() {
+			$memory_limit    = get_option( 'fk_memory_limit', 0 );
+			$memory_limit_mb = round( $memory_limit / 1048576, 2 );
+			$admin_instance  = WFFN_Core()->admin;
+			$recommended_mb  = round( $admin_instance->fk_memory_limit / 1048576, 2 );
+
+			return '<div class="bwf-notifications-message current">
+        <h3 class="bwf-notifications-title">' . __( "Low PHP Memory Detected!", "funnel-builder" ) . '</h3>
+        <p class="bwf-notifications-content">' . sprintf( __( "We’ve detected that your site is currently running with only %s MB of PHP memory, which is below the recommended %s MB. This could potentially lead to performance issues or unexpected behavior on your site. To ensure smooth operation, please contact your hosting provider to increase the PHP memory limit.", "funnel-builder" ), $memory_limit_mb, $recommended_mb ) . '</p>
+    </div>';
+		}
+
+		public function lang_support_notice() {
+
+			$plugin = WFFN_Plugin_Compatibilities::get_language_compatible_plugin();
+
+			return '<div class="bwf-notifications-message current">
+        <h3 class="bwf-notifications-title">' . sprintf( __( "New Feature: Deep Compatibility with %s Plugin", "funnel-builder" ), $plugin ) . '</h3>
+        <p class="bwf-notifications-content">' . sprintf( __( "We’ve detected that your site is using %s. You can now configure languages for each funnel step directly within the Languages tab. For optimal performance, we recommend disabling any custom snippets you’ve configured. ", "funnel-builder" ), $plugin ) . '</p>
+    </div>';
 		}
 
 		public function prepare_notifications() {
@@ -314,128 +346,16 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 						],
 						[
 							'label'  => __( 'Learn more', "funnel-builder" ),
-							'href'   => "https://funnelkit.com/whats-new/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Update+Notice+Bar",
+							'href'   => "https://funnelkit.com/whats-new/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Update+Notice+Bar",
 							'target' => '__blank',
 						]
-					]
-				);
-			}
-
-
-			$global_funnel_id = WFFN_Common::get_store_checkout_id();
-			if ( absint( $global_funnel_id ) > 0 ) {
-				$get_funnel = new WFFN_Funnel( $global_funnel_id );
-				if ( $get_funnel instanceof WFFN_Funnel && 0 !== $get_funnel->get_id() ) {
-					$get_version = WFFN_Core()->get_dB()->get_meta( $global_funnel_id, '_version' );
-
-					if ( empty( $get_version ) ) {
-						$this->notifs[] = array(
-							'key'           => 'mig_store_checkout',
-							'content'       => $this->store_checkout_migrated(),
-							'customButtons' => [
-								[
-									'label'     => __( "Go to Store Checkout", "funnel-builder" ),
-									'href'      => admin_url( 'admin.php?page=bwf&path=/store-checkout' ),
-									'action'    => 'close_notice',
-									'className' => 'is-primary',
-								],
-								[
-									'label'  => __( "Learn more", "funnel-builder" ),
-									'href'   => "https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Store+Checkout+Migrate&utm_campaign=fb+lite+plugin",
-									'target' => '__blank',
-								]
-							]
-						);
-					}
-
-
-				}
-			}
-
-			/** Check if brand change notice is required */
-			$first_v = get_option( 'wffn_first_v', false );
-			if ( empty( $first_v ) || version_compare( $first_v, '2.4.1', '<' ) ) {
-				$this->notifs[] = array(
-					'key'     => 'brandchange',
-					'content' => $this->brandchange(),
-
-					'customButtons' => [
-						[
-							'label'     => __( "Learn more", "funnel-builder" ),
-							'href'      => 'https://funnelkit.com/woofunnels-is-now-funnelkit/?utm_source=WordPress&utm_medium=Brand+Name+Change&utm_campaign=fb+lite+plugin',
-							'className' => 'is-primary',
-							'target'    => '__blank',
-						],
-
 					],
+					'index'         => 10
 				);
-			}
-
-			if ( class_exists( 'WFFN_Pro_Modules' ) ) {
-				$is_upsell_exists   = WFFN_Pro_Modules::get_module( 'one-click-upsells/woofunnels-upstroke-one-click-upsell.php' )::is_module_exists();
-				$is_bump_exists     = WFFN_Pro_Modules::get_module( 'order-bumps/woofunnels-order-bump.php' )::is_module_exists();
-				$is_checkout_exists = WFFN_Pro_Modules::get_module( 'checkout/woofunnels-aero-checkout.php' )::is_module_exists();
-				$is_ab_exists       = WFFN_Pro_Modules::get_module( 'woofunnels-ab-tests/woofunnels-ab-tests.php' )::is_module_exists();
-
-				$array_of_strings = [];
-				if ( $is_upsell_exists ) {
-					$array_of_strings[] = 'Upsells';
-				}
-				if ( $is_checkout_exists ) {
-					$array_of_strings[] = 'Checkout';
-				}
-				if ( $is_bump_exists ) {
-					$array_of_strings[] = 'Order Bump';
-				}
-				if ( $is_ab_exists ) {
-					$array_of_strings[] = 'A/B testing';
-				}
-
-				if ( count( $array_of_strings ) > 0 ) {
-					$this->notifs[] = array(
-						'key'           => 'indi_plugins',
-						'content'       => $this->individual_plugins_found( WFFN_Common::natural_language_join( $array_of_strings ), count( $array_of_strings ) ),
-						'customButtons' => [
-							[
-								'label'     => __( "Deactivate Plugins", "funnel-builder" ),
-								'href'      => admin_url( 'plugins.php?s=funnelkit' ),
-								'className' => 'is-primary',
-								'target'    => '__blank',
-							],
-
-							[
-								'label'  => __( "Dismiss", "funnel-builder" ),
-								'action' => 'close_notice',
-
-							]
-						]
-					);
-				}
-			}
-
-			if ( defined( 'WFFN_PRO_FILE' ) && function_exists( 'wfacp_is_woocommerce_active' ) && wfacp_is_woocommerce_active() && class_exists( '\Automattic\WooCommerce\Blocks\BlockTypes\ClassicShortcode' ) && $this->_should_display_block_incompatible_notice() && absint( $global_funnel_id ) === 0 ) {
-				$this->notifs[] = array(
-					'key'           => 'wc_block_incompat',
-					'content'       => $this->block_incompat_notice(),
-					'customButtons' => [
-						[
-							'label'     => __( "Switch to Classic Checkout", "funnel-builder" ),
-							'action'    => 'api',
-							'path'      => '/notifications/wc_block_incompat',
-							'className' => 'is-primary',
-						],
-
-						[
-							'label'  => __( "Dismiss", "funnel-builder" ),
-							'action' => 'close_notice',
-
-						]
-					]
-				);
-
 			}
 
 			$state_for_migration = $this->is_conversion_migration_required();
+
 			if ( defined( 'WFFN_PRO_FILE' ) ) {
 				if ( 1 === $state_for_migration ) {
 					$this->notifs[] = array(
@@ -450,16 +370,20 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 							],
 
 						],
-						'not_dismissible' => true
+						'not_dismissible' => true,
+						'index'           => 15
 					);
+
 				} elseif ( 2 === $state_for_migration ) {
 					$this->notifs[] = array(
 						'key'             => 'conversion_migration',
 						'content'         => $this->conversion_migration_content( $state_for_migration ),
 						'customButtons'   => [],
-						'not_dismissible' => true
+						'not_dismissible' => true,
+						'index'           => 15
 					);
 				} elseif ( 3 === $state_for_migration ) {
+
 					$this->notifs[] = array(
 						'key'           => 'conversion_migration',
 						'content'       => $this->conversion_migration_content( $state_for_migration ),
@@ -469,26 +393,55 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 								'action'    => 'close_notice',
 								'className' => 'is-primary',
 							]
-						]
+						],
+						'index'         => 20
 					);
 				}
 			}
+
+			if ( $this->should_show_memory_limit_notice() ) {
+				$this->notifs[] = array(
+					'key'           => 'low_memory_limit',
+					'content'       => $this->memory_limit_notice(),
+					'customButtons' => [
+
+						[
+							'label'     => __( 'I have already done this', "funnel-builder" ),
+							'action'    => 'api',
+							'path'      => '/notifications/memory_notice_dismiss',
+							'className' => 'is-primary',
+						],
+						[
+							'label'  => __( "Ignore", "funnel-builder" ),
+							'action' => 'close_notice',
+						]
+					],
+					'index'         => 25
+
+				);
+			}
+
+			if ( WFFN_Core()->admin->is_language_support_enabled() ) {
+				$this->notifs[] = array(
+					'key'           => 'lang_support',
+					'content'       => $this->lang_support_notice(),
+					'customButtons' => [
+						[
+							'label'     => __( 'Learn more', "funnel-builder" ),
+							'href'      => 'https://funnelkit.com/funnel-builder-3-11-0/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Notice+Bar',
+							'className' => 'is-primary',
+							'target'    => '__blank'
+						],
+						[
+							'label'  => __( "Dismiss", "funnel-builder" ),
+							'action' => 'close_notice',
+						]
+					],
+					'index'         => 30
+				);
+			}
+
 		}
-
-		private function _should_display_block_incompatible_notice() {
-			$wc_cart_page     = get_post( wc_get_page_id( 'cart' ) );
-			$wc_checkout_page = get_post( wc_get_page_id( 'checkout' ) );
-
-			return has_block( 'woocommerce/checkout', $wc_checkout_page ) || has_block( 'woocommerce/cart', $wc_cart_page );
-		}
-
-		private function block_incompat_notice() {
-			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title">' . __( "FunnelKit Checkout Pro", "funnel-builder" ) . '</h3>
-					<p class="bwf-notifications-content">' . __( "We noticed that you're using the native Checkout experience in WooCommerce. Enhance the native checkout experience with conversion optimised templates that work out of box. Plus boost revenue by 15-20 percent by using order bumps and one click Upsells.", "funnel-builder" ) . '</p>
-				</div>';
-		}
-
 
 		public function brandchange() {
 			return '<div class="bwf-notifications-message current">
@@ -501,13 +454,6 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			return '<div class="bwf-notifications-message current">
 					<h3 class="bwf-notifications-title">' . __( "Global Checkout has been migrated to Store Checkout!", "funnel-builder" ) . '</h3>
 					<p class="bwf-notifications-content">' . __( "To make your storefront's more accessible, we have migrated Global Checkout. All the steps of the checkout are available under Store Checkout.", "funnel-builder" ) . '</p>
-				</div>';
-		}
-
-		public function individual_plugins_found( $plugins_str, $count ) {
-			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title">' . sprintf( "Please deactivate individual plugin%s for %s.", ( 1 < $count ) ? 's' : '', $plugins_str ) . '</h3>
-					<p class="bwf-notifications-content">' . __( "Funnel Builder Pro is active. It contains all the modules and you don't need separate plugins. Please deactivate them. Don't worry no data will be lost.", "funnel-builder" ) . '</p>
 				</div>';
 		}
 
@@ -527,7 +473,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'pre' )
+					'date'    => $this->get_black_friday_day_data( 'pre' )
 				];
 			}
 
@@ -547,7 +493,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'bf' )
+					'date'    => $this->get_black_friday_day_data( 'bf' )
 				];
 			}
 
@@ -567,7 +513,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'sbs' )
+					'date'    => $this->get_black_friday_day_data( 'sbs' )
 				];
 			}
 
@@ -587,7 +533,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'bfext' )
+					'date'    => $this->get_black_friday_day_data( 'bfext' )
 				];
 			}
 
@@ -607,7 +553,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'cm' )
+					'date'    => $this->get_black_friday_day_data( 'cm' )
 				];
 			}
 
@@ -627,7 +573,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_black_friday_day_data( 'cmext' )
+					'date'    => $this->get_black_friday_day_data( 'cmext' )
 				];
 			}
 
@@ -647,7 +593,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 				return [
 					'title'   => $title,
 					'content' => $content,
-					'date' => $this->get_second_dec_monday_day_diff( false )
+					'date'    => $this->get_second_dec_monday_day_diff( false )
 				];
 			}
 
@@ -721,6 +667,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 		public function is_user_dismissed( $id, $key ) {
 			$userdata = get_user_meta( $id, '_bwf_notifications_close', true );
 			$userdata = empty( $userdata ) && ! is_array( $userdata ) ? [] : $userdata;
+
 			return in_array( $key, $userdata, true );
 		}
 
@@ -728,22 +675,6 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( ! $user ) {
 				return;
-			}
-
-			$global_funnel_id = WFFN_Common::get_store_checkout_id();
-			global $fk_block_notice;
-
-			if ( defined( 'WFFN_PRO_FILE' ) && empty( $fk_block_notice ) && function_exists( 'wfacp_is_woocommerce_active' ) && wfacp_is_woocommerce_active() && class_exists( '\Automattic\WooCommerce\Blocks\BlockTypes\ClassicShortcode' ) && $this->_should_display_block_incompatible_notice() && absint( $global_funnel_id ) === 0 && false === $this->is_user_dismissed( get_current_user_id(), 'wc_block_incompat' ) ) {
-				$fk_block_notice   = true;
-				$current_admin_url = basename( $_SERVER['REQUEST_URI'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-				$action_url        = admin_url( 'admin-ajax.php?action=wffn_blocks_incompatible_switch_to_classic&nonce=' . wp_create_nonce( 'wffn_blocks_incompatible_switch_to_classic' ) . '&redirect=' . $current_admin_url );
-				$dismiss_url       = admin_url( 'admin-ajax.php?action=wffn_dismiss_notice&nkey=wc_block_incompat&nonce=' . wp_create_nonce( 'wp_wffn_dismiss_notice' ) . '&redirect=' . $current_admin_url );
-
-				echo '<div class="notice notice-warning" >';
-
-				echo wp_kses_post( $this->block_incompat_notice() );
-				echo '<p><a class="button button-primary" href="' . esc_url( $action_url ) . '">' . __( ' Switch to Classic Checkout', 'funnel-builder' ) . '</a>     <a href="' . esc_url( $dismiss_url ) . '">' . __( 'Dismiss', 'funnel-builder' ) . '</a>  </p>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo '</div>';
 			}
 
 			$this->show_setup_wizard();
@@ -775,9 +706,9 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 			if ( WFFN_Core()->admin->is_wizard_available() ) { ?>
 
 
-                <div class="notice notice-warning" style="position: relative;">
+				<div class="notice notice-warning" style="position: relative;">
 
-                    <a class="notice-dismiss" style="
+					<a class="notice-dismiss" style="
                     position: absolute;
                     padding: 5px 15px 5px 35px;
                     font-size: 13px;
@@ -786,14 +717,14 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
                     display: inline-flex;
                     top: 12px;
                     " href="<?php echo esc_url( $dismiss_url ) ?>"><?php esc_html_e( 'Dismiss' ); ?></a>
-                    <h3 class="bwf-notifications-title"> <?php echo __( "Funnel Builder Quick Setup", "funnel-builder" ); ?></h3> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<h3 class="bwf-notifications-title"> <?php echo __( "Funnel Builder Quick Setup", "funnel-builder" ); ?></h3> <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-                    <p><?php esc_html_e( 'Thank you for activating Funnel Builder by FunnelKit. Go through a quick setup to ensure most optimal experience.', 'funnel-builder' ); ?></p>
-                    <p>
-                        <a href="<?php echo esc_url( WFFN_Core()->admin->wizard_url() ); ?>" class="button button-primary"> <?php esc_html_e( 'Start Wizard', 'funnel-builder' ); ?></a>
+					<p><?php esc_html_e( 'Thank you for activating Funnel Builder by FunnelKit. Go through a quick setup to ensure most optimal experience.', 'funnel-builder' ); ?></p>
+					<p>
+						<a href="<?php echo esc_url( WFFN_Core()->admin->wizard_url() ); ?>" class="button button-primary"> <?php esc_html_e( 'Start Wizard', 'funnel-builder' ); ?></a>
 
-                    </p>
-                </div>
+					</p>
+				</div>
 
 				<?php
 			}
@@ -837,6 +768,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 
 
 		}
+
 
 	}
 

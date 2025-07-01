@@ -276,18 +276,19 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 				);
 
 				$labels = array(
-					array(
-						'heading'     => __( 'SHIPPING' ),
-						'sub-heading' => __( 'Where to ship it?' ),
-					),
-					array(
-						'heading'     => __( 'PRODUCTS' ),
-						'sub-heading' => __( 'Select your product' ),
-					),
-					array(
-						'heading'     => __( 'PAYMENT' ),
-						'sub-heading' => __( 'Confirm your order' ),
-					),
+
+					[
+						'heading'     => __( 'Shipping', 'woocommerce' ),
+						'sub-heading' => __( 'Where to ship it?', 'funnel-builder' ),
+					],
+					[
+						'heading'     => __( 'Products', 'funnel-builder' ),
+						'sub-heading' => __( 'Select your product', 'funnel-builder' ),
+					],
+					[
+						'heading'     => __( 'Payment', 'woocommerce' ),
+						'sub-heading' => __( 'Confirm your order', 'funnel-builder' ),
+					],
 
 				);
 
@@ -372,13 +373,39 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 
 			$this->add_text( 'cart_collapse_title', __( 'Collapsed View Text' ), __( 'Show Order Summary' ) );
 			$this->add_text( 'cart_expanded_title', __( 'Expanded View Text' ), __( 'Hide Order Summary' ) );
-			$this->add_text( 'collapse_coupon_button_text', __( 'Coupon Button Text' ), __( 'Apply' ) );
+			$this->add_text( 'collapse_coupon_button_text', __( 'Coupon Button Text' ), __( 'Apply', 'woocommerce' )  );
 
 			$this->add_switcher( 'collapse_enable_coupon', __( 'Enable Coupon' ), false );
 			$this->add_switcher( 'collapse_enable_coupon_collapsible', __( 'Collapsible Coupon Field' ), false );
 
 			$this->add_switcher( 'collapse_order_quantity_switcher', __( 'Quantity Switcher' ), true );
 			$this->add_switcher( 'collapse_order_delete_item', __( 'Allow Deletion' ), true );
+
+
+
+
+            if(true === wfacp_pro_dependency()){
+
+                /**
+                 * Strike Through for order summary
+                 */
+                $this->add_switcher( 'collapsible_mini_cart_enable_strike_through_price', __( 'Regular & Discounted Price' ), false );
+                $this->add_switcher( 'collapsible_mini_cart_enable_low_stock_trigger', __( 'Low Stock Trigger' ), false );
+                $this->add_text( 'collapsible_mini_cart_low_stock_message', __( 'Message' ), __( '{{quantity}} LEFT IN STOCK', 'woofunnels-aero-checkout' ), array(
+                    'collapsible_mini_cart_enable_low_stock_trigger',
+                    '=',
+                    true
+                ) );
+
+                $this->add_switcher( 'collapsible_mini_cart_enable_saving_price_message', __( 'Enable Total Saving', 'woofunnels-aero-checkout' ), false );
+                $this->add_text( 'collapsible_mini_cart_saving_price_message', __( 'Message' ), __( 'You saved {{saving_amount}} ({{saving_percentage}}) on this order', 'woofunnels-aero-checkout' ), array(
+                    'collapsible_mini_cart_enable_saving_price_message',
+                    '=',
+                    true
+                ) );
+
+            }
+
 		}
 
 		/**
@@ -424,7 +451,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 			$this->section_fields[] = $temp_fields;
 			foreach ( $temp_fields as $loop_key => $field ) {
 				if ( in_array( $loop_key, [ 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ], true ) ) {
-					$address_key_group = ( $loop_key === 'wfacp_start_divider_billing' ) ? __( 'Billing Address' ) : __( 'Shipping Address' );
+					$address_key_group = ( $loop_key === 'wfacp_start_divider_billing' ) ? __( 'Billing Address' ,'woocommerce') : __( 'Shipping Address' ,'woocommerce');
 					$this->add_heading( $address_key_group );
 				}
 
@@ -481,7 +508,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 		 */
 		public function coupon_fields() {
 			$this->set_current_group( 'contentCoupon' );
-			$this->add_text( 'form_coupon_button_text', __( 'Coupon Button Text' ), __( 'Apply' ) );
+			$this->add_text( 'form_coupon_button_text', __( 'Coupon Button Text' ), __( 'Apply', 'woocommerce' ) );
 		}
 
 		/**
@@ -494,6 +521,30 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 		public function order_summary_fields() {
 			$this->set_current_group( 'contentOrderSummary' );
 			$this->add_switcher( 'order_summary_enable_product_image', __( 'Enable Image' ), true );
+
+
+			if(true === wfacp_pro_dependency()){
+
+
+			/**
+			 * Strike Through for order summary
+			 */
+			$this->add_switcher( 'order_summary_field_enable_strike_through_price', __( 'Regular & Discounted Price' ), true );
+			$this->add_switcher( 'order_summary_field_enable_low_stock_trigger', __( 'Low Stock Trigger' ), true );
+			$this->add_text( 'order_summary_field_low_stock_message', __( 'Message' ), __( '{{quantity}} LEFT IN STOCK', 'woofunnels-aero-checkout' ), array(
+				'order_summary_field_enable_low_stock_trigger',
+				'=',
+				true
+			) );
+
+			$this->add_switcher( 'order_summary_field_enable_saving_price_message', __( 'Enable Total Saving', 'woofunnels-aero-checkout' ), true );
+			$this->add_text( 'order_summary_field_saving_price_message', __( 'Message' ), __( 'You saved {{saving_amount}} ({{saving_percentage}}) on this order', 'woofunnels-aero-checkout' ), array(
+				'order_summary_field_enable_saving_price_message',
+				'=',
+				true
+			) );
+
+			}
 		}
 
 		/**
@@ -508,8 +559,19 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 		public function payment_method() {
 			$this->set_current_group( 'contentPaymentGateways' );
 			$this->add_heading( __( 'Section' ) );
-			$this->add_text( 'wfacp_payment_method_heading_text', __( 'Heading' ), __( 'Payment Information' ) );
-			$this->add_textarea( 'wfacp_payment_method_subheading', __( 'Sub heading' ), esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.' ) );
+
+			$payment_default = method_exists('WFACP_Common', 'translation_string_to_check')
+				? WFACP_Common::translation_string_to_check(__('Payment Information', 'woofunnels-aero-checkout'))
+				: __('Payment Information', 'woofunnels-aero-checkout');
+
+			$security_text = esc_attr__('All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'woofunnels-aero-checkout');
+
+			if (class_exists('WFACP_Common') && method_exists('WFACP_Common', 'translation_string_to_check')) {
+				$security_text = WFACP_Common::translation_string_to_check($security_text);
+			}
+
+			$this->add_text( 'wfacp_payment_method_heading_text', __( 'Heading' ),$payment_default );
+			$this->add_textarea( 'wfacp_payment_method_subheading', __( 'Sub heading' ), $security_text);
 
 			$this->set_current_group( 'contentCheckoutButtons' );
 			$this->form_buttons();
@@ -539,7 +601,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 				if ( $i === $count ) {
 					$button_key          = 'wfacp_payment_place_order_text';
 					$text_key            = 'place_order';
-					$button_default_text = __( 'PLACE ORDER NOW' );
+					$button_default_text = __( 'Place Order', 'woocommerce' );
 					$button_label        = __( 'Place Order', 'woocommerce' );
 				}
 
@@ -571,7 +633,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 				}
 			}
 
-			$this->add_text( 'text_below_placeorder_btn', __( 'Text Below Place Order Button' ), sprintf( 'We Respect Your privacy & Information ' ), array() );
+			$this->add_text( 'text_below_placeorder_btn', __( 'Text Below Place Order Button' ), sprintf( 'We Respect Your Privacy & Information ' ), array() );
 		}
 
 		/**
@@ -741,8 +803,8 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount)',
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) td',
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) th',
-				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) th span',
-				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) td span',
+				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) th span',
+				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td span',
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) td small',
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) td bdi',
 				'#wfacp-e-form  table.shop_table tfoot tr:not(.order-total):not(.cart-discount) td a',
@@ -1465,7 +1527,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 			foreach ( $sections as $val ) {
 				foreach ( $val as $loop_key => $field ) {
 					if ( in_array( $loop_key, array( 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ), true ) ) {
-						$address_key_group = ( $loop_key === 'wfacp_start_divider_billing' ) ? __( 'Billing Address' ) : __( 'Shipping Address' );
+						$address_key_group = ( $loop_key === 'wfacp_start_divider_billing' ) ? __( 'Billing Address' ,'woocommerce') : __( 'Shipping Address' ,'woocommerce');
 						$this->add_heading( $address_key_group );
 					}
 
@@ -1539,21 +1601,22 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 
 			/* Typography  */
 			$product_switcher_typo_option = array(
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_name_inner *',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_quantity_selector input',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details span',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_subs_details *',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_sec .wfacp_product_name_inner *',
+				'{{WRAPPER}} #wfacp-e-form #wfacp-sec-wrapper .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_sec .wfacp_product_name_inner .wfacp_product_switcher_item',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_sec .wfacp_product_attributes .wfacp_selected_attributes  *',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_quantity_selector input',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_switcher_col_2 .wfacp_product_subs_details > span',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_subs_details span',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_subs_details *',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_sec .wfacp_product_select_options .wfacp_qv-button',
 
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span *',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec > span bdi',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec ins span',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec ins span bdi',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec del',
-				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel fieldset.wfacp-selected-product .wfacp_product_price_sec del *',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec > span',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec > span *',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec > span bdi',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec ins span',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec ins span bdi',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec del',
+				'{{WRAPPER}} #wfacp-e-form .wfacp_main_form.woocommerce .wfacp-product-switch-panel .wfacp-selected-product .wfacp_product_price_sec del *',
 			);
 
 			$this->add_typography( 'selected_item_typography', $product_switcher_typo_option, array(), array(), '', array( 'color', 'text-align' ) );
@@ -1848,26 +1911,28 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 			$this->set_current_group( 'styleOrderSummary' );
 			$this->add_heading( 'Product' );
 
-			$cart_item_color = array(
-				'#wfacp-e-form  table.shop_table tbody .wfacp_order_summary_item_name',
-				'#wfacp-e-form  table.shop_table tbody .product-name .product-quantity',
-				'#wfacp-e-form  table.shop_table tbody td.product-total',
-				'#wfacp-e-form  table.shop_table tbody .cart_item .product-total span',
-				'#wfacp-e-form  table.shop_table tbody .cart_item .product-total span.amount',
-				'#wfacp-e-form  table.shop_table tbody .cart_item .product-total span.amount bdi',
-				'#wfacp-e-form  table.shop_table tbody .cart_item .product-total small',
-				'#wfacp-e-form  table.shop_table tbody .wfacp_order_summary_container dl',
-				'#wfacp-e-form  table.shop_table tbody .wfacp_order_summary_container dd',
-				'#wfacp-e-form  table.shop_table tbody .wfacp_order_summary_container dt',
-				'#wfacp-e-form  table.shop_table tbody .wfacp_order_summary_container p',
-				'#wfacp-e-form  table.shop_table tbody tr span.amount',
-				'#wfacp-e-form  table.shop_table tbody tr span.amount bdi',
-				'#wfacp-e-form  table.shop_table tbody dl',
-				'#wfacp-e-form  table.shop_table tbody dd',
-				'#wfacp-e-form  table.shop_table tbody dt',
-				'#wfacp-e-form  table.shop_table tbody p',
-				'#wfacp-e-form  table.shop_table tbody tr td span:not(.wfacp-pro-count)',
-			);
+
+			$cart_item_color = [
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .wfacp_order_summary_item_name',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item  .product-quantity',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total > span bdi',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total > span bdi span',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total > ins > span.amount',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total > ins bdi',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total > ins span',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .wfacp_order_summary_item_total > span bdi',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .wfacp_order_summary_item_total > span bdi span',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .wfacp_order_summary_item_total > ins > span.amount',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .wfacp_order_summary_item_total > ins bdi',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .wfacp_order_summary_item_total > ins span',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-total small',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-name-area dl',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-name-area dd',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-name-area dt',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .cart_item .product-name-area p',
+				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody tr td:not(.product-total) span:not(.wfacp-pro-count)',
+			];
+
 
 			$this->add_typography( $field_key . '_cart_item_typo', $cart_item_color );
 
@@ -1878,8 +1943,48 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 
 			$this->add_border_radius( $field_key . '_cart_item_image_border_radius', $border_image_color );
 
-			/* ------------------------------------ End ------------------------------------ */
 
+			if(true === wfacp_pro_dependency()){
+
+
+			/**
+			 * Strike Through Style Setting
+			 */
+
+			$selector            = '#wfacp-e-form #wfacp-sec-wrapper';
+			$strike_through_typo = [
+				$selector . ' .product-total del',
+				$selector . ' .product-total del *',
+				$selector . ' .product-total del span.woocommerce-Price-currencySymbol',
+			];
+
+			$this->add_typography( $field_key . '_strike_through_typo', $strike_through_typo, '', '', esc_html__( 'Strike Through' ) );
+
+			/**
+			 * Low Stock Message Style Setting
+			 */
+			$low_stock_message = [
+				$selector . ' .wfacp_stocks',
+			];
+			$this->add_typography( $field_key . '_low_stock_message_typo', $low_stock_message, '', '', esc_html__( 'Low Stock' ) );
+
+			/**
+			 * Saved Price Setting
+			 *
+			 */
+			$saving_price_message = [
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td svg path',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td *',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td span *',
+			];
+
+			$this->add_typography( $field_key . '_saving_price_message_typo', $saving_price_message, '', '', esc_html__( 'Save Price Typography' ) );
+
+			}
+			/**
+			 * Subtotal Style Setting
+			 */
 			$this->add_heading( __( 'Subtotal' ) );
 
 			$cart_subtotal_color_option = array(

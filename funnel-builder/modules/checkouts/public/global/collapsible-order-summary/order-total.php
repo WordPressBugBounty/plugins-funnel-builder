@@ -87,7 +87,10 @@ $instance = wfacp_template();
         <th <?php echo $colspan_attr; ?>><span><?php _e( 'Total', 'woocommerce' ); ?></span></th>
         <td><?php wc_cart_totals_order_total_html(); ?></td>
     </tr>
-	<?php do_action( 'woocommerce_review_order_after_order_total' ); ?>
+	<?php do_action( 'woocommerce_review_order_after_order_total' );
+
+	do_action( 'wfacp_collapsible_mini_cart_woocommerce_review_order_after_order_total' );
+    ?>
     </tfoot>
 </table>
 <?php

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Name: WooCommerce Ship to Multiple Addresses by WooCommerce (up to 3.6.39)
+ * Name: WooCommerce Ship to Multiple Addresses by WooCommerce (up to 4.2.7)
  * URL: https://woocommerce.com/products/shipping-multiple-addresses/
  */
 
@@ -91,9 +91,25 @@ if ( ! class_exists( 'WFACP_WC_Ship_To_Multiple_Address' ) ) {
 
 			echo "<div id=wfacp_wc_ship_multiple>";
 
-			$this->instance->before_shipping_form( WC()->checkout() );
-			$this->instance->display_set_addresses_button( WC()->checkout() );
-			$this->instance->render_user_addresses_dropdown( WC()->checkout() );
+			try {
+				// Check if method exists before calling it
+				if (method_exists($this->instance, 'before_shipping_form')) {
+					$this->instance->before_shipping_form(WC()->checkout());
+				}
+
+				if (method_exists($this->instance, 'display_set_addresses_button')) {
+					$this->instance->display_set_addresses_button(WC()->checkout());
+				}
+
+				if (method_exists($this->instance, 'render_user_addresses_dropdown')) {
+					$this->instance->render_user_addresses_dropdown(WC()->checkout());
+				}
+
+			} catch ( Exception $e ) {
+
+			}
+
+
 
 			echo "</div>";
 
@@ -156,5 +172,5 @@ if ( ! class_exists( 'WFACP_WC_Ship_To_Multiple_Address' ) ) {
 	}
 
 	WFACP_Plugin_Compatibilities::register( new WFACP_WC_Ship_To_Multiple_Address(), 'wfacp-wcms' );
-}
 
+}

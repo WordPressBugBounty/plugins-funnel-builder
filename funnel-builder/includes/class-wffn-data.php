@@ -58,14 +58,14 @@ if ( ! class_exists( 'WFFN_Data' ) ) {
 
 		/**
 		 * Find the next url to open in the funnel
+		 *
 		 * @param $current_step_id array Id to take into account to search for the next link
 		 *
 		 * @return false|string
 		 */
 		public function get_next_url( $current_step_id ) {
 
-			$get_funnel = $this->get_session_funnel();
-
+			$get_funnel   = $this->get_session_funnel();
 			$current_step = $this->get_current_step();
 			if ( ! is_array( $current_step ) || 0 === count( $current_step ) ) {
 				return false;
@@ -86,7 +86,12 @@ if ( ! class_exists( 'WFFN_Data' ) ) {
 				return false;
 			}
 
-			$get_next_id = isset( $get_next_step['id'] ) ? $get_next_step['id'] : 0;
+			$get_next_id    = isset( $get_next_step['id'] ) ? $get_next_step['id'] : 0;
+			$filtered_value = apply_filters( 'wffn_funnel_next_link', $current_step_id );
+
+			if ( $filtered_value !== $current_step_id ) {
+				return $filtered_value;
+			}
 
 			return ( $get_next_id === 0 ) ? false : get_permalink( $get_next_id );
 
@@ -105,6 +110,7 @@ if ( ! class_exists( 'WFFN_Data' ) ) {
 		/**
 		 * Loop over the current funnel running and compare the steps against the current one
 		 * Find out if the next step available & return
+		 *
 		 * @param $funnel WFFN_Funnel
 		 * @param $current_step
 		 *

@@ -56,7 +56,9 @@ if ( ! class_exists( 'WFFN_Remote_Template_Importer' ) ) {
 				"domain"   => $this->get_domain(),
 				"license"  => $license,
 				"template" => $template_slug,
-				"builder"  => $builder
+				"builder"  => $builder,
+				"version"  => 4,
+				"locale" => get_locale()
 			);
 
 			if ( 'funnel' === $step && count( $steps ) > 0 ) {
@@ -260,7 +262,7 @@ if ( ! class_exists( 'WFFN_Remote_Template_Importer' ) ) {
 		public function get_step_title( $type ) {
 			$args = [
 				'landing'     => __( 'Landing Page', 'funnel-builder' ),
-				'wc_checkout' => __( 'Checkout', 'funnel-builder' ),
+				'wc_checkout' => __( 'Checkout Page', 'funnel-builder' ),
 				'wc_upsells'  => __( 'Upsells', 'funnel-builder' ),
 				'wc_thankyou' => __( 'Thank you Page', 'funnel-builder' ),
 				'optin'       => __( 'Optin', 'funnel-builder' ),

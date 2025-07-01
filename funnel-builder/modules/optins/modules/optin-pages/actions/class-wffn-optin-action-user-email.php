@@ -50,8 +50,12 @@ if ( ! class_exists( 'WFFN_Optin_Action_User_Email' ) ) {
 				return $posted_data;
 			}
 
-			$current_step = WFFN_Core()->data->get_current_step();
-			$option       = get_post_meta( absint( $current_step['id'] ), 'wffn_actions_custom_settings', true );
+			if ( ! isset( $posted_data['optin_page_id'] ) || absint( $posted_data['optin_page_id'] ) === 0 ) {
+				return $posted_data;
+			}
+
+			$optin_id = $posted_data['optin_page_id'];
+			$option   = get_post_meta( absint( $optin_id ), 'wffn_actions_custom_settings', true );
 
 			if ( ! is_array( $option ) || ( is_array( $option ) && isset( $option['lead_enable_notify'] ) && ! wffn_string_to_bool( $option['lead_enable_notify'] ) ) ) {
 				return $posted_data;

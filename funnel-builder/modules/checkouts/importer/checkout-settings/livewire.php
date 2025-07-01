@@ -46,12 +46,12 @@ $pageLayout = [
 	'fieldsets'                   => [
 		'single_step' => [
 			[
-				'name'        => __( 'Customer Information', 'funnel-builder' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Customer Information', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'fields'      => [
 					[
-						'label'        => __( 'Email', 'funnel-builder' ),
+						'label'        => __( 'Email', 'woocommerce' ),
 						'required'     => 'true',
 						'type'         => 'email',
 						'class'        => [ 0 => 'form-row-wide', ],
@@ -63,7 +63,7 @@ $pageLayout = [
 						'placeholder'  => '',
 					],
 					[
-						'label'        => __( 'First name', 'funnel-builder' ),
+						'label'        => __( 'First name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => [ 0 => 'form-row-first', ],
 						'autocomplete' => 'given-name',
@@ -74,7 +74,7 @@ $pageLayout = [
 						'placeholder'  => '',
 					],
 					[
-						'label'        => __( 'Last name', 'funnel-builder' ),
+						'label'        => __( 'Last name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => [ 0 => 'form-row-last', ],
 						'autocomplete' => 'family-name',
@@ -87,7 +87,7 @@ $pageLayout = [
 
 
 					[
-						'label'        => __( 'Phone', 'funnel-builder' ),
+						'label'        => __( 'Phone', 'woocommerce' ),
 						'type'         => 'tel',
 						'class'        => [ 'form-row-wide' ],
 						'id'           => 'billing_phone',
@@ -101,7 +101,7 @@ $pageLayout = [
 			],
 
 			[
-				'name'        => __( 'Shipping Address', 'funnel-builder' ),
+				'name'        => __( 'Shipping Address', 'woocommerce' ),
 				'class'       => '',
 				'sub_heading' => '',
 				'fields'      => [
@@ -110,7 +110,7 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Shipping Method', 'funnel-builder' ),
+				'name'        =>WFACP_Common::translation_string_to_check(__( 'Shipping Method', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [ 'shipping_calculator' => true ],

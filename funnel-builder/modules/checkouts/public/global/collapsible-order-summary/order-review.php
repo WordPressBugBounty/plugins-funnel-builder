@@ -113,6 +113,7 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 								if ( false == $show_subscription_string_old_version && in_array( $_product->get_type(), WFACP_Common::get_subscription_product_type() ) ) {
 									echo sprintf( "<div class='wfacp_product_subs_details'>%s</div>", WFACP_Common::subscription_product_string( $_product, $product_data, $cart_item, $cart_item_key ) );
 								}
+
 								if ( $show_quantity_switcher ) {
 									$is_sold_individually = false;
 									if ( $_product->is_sold_individually() ) {
@@ -145,6 +146,11 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 										do_action( 'wfacp_display_quantity_increment_placeholder', true, $cart_item, $item_quantity, $aero_item_key, $cart_item_key );
 									}
 								}
+								/**
+								 * Display Low Stock Trigger
+								 */
+
+								do_action( 'wfacp_collapsible_mini_cart_after_product_title', $_product );
 								?>
                             </div>
                         </td>
@@ -158,7 +164,8 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 								}
 							} else {
 								if ( true == apply_filters( 'wfacp_woocommerce_cart_item_subtotal_except_subscription', true, $_product, $cart_item, $cart_item_key ) ) {
-									echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item ), $cart_item, $cart_item_key );
+
+									echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item, false, apply_filters( 'wfacp_collapsible_mini_cart_enable_strike_through_price', false ) ), $cart_item, $cart_item_key );
 								} else {
 									do_action( 'wfacp_woocommerce_cart_item_subtotal_except_subscription_placeholder', $_product, $cart_item, $cart_item_key );
 								}

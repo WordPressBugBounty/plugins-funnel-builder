@@ -17,6 +17,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			add_action( 'wfacp_register_template_types', [ $this, 'register_template_type' ], 15 );
 			add_filter( 'wfacp_register_templates', [ $this, 'register_templates' ] );
 			add_filter( 'wfacp_template_edit_link', [ $this, 'add_template_edit_link' ], 10, 2 );
+			add_action( 'woocommerce_checkout_terms_and_conditions', [ $this, 'remove_the_content_filter' ] );
 		}
 
 		public static function get_instance() {
@@ -351,6 +352,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 					'enable_checkout_terms'  => ! ! wc_terms_and_conditions_page_id(),
 					'enable_checkout_policy' => ! ! wc_privacy_policy_page_id(),
 					'icon_list'              => $this->checkout_botton_icon_list(),
+					'wfacp_section_notice'   => WFACP_Common::get_notice_html_in_editor('gutenberg'),
 				) );
 
 
@@ -366,7 +368,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 
 		public static function mini_cart_default_attrs() {
 			return [
-				'mini_cart_heading'            => __( 'Order Summary', 'funnel-builder' ),
+				'mini_cart_heading'            => __( 'Order Summary', 'woocommerce' ),
 				'enable_product_image'         => true,
 				'enable_quantity_box'          => true,
 				'enable_delete_item'           => false,
@@ -397,15 +399,15 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			$attributes = [];
 			$labels     = [
 				[
-					'heading'     => __( 'SHIPPING', 'funnel-builder' ),
+					'heading'     => __( 'Shipping', 'woocommerce' ),
 					'sub-heading' => __( 'Where to ship it?', 'funnel-builder' ),
 				],
 				[
-					'heading'     => __( 'PRODUCTS', 'funnel-builder' ),
+					'heading'     => __( 'Products', 'funnel-builder' ),
 					'sub-heading' => __( 'Select your product', 'funnel-builder' ),
 				],
 				[
-					'heading'     => __( 'PAYMENT', 'funnel-builder' ),
+					'heading'     => __( 'Payment', 'woocommerce' ),
 					'sub-heading' => __( 'Confirm your order', 'funnel-builder' ),
 				],
 
@@ -429,7 +431,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 				$button_icon_key     = 'icons_with_place_order_list_' . $i;
 				if ( $i == $step_count ) {
 					$button_key          = 'wfacp_payment_place_order_text';
-					$button_default_text = __( 'PLACE ORDER NOW', 'funnel-builder' );
+					$button_default_text = WFACP_Common::translation_string_to_check( __( 'PLACE ORDER NOW', 'funnel-builder' ) );
 				}
 
 				$button_subtext_key                = 'step_' . $i . '_text_after_place_order';
@@ -444,7 +446,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 					$attributes['return_to_cart_text']                   = __( '« Return to Cart', 'funnel-builder' );
 				}
 			}
-			$attributes['text_below_placeorder_btn'] = sprintf( 'We Respect Your privacy & Information ', 'woofunnel-aero-checkout' );
+			$attributes['text_below_placeorder_btn'] = sprintf( 'We Respect Your Privacy & Information ', 'woofunnel-aero-checkout' );
 
 
 			// Form Step/Heading Attributes
@@ -457,22 +459,22 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			$attributes['step_cart_bredcrumb_link']    = 'Cart';
 
 			//Payment Gateways Attributes
-			$attributes['wfacp_payment_method_heading_text'] = esc_attr__( 'Payment Information', 'funnel-builder' );
-			$attributes['wfacp_payment_method_subheading']   = esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' );
+			$attributes['wfacp_payment_method_heading_text'] = WFACP_Common::translation_string_to_check( esc_attr__( 'Payment Information', 'funnel-builder' ) );
+			$attributes['wfacp_payment_method_subheading']   = WFACP_Common::translation_string_to_check(esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' ));
 
 			//Collapsible Order Summary Attributes
 			$attributes['enable_callapse_order_summary']                = false;
 			$attributes['enable_callapse_order_summary_tablet']         = true;
 			$attributes['enable_callapse_order_summary_mobile']         = true;
-			$attributes['cart_collapse_title']                          = __( 'Show Order Summary', 'funnel-builder' );
-			$attributes['cart_expanded_title']                          = __( 'Hide Order Summary', 'funnel-builder' );
+			$attributes['cart_collapse_title']                          = WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) );
+			$attributes['cart_expanded_title']                          = WFACP_Common::translation_string_to_check( __( 'Hide Order Summary', 'funnel-builder' ) );
 			$attributes['order_summary_enable_product_image_collapsed'] = true;
 			$attributes['collapse_enable_coupon']                       = true;
 			$attributes['collapse_enable_coupon_collapsible']           = false;
 			$attributes['collapse_order_quantity_switcher']             = true;
 			$attributes['collapse_order_delete_item']                   = true;
-			$attributes['collapse_coupon_button_text']                  = 'Apply';
-			$attributes['form_coupon_button_text']                      = 'Apply';
+			$attributes['collapse_coupon_button_text']                  = __( 'Apply', 'woocommerce' );
+			$attributes['form_coupon_button_text']                      = __( 'Apply', 'woocommerce' );
 
 
 			$attributes['order_summary_enable_product_image'] = true;
@@ -576,7 +578,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			foreach ( $temp_fields as $loop_key => $field ) {
 
 				if ( in_array( $loop_key, [ 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ], true ) ) {
-					$address_key_group      = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'funnel-builder' ) : __( 'Shipping Address', 'funnel-builder' );
+					$address_key_group      = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'woocommerce' ) : __( 'Shipping Address', 'woocommerce' );
 					$field_data['fields'][] = [ 'heading' => $address_key_group ];
 				}
 
@@ -654,7 +656,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			foreach ( $sections as $keys => $val ) {
 				foreach ( $val as $loop_key => $field ) {
 					if ( in_array( $loop_key, [ 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ], true ) ) {
-						$address_key_group                      = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'funnel-builder' ) : __( 'Shipping Address', 'funnel-builder' );
+						$address_key_group                      = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'woocommerce' ) : __( 'Shipping Address', 'woocommerce' );
 						$section_data['section'][0]['fields'][] = [ 'heading' => $address_key_group ];
 					}
 
@@ -863,6 +865,10 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 
 		}
 
+
+		public function remove_the_content_filter() {
+			remove_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
+		}
 	}
 
 	WFACP_GutenBerg::get_instance();

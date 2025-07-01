@@ -83,6 +83,19 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Mondialrelay_WP' ) ) {
                     padding: 10px;
                     cursor: pointer;
                 }
+                #wfacp-sec-wrapper div.mrwpbutton a#modaal_link,
+                #wfacp-sec-wrapper button#mrwpbutton a#modaal_link,
+                #wfacp-sec-wrapper #mrwp_thankyou_button,
+                #wfacp-sec-wrapper #mrwpty a#modaal_link {
+                    background-color: #96154A;
+                    color: #ffffff;
+                    text-decoration: none;
+                    text-align: center;
+                    border-radius: 5px;
+                    padding: 15px;
+                    font-weight: 700;
+                    display: block;
+                }
             </style>
             <script>
                 window.addEventListener('load', function () {

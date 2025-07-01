@@ -157,7 +157,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 			add_filter( 'wfacp_the_content', [ $GLOBALS['wp_embed'], 'run_shortcode' ], 8 );
 			add_filter( 'wfacp_the_content', [ $GLOBALS['wp_embed'], 'autoembed' ], 8 );
-			add_filter( 'wc_get_template', [ $this, 'remove_form_billing_and_shipping_html' ] );
+			add_filter( 'wc_get_template', [ $this, 'remove_form_billing_and_shipping_html' ], 998, 2 );
 			add_filter( 'wc_get_template', [ $this, 'replace_recurring_total_shipping' ], 999, 2 );
 			add_action( 'wfacp_after_billing_email_field', [ $this, 'show_account_fields' ], 10, 3 );
 			add_filter( 'show_admin_bar', [ $this, 'remove_admin_bar' ], 99 );
@@ -191,6 +191,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			/* Override WC Notices Templates */
 			add_filter( 'wc_get_template', [ $this, 'override_notices_templates' ], 9999, 2 );
 			add_filter( 'wp_get_custom_css', [ $this, 'disabled_wp_custom_css' ] );
+			add_action( 'wfacp_before_checkout_form_fields', [ $this, 'order_attribution_inputs' ] );
 		}
 
 		public function disabled_wp_custom_css( $css ) {
@@ -254,6 +255,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			 * Handle Process Fields for Address 2 number validation
 			 */
 			add_action( 'woocommerce_checkout_process', [ $this, 'process_fields' ] );
+			add_filter( 'woocommerce_form_field_args', [ 'WFACP_Common_Helper', 're_map_field_options_if_utf_encode' ], 9, 2 );
 		}
 
 		protected function address_i18_handling() {
@@ -354,7 +356,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 
 		public function no_follow_no_index() {
-			if ( WFACP_Common::is_front_page() ) {
+			if ( is_front_page() ) {
 				return;
 			}
 			echo "\n <meta name='robots' content='noindex,nofollow' /> \n";
@@ -499,6 +501,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 			}
 
+
 			return apply_filters( 'wfacp_template_localize_data', $data, $this );
 		}
 
@@ -535,13 +538,14 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 			$final['conversion_api'] = 'false';
 			$admin_general           = BWF_Admin_General_Settings::get_instance();
-			$is_conversion_api       = $admin_general->get_option( 'is_fb_purchase_conversion_api' );
-			if ( is_array( $is_conversion_api ) && count( $is_conversion_api ) > 0 && 'yes' === $is_conversion_api[0] && ! empty( $admin_general->get_option( 'conversion_api_access_token' ) ) ) {
+			if ( ! empty( $admin_general->get_option( 'conversion_api_access_token' ) ) ) {
 				$final['conversion_api'] = 'true';
 			}
 
 			$final['fb_advanced']     = WFACP_Common::pixel_advanced_matching_data();
 			$final['tiktok_advanced'] = WFACP_Common::tiktok_advanced_matching_data();
+
+			WFACP_Common::clear_pending_events_data_from_session();
 
 			return $final;
 		}
@@ -645,13 +649,13 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 					'/fusion-styles/',
 					'cart-fragments.min.js',
 					'cart-fragments.js',
-					'/uploads/oceanwp/main-style.css',
-					'/uploads/dynamic_avia/',
-					'/uploads/porto_styles/',
+					'oceanwp/main-style.css',
+					'dynamic_avia/',
+					'porto_styles/',
 					'um-styles.css',
 					'/fifu-premium/',
-					'/uploads/bb-theme/',
-					'/uploads/wp-less/pillar/style/css/',
+					'bb-theme/',
+					'wp-less/pillar/style/css/',
 					'/td-composer/legacy/common/wp_booster/js_dev'
 				];
 				$paths   = array_merge( $paths, $plugins );
@@ -795,28 +799,37 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 		 */
 		public function woocommerce_checkout_fields( $fields ) {
 
-			$template_fields = $this->get_checkout_fields();
-			if ( isset( $fields['account'] ) ) {
-				$template_fields['account'] = $fields['account'];
-			}
+			try {
+				$template_fields = $this->get_checkout_fields();
+				if ( isset( $fields['account'] ) ) {
+					$template_fields['account'] = $fields['account'];
+				}
 
-			$template_fields = apply_filters( 'wfacp_checkout_fields', $template_fields, $fields );
-			$is_billing_only = wc_ship_to_billing_address_only();
-			if ( true == $is_billing_only && ! isset( $template_fields['shipping'] ) ) {
-				$template_fields['shipping'] = $fields['shipping'];
+				$template_fields = apply_filters( 'wfacp_checkout_fields', $template_fields, $fields );
 
+				$is_billing_only = wc_ship_to_billing_address_only();
+				if ( true == $is_billing_only && ! isset( $template_fields['shipping'] ) ) {
+					$template_fields['shipping'] = $fields['shipping'];
+				}
+				//PHP8.0 when Shipping Address Needed in woocommerce & customer removed shipping address field then Fatal error Occured
+				if ( empty( $template_fields['shipping'] ) ) {
+					$template_fields['shipping'] = [];
+				}
+				if ( empty( $template_fields['order'] ) ) {
+					$template_fields['order'] = [];
+				}
+				if ( empty( $template_fields['account'] ) ) {
+					$template_fields['account'] = [];
+				}
+				if ( isset( $template_fields['billing'] ) && isset( $template_fields['billing']['billing_state'] ) && isset( $fields['billing'] ) && isset( $fields['billing']['billing_state']['country'] ) ) {
+					$template_fields['billing']['billing_state']['country'] = $fields['billing']['billing_state']['country'];
+				}
+				if ( isset( $template_fields['shipping'] ) && isset( $template_fields['shipping']['shipping_state'] ) && isset( $fields['shipping'] ) && isset( $fields['shipping']['shipping_state']['country'] ) ) {
+					$template_fields['shipping']['shipping_state']['country'] = $fields['shipping']['shipping_state']['country'];
+				}
+			} catch ( Exception|Error $e ) {
+				return $fields;
 			}
-			//PHP8.0 when Shipping Address Needed in woocommerce & customer removed shipping address field then Fatal error Occured
-			if ( empty( $template_fields['shipping'] ) ) {
-				$template_fields['shipping'] = [];
-			}
-			if ( empty( $template_fields['order'] ) ) {
-				$template_fields['order'] = [];
-			}
-			if ( empty( $template_fields['account'] ) ) {
-				$template_fields['account'] = [];
-			}
-
 
 			return $template_fields;
 		}
@@ -1546,10 +1559,15 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 		}
 
 
-		public function remove_form_billing_and_shipping_html( $template ) {
+		public function remove_form_billing_and_shipping_html( $template, $template_name ) {
 
-			if ( in_array( $template, [ 'checkout/form-billing.php', 'checkout/form-billing.php', 'cart/shipping-calculator.php' ] ) ) {
-				return WFACP_TEMPLATE_DIR . '/empty.php';
+			if ( in_array( $template_name, [
+				'checkout/form-billing.php',
+				'checkout/form-billing.php',
+				'cart/shipping-calculator.php',
+				'checkout/review-order.php'
+			] ) ) {
+				return WFACP_TEMPLATE_COMMON . '/empty.php';
 			}
 
 			return $template;
@@ -2061,7 +2079,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 		public function payment_sub_heading() {
 
-			return esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'woofunnels-aero-checkout' );
+			return WFACP_Common::translation_string_to_check( esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'woofunnels-aero-checkout' ) );
 		}
 
 
@@ -2424,7 +2442,6 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 
 			$this->create_optional_fields();
 			add_filter( 'woocommerce_form_field_args', [ $this, 'add_default_wfacp_styling' ], 10, 3 );
-			add_action( 'wfacp_internal_css', [ $this, 'add_internal_css' ], 10, 2 );
 
 		}
 
@@ -2549,22 +2566,6 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			return $args;
 		}
 
-		public function add_internal_css() {
-			$instance = wfacp_template();
-			if ( ! $instance instanceof WFACP_Template_Common ) {
-				return;
-			}
-
-			$bodyClass = "body #wfacp-sec-wrapper ";
-
-
-			$cssHtml = "<style>";
-			$cssHtml .= $bodyClass . " p.form-row.wfacp_collapsible_enable.wfacp_hidden_class {display: none;}";
-			$cssHtml .= $bodyClass . " p.form-row.wfacp_collapsible_field_wrap.wfacp_hidden_class {display: none;}";
-			$cssHtml .= "</style>";
-			echo $cssHtml;
-
-		}
 
 		public function override_notices_templates( $template, $template_name ) {
 
@@ -2797,6 +2798,8 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 				'dynamic_buttons'     => [
 					"#wfacp_smart_button_stripe_gpay_apay"                                                                   => "#wfacp_smart_button_stripe_gpay_apay",
 					"#wfacp_smart_button_wc_payment_gpay_apay #wcpay-payment-request-button"                                 => "#wfacp_smart_button_wc_payment_gpay_apay",
+					"#wfacp_smart_button_wc_payment_gpay_apay #wcpay-express-checkout-element"                               => "#wfacp_smart_button_wc_payment_gpay_apay",
+					"#wfacp_smart_button_wc_payment_woo_pay #wcpay-woopay-button"                                            => "#wfacp_smart_button_wc_payment_woo_pay",
 					"#wfacp_smart_button_woo_braintree_braintree_paypal .wc_braintree_banner_gateway_braintree_paypal"       => "#wfacp_smart_button_woo_braintree_braintree_paypal",
 					"#wfacp_smart_button_woo_braintree_braintree_googlepay .wc_braintree_banner_gateway_braintree_googlepay" => "#wfacp_smart_button_woo_braintree_braintree_googlepay",
 					"#wfacp_smart_button_woo_braintree_braintree_applepay .wc_braintree_banner_gateway_braintree_applepay"   => "#wfacp_smart_button_woo_braintree_braintree_applepay",
@@ -2816,6 +2819,35 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 				]
 			];
 		}
+
+		public final function order_attribution_inputs() {
+			try {
+				if ( function_exists( 'wc_get_container' ) && class_exists( '\Automattic\WooCommerce\Internal\Orders\OrderAttributionController' ) && class_exists( 'Automattic\WooCommerce\Internal\Features\FeaturesController' ) && $container = wc_get_container() ) {
+					$order_attribute_instance = $container->get( \Automattic\WooCommerce\Internal\Orders\OrderAttributionController::class );
+					if ( $order_attribute_instance instanceof \Automattic\WooCommerce\Internal\Orders\OrderAttributionController ) {
+						$feature_enabled = $container->get( Automattic\WooCommerce\Internal\Features\FeaturesController::class );
+						if ( $feature_enabled->feature_is_enabled( 'order_attribution' ) ) {
+							if ( method_exists( $order_attribute_instance, 'stamp_html_element' ) ) {
+								$order_attribute_instance->stamp_html_element();
+							} else {
+								if ( method_exists( $order_attribute_instance, 'get_fields' ) ) {
+									foreach ( $order_attribute_instance->get_fields() as $field ) {
+										printf( '<input type="hidden" name="%s" form="wfacp_checkout_form" value="" />', esc_attr( $order_attribute_instance->get_prefixed_field( $field ) ) );
+									}
+								} elseif ( method_exists( $order_attribute_instance, 'get_field_names' ) ) {
+									foreach ( $order_attribute_instance->get_field_names() as $field ) {
+										printf( '<input type="hidden" name="%s" form="wfacp_checkout_form" value="" />', esc_attr( $order_attribute_instance->get_prefixed_field_name( $field ) ) );
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch ( Exception|Error $e ) {
+
+			}
+		}
+
 
 	}
 }

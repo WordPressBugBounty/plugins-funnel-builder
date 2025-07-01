@@ -10,8 +10,7 @@ require plugin_dir_path( __FILE__ ) . '/class-wfty-woo-order-data.php';
  */
 if ( ! class_exists( 'WFTY_Data' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFTY_Data {
+	class WFTY_Data {
 
 		private static $ins = null;
 		public $page_id = false;
@@ -298,7 +297,7 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 		 *
 		 * @return string
 		 */
-		public function wfty_order_meta($atts) {
+		public function wfty_order_meta( $atts ) {
 			if ( is_array( $atts ) && isset( $atts['key'] ) ) {
 				$key = $atts['key'];
 			} else {
@@ -326,6 +325,7 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 		}
 
 		public function maybe_get_order_id( $order_id ) {
+			global $wp;
 			if ( isset( $_REQUEST['order_id'] ) && $_REQUEST['order_id'] > 0 ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$order_id = absint( wffn_clean( $_REQUEST['order_id'] ) );//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
@@ -333,6 +333,10 @@ if ( ! class_exists( 'WFTY_Data' ) ) {
 			if ( isset( $_REQUEST['order'] ) && $_REQUEST['order'] > 0 ) {//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$order_id = absint( wffn_clean( $_REQUEST['order'] ) );//phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			}
+			if ( isset( $wp->query_vars['order-received'] ) ) {
+				$order_id = apply_filters( 'woocommerce_thankyou_order_id', $order_id );
+			}
+
 
 			return $order_id;
 		}

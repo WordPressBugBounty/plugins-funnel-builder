@@ -142,6 +142,7 @@ $permalink = get_the_permalink();
 
     <form name="checkout" method="post" class="checkout woocommerce-checkout wfacp_paypal_express" action="<?php echo esc_url( get_the_permalink() ); ?>" enctype="multipart/form-data" id="wfacp_checkout_form">
         <input type="hidden" name="_wfacp_post_id" class="_wfacp_post_id" value="<?php echo WFACP_Common::get_id(); ?>">
+		<?php do_action( 'wfacp_before_checkout_form_fields', $checkout ); ?>
         <div class="wfacp-section  wfacp-hg-by-box">
             <div class="wfacp-comm-title">
                 <h2 class="wfacp_section_heading wfacp_section_title"><?php _e( 'Confirm your PayPal order', 'woocommerce-gateway-paypal-express-checkout' ); ?></h2>
@@ -346,6 +347,8 @@ $permalink = get_the_permalink();
 			do_action( 'wfacp_after_payment_section' );
 			?>
         </div>
+		<?php do_action( 'wfacp_after_checkout_form_fields', $checkout ); ?>
+
         <input type="hidden" id="wfacp_source" name="wfacp_source" value="<?php echo esc_url( $permalink ); ?>">
         <input type="hidden" id="wfacp_exchange_keys" name="wfacp_exchange_keys" class="wfacp_exchange_keys" value="">
         <input type="hidden" id="wfacp_input_hidden_data" name="wfacp_input_hidden_data" class="wfacp_input_hidden_data" value="{}">

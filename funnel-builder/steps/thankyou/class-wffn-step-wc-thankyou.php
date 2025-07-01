@@ -225,6 +225,7 @@ if ( ! class_exists( 'WFFN_Step_WC_Thankyou' ) ) {
 						$current_step['id']   = apply_filters( 'wffn_maybe_get_ab_control', $aero_id );
 						$current_step['type'] = 'wc_checkout';
 						$thankyou_page_ids    = $this->maybe_get_thankyou( $current_step, $funnel );
+						$thankyou_page_ids = apply_filters('wffn_filter_thankyou_by_language', $thankyou_page_ids, $current_step);
 					}
 				}
 			}

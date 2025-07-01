@@ -29,6 +29,7 @@ if ( ! empty( $field ) ) {
 $classes = isset( $args['cssready'] ) ? implode( ' ', $args['cssready'] ) : '';
 
 $apply_coupon_button_text = apply_filters( 'wfacp_form_apply_coupon_button_text', __( 'Apply', 'woocommerce' ) );
+
 ?>
 
 <div class="wfacp_woocommerce_form_coupon wfacp-form-control-wrapper <?php echo $classes; ?>" id="order_coupon_field">

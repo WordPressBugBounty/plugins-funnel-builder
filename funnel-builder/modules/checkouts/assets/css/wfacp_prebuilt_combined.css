@@ -206,6 +206,9 @@ body .wfacp_main_form.woocommerce .ywcmas_manage_addresses_cb_container input {
     width: 100%;
 }
 
+body #wfacp_smart_button_fkwcs_google_pay .fkwcs_google_pay_wrapper {
+    margin: 0 !important;
+}
 
 /*-----------------------------------Email Error Validation Start-------------------------------------------------------*/
 
@@ -3505,10 +3508,13 @@ body .product-quantity .wfacp_quantity_selector input[type="number"]::-webkit-in
     -webkit-appearance: none;
 }
 
-body .product-quantity .wfacp_quantity_selector input[type="number"] {
+body .product-quantity .wfacp_quantity_selector input[type="number"],
+body .wfacp_main_form #product_switching_field.wfacp-product-switch-panel .woocommerce-cart-form__cart-item.cart_item .wfacp_product_switcher_col_3 .wfacp_quantity_selector input.wfacp_product_switcher_quantity,
+body .wfacp_main_form #product_switching_field.wfacp-product-switch-panel input[type="number"],
+.wfacp_mini_cart_start_h .cart_item .product-quantity .wfacp_quantity_selector input[type=number],
+body #wfacp-e-form .wfacp_mb_mini_cart_wrap .cart_item .product-quantity .wfacp_quantity_selector input[type="number"]{
     -moz-appearance: textfield;
 }
-
 body .wfacp_main_form.woocommerce #payment ul.payment_methods li.payment_method_pagantis img {
     max-width: initial;
     max-height: 20px;
@@ -5313,7 +5319,7 @@ body #wfacp-sec-wrapper .wfacp-inside p.wfacp-form-control-wrapper.wfacp-anim-wr
     line-height: 1 !important;
 }
 
-body #wfacp-sec-wrapper .wfacp-inside label.wfacp-form-control-label {
+body #wfacp-sec-wrapper .wfacp-inside p.form-row label.wfacp-form-control-label {
     margin-top: -7px;
     bottom: auto;
 }
@@ -5780,19 +5786,115 @@ body #wfacp-sec-wrapper .wfacp_main_form p.wfacp_field_type_hidden {
 body #wfacp-sec-wrapper .wfacp_main_form #payment .place-order .bwfan_user_consent.wfacp-consent-term-condition {
     padding: 0;
 }
+
 body #wfacp-e-form .wc-credit-card-form.wc-payment-form input[hidden] {
     display: none;
 }
+
 body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a,
-body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a:hover{
+body #wfacp-e-form #wfacp-sec-wrapper .wfacp-form .wfacp_main_form.woocommerce .woocommerce-error li a:hover {
     color: #e15334 !important;
 }
+
 body #wfacp-sec-wrapper span.wfacp_address_reminder {
     font-size: 12px;
     color: #e15334;
     margin-top: 4px;
     line-height: 1;
 }
+
+/* ------------------------------------------Layout Distorted------------------------------------*/
+
+body #wfacp-sec-wrapper #wfacp_checkout_form #billing_email_field:not(.wfacp-col-full).validate-required + .wfacp-form-control-wrapper:not(.wfacp-col-full) + .wfacp-form-control-wrapper:not(.wfacp-col-full),
+body #wfacp-sec-wrapper #wfacp_checkout_form #billing_email_field:not(.wfacp-col-full) + #bwfan_gdpr_consent + .wfacp-form-control-wrapper:not(.wfacp-col-full) + .wfacp-form-control-wrapper:not(.wfacp-col-full) {
+    clear: both;
+}
+
+body #wfacp-sec-wrapper .wfacp-login-wrapper {
+    display: block !important;
+}
+
+
+#wfacp-e-form .wfacp_main_form .woocommerce-checkout-payment div#installmentsCard span {
+    display: block;
+}
+/*----------------------------Collapsible Fields----------------------------------------*/
+body #wfacp-sec-wrapper  p.form-row.wfacp_collapsible_enable.wfacp_hidden_class,
+body #wfacp-sec-wrapper  p.form-row.wfacp_collapsible_field_wrap.wfacp_hidden_class{
+    display: none;
+}
+
+/*----------------------------WooCommerce Local Delivery Date Picker & Time Slots by AntsRoute-----------------------------*/
+
+#wfacp-sec-wrapper #wc-antsroute-timeslot-wrapper .wc-antsroute-time-slots .wc-antsroute-time-slots-label {
+    background: #fff;
+    color: #3871b1;
+    padding: 10px;
+    border: 1px solid #3871b1;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, .1);
+}
+
+#wfacp-sec-wrapper div#wc-antsroute-fields input[type="text"] {
+    padding: 12px;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields a#wc-antsroute-see-availabilities,
+#wfacp-sec-wrapper div#wc-antsroute-fields a#wc-antsroute-confirm-time-slot {
+    background: #0a4b78;
+    text-align: center;
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    color: #fff;
+    min-height: 1px;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields a#wc-antsroute-see-availabilities:hover {
+    background: #436883;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields input[type="radio"] {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    top: auto;
+    margin: 0;
+}
+#wfacp-sec-wrapper #wc-antsroute-timeslot-wrapper li.wc-antsroute-time-slots-item input[type=radio] {
+    opacity: 0;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields input[type="radio"] + label {
+    display: inline-block;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields #wc-antsroute-remaining-time-wrapper,
+#wfacp-sec-wrapper div#wc-antsroute-fields #wc-antsroute-timeslot-wrapper{
+    z-index: 9999;
+    top: 98px;
+}
+#wfacp-sec-wrapper div#wc-antsroute-fields div#wc-antsroute-delivery-time-wrapper {
+    margin-top: 32px !important;
+}
+
+/*----------------------------Plugin Pay by paynow.pl----------------------------------------*/
+body #wfacp-sec-wrapper  .wfacp_main_form.woocommerce #payment .paynow-payment-option-pbl input[type=radio]:checked + label {
+    border: 1px solid #bfbfbf;
+    background: #f3f3f3 !important;
+}
+
+
+/*---------------------------------Postcode Eu Auto fill-----------------------------------------------------------*/
+
+body #wfacp-e-form p.form-row.wfacp-col-full.postcode-eu-autofill,
+body #wfacp-e-form p.form-row.wfacp-col-full.postcode-eu-autofill-intl,
+body #wfacp-e-form p.form-row.wfacp-col-full.postcode-eu-autofill .optional{
+    display: none;
+}
+body .wfacp_smart_button_inner .wfacp_smart_button_container  button,
+body .wfacp_smart_button_inner #fkwcs_stripe_smart_button_wrapper:not(.inline) #fkwcs_custom_express_button .fkwcs_smart_buttons{
+    min-width: 1px;
+    min-height: 42px;
+    margin: 0;
+    border-radius:4px;
+}
+
 /* -----------------------------------------------MEDIA QUERY---------------------------------------- */
 @media (min-width: 993px) {
     body .select2-dropdown {
@@ -6354,7 +6456,7 @@ body #wfacp-sec-wrapper span.wfacp_address_reminder {
         display: block;
     }
 
-    #wfacp_smart_buttons .wfacp_smart_button_container *,
+    #wfacp_smart_buttons .wfacp_smart_button_container *:not(svg),
     #wfacp_smart_buttons .wfacp_smart_button_container #wc-stripe-payment-request-wrapper {
         width: 100% !important;
     }

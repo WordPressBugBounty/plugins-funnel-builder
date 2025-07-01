@@ -71,7 +71,6 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 			add_filter( 'bwf_enable_ecommerce_integration_fb_checkout', '__return_true' );
 			add_filter( 'bwf_enable_ecommerce_integration_ga_checkout', '__return_true' );
 			add_filter( 'bwf_enable_ga4', '__return_true' );
-			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
 
 			/*** bwf general setting ***/
 			add_filter( 'bwf_general_settings_link', function () {
@@ -802,41 +801,41 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 								[ 'id' => 'bold', 'name' => 'Bold' ],
 							],
 
-						'model' => 'wfacp_form_section_embed_forms_2_btn_order-place_btn_font_weight'
-					],
-					[
-						'type'         => "select",
-						'label'        => __( 'Width', 'woofunnels-aero-checkout' ),
-						'styleClasses' => 'wfacp_design_setting_50',
-						'default'      => 'normal',
-						'values'       => [
-							[ 'id' => '100', 'name' => 'Full Width' ],
-							[ 'id' => 'initial', 'name' => 'Normal' ],
+							'model' => 'wfacp_form_section_embed_forms_2_btn_order-place_btn_font_weight'
 						],
-						'model'        => 'wfacp_form_section_embed_forms_2_btn_order-place_width'
-					],
-					[
-						'type'          => "select",
-						'label'         => __( 'Alignment', 'woofunnels-aero-checkout' ),
-						'styleClasses'  => 'wfacp_design_setting_50',
-						'default'       => 'left',
-						'selectOptions' => [ 'hideNoneSelectedText' => false ],
-						'values'        => [
-							[ 'id' => 'left', 'name' => 'left' ],
-							[ 'id' => 'center', 'name' => 'center' ],
-							[ 'id' => 'right', 'name' => 'Right' ],
+						[
+							'type'         => "select",
+							'label'        => __( 'Width', 'woofunnels-aero-checkout' ),
+							'styleClasses' => 'wfacp_design_setting_50',
+							'default'      => 'normal',
+							'values'       => [
+								[ 'id' => '100', 'name' => 'Full Width' ],
+								[ 'id' => 'initial', 'name' => 'Normal' ],
+							],
+							'model'        => 'wfacp_form_section_embed_forms_2_btn_order-place_width'
 						],
-						'model'         => 'wfacp_form_section_embed_forms_2_btn_order-place_talign'
-					],
-					[
-						'type'          => "select",
-						'label'         => __( 'Sticky on Mobile', 'woofunnels-aero-checkout' ),
-						'styleClasses'  => 'wfacp_design_setting_50',
-						'selectOptions' => [ 'hideNoneSelectedText' => false ],
-						'default'       => 'no_sticky',
-						'values'        => [
-							[ 'id' => 'yes_sticky', 'name' => __( 'Yes', 'funnel-builder' ) ],
-							[ 'id' => 'no_sticky', 'name' => __( 'No', 'funnel-builder' ) ],
+						[
+							'type'          => "select",
+							'label'         => __( 'Alignment', 'woofunnels-aero-checkout' ),
+							'styleClasses'  => 'wfacp_design_setting_50',
+							'default'       => 'left',
+							'selectOptions' => [ 'hideNoneSelectedText' => false ],
+							'values'        => [
+								[ 'id' => 'left', 'name' => 'left' ],
+								[ 'id' => 'center', 'name' => 'center' ],
+								[ 'id' => 'right', 'name' => 'Right' ],
+							],
+							'model'         => 'wfacp_form_section_embed_forms_2_btn_order-place_talign'
+						],
+						[
+							'type'          => "select",
+							'label'         => __( 'Sticky on Mobile', 'woofunnels-aero-checkout' ),
+							'styleClasses'  => 'wfacp_design_setting_50',
+							'selectOptions' => [ 'hideNoneSelectedText' => false ],
+							'default'       => 'no_sticky',
+							'values'        => [
+								[ 'id' => 'yes_sticky', 'name' => __( 'Yes', 'funnel-builder' ) ],
+								[ 'id' => 'no_sticky', 'name' => __( 'No', 'funnel-builder' ) ],
 
 							],
 							'model'         => 'wfacp_form_section_embed_forms_2_btn_order-place_make_button_sticky_on_mobile'
@@ -1360,6 +1359,21 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 					];
 				}
 
+			}
+
+			if ( get_option( 'woocommerce_ship_to_countries' ) == 'disabled' ) {
+				$msg = sprintf( __( "<a href='%s' target='_blank'>Shipping Location</a> is disabled. Please replace Shipping Address with Billing Address field or enable Shipping Location.", 'woofunnels-aero-checkout' ), admin_url( 'admin.php?page=wc-settings' ) );
+				$aero_messages[] = [
+					'message'       => $msg,
+					'id'            => 'shipping_address',
+					'show'          => 'yes',
+					'dismissible'   => false,
+					'reverse_check' => true,
+					'is_global'     => false,
+					'type'          => 'wfacp_error',
+					'call_back'     => '',
+					'key'           => 'wfacp_wc_ship_to_countries_notice_error'
+				];
 			}
 
 			$aero_messages[] = [
@@ -2181,18 +2195,7 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 			return $pages;
 		}
 
-		public function admin_footer_text( $footer_text ) {
 
-			if ( isset( $_GET['page'] ) && $_GET['page'] == 'wfacp' ) {
-				$user = WFACP_Core()->role->user_access( 'checkout', 'read' );
-				if ( false === $user ) {
-					return $footer_text;
-				}
-				$footer_text = __( 'Over 648+ 5 star reviews show that FunnelKit users trust our top-rated support for their online business. Do you need help? <a href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Footer+Checkout&utm_campaign=fb+lite+plugin" target="_blank"><b>Contact FunnelKit Support</b></a>', 'funnel-builder' );
-			}
-
-			return $footer_text;
-		}
 
 
 		/**

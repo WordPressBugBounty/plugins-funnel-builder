@@ -1,6 +1,7 @@
 <?php
 if ( ! class_exists( 'WFACP_OXY' ) ) {
-	class WFACP_OXY {
+	class
+	WFACP_OXY {
 		private static $ins = null;
 		private $is_oxy = false;
 		private static $front_locals = [];
@@ -17,6 +18,7 @@ if ( ! class_exists( 'WFACP_OXY' ) ) {
 			add_action( 'wfacp_register_template_types', [ $this, 'register_template_type' ], 19 );
 			add_filter( 'wfacp_register_templates', [ $this, 'register_templates' ] );
 			add_filter( 'wfacp_template_edit_link', [ $this, 'add_template_edit_link' ], 10, 2 );
+			add_action( 'woocommerce_checkout_terms_and_conditions', [ $this, 'remove_the_content_filter' ] );
 		}
 
 		public static function get_instance() {
@@ -110,7 +112,7 @@ if ( ! class_exists( 'WFACP_OXY' ) ) {
 		public function register_template_type( $loader ) {
 			$template = [
 				'slug'    => 'oxy',
-				'title'   => __( 'Oxygen', 'woofunnels-aero-checkout' ),
+				'title'   => __( 'Oxygen Classic', 'woofunnels-aero-checkout' ),
 				'filters' => WFACP_Common::get_template_filter()
 			];
 
@@ -353,6 +355,9 @@ if ( ! class_exists( 'WFACP_OXY' ) ) {
 			return $status;
 		}
 
+		public function remove_the_content_filter() {
+			remove_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
+		}
 	}
 
 	WFACP_OXY::get_instance();

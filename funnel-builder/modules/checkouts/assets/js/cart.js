@@ -1,4 +1,5 @@
 (function ($) {
+
     window.increaseItmQty = (currentEle, aero_key = '', callback = '') => {
         let $this = $(currentEle);
         let qtyEle = $this.siblings(".wfacp_product_quantity_number_field");
@@ -78,7 +79,6 @@
         value = value - step;
         qtyEle.val(value);
 
-
         qtyEle.trigger("change");
 
     };
@@ -133,7 +133,7 @@
         },
 
         response: function (rsp) {
-            let wfacp_coupon_msg = $('.wfacp_coupon_msg');
+            let wfacp_coupon_msg = $('.wfacp_coupon_notices');
             wfacp_coupon_msg.html('').show();
             let $form = $('form.checkout_coupon');
 
@@ -142,9 +142,10 @@
             } else {
                 $form.removeClass('processing').aero_unblock();
             }
-            $('.woocommerce-error, .woocommerce-message').remove();
+            $('.woocommerce-error, .wfacp_coupon_notices .woocommerce-message').remove();
 
             $form.find('button[name="apply_coupon"]').removeClass('wfacp_btn_clicked');
+
 
             $(document.body).trigger('wfacp_coupon_apply', [rsp]);
             if (rsp.hasOwnProperty('message')) {
@@ -191,29 +192,6 @@
         },
         hideMessage() {
 
-            var delay_time = wfacp_frontend.hooks.applyFilters('wfacp_coupon_html_remove_delay_time', 5000);
-
-            if (typeof delay_time == "undefined" || delay_time == '') {
-                delay_time = 5000;
-            }
-
-            if ($('.wfacp_coupon_msg  .woocommerce-message').length > 0) {
-                setTimeout(function () {
-                    $('.wfacp_coupon_msg  .woocommerce-message').html('');
-                }, delay_time);
-            }
-            if ($('.wfacp_coupon_msg  .woocommerce-error').length > 0) {
-
-                setTimeout(function () {
-                    $('.wfacp_coupon_msg  .woocommerce-error').html('');
-                }, delay_time);
-            }
-            if ($('.wfacp_coupon_field_msg').length > 0) {
-                setTimeout(function () {
-                    $('.wfacp_coupon_field_msg  .wfacp_single_coupon_msg').html('');
-                }, delay_time);
-            }
-
 
         },
 
@@ -242,8 +220,9 @@
             $form.find('button[name="apply_coupon"]').addClass('wfacp_btn_clicked');
 
 
-            let wfacp_coupon_msg = $('.wfacp_coupon_msg');
+            let wfacp_coupon_msg = $('.wfacp_coupon_msg .woocommerce-message');
             wfacp_coupon_msg.html('').show();
+            $('.wfacp_coupon_notices').html('').show();
             wc_checkout_coupons_main.coupon = coupon_code;
             set_aero_data({
                 'action': 'apply_coupon_main',
@@ -289,14 +268,13 @@
                 coupon: coupon
             };
             let wfacp_coupon_msg = $('.wfacp_coupon_msg');
-
             $.ajax({
                 type: 'POST',
                 url: wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', 'remove_coupon'),
                 data: data,
                 success: function (code) {
-
-                    $('.woocommerce-error, .woocommerce-message').remove();
+                    $('.wfacp_coupon_notices').html('').show();
+                    //$('.woocommerce-error, .woocommerce-message').remove();
                     container.removeClass('processing');
                     show_unblocked_mini_cart();
                     if (code) {
@@ -414,11 +392,6 @@
             field.removeClass('wfacp_coupon_failed');
 
 
-            if (field.find('#wfacp_coupon_code_field').length > 0) {
-                field.find('#wfacp_coupon_code_field').val('');
-                field.find('.wfacp_coupon_field_box > p.form-row-first').removeClass('wfacp-anim-wrap');
-            }
-
             wc_checkout_coupon_field.coupon_code = coupon;
             if (wfacp_frontend.applied_coupons.hasOwnProperty(coupon)) {
                 delete wfacp_frontend.applied_coupons[coupon];
@@ -440,7 +413,6 @@
             field.removeClass('processing').find(".wfacp_coupon_field_box").aero_unblock();
             //field.find('.wfacp-anim-wrap').removeClass('wfacp-anim-wrap');
 
-
             $(document.body).trigger('wfacp_coupon_apply', [rsp]);
 
             if (rsp.hasOwnProperty('message')) {
@@ -461,26 +433,14 @@
                         }
                     }
                     field.addClass('wfacp_coupon_failed');
-                    var delay_time = wfacp_frontend.hooks.applyFilters('wfacp_coupon_html_remove_delay_time', 5000);
-
-                    if (typeof delay_time == "undefined" || delay_time == '') {
-                        delay_time = 5000;
-                    }
-
-
-                    setTimeout((el) => {
-                        el.html('');
-                    }, delay_time, wfacp_coupon_error_msg);
-
                 } else {
-
-
                     let coupon = wc_checkout_coupon_field.coupon_code;
                     if (!wfacp_frontend.applied_coupons.hasOwnProperty(coupon)) {
                         wfacp_frontend.applied_coupons[coupon] = coupon;
                     }
 
                     field.addClass('wfacp_coupon_success');
+                    //field.find('.wfacp_coupon_code').val('');
                 }
             }
             // wc_checkout_coupon_field.hideMessage();
@@ -490,28 +450,24 @@
             let field = wc_checkout_coupon_field.remove_field_el;
             $('.woocommerce-error, .woocommerce-message').remove();
             field.removeClass('processing').find(".wfacp_coupon_field_box").aero_unblock();
+
+            if (field.find('#wfacp_coupon_code_field').length > 0) {
+                field.find('#wfacp_coupon_code_field').val('');
+                field.find('.wfacp_coupon_field_box > p.form-row-first').removeClass('wfacp-anim-wrap');
+            }
+
             if (rsp.hasOwnProperty('message') && '' !== rsp.message) {
                 let message = rsp.message;
+
                 remove_coupon_div(wc_checkout_coupon_field.coupon_code);
                 let html = $("<div>" + message + "</div>");
                 field.find('.wfacp_coupon_remove_msg').html(html.text());
                 $(document.body).trigger('update_checkout', {update_shipping_method: false});
                 $('form.checkout_coupon').find('input[name="coupon_code"]').val('');
                 $('form.checkout_coupon').find('input[name="coupon_code"]').trigger('input');
-
-                var delay_time = wfacp_frontend.hooks.applyFilters('wfacp_coupon_html_remove_delay_time', 5000);
-
-                if (typeof delay_time == "undefined" || delay_time == '') {
-                    delay_time = 5000;
-                }
-
-
-                setTimeout(() => {
-                    field.find('.wfacp_coupon_remove_msg').html('');
-                }, delay_time, field);
-
-
                 $(document.body).trigger('wfacp_coupon_form_removed', [message]);
+
+
             }
             wc_checkout_coupon_field.hideMessage();
 
@@ -519,18 +475,6 @@
         },
         hideMessage() {
 
-            if ($('.wfacp_coupon_field_msg').length > 0) {
-                var delay_time = wfacp_frontend.hooks.applyFilters('wfacp_coupon_html_remove_delay_time', 5000);
-
-                if (typeof delay_time == "undefined" || delay_time == '') {
-                    delay_time = 5000;
-                }
-
-
-                setTimeout(function () {
-                    $('.wfacp_coupon_field_msg  .wfacp_single_coupon_msg').html('');
-                }, delay_time);
-            }
 
         }
 
@@ -743,7 +687,14 @@
                             'item_key': rsp.item_key,
                             'cart_key': rsp.new_cart_key,
                         });
+                    } else if (action === 'remove_addon_product') {
+                        $(document.body).trigger('wfacp_product_removed', {
+                            'item_key': rsp.item_key,
+                            'cart_key': rsp.new_cart_key,
+                        });
                     }
+
+
                 }
             };
             set_aero_data(ajax_data, cb);
@@ -1189,8 +1140,8 @@
     }
 
     /* assign form=wfacp_checkout_form to input field except our field qty field inside the mini cart or collapsible summary
-            some plugin add input field just below the cart item like woocommerce subscription gifting
-         */
+        some plugin add input field just below the cart item like woocommerce subscription gifting
+     */
     function push_mini_input_field_to_checkout_form() {
         $('body').on('updated_checkout', function () {
             let available_inputs = $('.wfacp_mini_cart_items input , .wfacp_mini_cart_items select').not('.wfacp_mini_cart_update_qty');

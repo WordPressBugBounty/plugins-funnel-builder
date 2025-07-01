@@ -122,6 +122,46 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 			);
 
 			/**
+			 * Mini Cart Strike Through
+			 */
+
+			$this->controls['mini_cart_enable_strike_through_price'] = array(
+				'group'   => 'contentProducts',
+				'label'   => __( 'Regular & Discounted Price', 'woofunnels-aero-checkout' ),
+				'type'    => 'checkbox',
+				'default' => false,
+			);
+
+			$this->controls['mini_cart_enable_low_stock_trigger'] = array(
+				'group'   => 'contentProducts',
+				'label'   => __( 'Low Stock Trigger', 'woofunnels-aero-checkout' ),
+				'type'    => 'checkbox',
+				'default' => false,
+			);
+
+			$this->controls['mini_cart_low_stock_message'] = array(
+				'group'    => 'contentProducts',
+				'label'    => __( 'Message', 'woofunnels-aero-checkout' ),
+				'type'     => 'text',
+				'default'  => __( '{{quantity}} LEFT IN STOCK', 'woofunnels-aero-checkout' ),
+				'required' => array( 'mini_cart_enable_low_stock_trigger', '=', true ),
+			);
+
+			$this->controls['mini_cart_enable_saving_price_message'] = array(
+				'group'   => 'contentProducts',
+				'label'   => __( 'Total Saving', 'woofunnels-aero-checkout' ),
+				'type'    => 'checkbox',
+				'default' => false,
+			);
+			$this->controls['mini_cart_saving_price_message']        = array(
+				'group'    => 'contentProducts',
+				'label'    => __( 'Message', 'woofunnels-aero-checkout' ),
+				'type'     => 'text',
+				'default'  => __( 'You saved {{saving_amount}} ({{saving_percentage}}) on this order', 'woofunnels-aero-checkout' ),
+				'required' => array( 'mini_cart_enable_saving_price_message', '=', true ),
+			);
+
+			/**
 			 * Coupon
 			 */
 			$this->controls['enable_coupon'] = array(
@@ -143,7 +183,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 				'group'    => 'contentCoupon',
 				'label'    => esc_html__( 'Coupon Button Text' ),
 				'type'     => 'text',
-				'default'  => esc_html__( 'Apply' ),
+				'default'  => esc_html__( __( 'Apply', 'woocommerce' )  ),
 				'required' => array( 'enable_coupon', '=', true ),
 			);
 
@@ -164,25 +204,28 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 
 			/* ------------------------------------ Products Start------------------------------------ */
 
-			$mini_cart_product_typo = array(
+
+
+			$mini_cart_product_typo = [
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total bdi',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total span:not(.wfacp_cart_product_name_h):not(.wfacp_delete_item_wrap)',
+				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td:not(.product-total)',
+				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total > span bdi',
+				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total > ins span bdi',
+				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total > span:not(.wfacp_cart_product_name_h):not(.wfacp_delete_item_wrap)',
+				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total ins span:not(.wfacp_cart_product_name_h):not(.wfacp_delete_item_wrap)',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items .product-total small',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items dl',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items dt',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items dd',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_items dd p',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td .product-name',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td small',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container span.subscription-details',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td p',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td .product-name span:not(.subscription-details)',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td .product-name',
 				'.wfacp_mini_cart_start_h .wfacp_order_summary_container tr.cart_item td .product-name bdi',
-			);
+			];
 
 			$this->controls['mini_cart_product_typo'] = array(
 				'group' => 'styleProducts',
@@ -209,6 +252,71 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 			);
 
 			/* ------------------------------------ End ------------------------------------ */
+
+			/**
+			 * Strike Through Style Setting
+			 */
+
+			$selector            = '.wfacp_mini_cart_start_h .wfacp_order_summary_container.wfacp_min_cart_widget';
+			$strike_through_typo = [
+				$selector . ' .product-total del',
+				$selector . ' .product-total del *',
+				$selector . ' .product-total del span.woocommerce-Price-currencySymbol',
+			];
+
+			$this->controls['mini_cart_strike_through_typo'] = array(
+				'group' => 'styleProducts',
+				'label' => esc_html__( 'Strike Through Typography' ),
+				'type'  => 'typography',
+				'css'   => array(
+					array(
+						'property' => 'typography',
+						'selector' => implode( ',', $strike_through_typo ),
+					),
+				),
+			);
+
+			/**
+			 * Low Stock Message Style Setting
+			 */
+			$mini_cart_low_stock_message                        = [
+				$selector . ' .wfacp_stocks',
+			];
+			$this->controls['mini_cart_low_stock_message_typo'] = array(
+				'group' => 'styleProducts',
+				'label' => esc_html__( 'Low Stock Typography' ),
+				'type'  => 'typography',
+				'css'   => array(
+					array(
+						'property' => 'typography',
+						'selector' => implode( ',', $mini_cart_low_stock_message ),
+					),
+				),
+			);
+
+			/**
+			 * Saved Price Setting
+			 *
+			 */
+			$mini_saving_price_message = [
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td svg path',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td *',
+				$selector . ' table.shop_table tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td span *',
+			];
+
+
+			$this->controls['mini_cart_enable_saving_price_message_typo'] = array(
+				'group' => 'styleProducts',
+				'label' => esc_html__( 'Save Price Typography' ),
+				'type'  => 'typography',
+				'css'   => array(
+					array(
+						'property' => 'typography',
+						'selector' => implode( ',', $mini_saving_price_message ),
+					),
+				),
+			);
 
 			/* ------------------------------------ Coupon Fields Start ------------------------------------ */
 
@@ -354,16 +462,17 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 				'type'  => 'separator',
 			);
 
-			$mini_cart_product_meta_typo = array(
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount)',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) td',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) th',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) th span',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) td span',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) td small',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) td bdi',
-				'.wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount) td a',
-			);
+
+			$mini_cart_product_meta_typo = [
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount)',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) th',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) th span',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td span',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td small',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td bdi',
+				'{{WRAPPER}} .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount):not(.wfacp-saving-amount) td a',
+			];
 
 			$this->controls['mini_cart_product_meta_typo'] = array(
 				'group' => 'styleCartTotal',
@@ -589,13 +698,13 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Order_Summary' ) ) {
 					array(
 						'property' => 'border-color',
 						'selector' => implode( ',', array(
-								'.wfacp_mini_cart_start_h .wfacp_mini_cart_elementor .cart_item',
-								'.wfacp_mini_cart_start_h table.shop_table tr.cart-subtotal',
-								'.wfacp_mini_cart_start_h table.shop_table tr.order-total',
-								'.wfacp_mini_cart_start_h table.shop_table tr.wfacp_ps_error_state td',
-								'.wfacp_mini_cart_start_h .wfacp-coupon-section .wfacp-coupon-page',
-								'.wfacp_mini_cart_start_h .wfob_bump_wrapper.wfacp_below_mini_cart_items:empty',
-							) ),
+							'.wfacp_mini_cart_start_h .wfacp_mini_cart_elementor .cart_item',
+							'.wfacp_mini_cart_start_h table.shop_table tr.cart-subtotal',
+							'.wfacp_mini_cart_start_h table.shop_table tr.order-total',
+							'.wfacp_mini_cart_start_h table.shop_table tr.wfacp_ps_error_state td',
+							'.wfacp_mini_cart_start_h .wfacp-coupon-section .wfacp-coupon-page',
+							'.wfacp_mini_cart_start_h .wfob_bump_wrapper.wfacp_below_mini_cart_items:empty',
+						) ),
 					),
 				),
 			);

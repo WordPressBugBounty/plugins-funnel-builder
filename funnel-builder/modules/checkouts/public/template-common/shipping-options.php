@@ -21,7 +21,7 @@ if ( isset( $field['default'] ) && '' !== $field['default'] ) {
 $args    = WC()->session->get( 'shipping_calculator_' . WFACP_Common::get_id(), $field );
 $classes = isset( $args['class'] ) ? implode( ' ', $args['class'] ) : '';
 
-if ( WFACP_Common::is_theme_builder() ) {
+if ( WFACP_Common::is_theme_builder() || apply_filters( 'wfacp_display_shipping_placeholder_message', false ) ) {
 	?>
     <div class="wfacp_anim wfacp_shipping_options <?php echo $classes; ?>" id="shipping_calculator_field" <?php echo WFACP_Common::get_fragments_attr() ?> >
         <ul id="shipping_method" class="wfacp_no_add_here">
@@ -101,11 +101,11 @@ if ( $shipping_hidden_fields && ! wp_doing_ajax() ) {
 			wc_cart_totals_shipping_html();
 			$shipping_html = ob_get_clean();
 			if ( ! empty( $shipping_html ) ) {
-				$shippingTitle  = esc_attr__( 'Shipping Method', 'funnel-builder' );
+				$shippingTitle  = WFACP_Common::translation_string_to_check(__( 'Shipping Method', 'funnel-builder' ));
 				$pageID         = WFACP_Common::get_id();
 				$_wfacp_version = WFACP_Common::get_post_meta_data( $pageID, '_wfacp_version' );
 				if ( $_wfacp_version == WFACP_VERSION ) {
-					$shippingTitle = __( 'Select Shipping Method', 'funnel-builder' );
+					$shippingTitle = WFACP_Common::translation_string_to_check(__( 'Select Shipping Method', 'funnel-builder' ));
 				}
 				$shippingTitle = isset( $field['label'] ) ? $field['label'] : $shippingTitle;
 				?>
@@ -209,7 +209,7 @@ if ( $shipping_hidden_fields && ! wp_doing_ajax() ) {
 
             <ul id="shipping_method" class="wfacp_no_add_here">
                 <li class="wfacp_no_shipping wfacp_clearfix">
-                    <label><?php _e( 'Shipping method', 'funnel-builder' ); ?></label>
+                    <label><?php _e( 'Shipping method', 'woocommerce' ); ?></label>
                 </li>
             </ul>
 			<?php

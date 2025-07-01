@@ -590,15 +590,15 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 				'fieldsets'                   => $prepare_data['fieldsets'],
 			];
 
-			//this meta use form generate form at form builder
-			update_post_meta( $page_id, '_wfacp_page_layout', $data );
-
 
 			//this meta use for printing the Form
 			update_post_meta( $page_id, '_wfacp_fieldsets_data', $fieldset_data );
 			//this meta use for woocommerce_checkout_field filter hooks
 			update_post_meta( $page_id, '_wfacp_checkout_fields', $prepare_data['checkout_fields'] );
+			update_post_meta( $page_id, '_wfacp_version', WFACP_VERSION );
 
+			//this meta use form generate form at form builder
+			update_post_meta( $page_id, '_wfacp_page_layout', $data );
 
 			do_action( 'wfacp_update_page_layout', $page_id, $data );
 			unset( $prepare_data, $fieldset_data );
@@ -1371,7 +1371,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 				if ( 'shipping_' === $type ) {
 
 					$address_fields['shipping_same_as_billing'] = [
-						'label'          => __( 'Use a different shipping address', 'funnel-builder' ),
+						'label'          => WFACP_Common::translation_string_to_check( __( 'Use a different shipping address', 'funnel-builder' ) ),
 						'label_2'        => '',
 						'type'           => 'checkbox',
 						'value'          => 'off',
@@ -1381,7 +1381,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 					];
 				} else {
 					$address_fields['billing_same_as_shipping'] = [
-						'label'          => __( 'Use a different billing address', 'funnel-builder' ),
+						'label'          => WFACP_Common::translation_string_to_check( __( 'Use a different billing address', 'funnel-builder' ) ),
 						'label_2'        => '',
 						'type'           => 'checkbox',
 						'value'          => 'off',
@@ -1405,7 +1405,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 				);
 				//added 3.4.1
 				$address_fields['shipping_phone'] = array(
-					'label'        => __( 'Shipping Phone', 'woofunnels-aero-checkout' ),
+					'label'        => WFACP_Common::translation_string_to_check( __( 'Shipping Phone', 'woofunnels-aero-checkout' ) ),
 					'type'         => 'tel',
 					'class'        => array( 'form-row-wide' ),
 					'validate'     => array( 'phone' ),
@@ -1482,7 +1482,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 					break;
 				case 'percent_discount_reg':
 					if ( 0 == $value ) {
-						$discounted_price = $reg_price;
+						$discounted_price = $price;
 						break;
 					}
 					$discounted_price = ( $value > 0 ) ? $reg_price - ( ( $value / 100 ) * $reg_price ) : $reg_price;
@@ -2053,7 +2053,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 		 *
 		 * @return string formatted price
 		 */
-		public static function get_product_subtotal( $product, $cart_item, $row = false ) {
+		public static function get_product_subtotal( $product, $cart_item, $row = false, $strike_through = false ) {
 			if ( $product->is_taxable() ) {
 
 				if ( WC()->cart->display_prices_including_tax() ) {
@@ -2073,6 +2073,30 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 				$row_price        = $cart_item['line_subtotal'];
 				$product_subtotal = wc_price( $row_price );
 			}
+
+			if ( $strike_through == true ) {
+				$quantity              = $cart_item['quantity'];
+				$product_regular_price = $product->get_regular_price();
+				$product_regular_price *= $quantity;
+				$subtotal              = $row_price;
+
+				if ( $product_regular_price > 0 && ( round( $subtotal, 2 ) !== round( $product_regular_price, 2 ) ) ) {
+					if ( $subtotal > $product_regular_price ) {
+
+						$product_subtotal = wc_price( $subtotal );
+					} else {
+
+						$product_subtotal = wc_format_sale_price( $product_regular_price, $subtotal );
+					}
+				} else {
+
+					$product_subtotal = wc_price( $subtotal );
+				}
+
+				return $product_subtotal;
+
+			}
+
 			if ( true == $row ) {
 				return $row_price;
 			}
@@ -2208,7 +2232,15 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 
 		public static function subscription_product_string( $pro, $product_data, $cart_item, $cart_item_key ) {
 			$temp_price = floatval( $pro->get_price() );
-			$temp_price *= ( isset( $product_data['quantity'] ) && $product_data['quantity'] > 0 ) ? absint( $product_data['quantity'] ) : 1;
+
+			if(isset($product_data['quantity'] )){
+				$qty=$product_data['quantity'];
+			}else{
+				$qty=$cart_item['quantity'];
+			}
+
+
+			$temp_price *= ( isset( $qty ) && $qty > 0 ) ? absint( $qty ) : 1;
 			$temp_data  = [
 				'price' => wc_price( $temp_price ),
 			];
@@ -2216,7 +2248,11 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			if ( '' !== $cart_item_key && ! isset( WC()->cart->removed_cart_contents[ $cart_item_key ] ) ) {
 				$wfacp_product_switcher_quantity = $cart_item['quantity'];
 			} else {
-				$wfacp_product_switcher_quantity = $product_data['quantity'] * $product_data['org_quantity'];
+		    	if(isset($product_data['org_quantity'])){
+					$wfacp_product_switcher_quantity = $qty * $product_data['org_quantity'];
+				}else{
+					$wfacp_product_switcher_quantity = $qty;
+				}
 
 			}
 			add_filter( 'woocommerce_subscriptions_product_sign_up_fee', 'WFACP_Common::get_signup_fee' );
@@ -2450,7 +2486,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 
 
 			// Bail if this query doesn't match our very specific rewrite rule.
-			if ( ! isset( $query->query['page'] ) || 2 !== count( $query->query ) ) {
+			if ( ! isset( $query->query['page'] ) ) {
 				return;
 			}
 
@@ -2458,7 +2494,10 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			if ( empty( $query->query['name'] ) ) {
 				return;
 			}
-
+			// If query does not match (not exactly 2 parameters or 3 with 'lang'), return early.
+			if ( ! ( count( $query->query ) === 2 || ( count( $query->query ) === 3 && isset( $query->query['lang'] ) ) ) ) {
+				return;
+			}
 			// Add landing page step post type to existing post type array.
 			if ( isset( $query->query_vars['post_type'] ) && is_array( $query->query_vars['post_type'] ) ) {
 
@@ -2588,7 +2627,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 		 * @return bool
 		 */
 		public static function is_frontend_request() {
-			return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! WC()->is_rest_api_request();
+			return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && function_exists( 'WC' ) && ! WC()->is_rest_api_request();
 		}
 
 		/**
@@ -2800,45 +2839,45 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			return round( $value, $precision );
 		}
 
-	public static function get_aero_registered_checkout_fields() {
-		$fields = [
-			'billing_email',
-			'billing_first_name',
-			'billing_last_name',
-			'billing_company',
-			'billing_address_1',
-			'billing_address_2',
-			'billing_city',
-			'billing_postcode',
-			'billing_country',
-			'billing_state',
-			'billing_phone',
-			'billing_same_as_shipping',
-			'shipping_email',
-			'shipping_first_name',
-			'shipping_last_name',
-			'shipping_company',
-			'shipping_address_1',
-			'shipping_address_2',
-			'shipping_city',
-			'shipping_postcode',
-			'shipping_country',
-			'shipping_state',
-			'shipping_phone',
-			'shipping_same_as_billing',
-			'shipping_calculator',
-			'order_comments',
-			'order_summary',
-			'order_coupon',
-			'order_total',
-			'product_switching',
-			'billing_wc_custom_field',
-			'shipping_wc_custom_field',
-			'account_username',
-			'account_password',
-			'wc_advanced_order_field',
-			'shipping_method',
-		];
+		public static function get_aero_registered_checkout_fields() {
+			$fields = [
+				'billing_email',
+				'billing_first_name',
+				'billing_last_name',
+				'billing_company',
+				'billing_address_1',
+				'billing_address_2',
+				'billing_city',
+				'billing_postcode',
+				'billing_country',
+				'billing_state',
+				'billing_phone',
+				'billing_same_as_shipping',
+				'shipping_email',
+				'shipping_first_name',
+				'shipping_last_name',
+				'shipping_company',
+				'shipping_address_1',
+				'shipping_address_2',
+				'shipping_city',
+				'shipping_postcode',
+				'shipping_country',
+				'shipping_state',
+				'shipping_phone',
+				'shipping_same_as_billing',
+				'shipping_calculator',
+				'order_comments',
+				'order_summary',
+				'order_coupon',
+				'order_total',
+				'product_switching',
+				'billing_wc_custom_field',
+				'shipping_wc_custom_field',
+				'account_username',
+				'account_password',
+				'wc_advanced_order_field',
+				'shipping_method',
+			];
 
 			return apply_filters( 'wfacp_aero_registered_checkout_fields', $fields );
 
@@ -2926,6 +2965,275 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			return $key;
 		}
 
+		public static function display_save_price( $price_message ) {
+			// Early return if cart is not available
+			if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+				return;
+			}
+
+			try {
+				$cart_contents = WC()->cart->get_cart_contents();
+				if ( empty( $cart_contents ) ) {
+					return;
+				}
+
+				$regular_price = 0;
+
+				foreach ( $cart_contents as $content ) {
+					// Validate cart item data
+					if ( ! isset( $content['data'] ) || ! isset( $content['quantity'] ) ) {
+						continue;
+					}
+
+					$product = $content['data'];
+					if ( ! ( $product instanceof WC_Product ) ) {
+						continue;
+					}
+
+					$quantity   = absint( $content['quantity'] );
+					$product_id = $product->get_id();
+
+					// Get fresh instance of the product
+					$product = wc_get_product( $product_id );
+					if ( ! $product ) {
+						continue;
+					}
+
+					$item_regular_price = $product->get_regular_price();
+					if ( '' === $item_regular_price || ! is_numeric( $item_regular_price ) ) {
+						continue;
+					}
+
+					$regular_price += $quantity * floatval( $item_regular_price );
+				}
+
+				// Prevent division by zero
+				if ( $regular_price <= 0 ) {
+					return;
+				}
+
+				$total = WC()->cart->get_cart_contents_total();
+
+				// Only proceed if there's actually a saving
+				if ( $regular_price <= $total ) {
+					return;
+				}
+
+				$saving_price      = $regular_price - $total;
+				$saving_percentage = ( $saving_price * 100 ) / $regular_price;
+
+				// Format the saving price
+				$formatted_saving_price = str_replace( '-', '', wc_price( $saving_price ) );
+
+				// Replace placeholders in message
+				$total_message = str_replace( '{{saving_amount}}', $formatted_saving_price, $price_message );
+
+				if ( $saving_percentage > 0 ) {
+					$total_message = str_replace( '{{saving_percentage}}', number_format( $saving_percentage, 0 ) . '%', $total_message );
+				}
+
+				if ( empty( $total_message ) ) {
+					return;
+				}
+
+				// Output the message
+				?>
+                <tr class="wfacp-saving-amount">
+                    <td colspan="2">
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M7.77778 8.2669C8.08461 8.2669 8.33334 8.01817 8.33334 7.71135C8.33334 7.40452 8.08461 7.15579 7.77778 7.15579C7.47096 7.15579 7.22223 7.40452 7.22223 7.71135C7.22223 8.01817 7.47096 8.2669 7.77778 8.2669Z" fill="currentColor"/>
+                        <path d="M12.2222 12.7113C12.5291 12.7113 12.7778 12.4626 12.7778 12.1558C12.7778 11.849 12.5291 11.6002 12.2222 11.6002C11.9154 11.6002 11.6667 11.849 11.6667 12.1558C11.6667 12.4626 11.9154 12.7113 12.2222 12.7113Z" fill="currentColor"/>
+                        <path d="M17.3889 11.6175C17.8889 11.2257 18.2222 10.6101 18.3333 9.99451C18.2778 9.32293 17.8889 8.76328 17.3889 8.37152C17.1667 8.20363 17 7.9238 16.8333 7.69994C16.7778 7.36415 16.8333 7.02836 16.8889 6.74853C17.0556 6.13291 17 5.46133 16.7222 4.90168C16.2778 4.45396 15.6667 4.17413 15.0556 4.17413C14.7778 4.17413 14.5 4.0622 14.2222 3.95027C14 3.72641 13.8889 3.44659 13.7778 3.16676C13.5 2.60711 13.2222 1.93553 12.6111 1.71167C12 1.59974 11.3333 1.76763 10.8889 2.15939C10.6111 2.32728 10.3333 2.43921 10.0556 2.49518C9.77778 2.43921 9.5 2.32728 9.22223 2.15939C8.72223 1.87956 8.11111 1.54377 7.5 1.71167C6.88889 1.87956 6.5 2.55114 6.22223 3.1108C6.11112 3.39062 5.94445 3.67045 5.77778 3.89431C5.5 4.00624 5.22223 4.11817 4.94445 4.11817C4.33334 4.11817 3.72223 4.39799 3.27778 4.84572C3 5.40537 2.94445 6.07695 3.11112 6.69257C3.16667 7.02836 3.22223 7.30818 3.16667 7.64397C3 7.9238 2.83334 8.14766 2.61112 8.31556C2.11112 8.76328 1.72223 9.32293 1.66667 9.99451C1.72223 10.6661 2.11112 11.2257 2.61112 11.6175C2.83334 11.7854 3 12.0652 3.16667 12.2891C3.22223 12.6249 3.16667 12.9607 3.11112 13.2405C2.94445 13.8561 3 14.5277 3.27778 15.0873C3.72223 15.5351 4.33334 15.8149 4.94445 15.8149C5.22223 15.8149 5.5 15.9268 5.77778 16.0387C6 16.2626 6.11112 16.5424 6.22223 16.8223C6.5 17.3819 6.77778 18.0535 7.38889 18.2774C7.5 18.3333 7.66667 18.3333 7.77778 18.3333C8.27778 18.2774 8.72223 18.1095 9.11111 17.8296C9.38889 17.6617 9.66667 17.5498 9.94445 17.4938C10.2222 17.5498 10.5 17.6617 10.7778 17.8296C11.2778 18.2214 11.8889 18.3893 12.5 18.2774C13.1111 18.0535 13.4444 17.4379 13.6667 16.8223C13.7778 16.5424 13.9444 16.2626 14.1111 16.0387C14.3889 15.9268 14.6667 15.8149 14.9444 15.8149C15.5556 15.8149 16.1667 15.5351 16.6111 15.0873C16.8889 14.5277 16.9444 13.8561 16.7778 13.2405C16.7222 12.9047 16.6667 12.6249 16.7222 12.2891C17 12.0652 17.1667 11.8414 17.3889 11.6175ZM10.5556 12.2331C10.5556 11.2817 11.2778 10.5542 12.2222 10.5542C13.1667 10.5542 13.8889 11.2817 13.8889 12.2331C13.8889 13.1845 13.1667 13.9121 12.2222 13.9121C11.2778 13.9121 10.5556 13.1845 10.5556 12.2331ZM13.7222 7.02836L7.05556 13.7442C6.94445 13.8561 6.83334 13.9121 6.66667 13.9121C6.5 13.9121 6.38889 13.8561 6.27778 13.7442C6.05556 13.5203 6.05556 13.1845 6.27778 12.9607L12.9444 6.24484C13.1667 6.02098 13.5556 6.07695 13.7222 6.30081C13.8889 6.52467 13.8889 6.8045 13.7222 7.02836ZM9.44445 7.7559C9.44445 8.70731 8.72223 9.43486 7.77778 9.43486C6.83334 9.43486 6.11112 8.70731 6.11112 7.7559C6.11112 6.8045 6.83334 6.07695 7.77778 6.07695C8.72223 6.07695 9.44445 6.8045 9.44445 7.7559Z" fill="currentColor"/>
+                    </svg>
+                    <?php echo wp_kses_post( $total_message ); ?>
+                </span>
+                    </td>
+                </tr>
+				<?php
+			} catch ( Exception $e ) {
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+					error_log( 'Error in display_save_price: ' . $e->getMessage() );
+				}
+
+				return;
+			}
+
+		}
+
+		/*
+		 * Clear side wide add to cart data on checkout after fire event
+		 * Handle case for themes not use wc ajax fro add to cart
+		 * @return void
+		 */
+		public static function clear_pending_events_data_from_session() {
+			try {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+					$events = WC()->session->get( 'wffn_pending_data' );
+					if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
+						WC()->session->set( 'wffn_pending_data', '' );
+					}
+				}
+			} catch ( Exception|Error $e ) {
+
+			}
+		}
+
+
+		/**
+		 * Translates strings based on the current language setting
+		 * Optimized for both direct string lookups and content with multiple strings
+		 *
+		 * @param mixed $content The content to translate (string)
+		 *
+		 * @return string Translated content
+		 */
+		public static function translation_string_to_check( $content ) {
+			try {
+				// Static cache to avoid processing the same string multiple times
+				static $cache = [];
+				if ( isset( $cache[ $content ] ) ) {
+					return $cache[ $content ];
+				}
+
+				// Early return if content is empty
+				if ( empty( $content ) ) {
+					return $content;
+				}
+
+				// Make sure content is a string
+				if ( ! is_string( $content ) ) {
+					// Convert to string if possible
+					if ( is_array( $content ) || is_object( $content ) ) {
+						$content = json_encode( $content );
+					} else {
+						$content = (string) $content;
+					}
+				}
+
+				if ( ! function_exists( 'wfacp_get_translation' ) ) {
+					return $content;
+				}
+
+				// Get translations for current locale - use static to only retrieve once
+				static $translations = null;
+				static $current_locale = null;
+				static $sorted_keys = null;
+
+				if ( $translations === null ) {
+					$translations   = wfacp_get_translation();
+					$current_locale = get_locale();
+
+					if ( ! empty( $translations[ $current_locale ] ) && is_array( $translations[ $current_locale ] ) ) {
+						$sorted_keys = array_keys( $translations[ $current_locale ] );
+						usort( $sorted_keys, function ( $a, $b ) {
+							return strlen( $b ) - strlen( $a ); // Longer strings first
+						} );
+					}
+				}
+
+				// Return original content if no translations exist for current locale
+				if ( empty( $translations[ $current_locale ] ) || ! is_array( $translations[ $current_locale ] ) ) {
+					$cache[ $content ] = $content;
+
+					return $content;
+				}
+
+				// Fast path: Direct lookup for single strings
+				if ( isset( $translations[ $current_locale ][ $content ] ) ) {
+					$cache[ $content ] = $translations[ $current_locale ][ $content ];
+
+					return $translations[ $current_locale ][ $content ];
+				}
+
+				// For content with multiple strings, replace each matching string
+				$result = $content;
+				foreach ( $sorted_keys as $original ) {
+					// Skip if original string is not contained in content
+					if ( stripos( $result, $original ) === false ) {
+						continue;
+					}
+
+					$translated = $translations[ $current_locale ][ $original ];
+
+					// Handle different string types
+					if ( preg_match( '/[.!?,;:]$/', $original ) || strlen( $original ) > 40 ) {
+						// For strings ending with punctuation or very long strings
+						$pattern = '/' . preg_quote( $original, '/' ) . '/ui'; // Added u flag for Unicode support
+					} else {
+						// For normal strings, use word boundaries
+						$pattern = '/\b' . preg_quote( $original, '/' ) . '\b/ui';
+					}
+
+					// Debug output (remove in production)
+					// echo $pattern . " " . $translated . " => $original <br>";
+
+					$result = preg_replace( $pattern, $translated, $result );
+				}
+
+				$cache[ $content ] = $result;
+
+				return $result;
+
+			} catch ( Exception $e ) {
+				// Log the error if you have logging enabled
+				// error_log('Translation error: ' . $e->getMessage());
+				return $content;
+			}
+		}
+
+		public static function get_notice_html_in_editor( $builder = 'elementor' ) {
+
+			$temp_style = [
+				'background-color: #F9F9FF',
+				'padding: 16px 12px 16px 12px',
+				'border-left: 4px solid #82838E',
+				'line-height: 1.5',
+				'margin-left: 0',
+				'margin-right:0'
+
+			];
+
+
+			$style = implode( ';', $temp_style );
+
+			$slug      = 'funnel-checkout';
+			$id        = WFACP_Common::get_id();
+			$funnel_id = get_post_meta( $id, '_bwf_in_funnel', true );
+			$step_link = BWF_Admin_Breadcrumbs::maybe_add_refs( add_query_arg( [
+				'page'      => 'bwf',
+				'path'      => "/" . $slug . "/" . $id . "/design",
+				'funnel_id' => $funnel_id,
+			], admin_url( 'admin.php' ) ) );
+
+			$notice_html = '<div style="' . $style . '">
+        <strong style="font-weight: 500;font-size: 13px;line-height: 20px;display: inline-block;margin-bottom: 8px;color:#353030;">
+            <svg style="vertical-align: middle;margin-right: 4px;" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.77708 1.35938C12.4595 1.35938 15.4448 4.34461 15.4448 8.02708C15.4448 11.7095 12.4595 14.6948 8.77708 14.6948C5.09461 14.6948 2.10938 11.7095 2.10938 8.02708C2.10938 4.34461 5.09461 1.35938 8.77708 1.35938ZM8.77708 2.35938C5.64689 2.35938 3.10938 4.89689 3.10938 8.02708C3.10938 11.1573 5.64689 13.6948 8.77708 13.6948C11.9073 13.6948 14.4448 11.1573 14.4448 8.02708C14.4448 4.89689 11.9073 2.35938 8.77708 2.35938ZM8.77465 7.02643C9.02778 7.02626 9.2371 7.21423 9.27036 7.45826L9.27497 7.5261L9.27737 11.1938C9.27755 11.47 9.05384 11.694 8.7777 11.6942C8.52457 11.6943 8.31525 11.5064 8.28198 11.2623L8.27737 11.1945L8.27497 7.52676C8.27479 7.25061 8.4985 7.02661 8.77465 7.02643ZM8.77737 4.69459C9.14507 4.69459 9.44315 4.99267 9.44315 5.36036C9.44315 5.72806 9.14507 6.02614 8.77737 6.02614C8.40968 6.02614 8.1116 5.72806 8.1116 5.36036C8.1116 4.99267 8.40968 4.69459 8.77737 4.69459Z" fill="#353030"/>
+            </svg>
+            Checkout Field Editor
+        </strong>
+        <p style="margin: 0 0 12px;font-size: 13px;line-height: 20px;display: inline-block;color:#353030;font-weight: 400;">Add new fields, edit existing fields or reorder the fields on this checkout.</p>
+        <a href="' . $step_link . '" target="_blank" style="text-decoration:none;padding: 5px 12px 5px 12px;color: #0073AA;border-radius: 8px;border: 1px solid #0073AA;display: inline-block;font-weight: 500;font-size: 11px;line-height: 18px;">
+            <svg style="vertical-align: middle;margin-right: 4px;" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_25839_113016)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.11068 4.52344C3.88966 4.52344 3.6777 4.61123 3.52142 4.76752C3.36514 4.9238 3.27734 5.13576 3.27734 5.35677V12.6901C3.27734 12.9111 3.36514 13.1231 3.52142 13.2794C3.6777 13.4356 3.88966 13.5234 4.11068 13.5234H11.444C11.665 13.5234 11.877 13.4356 12.0333 13.2794C12.1895 13.1231 12.2773 12.9111 12.2773 12.6901V8.6901C12.2773 8.41396 12.5012 8.1901 12.7773 8.1901C13.0535 8.1901 13.2773 8.41396 13.2773 8.6901V12.6901C13.2773 13.1763 13.0842 13.6427 12.7404 13.9865C12.3966 14.3303 11.9302 14.5234 11.444 14.5234H4.11068C3.62445 14.5234 3.15813 14.3303 2.81431 13.9865C2.4705 13.6427 2.27734 13.1763 2.27734 12.6901V5.35677C2.27734 4.87054 2.4705 4.40423 2.81431 4.06041C3.15813 3.71659 3.62445 3.52344 4.11068 3.52344H8.11068C8.38682 3.52344 8.61068 3.7473 8.61068 4.02344C8.61068 4.29958 8.38682 4.52344 8.11068 4.52344H4.11068Z" fill="#0073AA"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.2773 2.02344C10.2773 1.7473 10.5012 1.52344 10.7773 1.52344H14.7773C15.0535 1.52344 15.2773 1.7473 15.2773 2.02344V6.02344C15.2773 6.29958 15.0535 6.52344 14.7773 6.52344C14.5012 6.52344 14.2773 6.29958 14.2773 6.02344V2.52344H10.7773C10.5012 2.52344 10.2773 2.29958 10.2773 2.02344Z" fill="#0073AA"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.1322 1.66988C15.3275 1.86515 15.3275 2.18173 15.1322 2.37699L7.79887 9.71032C7.6036 9.90559 7.28702 9.90559 7.09176 9.71032C6.8965 9.51506 6.8965 9.19848 7.09176 9.00322L14.4251 1.66988C14.6204 1.47462 14.9369 1.47462 15.1322 1.66988Z" fill="#0073AA"/>
+                </g>
+                <defs>
+                    <clipPath id="clip0_25839_113016">
+                        <rect width="16" height="16" fill="white" transform="translate(0.777344 0.0234375)"/>
+                    </clipPath>
+                </defs>
+            </svg>
+            Open Field Editor
+        </a>
+    </div>';
+
+			return $notice_html;
+
+		}
 
 	}
 }

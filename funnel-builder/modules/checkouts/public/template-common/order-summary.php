@@ -27,7 +27,7 @@ if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) {
     <div class="wfacp_order_summary wfacp_wrapper_start wfacp_order_sec wfacp_order_summary_sec <?php echo $classes . ' ' . $tax_enabled; ?>" id="order_summary_field" <?php echo WFACP_Common::get_fragments_attr() ?> >
 		<?php do_action( 'wfacp_before_order_summary', $field, $instance ); ?>
         <div class="wfacp_order_summary_container">
-            <label class="wfacp-order-summary-label  "><?php echo isset( $field['label'] ) ? $field['label'] : __( 'Order Summary', 'woofunnels-aero-checkout' ); ?></label>
+            <label class="wfacp-order-summary-label  "><?php echo isset( $field['label'] ) ? $field['label'] : WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )); ?></label>
             <table class="shop_table woocommerce-checkout-review-order-table <?php echo $instance->get_template_slug(); ?>">
                 <thead>
                 <tr>
@@ -89,6 +89,12 @@ if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) {
 									} else {
 										echo WC()->cart->get_item_data( $cart_item );
 									}
+
+									/**
+									 * Display Low Stock Trigger
+									 */
+
+									do_action( 'wfacp_order_summary_field_after_product_title', $_product );
 									?>
                                 </div>
                             </td>
@@ -99,7 +105,8 @@ if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) {
 										echo WFACP_Common::display_subscription_price( $_product, $cart_item, $cart_item_key );
 									} else {
 										if ( true == apply_filters( 'wfacp_woocommerce_cart_item_subtotal_except_subscription', true, $_product, $cart_item, $cart_item_key ) ) {
-											echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item ), $cart_item, $cart_item_key );
+
+											echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item, false, apply_filters( 'wfacp_order_summary_field_enable_strike_through_price', false ) ), $cart_item, $cart_item_key );
 										} else {
 											do_action( 'wfacp_woocommerce_cart_item_subtotal_except_subscription_placeholder', $_product, $cart_item, $cart_item_key );
 										}
@@ -172,7 +179,14 @@ if ( wc_tax_enabled() && ! WC()->cart->display_prices_including_tax() ) {
                     <th <?php echo $colspan_attr; ?>><span><?php _e( 'Total', 'woocommerce' ); ?></span></th>
                     <td><?php wc_cart_totals_order_total_html(); ?></td>
                 </tr>
-				<?php do_action( 'woocommerce_review_order_after_order_total' ); ?>
+				<?php do_action( 'woocommerce_review_order_after_order_total' );
+
+
+
+				do_action( 'wfacp_order_summary_field_woocommerce_review_order_after_order_total' );
+
+
+                ?>
                 </tfoot>
             </table>
         </div>

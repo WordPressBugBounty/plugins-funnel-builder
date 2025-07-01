@@ -106,7 +106,7 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 				$link = add_query_arg( [
 					'utm_source'   => 'WordPress',
 					'utm_medium'   => 'Menu',
-					'utm_campaign' => 'fb+lite+plugin',
+					'utm_campaign' => 'FB+Lite+Plugin',
 				], WFFN_Core()->admin->get_pro_link() );
 				add_submenu_page( 'woofunnels', null, '<a href="' . $link . '" style="background-color:#1DA867; color:white;" target="_blank"><strong>' . __( 'Upgrade to Pro', 'funnel-builder' ) . '</strong></a>', 'manage_options', 'upgrade_pro', function () {
 				}, 99 );
@@ -164,7 +164,7 @@ if ( ! class_exists( 'WFFN_WooFunnels_Support' ) ) {
 						$link = add_query_arg( [
 							'utm_source'   => 'WordPress',
 							'utm_medium'   => 'Admin+Menu',
-							'utm_campaign' => 'fb+lite+plugin',
+							'utm_campaign' => 'FB+Lite+Plugin',
 						], 'https://funnelkit.com/exclusive-offer/' );
 						add_submenu_page( 'woofunnels', null, '<a href="' . $link . '" style="background-color:#e15334; color:white;" target="_blank"><strong>' . __( 'License Expired', 'funnel-builder' ) . '</strong></a>', 'manage_options', 'upgrade_pro', function () {
 						}, 99 );

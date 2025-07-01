@@ -1,9 +1,10 @@
 <?php
 
 /**
- * WooCommerce PayPal Payments by WooCommerce V 1.9.3
+ * WooCommerce PayPal Payments by WooCommerce V 3.0.3
  * Plugin URI: https://woocommerce.com/products/woocommerce-paypal-payments/
  */
+
 if ( ! class_exists( 'WFACP_Woocommerce_Paypal_Payments' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_Woocommerce_Paypal_Payments {
@@ -13,6 +14,7 @@ if ( ! class_exists( 'WFACP_Woocommerce_Paypal_Payments' ) ) {
 
 			add_action( 'wfacp_after_template_found', [ $this, 'action' ] );
 			add_action( 'wfacp_internal_css', [ $this, 'add_internal_css' ] );
+			add_filter( 'wfacp_exclude_place_order_text_update_order_review', '__return_false' );
 			add_filter( 'wfacp_back_link_text', function ( $html ) {
 
 				$this->placeorder_back_button_text = $html;

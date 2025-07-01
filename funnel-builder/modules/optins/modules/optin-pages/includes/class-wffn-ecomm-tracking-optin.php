@@ -207,6 +207,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Optin' ) ) {
 					'gad'  => array(
 						'enable' => BWF_Admin_General_Settings::get_instance()->get_option( 'is_gad_lead_op' ),
 						'ids'    => $this->gad_code(),
+						'labels' => $this->gad_lead_label(),
 					),
 					'pint' => array(
 						'enable' => BWF_Admin_General_Settings::get_instance()->get_option( 'is_pint_lead_op' ),
@@ -288,6 +289,27 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Optin' ) ) {
 			}
 
 			return parent::get_custom_event_params();
+		}
+
+
+		public function gad_lead_label() {
+			global $post;
+			$step_id = 0;
+			if ( $post instanceof WP_Post ) {
+				$step_id = $post->ID;
+			}
+			$key = $this->admin_general_settings->get_option( 'gad_lead_conversion_label' );
+
+			if ( $step_id > 0 && get_post( $step_id ) instanceof WP_Post ) {
+				$setting = WFFN_Common::maybe_override_tracking( $step_id );
+				if ( is_array( $setting ) ) {
+					$key = ( isset( $setting['gad_conversion_label'] ) && ! empty( $setting['gad_conversion_label'] ) ) ? $setting['gad_conversion_label'] : $key;
+				}
+			}
+
+			$get_gad_conversion_label = apply_filters( 'bwf_get_conversion_label', $key );
+
+			return empty( $get_gad_conversion_label ) ? false : $get_gad_conversion_label;
 		}
 
 

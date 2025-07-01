@@ -74,6 +74,10 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 			add_action( 'wfacp_before_step_next_button_two_step', [ $this, 'display_button_icon_step_2' ] );
 
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'maybe_unset_mini_cart_block_scripts' ] );
+
+
+
+
 		}
 
 
@@ -1205,6 +1209,9 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 				WFACP_Common::remove_actions( 'wp_print_footer_scripts', 'Automattic\WooCommerce\Blocks\BlockTypes\MiniCart', 'print_lazy_load_scripts' );
 			}
 		}
+
+
+
 
 	}
 }

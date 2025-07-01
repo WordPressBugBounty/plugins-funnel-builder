@@ -58,7 +58,7 @@ body.wfacp_anim_active .product-name span {
 }
 
 /* Hide Loader CSS*/
-.wfacp_anim_active #wfacp_checkout_form:not(.processing) .blockUI,
+body #wfacp_checkout_form:not(.processing) .blockUI,
 .wfacp_anim_active .wfacp_mini_cart_start_h .blockUI,
 .wfacp_anim_active .wfacp_coupon_field_msg span:after,
 .wfacp_anim_active .cart-discount th span svg,

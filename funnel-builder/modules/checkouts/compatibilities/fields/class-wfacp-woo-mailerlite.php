@@ -1,15 +1,18 @@
 <?php
+
+/**
+ * Plugin : MailerLite - WooCommerce integration by MailerLite (v.2.1.29)
+ * Plugin URI:  https://wordpress.org/plugins/woo-mailerlite/
+ * WFACP_Compatibility_WC_MailerLite
+ */
 if ( ! class_exists( 'WFACP_Compatibility_WC_MailerLite' ) ) {
-	/**
-	 * Plugin : MailerLite - WooCommerce integration by MailerLite (v.1.8.5)
-	 * Plugin URI:  https://wordpress.org/plugins/woo-mailerlite/
-	 */
 	#[AllowDynamicProperties]
 	class WFACP_Compatibility_WC_MailerLite {
 		private $position = null;
 		private $position_show = [ 'review_order_before_submit' ];
 
 		private $display_dragable_field = true;
+		private $remove_fields = [ 'woo_ml_subscribe' ];
 
 
 		public function __construct() {
@@ -39,6 +42,11 @@ if ( ! class_exists( 'WFACP_Compatibility_WC_MailerLite' ) ) {
 			/* prevent third party fields and wrapper*/
 
 			add_action( 'wfacp_add_billing_shipping_wrapper', '__return_false' );
+
+			/**
+			 * Unset Billing Extra Fields to prevent Duplicate fields
+			 */
+			add_filter( 'wfacp_detect_extra_fields', [ $this, 'detect_extra_fields' ], 99, 3 );
 
 		}
 
@@ -115,6 +123,9 @@ if ( ! class_exists( 'WFACP_Compatibility_WC_MailerLite' ) ) {
 
 			echo "<style>";
 			echo $bodyClass . ".wfacp_main_form.woocommerce #woo_ml_subscribe_field{text-align:left;}";
+			echo $bodyClass . ".wfacp_main_form.woocommerce #billing_email_field .woocommerce-input-wrapper {position: relative;}";
+			echo $bodyClass . ".wfacp_main_form.woocommerce #billing_email_field #woo_ml_subscribe { top: auto; left: 0; margin: 10px 0 0  !important;}";
+			echo $bodyClass . ".wfacp_main_form.woocommerce #billing_email_field #woo_ml_subscribe + label{     padding-left: 26px !important;position: relative;display: inline-block !important;padding-top: 10px;}";
 			echo "</style>";
 
 		}
@@ -141,7 +152,51 @@ if ( ! class_exists( 'WFACP_Compatibility_WC_MailerLite' ) ) {
 
 			return $args;
 		}
+
+		/**
+		 * Detects and filters out extra fields based on removal criteria
+		 *
+		 * @param array $fields The fields to check
+		 * @param array $others_fields Other fields for context
+		 * @param mixed $temp Temporary data
+		 *
+		 * @return array Filtered fields array
+		 */
+		public function detect_extra_fields( $fields, $others_fields, $temp ) {
+			try {
+				// Check if we have fields to process
+				if ( !is_array( $fields ) || count( $fields ) === 0 ) {
+					return $fields;
+				}
+
+				// Check if we have fields to remove
+				if ( !is_array( $this->remove_fields ) || count( $this->remove_fields ) === 0 ) {
+					return $fields;
+				}
+
+				// Create a copy of the array to avoid modification during iteration
+				$filtered_fields = $fields;
+
+				foreach ( $fields as $key => $value ) {
+					// Check if field has an ID and if it should be removed
+					if ( isset( $value['id'] ) &&
+					     in_array( $value['id'], $this->remove_fields ) &&
+					     isset( $filtered_fields[ $value['id'] ] ) ) {
+						unset( $filtered_fields[ $value['id'] ] );
+					}
+				}
+
+				return $filtered_fields;
+
+			} catch ( Exception $e ) {
+				if ( function_exists( 'error_log' ) ) {
+					error_log( 'WFACP_Compatibility_WC_MailerLite detect_extra_fields error: ' . $e->getMessage() );
+				}
+				return $fields; // Return original fields on error
+			}
+		}
 	}
+
 
 	WFACP_Plugin_Compatibilities::register( new WFACP_Compatibility_WC_MailerLite(), 'wfacp-woo-mailerlite' );
 }

@@ -594,7 +594,7 @@ body #wfacp-e-form .wfacp_enable_mb_style .wfacp_main_form .woocommerce-checkout
     margin-bottom: 10px;
 }
 
-#wfacp-e-form label.wfacp-form-control-label:not(.radio) {
+#wfacp-e-form label.wfacp-form-control-label:not(.radio):not(.checkbox) {
     position: absolute;
     top: 50%;
     left: 20px;
@@ -623,7 +623,7 @@ body #wfacp-e-form .wfacp-inside p.wfacp-anim-wrap label.wfacp-form-control-labe
     line-height: 1.3 !important;
 }
 
-#wfacp-e-form .wfacp-form:not(.wfacp-top) p.wfacp-form-control-wrapper.wfacp-anim-wrap:not(.fattura24) label.wfacp-form-control-label:not(.radio) {
+#wfacp-e-form .wfacp-form:not(.wfacp-top) p.wfacp-form-control-wrapper.wfacp-anim-wrap:not(.fattura24) label.wfacp-form-control-label:not(.radio):not(.checkbox) {
     top: 6px !important;
     font-size: 12px !important;
     background: transparent !important;
@@ -1033,6 +1033,10 @@ body #wfacp-e-form .button {
     text-align: center;
 
 }
+body button.button.wfacp-coupon-btn,
+body button.button.wfacp-login-btn{
+   text-transform: capitalize;
+}
 
 
 body button.wfacp-coupon-btn:hover,
@@ -1378,7 +1382,9 @@ body #wfacp-e-form .wfacp_main_form.woocommerce .text-center {
 
 
 /*-------------------------------------show-password-input------------------------------*/
-
+body #wfacp-sec-wrapper button.show-password-input {
+    background: transparent !important;
+}
 
 .woocommerce form .show-password-input,
 .woocommerce-page form .show-password-input {
@@ -3329,6 +3335,7 @@ body #wfacp-e-form .wfacp_main_form.woocommerce form.woocommerce-form-login {
     background: transparent;
     border-radius: 0;
     margin: 0;
+    opacity: 1;
 }
 
 body #wfacp-e-form .wfacp_main_form.woocommerce .wfacp_main_form ul {

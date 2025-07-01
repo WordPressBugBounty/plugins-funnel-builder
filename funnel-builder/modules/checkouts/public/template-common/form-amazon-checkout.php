@@ -92,6 +92,7 @@ $permalink = get_the_permalink();
     </style>
     <form name="checkout" method="post" class="checkout woocommerce-checkout wfacp_amazon_checkout" action="<?php echo esc_url( get_the_permalink() ); ?>" enctype="multipart/form-data" id="wfacp_checkout_form">
         <input type="hidden" name="_wfacp_post_id" class="_wfacp_post_id" value="<?php echo WFACP_Common::get_id(); ?>">
+		<?php do_action( 'wfacp_before_checkout_form_fields', $checkout ); ?>
         <div class="wfacp-section  wfacp-hg-by-box">
 			<?php
 			do_action( 'woocommerce_checkout_before_customer_details' );
@@ -133,7 +134,8 @@ $permalink = get_the_permalink();
 		do_action( 'wfacp_before_payment_section' );
 		include __DIR__ . '/payment.php';
 		do_action( 'wfacp_after_payment_section' );
-		?>
+		do_action( 'wfacp_after_checkout_form_fields', $checkout ); ?>
+
         <input type="hidden" id="wfacp_source" name="wfacp_source" value="<?php echo esc_url( $permalink ); ?>">
 
         <input type="hidden" id="wfacp_exchange_keys" name="wfacp_exchange_keys" class="wfacp_exchange_keys" value="">

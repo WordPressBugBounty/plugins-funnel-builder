@@ -185,17 +185,19 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 				'enable_progress_bar' => "on"
 			];
 			$labels             = [
+
+
 				[
-					'heading'     => __( 'SHIPPING', 'woofunnels-aero-checkout' ),
-					'sub-heading' => __( 'Where to ship it?', 'woofunnels-aero-checkout' ),
+					'heading'     => __( 'Shipping', 'woocommerce' ),
+					'sub-heading' => __( 'Where to ship it?', 'funnel-builder' ),
 				],
 				[
-					'heading'     => __( 'PRODUCTS', 'woofunnels-aero-checkout' ),
-					'sub-heading' => __( 'Select your product', 'woofunnels-aero-checkout' ),
+					'heading'     => __( 'Products', 'funnel-builder' ),
+					'sub-heading' => __( 'Select your product', 'funnel-builder' ),
 				],
 				[
-					'heading'     => __( 'PAYMENT', 'woofunnels-aero-checkout' ),
-					'sub-heading' => __( 'Confirm your order', 'woofunnels-aero-checkout' ),
+					'heading'     => __( 'Payment', 'woocommerce' ),
+					'sub-heading' => __( 'Confirm your order', 'funnel-builder' ),
 				],
 			];
 
@@ -309,8 +311,9 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 			$exclude_fields     = [];
 
 			$tab_instance = $this->add_tab( __( 'Fields', 'woofunnels-aero-checkout' ) );
-			foreach ( $steps as $fieldsets ) {
-				foreach ( $fieldsets as $section_data ) {
+			$notice_html  = WFACP_Common::get_notice_html_in_editor( 'oxygen' );
+			foreach ( $steps as $step_key => $fieldsets ) {
+				foreach ( $fieldsets as $section_key => $section_data ) {
 					if ( empty( $section_data['fields'] ) ) {
 						continue;
 					}
@@ -349,6 +352,7 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 					$this->add_heading( $tab_instance, $title );
 
 					$this->register_fields( $section_data['fields'], $tab_instance );
+					$this->custom_notice( $tab_instance, $notice_html, 'wfacp_section_notice_' . $step_key . '_' . $section_key, '' );
 				}
 			}
 
@@ -570,8 +574,8 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 				if ( absint( $i ) === absint( $count ) ) {
 					$button_key          = 'wfacp_payment_place_order_text';
 					$text_key            = 'place_order';
-					$button_default_text = __( 'PLACE ORDER NOW', 'woofunnels-aero-checkout' );
-					$button_label        = __( 'Place Order', 'woofunnels-aero-checkout' );;
+					$button_default_text = WFACP_Common::translation_string_to_check( __( 'PLACE ORDER NOW', 'woofunnels-aero-checkout' ) );
+					$button_label        = WFACP_Common::translation_string_to_check( __( 'Place Order', 'woofunnels-aero-checkout' ) );
 				}
 				$this->ajax_session_settings[] = $button_key;
 				$this->add_text( $tab_id, $button_key, __( $button_label, 'woofunnels-aero-checkout' ), esc_js( $button_default_text ) );
@@ -609,7 +613,7 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 
 			$this->add_heading( $tab_id, __( 'Collapsed', 'woofunnels-aero-checkout' ) );
 
-			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'woofunnels-aero-checkout' ), __( 'Show Order Summary', 'woofunnels-aero-checkout' ) );
+			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'woofunnels-aero-checkout' ), WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) ) );
 
 			$this->add_sub_heading( $tab_id, __( 'Color', 'woofunnels-aero-checkout' ) );
 
@@ -624,7 +628,7 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 
 
 			$this->add_heading( $tab_id, __( 'Expanded', 'woofunnels-aero-checkout' ) );
-			$this->add_text( $tab_id, 'cart_expanded_title', __( 'Expanded View Text', 'woofunnels-aero-checkout' ), __( 'Hide Order Summary', 'woofunnels-aero-checkout' ) );
+			$this->add_text( $tab_id, 'cart_expanded_title', __( 'Expanded View Text', 'woofunnels-aero-checkout' ), WFACP_Common::translation_string_to_check( __( 'Hide Order Summary', 'woofunnels-aero-checkout' ) ) );
 
 
 			$collapse_enable_coupon = [
@@ -1063,7 +1067,7 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 				'#wfacp-e-form  #payment li.wc_payment_method input.input-radio:checked::before',
 				'#wfacp-e-form  #payment.wc_payment_method input[type=radio]:checked:before',
 				'#wfacp-e-form  button[type=submit]:not(.white):not(.black)',
-				'#wfacp-e-form  button[type=button]:not(.white):not(.black)',
+				'#wfacp-e-form  button[type=button]:not(.white):not(.black):not(.woopay-express-button)',
 				'#wfacp-e-form .wfacp-coupon-section .wfacp-coupon-page .wfacp-coupon-field-btn',
 				'#wfacp-e-form input[type=checkbox]:checked',
 				'#wfacp-e-form #payment input[type=checkbox]:checked',

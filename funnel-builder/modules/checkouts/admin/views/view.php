@@ -22,9 +22,7 @@ $localize_data   = $this->get_localize_data();
 $template_is_set = get_post_meta( $this->wfacp_id, '_wfacp_selected_design' );
 
 $preview_url = get_the_permalink( $wfacp_id );
-if ( empty( WFACP_Common::get_page_product( WFACP_Common::get_id() ) ) ) {
-	$preview_url = add_query_arg( [ 'wfacp_preview' => true ], $preview_url );
-}
+
 //  BWF_Admin_Breadcrumbs::render_sticky_bar();
 
 $header_nav_data = array();

@@ -1944,6 +1944,17 @@ body .woocommerce-page #content input.button:hover:after {
     margin-top: 8px;
 }
 
+/* Mini Cart Low Stock Trigger CSS  */
+.et-db #et-boc  .wfacp_stocks {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #E15334;
+}
+.et-db #et-boc  .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td,
+.et-db #et-boc  .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td *{
+    color: #5CADA3;
+}
+
 @media (min-width: 768px) {
     .et-db #et-boc .et-l .wfacp_main_form #product_switching_field.wfacp-product-switch-panel .value-button,
     .et-db #et-boc .et-l .wfacp_mini_cart_start_h .wfacp_mini_cart_elementor .cart_item .product-quantity .value-button {

@@ -10,6 +10,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			add_action( 'wfacp_register_template_types', [ $this, 'register_template_type' ], 12 );
 			add_filter( 'wfacp_register_templates', [ $this, 'register_templates' ] );
 			add_filter( 'wfacp_template_edit_link', [ $this, 'add_template_edit_link' ], 10, 2 );
+			add_action( 'woocommerce_checkout_terms_and_conditions', [ $this, 'remove_the_content_filter' ] );
 		}
 
 		public function init() {
@@ -289,6 +290,10 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				update_post_meta( $post_id, '_wfacp_field_label_position', $field_label );
 			}
 
+		}
+
+		public function remove_the_content_filter() {
+			remove_filter( 'the_content', [ $this, 'replace_divi_our_page_content' ], 1 );
 		}
 
 	}

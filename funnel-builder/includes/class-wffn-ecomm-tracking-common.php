@@ -619,7 +619,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 
                 </script>
 
-				<?php if ( $this->do_track_tiktok() || $this->do_track_cp_tiktok() ) { ?>
+				<?php if ( $this->do_track_tiktok()  ) { ?>
                     <!-- END Tiktok Pixel Base Code -->
                     <script type="text/javascript">
                         function wffnTiktokTrackingBaseIn() {
@@ -628,7 +628,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
                             if (1 === wffn_shouldRender) {
                                 setTimeout(function () {
 									<?php foreach ( $get_each_pixel_id as $id ) {
-									 $this->maybe_print_tiktok_ecomm( $id, $this->do_track_tiktok(), $this->do_track_cp_tiktok() );
+									 $this->maybe_print_tiktok_ecomm( $id, $this->do_track_tiktok() );
 								} ?>
                                 }, 1200);
                             }
@@ -647,7 +647,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			return false;
 		}
 
-		public function maybe_print_tiktok_ecomm( $id, $purchase = false, $complete_payment = false ) {  //phpcs:ignore
+		public function maybe_print_tiktok_ecomm( $id, $purchase = false ) {  //phpcs:ignore
 			echo '';
 		}
 
@@ -783,11 +783,10 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		 * @return bool
 		 */
 		public function is_conversion_api() {
-			$is_conversion_api = $this->admin_general_settings->get_option( 'is_fb_purchase_conversion_api' );
-			if ( is_array( $is_conversion_api ) && count( $is_conversion_api ) > 0 && 'yes' === $is_conversion_api[0] ) {
+			$admin_general           = BWF_Admin_General_Settings::get_instance();
+			if ( !empty( $admin_general->get_option( 'conversion_api_access_token' ) ) ) {
 				return true;
 			}
-
 			return false;
 		}
 
@@ -799,9 +798,33 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			 * Special handling for the order received page
 			 */
 			if ( $this->is_conversion_api() ) {
-				foreach ( $this->api_events as $event ) {
-					$this->fire_conv_api_event( $event, $is_ajax );
+				$get_all_fb_pixel = $this->is_fb_pixel();
+				$access_token     = $this->get_conversion_api_access_token();
+
+				if ( empty( $get_all_fb_pixel ) || empty( $access_token ) ) {
+					return;
 				}
+
+				$get_each_pixel_id = explode( ',', $get_all_fb_pixel );
+				$access_token      = explode( ',', $access_token );
+				if ( ! is_array( $access_token ) || 0 === count( $access_token ) ) {
+					return;
+				}
+
+				if ( is_array( $get_each_pixel_id ) && count( $get_each_pixel_id ) > 0 ) {
+					foreach ( $get_each_pixel_id as $key => $pixel_id ) {
+						/**
+						 * continue if access token empty
+						 */
+						if ( empty( $access_token[ $key ] ) ) {
+							continue;
+						}
+						foreach ( $this->api_events as $event ) {
+							$this->fire_conv_api_event( $event, $pixel_id, $access_token[ $key ], $key, $is_ajax );
+						}
+					}
+				}
+
 			}
 		}
 
@@ -840,100 +863,87 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		}
 
 		/**
-		 * Ajax callback modal method to handle firing of multiple events in conv api
+         * Ajax callback modal method to handle firing of multiple events in conv api
+		 * @param $event
+		 * @param $pixel_id
+		 * @param $access_token
+		 * @param $key
+		 * @param $is_ajax
 		 *
-		 * @param string $type event name
-		 *
-		 * @return null
+		 * @return void|null
 		 */
-		public function fire_conv_api_event( $event, $is_ajax = false ) {
-			$type              = $event['event'];
-			$event_id          = $event['event_id'];
-			$get_all_fb_pixel  = $this->is_fb_pixel();
-			$get_each_pixel_id = explode( ',', $get_all_fb_pixel );
-
-			if ( is_array( $get_each_pixel_id ) && count( $get_each_pixel_id ) > 0 ) {
-
-				foreach ( $get_each_pixel_id as $key => $pixel_id ) {
+		public function fire_conv_api_event( $event, $pixel_id, $access_token, $key, $is_ajax = false ) {
+			$type     = $event['event'];
+			$event_id = $event['event_id'];
 
 
-					$access_token = $this->get_conversion_api_access_token();
-					$access_token = explode( ',', $access_token );
+			BWF_Facebook_Sdk_Factory::setup( trim( $pixel_id ), trim( $access_token ) );
 
-					if ( is_array( $access_token ) && count( $access_token ) > 0 ) {
-						if ( isset( $access_token[ $key ] ) ) {
-
-							BWF_Facebook_Sdk_Factory::setup( trim( $pixel_id ), trim( $access_token[ $key ] ) );
-						}
-					}
-
-					$get_test      = $this->get_conversion_api_test_event_code();
-					$get_test      = explode( ',', $get_test );
-					$is_test_event = $this->admin_general_settings->get_option( 'is_fb_conv_enable_test' );
-					if ( is_array( $is_test_event ) && count( $is_test_event ) > 0 && $is_test_event[0] === 'yes' && is_array( $get_test ) && count( $get_test ) > 0 ) {
-						if ( isset( $get_test[ $key ] ) && ! empty( $get_test[ $key ] ) ) {
-							BWF_Facebook_Sdk_Factory::set_test( trim( $get_test[ $key ] ) );
-						}
-					}
-
-					BWF_Facebook_Sdk_Factory::set_partner( 'woofunnels' );
-					$instance = BWF_Facebook_Sdk_Factory::create();
-					if ( is_null( $instance ) ) {
-						return null;
-					}
-
-					$getEventparams = $this->get_generic_event_params_for_conv_api();
-					switch ( $type ) {
-						case 'PageView':
-							$instance->set_event_id( $event_id );
-							$instance->set_user_data( $this->get_user_data( $type ) );
-							$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
-							$instance->set_event_data( 'PageView', [ $event_id ] );
-							if ( isset( $event['data'] ) && isset( $event['data'] ) ) {
-								$instance->set_event_data( 'PageView', $event['data'] );
-
-							} else {
-								$instance->set_event_data( 'PageView', $getEventparams );
-
-							}
-							break;
-						case 'Purchase':
-							$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
-							$instance->set_event_id( $event_id );
-							$instance->set_user_data( $this->get_user_data( $type ) );
-							$instance->set_event_data( 'Purchase', $this->get_purchase_params() );
-							break;
-						case 'trackCustom':
-							$instance->set_event_id( $event_id );
-							$instance->set_user_data( $this->get_user_data( $type ) );
-							$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
-							$getEventName = $this->admin_general_settings->get_option( 'general_event_name' );
-							$instance->set_event_data( $getEventName, $getEventparams );
-							break;
-						default:
-							$instance->set_event_id( $event_id );
-							$instance->set_user_data( $this->get_user_data( $type ) );
-							$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
-
-							if ( isset( $event['data'] ) && isset( $event['data'] ) ) {
-								$instance->set_event_data( $type, $event['data'] );
-
-							} else {
-								$instance->set_event_data( $type, $getEventparams );
-
-							}
-					}
-
-
-					$response = $instance->execute();
-					if ( $type === 'Purchase' || $type === 'AddToCart' ) {
-						$this->maybe_insert_log( '----Facebook conversion API-----------' . print_r( $response, true ) ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
-
-					}
-
-
+			$get_test      = $this->get_conversion_api_test_event_code();
+			$get_test      = explode( ',', $get_test );
+			$is_test_event = $this->admin_general_settings->get_option( 'is_fb_conv_enable_test' );
+			if ( is_array( $is_test_event ) && count( $is_test_event ) > 0 && $is_test_event[0] === 'yes' && is_array( $get_test ) && count( $get_test ) > 0 ) {
+				if ( isset( $get_test[ $key ] ) && ! empty( $get_test[ $key ] ) ) {
+					BWF_Facebook_Sdk_Factory::set_test( trim( $get_test[ $key ] ) );
 				}
 			}
+
+			BWF_Facebook_Sdk_Factory::set_partner( 'woofunnels' );
+			$instance = BWF_Facebook_Sdk_Factory::create();
+			if ( is_null( $instance ) ) {
+				return null;
+			}
+
+			$getEventparams = $this->get_generic_event_params_for_conv_api();
+			switch ( $type ) {
+				case 'PageView':
+					$instance->set_event_id( $event_id );
+					$instance->set_user_data( $this->get_user_data( $type ) );
+					$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
+					$instance->set_event_data( 'PageView', [ $event_id ] );
+					if ( isset( $event['data'] ) && isset( $event['data'] ) ) {
+						$instance->set_event_data( 'PageView', $event['data'] );
+
+					} else {
+						$instance->set_event_data( 'PageView', $getEventparams );
+
+					}
+					break;
+				case 'Purchase':
+					$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
+					$instance->set_event_id( $event_id );
+					$instance->set_user_data( $this->get_user_data( $type ) );
+					$instance->set_event_data( 'Purchase', $this->get_purchase_params() );
+					break;
+				case 'trackCustom':
+					$instance->set_event_id( $event_id );
+					$instance->set_user_data( $this->get_user_data( $type ) );
+					$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
+					$getEventName = $this->admin_general_settings->get_option( 'general_event_name' );
+					$instance->set_event_data( $getEventName, $getEventparams );
+					break;
+				default:
+					$instance->set_event_id( $event_id );
+					$instance->set_user_data( $this->get_user_data( $type ) );
+					$instance->set_event_source_url( $this->getRequestUri( $is_ajax ) );
+
+					if ( isset( $event['data'] ) && isset( $event['data'] ) ) {
+						$instance->set_event_data( $type, $event['data'] );
+
+					} else {
+						$instance->set_event_data( $type, $getEventparams );
+
+					}
+			}
+
+
+			$response = $instance->execute();
+
+			if ( $type === 'Purchase' || $type === 'AddToCart' ) {
+				$this->maybe_insert_log( '----Facebook conversion API-----------' . print_r( $response, true ) ); //phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r
+
+			}
+
 		}
 		/************************************ Conversion API related methods starts here ***************************/
 		/**
@@ -1014,7 +1024,6 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		}
 
 		public function maybe_ecomm_events( $events ) {
-
 			$this->api_events = $events;
 			$this->maybe_render_conv_api( true );
 		}
@@ -1024,7 +1033,6 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 
 			if ( $this->should_render() && $this->is_enable_custom_event() ) {
 				?>
-                var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
                 var wffn_ev_custom_fb_event_id = Math.random().toString(36).substring(2, 15);
                 fbq('trackCustom', '<?php echo esc_attr( $this->get_custom_event_name() ); ?>', (typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent(<?php echo $this->get_custom_event_params(); ?>):<?php echo $this->get_custom_event_params(); ?>,{'eventID': '<?php echo esc_attr( $this->get_custom_event_name() ); ?>_'+wffn_ev_custom_fb_event_id}); <?php //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php

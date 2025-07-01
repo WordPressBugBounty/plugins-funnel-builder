@@ -1255,5 +1255,120 @@ if ( ! class_exists( 'WFFN_REST_Controller' ) ) {
 			WFFN_Core()->get_dB()->update_meta( $funnel_id, '_last_updated_on', current_time( 'mysql' ) );
 		}
 
+		/**
+		 * sanitize api received params
+		 * @return array[]
+		 */
+		public function sanitize_receive_params() {
+			return array(
+				'id'   => array(
+					'description'       => __( 'Unique identifier for the resource', 'funnel-builder' ),
+					'type'              => 'integer',
+					'sanitize_callback' => 'absint',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'cid'   => array(
+					'description'       => __( 'Customer id', 'funnel-builder' ),
+					'type'              => 'integer',
+					'sanitize_callback' => 'absint',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'funnel_id'   => array(
+					'description'       => __( 'Funnel ID', 'funnel-builder' ),
+					'type'              => 'integer',
+					'sanitize_callback' => 'absint',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				's'           => array(
+					'description'       => __( 'Search value', 'funnel-builder' ),
+					'type'              => 'string',
+					'validate_callback' => 'rest_validate_request_arg',
+					'sanitize_callback' => array( $this, 'sanitize_text_json_data' ),
+				),
+				'delete_ids'  => array(
+					'description'       => __( 'Send only count', 'funnel-builder' ),
+					'type'              => 'string',
+					'validate_callback' => 'rest_validate_request_arg',
+					'sanitize_callback' => array( $this, 'sanitize_text_json_data' ),
+				),
+				'filters' => array(
+					'description'       => __( 'Search filters', 'funnel-builder' ),
+					'type'              => 'json',
+					'validate_callback' => 'rest_validate_request_arg',
+					'sanitize_callback' => array( $this, 'sanitize_text_json_data' ),
+				),
+				'after' => array(
+					'description'       => __( 'Limit response.', 'funnel-builder' ),
+					'type'              => 'string',
+					'format'            => 'date-time',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'before' => array(
+					'description'       => __( 'Limit response.', 'funnel-builder' ),
+					'type'              => 'string',
+					'format'            => 'date-time',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'limit'       => array(
+					'description'       => __( 'Limit', 'funnel-builder' ),
+					'type'              => 'integer',
+					'sanitize_callback' => 'absint',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'offset'      => array(
+					'description'       => __( 'Offset', 'funnel-builder' ),
+					'type'              => 'integer',
+					'sanitize_callback' => 'absint',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'page_no'     => array(
+					'description'       => __( 'Page no', 'funnel-builder' ),
+					'type'              => 'integer',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'total_count' => array(
+					'description'       => __( 'Send total count if need', 'funnel-builder' ),
+					'type'              => 'string',
+					'enum'              => array( 'yes', 'no' ),
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'only_count'  => array(
+					'description'       => __( 'Send only count', 'funnel-builder' ),
+					'type'              => 'boolean',
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'order' => array(
+					'description'       => __( 'Order sql sort attribute ascending or descending.', 'funnel-builder' ),
+					'type'              => 'string',
+					'enum'              => array( 'asc', 'desc', 'ASC', 'DESC' ),
+					'validate_callback' => 'rest_validate_request_arg',
+				),
+				'orderby'  => array(
+					'description'       => __( 'Order by', 'funnel-builder' ),
+					'type'              => 'string',
+					'validate_callback' => 'rest_validate_request_arg',
+				)
+			);
+		}
+
+		public function sanitize_text_json_data( $data ) {
+			try {
+				// Check if the input is a valid JSON string
+				$decoded = json_decode( $data, true );
+				if ( json_last_error() === JSON_ERROR_NONE ) {
+					// It's valid JSON, so sanitize all its values
+					array_walk_recursive( $decoded, function ( &$value ) {
+						$value = sanitize_text_field( $value );
+					} );
+					return wp_json_encode( $decoded );
+				} else {
+					return sanitize_text_field( $data );
+				}
+			} catch ( Exception|Error $e ) {
+				return $data;
+			}
+
+		}
+
 	}
 }

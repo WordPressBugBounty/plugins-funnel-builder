@@ -190,8 +190,12 @@
                     /**
                      * XHR synchronous requests on the main threads are deprecated. We need to make it async, and after that trigger the form submission
                      */
+                    var wffnHash = '';
+                    if (typeof window.wffnPublicVars !== "undefined" && Object.hasOwnProperty.call(window.wffnfunnelData, 'hash')) {
+                        wffnHash = window.wffnfunnelData.hash;
+                    }
                     jQuery.ajax({
-                        url: window.wffnfunnelVars.ajaxUrl + '?action=wffn_submit_custom_optin_form&lead_event_id=' + wffnfunnelVars.op_lead_tracking.fb.event_ID,
+                        url: window.wffnfunnelVars.ajaxUrl + '?action=wffn_submit_custom_optin_form&lead_event_id=' + wffnfunnelVars.op_lead_tracking.fb.event_ID +'&wffn-si=' + wffnHash,
                         data: jQuery(FormElem).serialize(),
                         dataType: 'json',
                         type: 'post',
@@ -247,11 +251,9 @@
                         s.parentNode.insertBefore(t, s);
                     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
-
                     /** iterate loop **/
                     const pixelIds = wffnfunnelVars.op_lead_tracking.fb.fb_pixels.split(',');
                     $(pixelIds).each(function (k, v) {
-
                         fbq('init', v);
                     });
                 }
@@ -278,27 +280,39 @@
 
                 /** iterate loop **/
                 const pixelIds = wffnfunnelVars.op_lead_tracking.pint.pixels.split(',');
+                let data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
                 $(pixelIds).each(function (k, v) {
                     pintrk('load', v, {np: 'woofunnels'});
+                    pintrk('track', 'Lead', data);
                 });
-                var data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
-                pintrk('track', 'Lead', data);
             }
 
 
             if (typeof gtag !== "undefined" && 'object' === typeof wffnfunnelVars.op_lead_tracking.ga.enable && 'yes' === wffnfunnelVars.op_lead_tracking.ga.enable[0] && false !== wffnfunnelVars.op_lead_tracking.ga.ids) {
                 const pixelIds = wffnfunnelVars.op_lead_tracking.ga.ids.split(',');
-                var data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
-                data.send_to = pixelIds[0];
-
-                gtag('event', 'Lead', data);
+                let data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
+                $(pixelIds).each(function (k, v) {
+                    data.send_to = v;
+                    gtag('event', 'Lead', data);
+                });
             }
 
             if (typeof gtag !== "undefined" && 'object' === typeof wffnfunnelVars.op_lead_tracking.gad.enable && 'yes' === wffnfunnelVars.op_lead_tracking.gad.enable[0] && false !== wffnfunnelVars.op_lead_tracking.gad.ids) {
                 const pixelIds = wffnfunnelVars.op_lead_tracking.gad.ids.split(',');
-                var data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
-                data.send_to = pixelIds[0];
-                gtag('event', 'Lead', data);
+                let pixelLabels = [];
+
+                if (typeof wffnfunnelVars.op_lead_tracking.gad.labels === "string") {
+                    pixelLabels = wffnfunnelVars.op_lead_tracking.gad.labels.split(',');
+                }
+                let data = (typeof wffnAddTrafficParamsToEvent !== "undefined") ? wffnAddTrafficParamsToEvent({}) : {};
+                $(pixelIds).each(function (k, v) {
+                    if ( "undefined" !== typeof pixelLabels[k] && pixelLabels[k] !== "") {
+                        data.send_to = v+'/'+pixelLabels[k];
+                    }else{
+                        data.send_to = v;
+                    }
+                    gtag('event', 'Lead', data);
+                });
             }
         }
     };

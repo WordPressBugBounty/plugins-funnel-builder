@@ -27,6 +27,8 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 		protected $add_to_cart_via_url = false;
 		private $have_product = false;
 
+		public $min_age = 0;
+
 		protected function __construct() {
 
 			add_action( 'wfacp_changed_default_woocommerce_page', [ $this, 'wfacp_changed_default_woocommerce_page' ] );
@@ -116,6 +118,11 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 			add_action( 'wfacp_internal_css', [ $this, 'shimmer_css' ] );
 			add_filter( 'woocommerce_get_item_data', array( $this, 'unset_aero_line_item_data_in_cart' ), 20, 2 );
 			add_action( 'woocommerce_checkout_order_processed', [ $this, 'attach_awaiting_order_id' ] );
+
+			add_filter( 'wfacp_display_shipping_placeholder_message', array( $this, 'display_shipping_placeholder_message' ) );
+
+
+
 		}
 
 		/**
@@ -160,15 +167,15 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 					return;
 				}
 			}
-
 			/** Checking for embed forms if embedded on the same page */
-			$override_checkout_page_id = WFACP_Common::get_checkout_page_id();
-			if ( intval( $page_id ) === intval( $override_checkout_page_id ) ) {
-				$design = WFACP_Common::get_page_design( $page_id );
-				if ( $design['selected_type'] === 'embed_forms' ) {
+			$design = WFACP_Common::get_page_design( $page_id );
+			if ( $design['selected_type'] === 'embed_forms' ) {
+				$override_checkout_page_id = WFACP_Common::get_checkout_page_id();
+				if ( intval( $page_id ) === intval( $override_checkout_page_id ) ) {
 					return;
 				}
 			}
+
 			$this->maybe_pass_no_cache_header( $page_id );
 			$this->get_page_data( $page_id );
 			$this->add_to_cart( $page_id );
@@ -408,7 +415,7 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 					continue;
 				}
 
-				if ( ! isset( $item['_wfacp_item_discount'][ $currency ] ) ) {
+				if ( ! isset( $item['_wfacp_item_discount'][ $currency ] ) || apply_filters( 'wfacp_force_calculate_discount', false, $key, $item ) ) {
 					$item = $this->calculate_item_discount( $item, $currency );
 				}
 
@@ -730,7 +737,7 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 				return $data;
 			}
 			// if Reload set by woocommerce in any case then won`t unset any our sessions for Preventing Multiple Order issue.
-			if ( true === WC()->session->reload_checkout ) {
+			if ( true === WC()->session->reload_checkout && current_action() !== 'woocommerce_thankyou' ) {
 				return $data;
 			}
 			$checkout_id = WFACP_Common::get_Id();
@@ -1237,8 +1244,7 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 
 			$final['conversion_api'] = 'false';
 			$admin_general           = BWF_Admin_General_Settings::get_instance();
-			$is_conversion_api       = $admin_general->get_option( 'is_fb_purchase_conversion_api' );
-			if ( is_array( $is_conversion_api ) && count( $is_conversion_api ) > 0 && 'yes' === $is_conversion_api[0] && ! empty( $admin_general->get_option( 'conversion_api_access_token' ) ) ) {
+			if ( !empty( $admin_general->get_option( 'conversion_api_access_token' ) ) ) {
 				$final['conversion_api'] = 'true';
 			}
 			$final['wfacp_frontend'] = [
@@ -1254,6 +1260,7 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 			$final['fb_advanced']     = WFACP_Common::pixel_advanced_matching_data();
 			$final['tiktok_advanced'] = WFACP_Common::tiktok_advanced_matching_data();
 
+			WFACP_Common::clear_pending_events_data_from_session();
 			return $final;
 		}
 
@@ -1285,17 +1292,32 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 		* @return array|mixed
 		*/
 		public function update_tracking_data( $data ) {
+			try {
+				/*
+				 * Run add to cart on checkout page when add to cart run for custom ajax by theme
+				*/
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+					$events = WC()->session->get( 'wffn_pending_data' );
+					if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
+						$data['settings']['add_to_cart'] = 'true';
+						$data['wffn_pending_event']      = 'true';
 
-			if ( ! isset( $data['settings']['add_to_cart'] ) || 'true' !== $data['settings']['add_to_cart'] ) {
-				return $data;
-			}
+						return $data;
+					}
+				}
+				if ( ! isset( $data['settings']['add_to_cart'] ) || 'true' !== $data['settings']['add_to_cart'] ) {
+					return $data;
+				}
 
-			if ( isset( $_GET['add-to-cart'] ) && $_GET['add-to-cart'] > 0 ) {
-				return $data;
-			}
+				if ( isset( $_GET['add-to-cart'] ) && $_GET['add-to-cart'] > 0 ) {
+					return $data;
+				}
 
-			if ( $this->is_checkout_override ) {
-				$data['settings']['add_to_cart'] = 'false';
+				if ( $this->is_checkout_override ) {
+					$data['settings']['add_to_cart'] = 'false';
+				}
+			} catch ( Exception|Error $e ) {
+
 			}
 
 			return $data;
@@ -1345,6 +1367,78 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 			}
 			WC()->session->set( 'wfacp_await_order_' . WFACP_Common::get_id(), $order_id );
 
+		}
+
+		/**
+		 * Display shipping placeholder message based on shipping address status
+		 *
+		 * @param bool $status Current placeholder display status
+		 *
+		 * @return bool Updated placeholder display status
+		 */
+		public function display_shipping_placeholder_message( $status ) {
+			try {
+				// Early return if shipping address is not required
+				$shipping_address_required = get_option( 'woocommerce_shipping_cost_requires_address', 'yes' );
+				if ( 'no' === $shipping_address_required ) {
+					return $status;
+				}
+
+				// Check if WooCommerce is active and properly initialized
+				if ( ! function_exists( 'WC' ) || ! WC()->cart || ! WC()->shipping() ) {
+					return $status;
+				}
+
+				// Get shipping packages
+				$packages = WC()->shipping()->get_packages();
+
+				// If no packages exist, return the original status
+				if ( empty( $packages ) ) {
+					return $status;
+				}
+
+				$display_placeholder = false;
+
+				foreach ( $packages as $i => $package ) {
+					// Check if package has a destination
+					if ( ! isset( $package['destination'] ) || empty( $package['destination'] ) ) {
+						continue;
+					}
+
+					// Get formatted destination and check if shipping has been calculated
+					$formatted_destination = '';
+					if ( is_callable( array( WC()->countries, 'get_formatted_address' ) ) ) {
+						$formatted_destination = WC()->countries->get_formatted_address( $package['destination'], ', ' );
+					}
+
+					$has_calculated_shipping = false;
+					if ( is_callable( array( WC()->customer, 'has_calculated_shipping' ) ) ) {
+						$has_calculated_shipping = ! empty( WC()->customer->has_calculated_shipping() );
+					}
+
+					if ( ! $has_calculated_shipping || ! $formatted_destination ) {
+						// Skip if we're in cart and shipping calculation is disabled
+						if ( 'no' === get_option( 'woocommerce_enable_shipping_calc', 'yes' ) ) {
+							continue;
+						} else {
+							$display_placeholder = true;
+							break; // We found one package that needs a placeholder, exit loop
+						}
+					}
+				}
+
+				return $display_placeholder ? true : $status;
+
+			} catch ( Exception $e ) {
+				// Log the error if a logging facility is available
+				if ( function_exists( 'wc_get_logger' ) ) {
+					$logger = wc_get_logger();
+					$logger->error( 'Error in display_shipping_placeholder_message: ' . $e->getMessage(), array( 'source' => 'shipping-placeholder' ) );
+				}
+
+				// Return original status on error to prevent breaking the checkout
+				return $status;
+			}
 		}
 
 	}

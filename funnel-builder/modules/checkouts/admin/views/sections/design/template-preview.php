@@ -2,9 +2,7 @@
 $admin_instance = WFACP_admin::get_instance();
 
 $preview_url = get_the_permalink( $wfacp_id );
-if ( empty( WFACP_Common::get_page_product( WFACP_Common::get_id() ) ) ) {
-	$preview_url = add_query_arg( [ 'wfacp_preview' => true ], $preview_url );
-}
+
 ?>
 <div class="wfacp_template_preview_container">
     <div class="wfacp_form_templates_outer" v-if="'yes'==template_active">

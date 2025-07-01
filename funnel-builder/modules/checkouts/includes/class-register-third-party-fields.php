@@ -10,6 +10,7 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 		private $wc_fields_under_billing = [];
 		private $wc_fields_under_shipping = [];
 		private $native_checkout_fields = null;
+		private $all_default_fields = [];
 		private $third_party_fields_active = [
 			'wc_advanced_order_field'  => false,
 			'billing_wc_custom_field'  => false,
@@ -27,6 +28,7 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 
 		private function __construct( $fields ) {
 
+
 			$this->saved_checkout_fields = $fields;
 			add_action( 'wfacp_after_template_found', [ $this, 'actions' ] );
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'actions' ], 20 );
@@ -39,9 +41,10 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'add_wrapper' ] );
 
-		add_action( 'wfacp_update_posted_data_vice_versa_keys', [ $this, 'update_posted_data_vice_versa_keys' ] );
+			add_action( 'woocommerce_checkout_update_order_meta', [ $this, 'woocommerce_checkout_update_order_meta' ], 9999, 2 );
+			add_action( 'wfacp_update_posted_data_vice_versa_keys', [ $this, 'update_posted_data_vice_versa_keys' ] );
 
-	}
+		}
 
 		public function capture_billing_fields( $fields ) {
 			if ( false === $this->third_party_fields_active['billing_wc_custom_field'] ) {
@@ -97,9 +100,6 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 		}
 
 		public function add_wrapper() {
-
-			if ( true !== apply_filters( 'wfacp_add_billing_shipping_wrapper', true ) ) {
-			}
 
 
 			/**
@@ -219,6 +219,8 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 		}
 
 		public function after_billing_action() {
+
+
 			do_action( 'woocommerce_after_checkout_billing_form', $this->native_checkout_fields );
 
 		}
@@ -237,19 +239,42 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 		}
 
 		/**
+		 * Merge value of second array if not present in first array
+		 *
+		 * @param $array1
+		 * @param $array2
+		 *
+		 * @return array
+		 */
+		public function array_merge( $array1, $array2 ) {
+			foreach ( $array2 as $key => $value ) {
+				if ( isset( $array1[ $key ] ) ) {
+					continue;
+				}
+				$array1[ $key ] = $value;
+			}
+
+			return $array1;
+		}
+
+		/**
 		 * @return void
 		 *
 		 * This function use to Find Extra Fields
 		 */
 		public function find_extra_fields() {
-			$fields     = WC()->checkout()->get_checkout_fields();
-			$our_fields = WFACP_Common::get_aero_registered_checkout_fields();
+			$fields = WC()->checkout()->get_checkout_fields();
+
+			$this->all_default_fields = $fields;
+			$our_fields               = WFACP_Common::get_aero_registered_checkout_fields();
 
 
 			if ( isset( $fields['billing'] ) && ! empty( $fields['billing'] ) ) {
 
 				if ( is_array( $this->wc_fields_under_billing ) && count( $this->wc_fields_under_billing ) > 0 ) {
-					$fields['billing'] = apply_filters( 'wfacp_third_party_billing_fields', array_merge( $fields['billing'], $this->wc_fields_under_billing ) );
+
+					$fields['billing'] = apply_filters( 'wfacp_third_party_billing_fields', $this->array_merge( $fields['billing'], $this->wc_fields_under_billing ) );
+
 				}
 
 				$this->checkout_fields['billing'] = array_filter( $fields['billing'], function ( $v, $key ) use ( $our_fields ) {
@@ -259,7 +284,7 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 			if ( isset( $fields['shipping'] ) && ! empty( $fields['shipping'] ) ) {
 
 				if ( is_array( $this->wc_fields_under_shipping ) && count( $this->wc_fields_under_shipping ) > 0 ) {
-					$fields['shipping'] = apply_filters( 'wfacp_third_party_shipping_fields', array_merge( $fields['shipping'], $this->wc_fields_under_shipping ) );
+					$fields['shipping'] = apply_filters( 'wfacp_third_party_shipping_fields', $this->array_merge( $fields['shipping'], $this->wc_fields_under_shipping ) );
 				}
 
 				$this->checkout_fields['shipping'] = array_filter( $fields['shipping'], function ( $v, $key ) use ( $our_fields ) {
@@ -298,42 +323,58 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 
 			}
 
+
 			$section['fields'] = apply_filters( 'wfacp_detect_extra_fields', $fields, $extra_fields, $temp );
 
 			return $section;
 		}
 
 		public function merge_fields( &$oldArray, $offset, $new_array, $place_fields ) {
-			foreach ( $new_array as $i => $item ) {
-				$new_array[ $i ]['id'] = $i;
-				if ( ! isset( $new_array[ $i ]['class'] ) || ! is_array( $new_array[ $i ]['class'] ) ) {
-					$new_array[ $i ]['class'] = [];
+			try {
+				foreach ( $new_array as $i => $item ) {
+					$new_array[ $i ]['id'] = $i;
+					if ( ! isset( $new_array[ $i ]['class'] ) || ! is_array( $new_array[ $i ]['class'] ) ) {
+						$new_array[ $i ]['class'] = [];
+					}
+					if ( false !== strpos( $i, 'billing_' ) && isset( $this->checkout_fields['billing'][ $i ] ) && isset( $this->checkout_fields['billing'][ $i ]['id'] ) && ( $this->checkout_fields['billing'][ $i ]['id'] != $new_array[ $i ]['id'] ) ) {
+						$new_array[ $i ]['id'] = $this->checkout_fields['billing'][ $i ]['id'];
+					}
+
+					if ( false !== strpos( $i, 'shipping_' ) && isset( $this->checkout_fields['shipping'][ $i ] ) && isset( $this->checkout_fields['shipping'][ $i ]['id'] ) && ( $this->checkout_fields['shipping'][ $i ]['id'] != $new_array[ $i ]['id'] ) ) {
+						$new_array[ $i ]['id'] = $this->checkout_fields['shipping'][ $i ]['id'];
+					}
+					$new_array[ $i ]['external_field_name'] = $i;
+					$new_array[ $i ]['class']               = $new_array[ $i ]['class'] + $place_fields['class'];
+					$this->fields_added[]                   = $new_array[ $i ]['id'];
 				}
-				$new_array[ $i ]['class'] = $new_array[ $i ]['class'] + $place_fields['class'];
-				$this->fields_added[]     = $new_array[ $i ]['id'];
+
+				return array_slice( $oldArray, 0, $offset, true ) + $new_array + array_slice( $oldArray, $offset, null, true );
+			} catch ( Exception|Error $error ) {
+				return $oldArray;
 			}
 
-			return array_slice( $oldArray, 0, $offset, true ) + $new_array + array_slice( $oldArray, $offset, null, true );
 		}
 
 		public function checkout_fields( $fields ) {
-			if ( ! is_array( $fields ) || count( $fields ) == 0 ) {
+			try {
+				if ( ! is_array( $fields ) || count( $fields ) == 0 ) {
+					return $fields;
+				}
+				$other_address_fields = WFACP_Common::get_aero_registered_checkout_fields();
+				foreach ( $fields as $field_val_key => $field ) {
+
+					if ( in_array( $field_val_key, $other_address_fields ) ) {
+						continue;
+					}
+					$field['id'] = $field_val_key;
+					if ( ! isset( $field['priority'] ) ) {
+						$field['priority'] = 100;
+					}
+					$this->new_fields['billing'][ $field_val_key ] = $field;
+					$this->previous_keys[ $field_val_key ]         = $field['priority'];
+				}
+			} catch ( Exception|Error $error ) {
 				return $fields;
-			}
-			$other_address_fields = WFACP_Common::get_aero_registered_checkout_fields();
-
-
-			foreach ( $fields as $field_val_key => $field ) {
-
-				if ( in_array( $field_val_key, $other_address_fields ) ) {
-					continue;
-				}
-				$field['id'] = $field_val_key;
-				if ( ! isset( $field['priority'] ) ) {
-					$field['priority'] = 100;
-				}
-				$this->new_fields['billing'][ $field_val_key ] = $field;
-				$this->previous_keys[ $field_val_key ]         = $field['priority'];
 			}
 
 			return $fields;
@@ -401,36 +442,86 @@ if ( ! class_exists( 'WFACP_Class_Register_Third_Party_Fields' ) ) {
 				$args['class'] = array_values( array_unique( array_merge( $args['class'], $this->wc_fields_under_shipping[ $key ]['class'] ) ) );
 			}
 
-
-		return apply_filters( 'wfacp_woocommerce_form_field_args', $args, $key, $this->wc_fields_under_billing, $this->wc_fields_under_shipping );
-	}
-
-	public function update_posted_data_vice_versa_keys( $keys ) {
-		$missingKeys = [];
+			$check_default_classes_for_field = [ 'billing_company' ];
 
 
-		$relevantKeys = array_filter( array_keys( $_POST ), function ( $key ) {
-			return strpos( $key, 'billing_' ) === 0 || strpos( $key, 'shipping_' ) === 0;
-		} );
+			if ( strpos( $key, 'billing_' ) !== false && in_array( $key, $check_default_classes_for_field ) && isset( $this->all_default_fields['billing'][ $key ]['class'] ) ) {
 
 
-		$excludedKeys = WFACP_Common::get_aero_registered_checkout_fields();
-		foreach ( $relevantKeys as $key ) {
-			if ( ! array_key_exists( $key, $keys ) && ! in_array( $key, $excludedKeys ) ) {
-				$missingKeys[] = $key;
+				if ( is_array( $args['class'] ) && is_array( $this->all_default_fields['billing'][ $key ]['class'] ) ) {
+					$args['class'] = array_unique( array_merge( $args['class'], $this->all_default_fields['billing'][ $key ]['class'] ) );
+				}
 			}
+
+
+			return apply_filters( 'wfacp_woocommerce_form_field_args', $args, $key, $this->wc_fields_under_billing, $this->wc_fields_under_shipping );
 		}
 
-		if ( is_array( $missingKeys ) && count( $missingKeys ) > 0 ) {
-			foreach ( $missingKeys as $i => $v ) {
-				$keys[ $v ] = $v;
+		public function woocommerce_checkout_update_order_meta( $order_id, $data ) {
+			$missingKeys = [];
+
+			if ( ! isset( $_POST['_wfacp_post_id'] ) ) {
+				return;
 			}
+			$order = wc_get_order( $order_id );
+
+			$default_checkout_fields = WC()->checkout()->get_checkout_fields();
+			$excludedKeys            = WFACP_Common::get_aero_registered_checkout_fields();
+
+			if ( is_array( $default_checkout_fields ) && count( $default_checkout_fields ) > 0 ) {
+
+				foreach ( $default_checkout_fields as $i => $default_checkout_field ) {
+
+					if ( $i !== 'billing' && $i != 'shipping' ) {
+						continue;
+
+					}
+					foreach ( $default_checkout_field as $key => $field ) {
+						if ( ! in_array( $key, $excludedKeys ) ) {
+							$missingKeys[] = $key;
+						}
+
+					}
+				}
+			}
+
+
+			if ( is_array( $missingKeys ) && count( $missingKeys ) > 0 ) {
+				foreach ( $missingKeys as $item ) {
+					if ( ! empty( $item ) && isset( $_POST[ $item ] ) ) {
+						$meta_key   = '_' . $item;
+						$meta_value = get_post_meta( $order_id, $meta_key, true );
+						if ( empty( $meta_value ) ) {
+							$order->{$item} = $_POST[ $item ];
+							$order->update_meta_data( '_' . $item, $_POST[ $item ] );
+						}
+
+					}
+				}
+				$order->save();
+			}
+
+
 		}
 
+		public function update_posted_data_vice_versa_keys( $keys ) {
+			$missingKeys = [];
+			if ( is_array( $_POST ) && count( $_POST ) > 0 ) {
+				foreach ( $_POST as $i => $default_checkout_field ) {
+					if ( false == strpos( $i, 'billing' ) && false == strpos( $i, 'shipping' ) ) {
+						continue;
+					}
+					$missingKeys[] = $i;
+				}
+			}
+			if ( is_array( $missingKeys ) && count( $missingKeys ) > 0 ) {
+				foreach ( $missingKeys as $i => $v ) {
+					$keys[ $v ] = $v;
+				}
+			}
 
-		return $keys;
-	}
-
+			return $keys;
+		}
 
 	}
 }

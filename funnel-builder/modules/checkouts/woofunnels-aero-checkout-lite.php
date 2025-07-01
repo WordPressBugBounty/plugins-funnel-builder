@@ -97,7 +97,7 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 		private function definition() {
 
 
-			define( 'WFACP_VERSION', '3.20.0' );
+			define( 'WFACP_VERSION', WFFN_VERSION );
 			define( 'WFACP_MIN_WP_VERSION', '4.9' );
 			define( 'WFACP_MIN_WC_VERSION', '3.3' );
 			define( 'WFACP_SLUG', 'wfacp' );
@@ -106,12 +106,11 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 			define( 'WFACP_PLUGIN_FILE', __FILE__ );
 			define( 'WFACP_PLUGIN_DIR', __DIR__ );
 			define( 'WFACP_WEB_FONT_PATH', __DIR__ . '/assets/google-web-fonts' );
-			define( 'WFACP_TEMPLATE_COMMON', plugin_dir_path( WFACP_PLUGIN_FILE ) . '/public/template-common' );
+			define( 'WFACP_TEMPLATE_COMMON', plugin_dir_path( WFACP_PLUGIN_FILE ) . 'public/template-common' );
 			define( 'WFACP_BUILDER_DIR', plugin_dir_path( WFACP_PLUGIN_FILE ) . 'builder' );
-			define( 'WFACP_TEMPLATE_DIR', plugin_dir_path( WFACP_PLUGIN_FILE ) . '/public/templates' );
+			define( 'WFACP_TEMPLATE_DIR', plugin_dir_path( WFACP_PLUGIN_FILE ) . 'public/templates' );
 			define( 'WFACP_PLUGIN_URL', untrailingslashit( plugin_dir_url( WFACP_PLUGIN_FILE ) ) );
 			define( 'WFACP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-			define( 'WFACP_TEMPLATE_UPLOAD_DIR', WP_CONTENT_DIR . '/uploads/wfacp_templates/' );
 			( defined( 'WFACP_IS_DEV' ) && true === WFACP_IS_DEV ) ? define( 'WFACP_VERSION_DEV', time() ) : define( 'WFACP_VERSION_DEV', WFACP_VERSION );
 
 			$this->dir = plugin_dir_path( __FILE__ );

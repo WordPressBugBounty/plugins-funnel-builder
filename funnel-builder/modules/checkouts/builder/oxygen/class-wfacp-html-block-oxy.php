@@ -85,7 +85,7 @@ if ( ! class_exists( 'WFACP_OXY_HTML_BLOCK' ) ) {
 		protected function order_summary( $field_key ) {
 
 
-			$tab_id = $this->add_tab( __( 'Order Summary', 'woofunnels-aero-checkout' ) );
+			$tab_id = $this->add_tab( __( 'Order Summary', 'woocommerce' ) );
 			$this->add_heading( $tab_id, 'Product' );
 
 			$this->add_switcher( $tab_id, 'order_summary_enable_product_image', __( 'Enable Image', 'woofunnels-aero-checkout' ), 'on' );

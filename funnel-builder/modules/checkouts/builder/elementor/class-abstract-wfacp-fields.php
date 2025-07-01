@@ -8,7 +8,7 @@ if ( ! class_exists( 'WFACP_EL_Fields' ) ) {
 		private $add_tab_number = 1;
 		private $add_heading_number = 1;
 		private $add_divider_number = 1;
-
+		protected $ajax_session_settings = [];
 		public function __construct( $data = [], $args = null ) {
 			parent::__construct( $data, $args );
 		}
@@ -891,6 +891,7 @@ if ( ! class_exists( 'WFACP_EL_Fields' ) ) {
 
 			$this->add_responsive_control( $field_key, $args );
 		}
+
 
 
 	}

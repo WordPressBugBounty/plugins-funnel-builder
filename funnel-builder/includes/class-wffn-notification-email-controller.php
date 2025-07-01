@@ -39,7 +39,7 @@ if ( ! class_exists( 'WFFN_Notification_Email_Controller' ) ) {
 				$highlight_subtitle    = __( 'Unlock more insights.', 'Funnelkit' );
 				$highlight_button_text = __( 'Upgrade To PRO', 'Funnelkit' );
 				$highlight_button_url  = add_query_arg( [
-					'utm_campaign' => 'FK+Lite+Notification',
+					'utm_campaign' => 'FB+Lite+Notification',
 					'utm_medium'   => 'Email+Highlight'
 				], $upgrade_link );
 			}
@@ -103,7 +103,7 @@ if ( ! class_exists( 'WFFN_Notification_Email_Controller' ) ) {
 					$cta_content = sprintf( __( "Since installing %s you have captured additional revenue of %s. Upgrade to Pro for even more revenue.", 'Funnelkit' ), '<strong>' . __( 'FunnelKit', 'Funnelkit' ) . '</strong>', '<strong>' . wc_price( $total_revenue ) . '</strong>' );
 
 					$cta_link = add_query_arg( [
-						'utm_campaign' => 'FK+Lite+Notification',
+						'utm_campaign' => 'FB+Lite+Notification',
 						'utm_medium'   => 'Total+Revenue'
 					], $upgrade_link );
 
@@ -143,7 +143,7 @@ if ( ! class_exists( 'WFFN_Notification_Email_Controller' ) ) {
 					);
 
 					$link = add_query_arg( [
-						'utm_campaign' => 'FK+Lite+Notification',
+						'utm_campaign' => 'FB+Lite+Notification',
 						'utm_medium'   => 'Todo'
 					], $upgrade_link );
 

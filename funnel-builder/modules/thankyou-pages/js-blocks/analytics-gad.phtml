@@ -17,15 +17,19 @@ if (false === wffngadResult) {
     var wffnvarGadPurchaseData = <?php echo wp_json_encode( $data['gad'] ); ?>;
     wffnvarGadPurchaseData = (typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent(wffnvarGadPurchaseData):wffnvarGadPurchaseData;
 
-    wffnvarGadPurchaseData.send_to = '<?php echo esc_js( $code ); ?>';
+    var wffnvarSend_id = '<?php echo esc_js( $code ); ?>';
+
+    <?php if ( false !== $label ) { ?>
+        wffnvarSend_id = '<?php echo esc_js( $code ); ?>/<?php echo esc_js( $label ) ?>';
+    <?php } ?>
+    wffnvarGadPurchaseData.send_to = wffnvarSend_id;
     gtag('event', 'purchase', wffnvarGadPurchaseData);
 
 
 	<?php if ( false !== $label ) { ?>
         var wffnvarGadPurchaseDataClone = JSON.parse(JSON.stringify(wffnvarGadPurchaseData));
 
-
-        wffnvarGadPurchaseDataClone.send_to = '<?php echo esc_js( $code ); ?>/<?php echo esc_js( $label ) ?>';
+        wffnvarGadPurchaseDataClone.send_to = wffnvarSend_id;
         delete wffnvarGadPurchaseDataClone.items;
         delete wffnvarGadPurchaseDataClone.ecomm_pagetype;
         delete wffnvarGadPurchaseDataClone.ecomm_prodid;

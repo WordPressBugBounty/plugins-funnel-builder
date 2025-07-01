@@ -31,7 +31,7 @@ $wc_version = WC()->version;
 ?>
     <div class="wfacp_order_summary wfacp_wrapper_start wfacp_order_sec <?php echo $classes . ' ' . $tax_enabled; ?>" id="order_summary_field" <?php echo WFACP_Common::get_fragments_attr() ?>>
 		<?php do_action( 'wfacp_before_order_summary', $field, $instance ); ?>
-        <label class="wfacp-order-summary-label"><?php echo isset( $field['label'] ) ? $field['label'] : __( 'Order Summary', 'woofunnels-aero-checkout' ); ?></label>
+        <label class="wfacp-order-summary-label"><?php echo isset( $field['label'] ) ? $field['label'] : WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )); ?></label>
         <div class="wfacp_anim wfacp_order_summary_container">
             <table class="shop_table woocommerce-checkout-review-order-table <?php echo $instance->get_template_slug(); ?>">
 				<?php
@@ -96,18 +96,29 @@ $wc_version = WC()->version;
 										} else {
 											echo WC()->cart->get_item_data( $cart_item );
 										}
+
+										/**
+										 * Display Low Stock Trigger
+										 */
+
+										do_action( 'wfacp_order_summary_field_after_product_title', $_product );
 										?>
                                     </div>
                                 </td>
                                 <td class="product-total">
                                     <div class="wfacp_order_summary_item_total">
+
+
 										<?php
 										if ( in_array( $_product->get_type(), WFACP_Common::get_subscription_product_type() ) ) {
 											$price_show = apply_filters( 'wfacp_subscription_price_display', WFACP_Common::display_subscription_price( $_product, $cart_item, $cart_item_key ), $_product, $cart_item, $cart_item_key );
 											echo $price_show;
 										} else {
 											if ( true == apply_filters( 'wfacp_woocommerce_cart_item_subtotal_except_subscription', true, $_product, $cart_item, $cart_item_key ) ) {
-												echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item ), $cart_item, $cart_item_key );
+
+
+
+												echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item, false, apply_filters( 'wfacp_order_summary_field_enable_strike_through_price', false ) ), $cart_item, $cart_item_key );
 											} else {
 												do_action( 'wfacp_woocommerce_cart_item_subtotal_except_subscription_placeholder', $_product, $cart_item, $cart_item_key );
 											}
@@ -136,7 +147,8 @@ $wc_version = WC()->version;
 				<?php foreach ( WC()->cart->get_coupons() as $code => $coupon ) : ?>
                     <tr class="cart-discount coupon-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
                         <th <?php echo $colspan_attr; ?>><span><?php $instance->wc_cart_totals_coupon_label( $coupon ) ?></span></th>
-                        <td><?php wc_cart_totals_coupon_html( $coupon );	do_action( 'wfacp_after_coupon_html', $coupon ); ?></td>
+                        <td><?php wc_cart_totals_coupon_html( $coupon );
+							do_action( 'wfacp_after_coupon_html', $coupon ); ?></td>
                     </tr>
 				<?php endforeach; ?>
 				<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
@@ -188,7 +200,12 @@ $wc_version = WC()->version;
                     <th <?php echo $colspan_attr; ?>><span><?php _e( 'Total', 'woocommerce' ); ?></span></th>
                     <td><?php wc_cart_totals_order_total_html(); ?></td>
                 </tr>
-				<?php do_action( 'woocommerce_review_order_after_order_total' ); ?>
+				<?php do_action( 'woocommerce_review_order_after_order_total' );
+
+
+				do_action( 'wfacp_order_summary_field_woocommerce_review_order_after_order_total' );
+
+                ?>
                 </tfoot>
             </table>
         </div>

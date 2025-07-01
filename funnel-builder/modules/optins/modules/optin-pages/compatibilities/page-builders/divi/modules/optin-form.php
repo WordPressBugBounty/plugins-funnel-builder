@@ -54,7 +54,7 @@ if ( ! class_exists( 'WFOP_Optin_Form' ) ) {
 	private function style_field() {
 
 		$key       = "wfop_optin_form";
-		$condition = [ 'show_labels' => 'on', ];
+		$condition = [];
 
 		$form_id = $this->add_tab( __( 'Form', 'funnel-builder' ), 2 );
 
@@ -63,11 +63,11 @@ if ( ! class_exists( 'WFOP_Optin_Form' ) ) {
 		$font_side_default = [ 'default' => '14px', 'unit' => 'px' ];
 		$default           = '|400|||||||';
 
-		$label_selector = '%%order_class%% .bwfac_form_sec > label';
+		$label_selector = '%%order_class%% .bwfac_form_sec > label, %%order_class%% .bwfac_form_sec.bwfac_form_field_radio label';
 		$this->add_typography( $form_id, $key . '_label_typography', $label_selector, '', $default, $condition, $font_side_default );
 
 		$this->add_color( $form_id, $key . '_label_color', $label_selector, __( 'Text', 'funnel-builder' ), '', $condition );
-		$this->add_color( $form_id, $key . '_mark_required_color', '%%order_class%% .bwfac_form_sec > label > span', __( 'Asterisk', 'funnel-builder' ), '', $condition );
+		$this->add_color( $form_id, $key . '_mark_required_color', '%%order_class%% .bwfac_form_sec > label > span,  %%order_class%% .bwfac_form_sec.bwfac_form_field_radio label > span', __( 'Asterisk', 'funnel-builder' ), '', $condition );
 
 		$this->add_subheading( $form_id, __( 'Input Typography', 'funnel-builder' ) );
 

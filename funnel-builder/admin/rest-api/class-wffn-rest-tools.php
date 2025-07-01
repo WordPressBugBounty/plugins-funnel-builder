@@ -161,17 +161,17 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 			}
 
 
-			if ( 0 === $get_threshold_order && 0 === absint( $bwf_db_upgrade ) ) {
+			if ( 0 === absint( $get_threshold_order ) && 0 === absint( $bwf_db_upgrade ) ) {
 				WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->set_upgrade_state( '5' );
 				$bwf_db_upgrade = '5';
 			}
 
-			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=fb+lite+plugin">Learn more</a>', 'funnel-builder' );
+			$description = __( 'This tool will scan all the previous orders and create an optimized index to run efficient queries. <a href="https://funnelkit.com/docs/upstroke/miscellaneous/index-past-order/?utm_source=WordPress&utm_medium=Index+Past+Orders&utm_campaign=FB+Lite+Plugin">Learn more</a>', 'funnel-builder' );
 
 			if ( '1' === $bwf_db_upgrade || '6' === $bwf_db_upgrade ) {
 				$description .= esc_html__( ' Unable to complete indexing of orders.', 'funnel-builder' );
 
-				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=fb+lite+plugin">Contact support to get the issue resolved.</a>';
+				$description .= ' <a target="_blank" href="https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Indexing+Failed+Support&utm_campaign=FB+Lite+Plugin">Contact support to get the issue resolved.</a>';
 
 			}
 			if ( true === apply_filters( 'bwf_needs_order_indexing', false ) ) {
@@ -191,12 +191,14 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 						'prop' => 'disabled',
 					);
 				} elseif ( '4' === $bwf_db_upgrade || '5' === $bwf_db_upgrade ) {
-					$index_orders['cta'] = array(
+					$index_orders['cta']  = array(
 						'type' => 'button',
 						'text' => __( 'Completed', 'funnel-builder' ),
 						'slug' => 'index_past_order',
 						'prop' => 'disabled',
 					);
+					$index_orders['desc'] .= sprintf( '</br>%s <a href="%s">%s</a> </li>', __( 'Indexing has been completed. If you need to restart the indexing process, ', 'funnel-builder' ), admin_url( 'admin.php?page=bwf&path=/settings/tools&bwf_index_clean=yes' ), __( 'Click here', 'funnel-builder' ) );
+
 				} else {
 					$index_orders['cta'] = array(
 						'type' => 'button',
@@ -269,11 +271,6 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 		public function get_all_log_files() {
 
 			$file_list   = array();
-			$file_list[] = array(
-				'label' => __( 'Select Log File', 'funnel-builder' ),
-				'value' => '',
-				'key'   => ''
-			);
 
 			if ( ! class_exists( 'BWF_Logger' ) ) {
 				return rest_ensure_response( $file_list );
@@ -422,9 +419,7 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 					delete_option( 'bwf_is_opted' );
 				}
 
-				if ( false !== wp_next_scheduled( 'bwf_maybe_track_usage_scheduled' ) ) {
-					wp_clear_scheduled_hook( 'bwf_maybe_track_usage_scheduled' );
-				}
+
 				$resp['status'] = true;
 				$resp['msg']    = __( sprintf( 'Usage tracking successfully %s.', true === $tracking ? 'enabled' : 'disabled' ), 'funnel-builder' );
 
@@ -442,6 +437,28 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 				}
 				if ( '2' === WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->get_upgrade_state() ) {
 					WooFunnels_Dashboard::$classes['WooFunnels_DB_Updater']->bwf_start_indexing();
+				}
+
+				if ( function_exists( 'wffn_conversion_tracking_migrator' ) && in_array( absint( wffn_conversion_tracking_migrator()->get_upgrade_state() ), [ 0, 3, 4 ], true ) ) {
+					/**
+					 * Remove table from db table list for reattempt
+					 * to create table with all column
+					 */
+					$current_tables = get_option( '_bwf_db_table_list' );
+					if ( ! empty( $current_tables['tables'] ) && is_array( $current_tables['tables'] ) ) {
+						$key = array_search( 'bwf_conversion_tracking', $current_tables['tables'], true );
+
+						if ( $key !== false ) {
+							unset( $current_tables['tables'][ $key ] );
+							update_option( '_bwf_db_table_list', $current_tables, true );
+						}
+					}
+					/**
+					 * reset conversion migration
+					 */
+					delete_option( '_bwf_conversion_threshold' );
+					delete_option( '_bwf_conversion_offset' );
+					WFFN_Core()->admin_notifications->conversion_migration_content( 2 );
 				}
 
 				$get_index_array = $this->get_all_tools_array();

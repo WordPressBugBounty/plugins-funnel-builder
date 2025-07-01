@@ -211,6 +211,43 @@ if ( ! class_exists( 'WFFN_Funnel' ) ) {
 			return $this->id;
 		}
 
+		/**
+		 * Gets the categories associated with this funnel
+		 *
+		 * Retrieves and processes category data from database, matching category slugs
+		 * with their corresponding names from options table.
+		 *
+		 * @return array Array of categories with slug and name pairs. Empty array on error.
+		 *               Format: [['slug' => string, 'name' => string], ...]
+		 * @since 1.0.0
+		 */
+		public function get_category() {
+			try {
+				$category_meta = WFFN_Core()->get_dB()->get_meta( $this->id, WFFN_Category_DB::$funnel_meta_key );
+				$slugs         = json_decode( $category_meta, true );
+				if ( ! is_array( $slugs ) ) {
+					return [];
+				}
+				$categories = get_option( WFFN_Category_DB::$category_option_key );
+				if ( empty( $categories ) ) {
+					return [];
+				}
+				$categories_with_names = [];
+				foreach ( $slugs as $slug ) {
+					if ( isset( $categories[ $slug ] ) ) {
+						$categories_with_names[] = [
+							'slug' => $slug,
+							'name' => $categories[ $slug ]
+						];
+					}
+				}
+
+				return $categories_with_names;
+			} catch ( Exception|Error $e ) {
+				return [];
+			}
+		}
+
 		public function set_id( $id ) {
 			$this->id = empty( $id ) ? $this->id : $id;
 		}
@@ -268,6 +305,11 @@ if ( ! class_exists( 'WFFN_Funnel' ) ) {
 				$store_checkout = ( 'wc_checkout' === $type ) && ( absint( $this->get_id() ) === WFFN_Common::get_store_checkout_id() ) ? true : false;
 
 			}
+
+			if ( $step_id > 0 ) {
+				update_post_meta( $step_id, '_experiment_status', 'not_active' );
+			}
+
 			if ( $original_id > 0 ) {
 				$position = array_search( absint( $original_id ), array_map( 'intval', wp_list_pluck( $steps, 'id' ) ), true );
 				if ( false !== $position ) {

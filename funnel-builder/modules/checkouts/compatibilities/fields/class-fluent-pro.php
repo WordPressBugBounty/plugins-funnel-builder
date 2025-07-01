@@ -8,7 +8,6 @@ if ( ! class_exists( 'WFACP_FluentPro' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_FluentPro {
 		public $instance = null;
-
 		public function __construct() {
 
 

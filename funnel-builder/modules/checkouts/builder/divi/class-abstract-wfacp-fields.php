@@ -1198,5 +1198,26 @@ if ( ! class_exists( 'WFACP_Divi_Field' ) ) {
 		private function get_default_data( $key, $default = '' ) {
 			return $default;
 		}
+		public function custom_notice( $tab_id, $notice_html ,$key,$label='') {
+
+
+			$this->modules_fields[ $key ] = array(
+				'label'           => '',
+				'type'            => 'warning',
+				'value'           => true,
+				'display_if'      => true,
+				'message'         => $notice_html,
+				'option_category' => 'configuration',
+				'toggle_slug'     => 'fields',
+				'bb_support'      => false,
+
+			);
+			$this->assign_tab( $key, $tab_id );
+
+
+			return $key;
+		}
+
+
 	}
 }

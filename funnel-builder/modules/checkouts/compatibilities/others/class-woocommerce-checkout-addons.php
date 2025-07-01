@@ -4,8 +4,8 @@
  * Plugin URI: http://www.woocommerce.com/products/woocommerce-checkout-add-ons/
  *
  */
-if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 
+if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_Checkout_addons {
 		private $label_separator = ' - ';
@@ -38,6 +38,11 @@ if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 			add_filter( 'wfacp_checkout_fields', [ $this, 'remove_addons_field' ] );
 			add_filter( 'woocommerce_update_order_review_fragments', [ $this, 'refresh_checkout_fields_frag' ], 11 );
 			add_filter( 'wp_footer', [ $this, 'add_js' ], 11 );
+
+			/* prevent third party fields and wrapper*/
+			add_action( 'wfacp_add_billing_shipping_wrapper', '__return_false' );
+
+			add_filter( 'wfacp_advanced_order_fields', [ $this, 'add_advanced_fields' ] );
 		}
 
 		public function after_template_load() {
@@ -81,6 +86,10 @@ if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 
 		}
 
+		private function is_enable() {
+			return function_exists( 'wc_checkout_add_ons' );
+		}
+
 		public function actions() {
 
 			$position = apply_filters( 'wc_checkout_add_ons_position', get_option( 'wc_checkout_add_ons_position', 'woocommerce_checkout_after_customer_details' ) );
@@ -88,10 +97,6 @@ if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 				WFACP_Common::remove_actions( $position, 'SkyVerge\WooCommerce\Checkout_Add_Ons\Frontend\Frontend', 'render_add_ons' );
 				WFACP_Common::remove_actions( 'esc_html', 'SkyVerge\WooCommerce\Checkout_Add_Ons\Frontend\Frontend', 'display_add_on_value_in_checkout_order_review' );
 			}
-		}
-
-		private function is_enable() {
-			return function_exists( 'wc_checkout_add_ons' );
 		}
 
 		public function add_fields( $field ) {
@@ -258,6 +263,23 @@ if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 			return $fragments;
 		}
 
+		public function add_advanced_fields( $fields ) {
+			try {
+				if ( ! isset( $fields['add_ons'] ) || ! is_array( $fields['add_ons'] ) || count( $fields['add_ons'] ) == 0 ) {
+					return $fields;
+				}
+				unset( $fields['add_ons'] );
+
+				return $fields;
+			} catch ( Exception $e ) {
+				// Log the error
+				error_log( 'Error in add_advanced_fields: ' . $e->getMessage() );
+
+				// Return the original fields to prevent breaking functionality
+				return $fields;
+			}
+		}
+
 		public function wfacp_internal_css( $slug ) {
 			if ( ! $this->is_enable() ) {
 				return;
@@ -402,7 +424,7 @@ if ( ! class_exists( 'WFACP_Checkout_addons' ) ) {
 
                 body #wfacp-e-form .wfacp_main_form .wfacp_default_checkout_addon.wfacp-form-control-wrapper:not(.wfacp-anim-wrap) label.wfacp-form-control-label {
                     top: 20px;
-                    font-size: 12.5px;
+                    font-size: 12px;
                     bottom: auto;
                     right: auto;
                     margin-top: 0;

@@ -12,8 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFFN_REST_Notifications extends WP_REST_Controller {
+	class WFFN_REST_Notifications extends WP_REST_Controller {
 
 		public static $_instance = null;
 
@@ -60,6 +59,14 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 					'args'                => [],
 				),
 			) );
+			register_rest_route( $this->namespace, '/' . $this->rest_base . '/memory_notice_dismiss', array(
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'memory_notice_dismiss' ),
+					'permission_callback' => array( $this, 'get_write_api_permission_check' ),
+					'args'                => [],
+				),
+			) );
 		}
 
 		public function get_read_api_permission_check() {
@@ -75,7 +82,6 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 			$all_registered_notifs = WFFN_Core()->admin_notifications->get_notifications();
 
 
-
 			$filter_notifs = WFFN_Core()->admin_notifications->filter_notifs( $all_registered_notifs, $id );
 
 
@@ -86,6 +92,15 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 
 		public function switch_to_native_mode_wc_block() {
 			return WFFN_Core()->admin->blocks_incompatible_switch_to_classic_cart_checkout( true );
+
+		}
+
+
+		public function memory_notice_dismiss() {
+			delete_option( 'fk_memory_limit' );
+
+			return rest_ensure_response( array( 'success' => true ) );
+
 
 		}
 

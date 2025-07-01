@@ -28,26 +28,25 @@ $texts = apply_filters( 'wffn_thankyou_customer_info_text', array(
 		<?php
 		echo '<div class="wfty_2_col_left">';
 		if ( ! empty( $billing_email ) ) {
-			echo '<div class="wfty_text_bold"><strong>' . $texts['email'] . '</strong></div>';
+			echo '<div class="wfty_text_bold"><strong>' . esc_html($texts['email']) . '</strong></div>';
 			echo '<div class="wfty_view">' . esc_html( $billing_email ) . '</div>';
 		}
 		echo '</div>';
 		echo '<div class="wfty_2_col_right">';
 		if ( ! empty( $billing_phone ) ) {
-			echo '<div class="wfty_text_bold"><strong>' . $texts['phone'] . '</strong></div>';
+			echo '<div class="wfty_text_bold"><strong>' . esc_html($texts['phone']) . '</strong></div>';
 			echo '<div class="wfty_view">' . esc_html( $billing_phone ) . '</div>';
 		}
 		echo '</div>';
 		echo '<div class="wfty_clear_15"></div>';
 		$billing_address     = $this->order->get_formatted_billing_address(); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-		$billing_address_raw = $this->order->get_address(); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 
 		/** check if only billing */
 		if ( ! empty( $billing_address ) ) {
 			?>
             <div class="wfty_2_col_left">
                 <div class="wfty_text">
-                    <div class="wfty_text_bold"><strong><?php echo $texts['billing_address']; ?></strong></div>
+                    <div class="wfty_text_bold"><strong><?php echo esc_html($texts['billing_address']); ?></strong></div>
                     <div class="wfty_view">
 						<?php
 						echo wp_kses_post( $billing_address );
@@ -60,7 +59,6 @@ $texts = apply_filters( 'wffn_thankyou_customer_info_text', array(
 
 		/** show shipping address */
 		$shipping_address     = $this->order->get_formatted_shipping_address(); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-		$shipping_address_raw = $this->order->get_address( 'shipping' ); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 
 		$shipping_option = get_option( 'woocommerce_ship_to_countries' );
 
@@ -69,7 +67,7 @@ $texts = apply_filters( 'wffn_thankyou_customer_info_text', array(
 			?>
             <div class="<?php echo esc_attr( $extra_class ); ?>">
                 <div class="wfty_text">
-                    <div class="wfty_text_bold"><strong><?php echo $texts['shipping_address']; ?></strong></div>
+                    <div class="wfty_text_bold"><strong><?php echo esc_html($texts['shipping_address']); ?></strong></div>
                     <div class="wfty_view">
 						<?php
 						echo wp_kses_post( $shipping_address );
@@ -89,4 +87,9 @@ $texts = apply_filters( 'wffn_thankyou_customer_info_text', array(
 		}
 		?>
     </div>
+	<?php do_action( 'woocommerce_order_details_after_customer_details', $this->order ); ?>
+
 </div>
+<?php
+WFFN_Core()->thank_you_pages->execute_wc_thankyou_hooks(true);
+

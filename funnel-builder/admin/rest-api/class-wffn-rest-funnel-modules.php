@@ -813,7 +813,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 		}
 
 		public function upsell_get_customsettings( $values, $upsell_id ) {
-			WFOCU_Core()->funnels->setup_funnel_options($upsell_id);
+			WFOCU_Core()->funnels->setup_funnel_options( $upsell_id );
 			$prop_image = WFOCU_PLUGIN_URL . '/assets/img/funnel-settings-prop.jpg';
 
 
@@ -932,12 +932,12 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				],
 
 				'upsell_failed_recovery' => [
-					'title'          => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
-					'heading'        => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
-					'hint'           => __( 'In upsell recovery feature we show credit card fields to customers in case the charge attempt fails. <a href="'.admin_url('admin.php?page=bwf&path=/settings/stripe').'" data-link="react">Click here to activate Funnelkit Stripe</a>', 'funnel-builder' ),
+					'title'   => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
+					'heading' => __( 'Request Card Update on Upsell Failure', 'funnel-builder' ),
+					'hint'    => __( 'In upsell recovery feature we show credit card fields to customers in case the charge attempt fails. <a href="' . admin_url( 'admin.php?page=bwf&path=/settings/stripe' ) . '" data-link="react">Click here to activate Funnelkit Stripe</a>', 'funnel-builder' ),
 
-					'slug'           => 'upsell_failed_recovery',
-					'fields'         => [
+					'slug'     => 'upsell_failed_recovery',
+					'fields'   => [
 						0 => [
 							'key'         => 'upsell_failed_recovery_heading',
 							'type'        => 'textInput',
@@ -957,8 +957,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 							'placeholder' => '',
 						],
 					],
-					'priority'       => 15,
-					'values'         => [
+					'priority' => 15,
+					'values'   => [
 						'upsell_failed_recovery_heading'      => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_heading' ),
 						'upsell_failed_recovery_btn_text'     => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_btn_text' ),
 						'upsell_failed_recovery_btn_fail_msg' => WFOCU_Core()->funnels->get_funnel_option( 'upsell_failed_recovery_btn_fail_msg' ),
@@ -1452,7 +1452,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						}
 
 						$all_builder = array(
-							'oxy'        => 'Oxygen',
+							'oxy'        => 'Oxygen Classic',
 							'wp_editor'  => 'Other',
 							'customizer' => 'Customizer',
 							'pre_built'  => 'Customizer',
@@ -1538,7 +1538,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 					if ( 'WFOCU_Common' === $page_class_instance && 'wc_upsells' === $type ) {
 						$custom_settings = get_post_meta( $step_id, '_wfocu_settings', true );
-						$tabs            = $this->upsell_get_customsettings( $custom_settings,$step_id );
+						$tabs            = $this->upsell_get_customsettings( $custom_settings, $step_id );
 					}
 
 					if ( 'WFOCU_Common' === $page_class_instance && 'offer' === $type ) {
@@ -2016,7 +2016,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 					ob_end_clean();
 
-					$customization_tab['preview'] = [
+					$customization_tab['preview']      = [
 						'inline' => $inline_form,
 						'popup'  => $pop_form,
 					];
@@ -2462,9 +2462,9 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				'wfacp_form_section_embed_forms_2_field_border_color'                           => '#3d2828',
 				'wfacp_form_section_embed_forms_2_field_focus_color'                            => '#235c7f',
 				'wfacp_form_section_embed_forms_2_field_input_color'                            => '#4e0d0d',
-				'wfacp_form_section_payment_methods_heading'                                    => __( 'Payment method', 'woofunnels-aero-checkout' ),
+				'wfacp_form_section_payment_methods_heading'                                    => __( 'Payment method', 'woocommerce' ),
 				'wfacp_form_section_payment_methods_sub_heading'                                => '',
-				'wfacp_form_section_embed_forms_2_btn_order-place_btn_text'                     => 'PLACE ORDER NOW',
+				'wfacp_form_section_embed_forms_2_btn_order-place_btn_text'                     => __( 'Place order', 'woocommerce' ),
 				'wfacp_form_section_embed_forms_2_btn_order-place_fs'                           => 26,
 				'wfacp_form_section_embed_forms_2_btn_order-place_top_bottom_padding'           => '17',
 				'wfacp_form_section_embed_forms_2_btn_order-place_left_right_padding'           => '25',
@@ -3057,7 +3057,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 							$additional_tabs[] = [
 								'mainHeading' => __( 'Optin Page Settings', 'funnel-builder' ),
 								'heading'     => __( 'Form Shortcodes', 'funnel-builder' ),
-								'title'       => __( '', 'funnel-builder' ),
+								'title'       => '',
 								'fields'      => [
 									[
 										'label' => __( 'Optin Form Shortcode', 'funnel-builder' ),
@@ -3075,7 +3075,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						$additional_tabs[] = [
 							'mainHeading' => __( 'Optin Page Settings', 'funnel-builder' ),
 							'heading'     => __( 'Personalization Shortcodes', 'funnel-builder' ),
-							'title'       => __( '', 'funnel-builder' ),
+							'title'       => '',
 							'fields'      => [
 								[
 									'label' => __( 'Optin First Name', 'funnel-builder' ),
@@ -3110,7 +3110,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 							$additional_tabs[] = [
 								'mainHeading' => __( 'Thank You Page Settings', 'funnel-builder' ),
 								'heading'     => __( 'Order Shortcodes', 'funnel-builder' ),
-								'title'       => __( '', 'funnel-builder' ),
+								'title'       => '',
 								'fields'      => [
 									[
 										'label' => __( 'Order Details', 'funnel-builder' ),
@@ -3202,7 +3202,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						$additional_tabs[] = [
 							'mainHeading' => __( 'Thank You Page Settings', 'funnel-builder' ),
 							'heading'     => __( 'Personalization Shortcodes', 'funnel-builder' ),
-							'title'       => __( '', 'funnel-builder' ),
+							'title'       => '',
 							'fields'      => $fields
 						];
 
@@ -3248,8 +3248,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 					case 'landing':
 						$additional_tabs[] = [
 							'mainHeading' => __( 'Sale Page Settings', 'funnel-builder' ),
-							'heading'     => __( '', 'funnel-builder' ),
-							'title'       => __( '', 'funnel-builder' ),
+							'heading'     => __( 'Shortcodes', 'funnel-builder' ),
+							'title'       => '',
 							'fields'      => [
 								[
 									'label' => __( 'Next Step Button Link', 'funnel-builder' ),
@@ -3297,7 +3297,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 												continue;
 											}
 
-											$shortcode[] = [ 'heading' => wc_get_product( $product_id )->get_title() ];
+											$shortcode[] = [ 'heading' => __( 'Product', 'funnel-builder' ) . ': ' . wc_get_product( $product_id )->get_title() ];
 
 											foreach ( $offer_shortcode as $item ) {
 												if ( isset( $item['code'] ) && isset( $item['code']['multi'] ) ) {
@@ -3317,7 +3317,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 											if ( $product_count === 1 ) {
 												$additional_tabs[] = [
 													'mainHeading' => __( 'Upsell Page Settings', 'funnel-builder' ),
-													'heading'     => sprintf( __( 'Offer Settings', 'funnel-builder' ), wc_get_product( $product_id )->get_title() ),
+													'heading'     => __( 'Shortcodes', 'funnel-builder' ),
 													'title'       => sprintf( __( 'Using page builders to build custom upsell pages? <a href=%s target="_blank">Read this guide to learn more</a> about using Button widgets of your page builder <a href=%s target="_blank">Personalization shortcodes</a>', 'woofunnels-upstroke-one-click-upsell' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designed-one-click-upsell-pages/' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designs/#order-personalization-shortcodes' ) ),
 													'fields'      => $shortcode
 												];
@@ -3347,6 +3347,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 						$custom_shortcode = [
 							'type'   => 'shortcode',
+							'heading' => __( 'Shortcodes', 'funnel-builder' ),
 							'fields' => [
 								[
 									'label' => __( 'Form Shortcode', 'funnel-builder' ),

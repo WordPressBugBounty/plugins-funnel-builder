@@ -205,7 +205,6 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\OptinPages\Optin_Form' ) ) {
 					),
 				),
 				'default'  => '0px',
-				'required' => array( 'show_labels', '=', true ),
 			);
 
 			$this->controls['separatorLabel'] = array(
@@ -225,7 +224,6 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\OptinPages\Optin_Form' ) ) {
 						'selector' => '.bwfac_form_sec > label, .bwfac_form_sec .wfop_input_cont > label',
 					),
 				),
-				'required' => array( 'show_labels', '=', true ),
 			);
 
 			$this->controls['mark_required_color'] = array(
@@ -238,7 +236,6 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\OptinPages\Optin_Form' ) ) {
 						'selector' => '.bwfac_form_sec > label > span, .bwfac_form_sec .wfop_input_cont > label > span',
 					),
 				),
-				'required' => array( 'show_labels', '=', true ),
 			);
 
 			$this->controls['label_typography'] = array(
@@ -253,7 +250,6 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\OptinPages\Optin_Form' ) ) {
 					),
 				),
 				'inline'   => true,
-				'required' => array( 'show_labels', '=', true ),
 			);
 
 			$this->controls['separatorInput'] = array(

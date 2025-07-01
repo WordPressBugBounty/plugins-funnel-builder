@@ -29,13 +29,13 @@ $pageLayout = [
 	'fieldsets'                   => [
 		'single_step' => array(
 			array(
-				'name'        => __( 'Contact Information', 'funnel-builder' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Contact Information', 'woocommerce' )),
 				'class'       => '',
 				'is_default'  => 'yes',
 				'sub_heading' => '',
 				'fields'      => array(
 					array(
-						'label'        => __( 'Email', 'funnel-builder' ),
+						'label'        => __( 'Email', 'woocommerce' ),
 						'required'     => 'true',
 						'type'         => 'email',
 						'class'        => array(
@@ -51,7 +51,7 @@ $pageLayout = [
 						'placeholder'  => '',
 					),
 					array(
-						'label'        => __( 'First name', 'funnel-builder' ),
+						'label'        => __( 'First name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => array(
 							0 => 'form-row-first',
@@ -65,7 +65,7 @@ $pageLayout = [
 
 					),
 					array(
-						'label'        => __( 'Last name', 'funnel-builder' ),
+						'label'        => __( 'Last name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => array(
 							0 => 'form-row-last',
@@ -81,7 +81,7 @@ $pageLayout = [
 					WFACP_Common::get_single_address_fields(),
 
 					array(
-						'label'        => __( 'Phone', 'funnel-builder' ),
+						'label'        => __( 'Phone', 'woocommerce' ),
 						'type'         => 'tel',
 						'class'        => array( 'form-row-wide' ),
 						'id'           => 'billing_phone',
@@ -96,7 +96,7 @@ $pageLayout = [
 			),
 			array(
 
-				'name'        => __( 'Shipping Method', 'funnel-builder' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Shipping Method', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [ 'shipping_calculator' => true ],
@@ -108,7 +108,7 @@ $pageLayout = [
 
 
 			array(
-				'name'        => __( 'Order Summary', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => array(

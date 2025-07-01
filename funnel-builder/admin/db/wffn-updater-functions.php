@@ -10,12 +10,13 @@ if ( ! function_exists( 'wffn_handle_store_checkout_config' ) ) {
 		}
 
 		/** Remove _is_global meta if any funnel exists */
-		$sql_query     = "SELECT bwf_funnel_id as id FROM {table_name_meta} WHERE meta_key = '_is_global'";
+		global $wpdb;
+		$sql_query     = $wpdb->prepare( "SELECT bwf_funnel_id as id FROM {table_name_meta} WHERE meta_key = %s",'_is_global' );
 		$found_funnels = WFFN_Core()->get_dB()->get_results( $sql_query );
 		if ( is_array( $found_funnels ) && count( $found_funnels ) > 0 && isset( $found_funnels[0]['id'] ) && absint( $found_funnels[0]['id'] ) > 0 ) {
 			foreach ( $found_funnels as $funnel ) {
 				if ( isset( $funnel['id'] ) ) {
-					$del_query = "DELETE FROM {table_name_meta} WHERE bwf_funnel_id = " . $funnel['id'] . " AND meta_key = '_is_global'";
+					$del_query = $wpdb->prepare( "DELETE FROM {table_name_meta} WHERE bwf_funnel_id = %d AND meta_key = '_is_global'", $funnel['id'] );
 					WFFN_Core()->get_dB()->delete_multiple( $del_query );
 				}
 			}
@@ -42,7 +43,7 @@ if ( ! function_exists( 'wffn_handle_store_checkout_config' ) ) {
 
 		WFFN_Common::update_store_checkout_meta( $get_funnel_id, 1 );
 
-		/** we need to remove the old settings here since we are usinng filter for frontend execution
+		/** we need to remove the old settings here since we are using filter for frontend execution
 		 * If the settings exists then the current setup will always show
 		 */
 
@@ -77,7 +78,6 @@ if ( ! function_exists( 'wffn_alter_conversion_table' ) ) {
 			return;
 		}
 
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql_query = "
 				ALTER TABLE {$table_name}
 				ADD `checkout_total` double DEFAULT 0 NOT NULL AFTER value,
@@ -301,7 +301,7 @@ if ( ! function_exists( 'wffn_update_email_default_settings' ) ) {
 		);
 
 
-		$users         = get_users( array( 'role' => 'administrator' ) );
+		$users         = get_users( array( 'role' => 'administrator', 'number' => 10 ) );
 		$user_selector = array();
 
 		foreach ( $users as $user ) {
@@ -335,10 +335,7 @@ if ( ! function_exists( 'wffn_set_default_value_in_autoload_option' ) ) {
 				BWF_Admin_General_Settings::get_instance()->update_global_settings_fields( array( 'fb_pixel_key' => '' ) );
 			}
 
-			$global_funnel_id = get_option( '_bwf_global_funnel' );
-			if ( empty( $global_funnel_id ) && $global_funnel_id !== 0 ) {
-				update_option( '_bwf_global_funnel', 0, true );
-			}
+			
 
 			/**
 			 * Update notice option on onload

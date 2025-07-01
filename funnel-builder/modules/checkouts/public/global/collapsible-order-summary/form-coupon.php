@@ -18,6 +18,7 @@ if ( $this->template_type == 'embed_form' ) {
 
 $wfacp_sidebar_coupon_text = apply_filters( 'wfacp_mini_cart_coupon_text', __( 'Coupon code', 'woocommerce' ) );
 $apply_coupon_button_text  = apply_filters( 'wfacp_collapsible_apply_coupon_button_text', __( 'Apply', 'woocommerce' ) );
+
 if ( ! $is_disable_coupon_sidebar || false == wc_string_to_bool( $is_disable_coupon_sidebar ) ) {
 	return;
 }

@@ -214,9 +214,18 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 		 * @param bool $httponly Whether the cookie is only accessible over HTTP, not scripting languages like JavaScript. @since 3.6.0.
 		 */
 		public function set_cookie( $name, $value, $expire = 0, $secure = false, $httponly = false ) {
-			if ( self::is_cli() || self::is_cron() || self::is_rest() ) {
+			/**
+			 * Exclude wffn front rest api call form
+			 */
+			$wffn_front_api = false;
+			if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
+				$wffn_front_api = strpos( $_SERVER['REQUEST_URI'], 'wffn/front' ) !== false;//phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			}
+
+			if ( ! $wffn_front_api && ( self::is_cli() || self::is_cron() || self::is_rest() ) ) {
 				return;
 			}
+
 			if ( headers_sent() ) {
 				WFFN_Core()->logger->log( "unable to set up cookie, headers sent" );
 

@@ -173,6 +173,7 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 		}
 
 
+
 		public static function update_cart_item_quantity( $post ) {
 
 			$resp     = [
@@ -207,6 +208,10 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 			}
 			WFACP_Common::disable_wcct_pricing();
 			$cart_item = WC()->cart->get_cart_item( $cart_key );
+			if ( empty( $cart_item ) ) {
+
+				return ( $resp );
+			}
 			/**
 			 * @var $product_obj WC_Product;
 			 */
@@ -224,14 +229,17 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 					}
 				}
 			}
-			$product_obj  = $cart_item['data'];
+			$product_obj = $cart_item['data'];
+			if ( is_null( $product_obj ) || ! $product_obj instanceof WC_Product ) {
+				return $resp;
+			}
 			$stock_status = WFACP_Common::check_manage_stock( $product_obj, $new_qty );
 			if ( false == $stock_status ) {
+
 				/* Add the wc Notice */
 				$current_session_order_id = isset( WC()->session->order_awaiting_payment ) ? absint( WC()->session->order_awaiting_payment ) : 0;
 				$held_stock               = wc_get_held_stock_quantity( $product_obj, $current_session_order_id );
 				$resp['error']            = sprintf( __( 'Sorry, we do not have enough "%1$s" in stock to fulfill your order (%2$s available). We apologize for any inconvenience caused.', 'woocommerce' ), $product_obj->get_name(), wc_format_stock_quantity_for_display( $product_obj->get_stock_quantity() - $held_stock, $product_obj ) );
-
 
 				$resp['qty']      = $cart_item['quantity'];
 				$resp['status']   = false;
@@ -392,6 +400,13 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 				remove_all_filters( 'woocommerce_coupons_enabled' );
 				do_action( 'wfacp_before_coupon_apply', $bump_action_data );
 				$status = true;
+				add_filter( 'woocommerce_coupon_message', function ( $msg, $msg_code ) {
+					if ( 200 == $msg_code ) {
+						return '';
+					}
+
+					return $msg;
+				}, 10, 2 );
 				if ( apply_filters( 'wfacp_apply_coupon_via_ajax', true, $bump_action_data ) ) {
 					$status = WC()->cart->add_discount( sanitize_text_field( $bump_action_data['coupon_code'] ) );
 				} else {

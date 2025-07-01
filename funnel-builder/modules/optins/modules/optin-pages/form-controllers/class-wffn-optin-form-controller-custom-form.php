@@ -239,9 +239,12 @@ if ( ! class_exists( 'WFFN_Optin_Form_Controller_Custom_Form' ) ) {
 			}
 
 			if ( isset( $db_options['op_recaptcha_site'] ) && $db_options['op_recaptcha_site'] !== '' ) {
+				$captcha_id       = ( 1 >= $this->render_count ) ? "wffn-captcha-response" : "wffn-captcha-response_" . $this->render_count;
+				$captcha_callback = ( 1 >= $this->render_count ) ? "wffn_captchaResponse" : "wffn_captchaResponse_" . $this->render_count;
+
 				$html .= '<!-- Google reCAPTCHA widget -->';
-				$html .= '<div class="g-recaptcha" data-sitekey="' . $db_options['op_recaptcha_site'] . '" data-badge="bottomright" data-size="invisible" data-callback="wffn_captchaResponse"></div>';
-				$html .= '<input type="hidden" id="wffn-captcha-response" name="wffn-captcha-response" />';
+				$html .= '<div class="g-recaptcha" data-sitekey="' . $db_options['op_recaptcha_site'] . '" data-badge="bottomright" data-size="invisible" data-callback="' . $captcha_callback . '"></div>';
+				$html .= '<input type="hidden" id="' . $captcha_id . '" name="wffn-captcha-response" />';
 
 			}
 
@@ -251,16 +254,25 @@ if ( ! class_exists( 'WFFN_Optin_Form_Controller_Custom_Form' ) ) {
 		public function add_recaptcha_script() {
 			$db_options = WFOPP_Core()->optin_pages->get_option();
 			if ( ! WFOPP_Core()->optin_pages->form_builder->is_preview && $db_options['op_recaptcha'] && $db_options['op_recaptcha'] === 'true' ) {
+				$captcha_id       = ( 1 >= $this->render_count ) ? "wffn-captcha-response" : "wffn-captcha-response_" . $this->render_count;
+				$captcha_callback = ( 1 >= $this->render_count ) ? "wffn_captchaResponse" : "wffn_captchaResponse_" . $this->render_count;
 
+				if ( 1 === $this->render_count ) {
+					echo '<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback" async defer></script>';//phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+				}
 				?>
-                <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback" async defer></script> <?php //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
                 <script>
+					<?php if ( 1 === $this->render_count ) { ?>
                     var onloadCallback = function () {
                         grecaptcha.execute();
                     };
-
-                    function wffn_captchaResponse(response) {
-                        document.getElementById('wffn-captcha-response').value = response;
+					<?php } ?>
+                    try {
+                        function <?php echo esc_js( $captcha_callback ) ?>(response) {<?php //phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
+                            document.getElementById(<?php echo esc_js($captcha_id) ?>).value = response;
+                        }
+                    }catch (error) {
+                        console.log( error );
                     }
                 </script>
 

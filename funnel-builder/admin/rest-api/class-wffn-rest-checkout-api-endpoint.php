@@ -393,7 +393,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			$enhanced_phone_field['save_phone_number_type']             = ! empty( $value['save_phone_number_type'] ) ? wffn_clean( $value['save_phone_number_type'] ) : 'false';
 			$enhanced_phone_field['phone_helping_text']                 = ! empty( $value['phone_helping_text'] ) ? wffn_clean( $value['phone_helping_text'] ) : '';
 
-			$enhanced_address_field['enable_address_field_number_validation']  = ! empty( $value['enable_address_field_number_validation'] ) ? wffn_clean( $value['enable_address_field_number_validation'] ) : 'true';
+			$enhanced_address_field['enable_address_field_number_validation']  = ! empty( $value['enable_address_field_number_validation'] ) ? wffn_clean( $value['enable_address_field_number_validation'] ) : 'false';
 			$enhanced_address_field['address_field_number_validation_message'] = ! empty( $value['address_field_number_validation_message'] ) ? wffn_clean( $value['address_field_number_validation_message'] ) : $display_house_number_message;
 
 			$preview_section['preview_section_heading']                 = ! empty( $value['preview_section_heading'] ) ? wffn_clean( $value['preview_section_heading'] ) : '';
@@ -440,11 +440,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			$auto_fill_url['auto_fill_text_area']           = ! empty( $value['auto_fill_text_area'] ) ? wffn_clean( $value['auto_fill_text_area'] ) : $auto_fill_url['auto_fill_url_product_qty_url'];
 			$links                                          = [];
 
-			$links[] = "<a target='_blank' href='//buildwoofunnels.com/docs/aerocheckout/optimizations/smart-buttons-for-express-checkout/'>Stripe Apple Pay</a>";
-			$links[] = "<a target='_blank' href='//buildwoofunnels.com/docs/aerocheckout/optimizations/smart-buttons-for-express-checkout/'>Stripe Google Pay</a>";
-			$links[] = "<a target='_blank' href='//buildwoofunnels.com/docs/aerocheckout/optimizations/smart-buttons-for-express-checkout/'>PayPal Express</a>";
+			$links[] = "<a target='_blank' href='//funnelkit.com/docs/checkout-pages/optimizations/smart-buttons-for-express-checkout/'>Stripe Apple Pay</a>";
+			$links[] = "<a target='_blank' href='//funnelkit.com/docs/checkout-pages/optimizations/smart-buttons-for-express-checkout/'>Stripe Google Pay</a>";
+			$links[] = "<a target='_blank' href='//funnelkit.com/docs/checkout-pages/optimizations/smart-buttons-for-express-checkout/'>PayPal Express</a>";
 
-			$amazonelink = "<a target='_blank' href='//buildwoofunnels.com/docs/aerocheckout/optimizations/how-to-configure-amazon-pay/'>Amazon Pay</a>";
+			$amazonelink = "<a target='_blank' href='//funnelkit.com/docs/checkout-pages/optimizations/how-to-configure-amazon-pay/'>Amazon Pay</a>";
 
 			$links_string = implode( ', ', $links );
 
@@ -1401,7 +1401,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					}
 					$product_fields['products']           = $products;
 					$product_fields['default_products']   = $products;
-					$product_fields['label']              = ! empty( $fields['product_fields']['label'] ) ? $fields['product_fields']['label'] : __( "Products", 'funnel-builder' );
+					$product_fields['label']              = ! empty( $fields['product_fields']['label'] ) ? $fields['product_fields']['label'] : __( "Products", 'woocommerce' );
 					$fields['product_fields']             = $product_fields;
 					$fields['product_fields']['settings'] = isset( $switcher_settings['settings'] ) ? $switcher_settings['settings'] : [];
 
@@ -1424,15 +1424,17 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 				$resp['data']['fields_data']['third_party'][] = [
 					'id'             => 'wc_advanced_order_field',
 					'type'           => 'wfacp_html',
-					'label'          => __( 'Extra Advanced Fields' ),
+					'label'          => __( 'Extra Advanced Fields', 'woofunnels-aero-checkout' ),
 					'placeholder'    => '',
-					'data_label'     => __( 'Extra Advanced Fields' ),
+					'data_label'     => __( 'Extra Advanced Fields', 'woofunnels-aero-checkout' ),
 					'required'       => false,
 					'default'        => '',
 					'field_type'     => 'advanced',
 					'is_wfacp_field' => 'true',
 					'class'          => [ 'wfacp-col-full', 'wfacp-form-control-wrapper', 'wfacp_date_field' ],
 				];
+
+
 
 
 				/* Registed Advanced field types */
@@ -1837,7 +1839,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			$fields = array();
 
 			if ( absint( $step_id ) > 0 && class_exists( 'WFACP_Common' ) ) {
-
+				do_action( 'funnelkit_rest_checkout_fields' );
 				$afield            = array();
 				$fields['basic']   = apply_filters( 'wfacp_admin_basic_fields', WFACP_Common::get_address_fields() );
 				$fields['product'] = WFACP_Common::get_product_field();
@@ -1902,7 +1904,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					}
 
 					if ( 'order_comments' === $_field['id'] ) {
-						$_field['data_label'] = __( 'Order Notes', 'woofunnels-aero-checkout' );
+						$_field['data_label'] = $_field['label'];
 					}
 
 					if ( isset( $_field['show_custom_field_at_thankyou'] ) ) {
@@ -2427,7 +2429,6 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 
 					$all_data = wffn_rest_api_helpers()->get_step_post( $step_id, true );
 
-					$resp['success']   = true;
 					$resp['step_data'] = is_array( $all_data ) && isset( $all_data['step_data'] ) ? $all_data['step_data'] : false;
 					$resp['step_list'] = is_array( $all_data ) && isset( $all_data['step_list'] ) ? $all_data['step_list'] : false;
 

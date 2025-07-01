@@ -13,11 +13,10 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		public static $recurring_actions_db = [];
 
 		public static function init() {
-			add_action( 'wp', array( __CLASS__, 'setup_schedule_to_remove_orphaned_transients' ) );
 			/**
 			 * schedule setup to remove expired transients
 			 */
-			add_action( 'wffn_remove_orphaned_transients', array( __CLASS__, 'remove_wffn_logs_and_transients' ), 999999 );
+			add_action( 'fk_fb_every_day', array( __CLASS__, 'remove_wffn_logs_and_transients' ), 999999 );
 			add_filter( 'bwf_fb_templates', array( __CLASS__, 'update_template_list' ), 10, 1 );
 		}
 
@@ -631,7 +630,7 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 					if ( ! version_compare( $oxy_builder_version, $supported_version, '>=' ) ) {
 						$response['is_old_version'] = 'yes';
 						$response['version']        = $oxy_builder_version;
-						$response['error']          = sprintf( __( 'Site has an older version of Oxygen Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
+						$response['error']          = sprintf( __( 'Site has an older version of Oxygen Classic Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
 					}
 				}
 
@@ -687,95 +686,83 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		}
 
 
-		public static function setup_schedule_to_remove_orphaned_transients() {
-			if ( false === wp_next_scheduled( 'wffn_remove_orphaned_transients' ) ) {
-				wp_schedule_event( time(), 'daily', 'wffn_remove_orphaned_transients' );
-			}
-		}
-
-
 		/**
 		 * Remove logs files and orphaned transients
 		 * @return void
 		 */
 		public static function remove_wffn_logs_and_transients() {
-			if ( ! class_exists( 'WooFunnels_File_Api' ) ) {
-				return;
-			}
 
-			clearstatcache();
-			$file_api = new WooFunnels_File_Api( 'funnel-builder-logs' );
+			try {
+				if ( ! class_exists( 'WooFunnels_File_Api' ) ) {
+					return;
+				}
+				clearstatcache();
+				$file_api            = new WooFunnels_File_Api( 'funnel-builder-logs' );// Define directories to process
+				$log_directories     = [
+					$file_api->woofunnels_core_dir . '/funnel-builder-logs'
+				];
+				$transient_directory = $file_api->woofunnels_core_dir . '/wffn-transient';
+				$upload              = wp_upload_dir();
+				$folder_path         = $upload['basedir'] . '/woofunnels';// Delete old woofunnels folder
+				if ( is_dir( $folder_path ) ) {
+					$file_api->delete_folder( $folder_path, true );
+				}
+				$log_cutoff_time       = strtotime( '-4 days' );
+				$transient_cutoff_time = strtotime( '-2 hours' );
+				self::$start_time      = time();// Remove old log files
+				foreach ( $log_directories as $log_dir ) {
+					if ( is_dir( $log_dir ) ) {
+						$dir = @opendir( $log_dir . '/' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
 
-			// Define directories to process
-			$log_directories = [
-				$file_api->woofunnels_core_dir . '/funnel-builder-logs'
-			];
-
-			$transient_directory = $file_api->woofunnels_core_dir . '/wffn-transient';
-
-			$upload      = wp_upload_dir();
-			$folder_path = $upload['basedir'] . '/woofunnels';
-
-			// Delete old woofunnels folder
-			if ( is_dir( $folder_path ) ) {
-				$file_api->delete_folder( $folder_path, true );
-			}
-
-			$log_cutoff_time       = strtotime( '-4 days' );
-			$transient_cutoff_time = strtotime( '-2 hours' );
-
-			self::$start_time = time();
-
-			// Remove old log files
-			foreach ( $log_directories as $log_dir ) {
-				if ( is_dir( $log_dir ) ) {
-					$dir = @opendir( $log_dir . '/' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-
-					if ( empty( $dir ) ) {
-						continue;
-					}
-
-					while ( false !== ( $file = @readdir( $dir ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
-
-						if ( $file === '.' || $file === '..' ) {
+						if ( empty( $dir ) ) {
 							continue;
 						}
 
-						$file_path = $log_dir . '/' . $file;
-						if ( @filemtime( $file_path ) <= $log_cutoff_time ) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-							$file_api->delete( $file_path );
-						}
+						while ( false !== ( $file = @readdir( $dir ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
 
-						if ( true === self::time_exceeded() || true === self::memory_exceeded() ) {
-							break;
+							if ( $file === '.' || $file === '..' ) {
+								continue;
+							}
+
+							$file_path = $log_dir . '/' . $file;
+							if ( @filemtime( $file_path ) <= $log_cutoff_time ) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+								$file_api->delete( $file_path );
+							}
+
+							if ( true === self::time_exceeded() || true === self::memory_exceeded() ) {
+								break;
+							}
 						}
+						closedir( $dir );
 					}
-					closedir( $dir );
-				}
-			}
+				}// Remove orphaned transients
+				if ( is_dir( $transient_directory ) ) {
+					$dir = @opendir( $transient_directory . '/' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
 
-			// Remove orphaned transients
-			if ( is_dir( $transient_directory ) ) {
-				$dir = @opendir( $transient_directory . '/' ); // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+					if ( ! empty( $dir ) ) {
+						while ( false !== ( $file = @readdir( $dir ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
 
-				if ( ! empty( $dir ) ) {
-					while ( false !== ( $file = @readdir( $dir ) ) ) { // phpcs:ignore Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition,Generic.PHP.NoSilencedErrors.Forbidden, WordPress.CodeAnalysis.AssignmentInCondition
+							if ( $file === '.' || $file === '..' ) {
+								continue;
+							}
 
-						if ( $file === '.' || $file === '..' ) {
-							continue;
+							$file_path = $transient_directory . '/' . $file;
+							if ( @filemtime( $file_path ) <= $transient_cutoff_time ) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
+								$file_api->delete( $file_path );
+							}
+
+							if ( true === self::time_exceeded() || true === self::memory_exceeded() ) {
+								break;
+							}
 						}
-
-						$file_path = $transient_directory . '/' . $file;
-						if ( @filemtime( $file_path ) <= $transient_cutoff_time ) { // phpcs:ignore Generic.PHP.NoSilencedErrors.Forbidden
-							$file_api->delete( $file_path );
-						}
-
-						if ( true === self::time_exceeded() || true === self::memory_exceeded() ) {
-							break;
-						}
+						closedir( $dir );
 					}
-					closedir( $dir );
 				}
+				if ( class_exists( 'WFOCU_Common' ) ) {
+					WFOCU_Common::remove_orphaned_transients();
+				}
+			} catch ( Exception|Error $e ) {
+
 			}
 		}
 
@@ -1358,8 +1345,10 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 			if ( true === $filter ) {
 				$filters = [];
 				foreach ( $refs as $key => $ref ) {
+
 					$filters[ $key ] = ucwords( $key );
 				}
+				$filters['direct'] = __( 'Direct', 'funnel-builder' );
 
 				return $filters;
 			}
@@ -1558,20 +1547,21 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 
 			$dates['from_date'] = $date->format( 'Y-m-d' );
 
+			$last_month = clone $date;
+
 			$date->modify( 'last day of this month' );
 			$dates['to_date'] = $date->format( 'Y-m-d' );
 
-			$date->modify( 'last Month' );
-			$date->setDate( $date->format( 'Y' ), $date->format( 'm' ), 1 );
+			$last_month->modify( 'last Month' );
+			$last_month->setDate( $last_month->format( 'Y' ), $last_month->format( 'm' ), 1 );
 
-			$dates['from_date_previous'] = $date->format( 'Y-m-d' );
+			$dates['from_date_previous'] = $last_month->format( 'Y-m-d' );
 
-			$date->modify( 'last day of this month' );
-			$dates['to_date_previous'] = $date->format( 'Y-m-d' );
+			$last_month->modify( 'last day of this month' );
+			$dates['to_date_previous'] = $last_month->format( 'Y-m-d' );
 
 			return $dates;
 		}
-
 		/**
 		 * Get last day date range
 		 *
@@ -1608,11 +1598,41 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		public static function get_store_time( $hours = 0, $mins = 0, $sec = 0 ) {
 			$timezone = new DateTimeZone( wp_timezone_string() );
 			$date     = new DateTime();
-			$date->modify( '+1 days' );
 			$date->setTimezone( $timezone );
 			$date->setTime( $hours, $mins, $sec );
 
 			return $date->getTimestamp();
+		}
+		/**
+		 * get Stripe State
+		 *
+		 * @return array
+		 */
+
+		public static function stripe_state() {
+
+			$all_plugins = get_plugins();
+
+			$other_stripe_exists = ( defined( 'WC_STRIPE_VERSION' ) || defined( 'WC_STRIPE_PLUGIN_FILE_PATH' ) );
+
+			if ( isset( $all_plugins['funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php'] ) ) {
+
+				if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' ) ) {
+					if ( \FKWCS\Gateway\Stripe\Admin::get_instance()->is_stripe_connected() ) {
+						return [ 'status' => 'connected' ];
+
+					} else {
+						return [ 'status' => 'not_connected', 'link' => \FKWCS\Gateway\Stripe\Admin::get_instance()->get_connect_url(), 'other_exists' => $other_stripe_exists ];
+
+					}
+
+				} else {
+					return [ 'status' => 'not_activated', 'other_exists' => $other_stripe_exists ];
+
+				}
+			} else {
+				return [ 'status' => 'not_installed', 'other_exists' => $other_stripe_exists ];
+			}
 		}
 	}
 

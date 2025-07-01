@@ -196,7 +196,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Divi' ) ) {
 				$instance = WFACP_Template_loader::get_instance();
 
 				remove_action( 'template_include', [ $instance, 'assign_template' ], 95 );
-				add_action( 'template_include', [ $instance, 'assign_template' ], 98.5 );
+				add_action( 'template_include', [ $instance, 'assign_template' ], 99 );
 			}
 		}
 

@@ -2,20 +2,29 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'WFACP_Compatibility_With_SendCloud_Shipping' ) ) {
+/*
+ * plugin Name: Sendcloud Shipping v2 by By Sendcloud B.V.
+ * https://www.sendcloud.com
+ *
+ */
 
+if ( ! class_exists( 'WFACP_Compatibility_With_SendCloud_Shipping' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_Compatibility_With_SendCloud_Shipping {
 		public function __construct() {
 
 			/* checkout page */
+			add_filter( 'wfacp_show_shipping_options', '__return_true' );
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'hook_sendcloud_shipping' ] );
 
 		}
 
 		public function hook_sendcloud_shipping() {
 
-			add_action( 'wfacp_checkout_after_order_review', 'sendcloudshipping_add_service_point_to_checkout' );
+			if ( function_exists( 'sendcloudshipping_add_service_point_to_checkout' ) ) {
+				add_action( 'wfacp_checkout_after_order_review', 'sendcloudshipping_add_service_point_to_checkout' );
+			}
+
 
 			add_action( 'wfacp_internal_css', [ $this, 'internal_css' ] );
 			add_action( 'wfacp_before_shipping_calculator_field', function () {

@@ -41,13 +41,11 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 			global $wpdb;
 
 			if ( ! empty( $search ) ) {
-				$query = "SELECT contact.id as cid, contact.f_name, contact.l_name, contact.email, optin.date, optin.opid FROM " . $wpdb->prefix . 'bwf_contact' . " AS contact JOIN " . $wpdb->prefix . 'bwf_optin_entries' . " AS optin ON contact.id=optin.cid WHERE optin.funnel_id=$funnel_id";
-
-				global $wpdb;
+				$query = $wpdb->prepare("SELECT contact.id as cid, contact.f_name, contact.l_name, contact.email, optin.date, optin.opid FROM " . $wpdb->prefix . 'bwf_contact' . " AS contact JOIN " . $wpdb->prefix . 'bwf_optin_entries' . " AS optin ON contact.id=optin.cid WHERE optin.funnel_id=%d", $funnel_id );
 				$query .= $wpdb->prepare( " AND (contact.f_name LIKE %s OR contact.email LIKE %s) group by contact.id", "%" . $search . "%", "%" . $search . "%" );
 
 			} else {
-				$query = "SELECT optin.cid FROM " . $wpdb->prefix . 'bwf_optin_entries' . " AS optin WHERE optin.funnel_id=$funnel_id";
+				$query = $wpdb->prepare("SELECT optin.cid FROM " . $wpdb->prefix . 'bwf_optin_entries' . " AS optin WHERE optin.funnel_id=%d", $funnel_id );
 			}
 
 			return $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -63,6 +61,8 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		public function get_all_contacts_records( $funnel_id, $cid ) {
 			global $wpdb;
 
+			$funnel_id = ! empty( $funnel_id ) ? absint( $funnel_id ) : $funnel_id;
+			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
 			$query = "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%dT%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . " as optin LEFT JOIN " . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.funnel_id=$funnel_id AND optin.cid= $cid  order by optin.date asc";
 
 			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -77,6 +77,8 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 
 		public function get_contacts_optin_records( $cid, $entry_ids ) {
 			global $wpdb;
+			$entry_ids = ! empty( $entry_ids ) ? esc_sql( $entry_ids ) : $entry_ids;
+			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
 			$query = "SELECT optin.id, optin.funnel_id as fid, optin.email as email, optin.step_id as 'object_id', optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%d %T') as 'date', COALESCE( p.post_title, '' ) as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . " as optin LEFT JOIN " . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.id IN ( $entry_ids ) AND optin.cid= $cid  order by optin.date asc";
 
 			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -96,7 +98,7 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		 */
 		public function get_all_contact_record_by_cid( $cid ) {
 			global $wpdb;
-
+			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
 			$query = "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%dT%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . " as optin LEFT JOIN " . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.cid= $cid  order by optin.date asc";
 
 			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -119,8 +121,10 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		 */
 		public function get_timeline_data_query( $limit, $order = 'DESC', $order_by = 'date', $can_union = true ) {
 			global $wpdb;
-			$limit = ( $limit !== '' ) ? " LIMIT " . $limit : '';
-
+			$limit    = ( $limit !== '' ) ? " LIMIT " . $limit : '';
+			$limit    = ! empty( $limit ) ? esc_sql( $limit ) : $limit;
+			$order    = ! empty( $order ) ? esc_sql( $order ) : $order;
+			$order_by = ! empty( $order_by ) ? esc_sql( $order_by ) : $order_by;
 			if ( $can_union ) {
 				return "SELECT stats.step_id as id, stats.funnel_id as 'fid', stats.cid as 'cid', '0' as 'order_id', '0' as 'total_revenue', 'optin' as 'type', posts.post_title as 'post_title', stats.date as date FROM " . $wpdb->prefix . "bwf_optin_entries AS stats LEFT JOIN " . $wpdb->prefix . "posts AS posts ON stats.step_id=posts.ID ORDER BY " . $order_by . " " . $order . " " . $limit;
 
@@ -145,7 +149,7 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 
 			$funnel_query = ( absint( $funnel_id ) > 0 ) ? " AND fid = " . $funnel_id . " " : '';
 
-			$e_query = "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE cid IN (" . $placeholdersForFavFruits . ") " . $funnel_query;
+			$e_query = "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE cid IN (" . esc_sql($placeholdersForFavFruits ) . ") " . $funnel_query;
 			$wpdb->query( $wpdb->prepare( $e_query, $cids ) ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
@@ -167,8 +171,8 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		 */
 		public function get_contacts_by_funnel_id( $funnel_id, $start_date, $end_date, $is_interval = '' ) {
 			global $wpdb;
-			$date           = ( '' !== $start_date && '' !== $end_date ) ? " AND `date` >= '" . $start_date . "' AND `date` < '" . $end_date . "' " : '';
-			$funnel_query   = ( 0 === intval( $funnel_id ) ) ? " AND funnel_id != " . $funnel_id . " " : " AND funnel_id = " . $funnel_id . " ";
+			$date           = ( '' !== $start_date && '' !== $end_date ) ? " AND `date` >= '" . esc_sql( $start_date ) . "' AND `date` < '" . esc_sql( $end_date ) . "' " : '';
+			$funnel_query   = ( 0 === intval( $funnel_id ) ) ? " AND funnel_id != " . $funnel_id . " " : " AND funnel_id = " . esc_sql( $funnel_id ) . " ";
 			$interval_param = ! empty( $is_interval ) ? ', date as p_date ' : '';
 
 			return "SELECT DISTINCT cid as contacts " . $interval_param . " FROM `" . $wpdb->prefix . "bwf_optin_entries` WHERE 1=1 " . $date . " " . $funnel_query;
@@ -179,7 +183,7 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		 */
 		public function reset_analytics( $funnel_id ) {
 			global $wpdb;
-			$query = "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE funnel_id=" . $funnel_id;
+			$query = $wpdb->prepare( "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE funnel_id=%d", $funnel_id );
 			$wpdb->query( $query );
 		}
 
@@ -194,7 +198,7 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 			if ( empty( $entry_ids ) ) {
 				return;
 			}
-			$e_query = "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE id IN (" . $entry_ids . ")";
+			$e_query = "DELETE FROM " . $wpdb->prefix . "bwf_optin_entries WHERE id IN (" . esc_sql( $entry_ids ) . ")";
 			$wpdb->query( $e_query );
 
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );

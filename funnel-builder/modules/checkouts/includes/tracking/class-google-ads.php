@@ -26,6 +26,12 @@ if ( ! class_exists( 'WFACP_Analytics_GADS' ) ) {
 			return empty( $get_ga_key ) ? '' : $get_ga_key;
 		}
 
+		public function get_add_to_cart_label() {
+			$get_label = apply_filters( 'wfacp_get_gad_add_to_cart_label', $this->admin_general_settings->get_option( 'gad_addtocart_checkout_conversion_label' ) );
+
+			return empty( $get_label ) ? '' : $get_label;
+		}
+
 		public function get_prepare_data() {
 			$options = $this->get_options();
 			if ( ! isset( $options['id'] ) || empty( $options['id'] ) ) {

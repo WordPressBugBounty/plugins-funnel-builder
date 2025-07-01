@@ -70,7 +70,7 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 		private function coupon_fields() {
 
 			$this->add_tab( __( 'Coupon', 'woocommerce' ), 1 );
-			$this->add_text( 'form_coupon_button_text', __( 'Coupon Button Text', 'funnel-builder' ), __( 'Apply', 'funnel-builder' ) );
+			$this->add_text( 'form_coupon_button_text', __( 'Coupon Button Text', 'funnel-builder' ), __( 'Apply', 'woocommerce' ) );
 			$this->end_tab();
 
 
@@ -82,8 +82,9 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 		/* ----------------Order Summary field Under Content Section----------------------- */
 
 		private function order_summary_fields() {
-			$this->add_tab( __( 'Order Summary', 'funnel-builder' ), 5 );
+			$this->add_tab( WFACP_Common::translation_string_to_check( __( 'Order Summary', 'woocommerce' ) ), 5 );
 			$this->add_switcher( 'order_summary_enable_product_image', __( 'Enable Image', 'funnel-builder' ), '', '', "yes", 'yes', [], '', '', 'wfacp_elementor_device_hide' );
+			$this->ajax_session_settings[]='order_summary_enable_product_image';
 			$this->end_tab();
 		}
 
@@ -95,6 +96,13 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 
 			$do_not_show_fields = WFACP_Common::get_html_excluded_field();
 			$exclude_fields     = [];
+
+			/**
+			 * Display Notice link in the checkout design
+			 */
+
+			$notice_html=WFACP_Common::get_notice_html_in_editor();
+
 			foreach ( $steps as $step_key => $fieldsets ) {
 				foreach ( $fieldsets as $section_key => $section_data ) {
 					if ( empty( $section_data['fields'] ) ) {
@@ -135,6 +143,15 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 
 					$this->add_tab( $section_data['name'], 5 );
 					$this->register_fields( $section_data['fields'] );
+					$this->add_control(
+						'wfacp_section_notice_'.$step_key.'_'.$section_key,
+						[
+							'label' => "",
+							'type' => \Elementor\Controls_Manager::RAW_HTML,
+							'raw' => $notice_html,
+							'content_classes' => 'elementor-raw-html-widget', // Ensure it renders the HTML properly
+						]
+					);
 					$this->end_tab();
 
 
@@ -160,7 +177,7 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			foreach ( $temp_fields as $loop_key => $field ) {
 
 				if ( in_array( $loop_key, [ 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ], true ) ) {
-					$address_key_group = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'funnel-builder' ) : __( 'Shipping Address', 'funnel-builder' );
+					$address_key_group = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'woocommerce' ) : __( 'Shipping Address', 'woocommerce' );
 					$this->add_heading( $address_key_group, 'none' );
 				}
 
@@ -219,10 +236,11 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 				if ( $i == $count ) {
 					$button_key          = 'wfacp_payment_place_order_text';
 					$text_key            = 'place_order';
-					$button_default_text = __( 'PLACE ORDER NOW', 'funnel-builder' );
-					$button_label        = __( 'Place Order', 'funnel-builder' );
+					$button_default_text = WFACP_Common::translation_string_to_check( __( 'PLACE ORDER NOW', 'funnel-builder' ) );
+					$button_label        = WFACP_Common::translation_string_to_check( __( 'Place Order', 'funnel-builder' ) );
 
 				}
+				$this->ajax_session_settings[] = $button_key;
 				$this->add_heading( __( $button_label, 'funnel-builder' ), 'none' );
 				$this->add_text( $button_key, __( "Button Text", 'funnel-builder' ), esc_js( $button_default_text ), [], "wfacp_field_text_wrap" );
 
@@ -230,12 +248,13 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 
 				if ( $i == $count ) {
 					$this->add_switcher_without_responsive( 'enable_price_in_place_order_button', __( 'Enable Price', 'funnel-builder' ), '', '', 'no', 'yes', [] );
+					$this->ajax_session_settings[] = 'enable_price_in_place_order_button';
 				}
 
 				if ( $i > 1 ) {
 
-					$backCount = $i - 1;
-
+					$backCount                                            = $i - 1;
+					$this->ajax_session_settings[]                        = 'payment_button_back_' . $i . '_text';
 					$backLinkArr[ 'payment_button_back_' . $i . '_text' ] = [
 						'label'   => __( "Return to Step {$backCount}", 'funnel-builder' ),
 						'default' => sprintf( '« Return to Step %s ', $i - 1 )
@@ -252,15 +271,16 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 				$this->add_heading( __( 'Return Link Text', 'funnel-builder' ), 'none' );
 				$cart_name = __( '« Return to Cart', 'funnel-builder' );
 				$this->add_text( "return_to_cart_text", 'Return to Cart', $cart_name, [ 'step_cart_link_enable' => 'yes' ], 'wfacp_field_text_wrap' );
+				$this->ajax_session_settings[] = "return_to_cart_text";
 				foreach ( $backLinkArr as $i => $val ) {
 
-
+					$this->ajax_session_settings[] = $i;
 					$this->add_text( $i, $val['label'], $val['default'], [], 'wfacp_field_text_wrap' );
 				}
 			}
 
-			$this->add_text( 'text_below_placeorder_btn', __( "Text Below Place Order Button", 'funnel-builder' ), sprintf( 'We Respect Your privacy & Information ', 'woofunnels-aero-checkout' ), [], 'wfacp_field_text_wrap wfacp_bold' );
-
+			$this->add_text( 'text_below_placeorder_btn', __( "Text Below Place Order Button", 'funnel-builder' ), sprintf( 'We Respect Your Privacy & Information ', 'woofunnels-aero-checkout' ), [], 'wfacp_field_text_wrap wfacp_bold' );
+			$this->ajax_session_settings[] = 'text_below_placeorder_btn';
 		}
 
 		private function icon_text( $counter_step ) {
@@ -285,7 +305,9 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 				'enable_icon_with_place_order_' . $counter_step => "yes"
 			];
 			$this->add_select( 'icons_with_place_order_list_' . $counter_step, "Select Icons Style", $bwf_icon_list, 'aero-e901', $condition, '', 'wfacp_field_text_wrap ' );
-
+			$this->ajax_session_settings[] = 'enable_icon_with_place_order_' . $counter_step;
+			$this->ajax_session_settings[] = 'icons_with_place_order_list_' . $counter_step;
+			$this->ajax_session_settings[] = 'step_' . $counter_step . '_text_after_place_order';
 		}
 
 		private function mobile_mini_cart() {
@@ -298,10 +320,10 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			$enable_callapse_order_summary_condition = [];
 
 
-			$this->add_text( 'cart_collapse_title', __( 'Collapsed View Text', 'funnel-builder' ), __( 'Show Order Summary', 'funnel-builder' ), $enable_callapse_order_summary_condition );
-			$this->add_text( 'cart_expanded_title', __( 'Expanded View Text', 'funnel-builder' ), __( 'Hide Order Summary', 'funnel-builder' ), $enable_callapse_order_summary_condition );
+			$this->add_text( 'cart_collapse_title', __( 'Collapsed View Text', 'funnel-builder' ), WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) ), $enable_callapse_order_summary_condition );
+			$this->add_text( 'cart_expanded_title', __( 'Expanded View Text', 'funnel-builder' ), WFACP_Common::translation_string_to_check( __( 'Hide Order Summary', 'funnel-builder' ) ), $enable_callapse_order_summary_condition );
 
-			$this->add_text( 'collapse_coupon_button_text', __( 'Coupon Button Text', 'funnel-builder' ), __( 'Apply', 'funnel-builder' ), $enable_callapse_order_summary_condition );
+			$this->add_text( 'collapse_coupon_button_text', __( 'Coupon Button Text', 'funnel-builder' ), __( 'Apply', 'woocommerce' ), $enable_callapse_order_summary_condition );
 
 			$this->add_switcher_without_responsive( 'collapse_enable_coupon', __( 'Enable Coupon', 'funnel-builder' ), '', '', 'false', 'true', $enable_callapse_order_summary_condition, 'true', 'true', '' );
 			$this->add_switcher_without_responsive( 'collapse_enable_coupon_collapsible', __( 'Collapsible Coupon Field', 'funnel-builder' ), '', '', 'false', 'true', $enable_callapse_order_summary_condition, 'true', 'true', '' );
@@ -310,7 +332,21 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			$this->add_switcher_without_responsive( 'collapse_order_quantity_switcher', __( 'Quantity Switcher', 'funnel-builder' ), '', '', 'true', 'true', $enable_callapse_order_summary_condition, 'true', 'true', '' );
 			$this->add_switcher_without_responsive( 'collapse_order_delete_item', __( 'Allow Deletion', 'funnel-builder' ), '', '', 'true', 'true', $enable_callapse_order_summary_condition, 'true', 'true', '' );
 
+			$this->ajax_session_settings[] = 'order_summary_enable_product_image_collapsed';
+			$this->ajax_session_settings[] = 'collapse_coupon_button_text';
+			$this->ajax_session_settings[] = 'form_coupon_button_text';
 
+
+			$this->ajax_session_settings[] = 'enable_callapse_order_summary';
+			$this->ajax_session_settings[] = 'enable_callapse_order_summary_tablet';
+
+
+			$this->ajax_session_settings[] = 'cart_collapse_title';
+			$this->ajax_session_settings[] = 'cart_expanded_title';
+			$this->ajax_session_settings[] = 'collapse_enable_coupon';
+			$this->ajax_session_settings[] = 'collapse_enable_coupon_collapsible';
+			$this->ajax_session_settings[] = 'collapse_order_quantity_switcher';
+			$this->ajax_session_settings[] = 'collapse_order_delete_item';
 			$this->end_tab();
 
 		}
@@ -445,16 +481,18 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 				];
 
 				$labels = [
+
+
 					[
-						'heading'     => __( 'SHIPPING', 'funnel-builder' ),
+						'heading'     => __( 'Shipping', 'woocommerce' ),
 						'sub-heading' => __( 'Where to ship it?', 'funnel-builder' ),
 					],
 					[
-						'heading'     => __( 'PRODUCTS', 'funnel-builder' ),
+						'heading'     => __( 'Products', 'funnel-builder' ),
 						'sub-heading' => __( 'Select your product', 'funnel-builder' ),
 					],
 					[
-						'heading'     => __( 'PAYMENT', 'funnel-builder' ),
+						'heading'     => __( 'Payment', 'woocommerce' ),
 						'sub-heading' => __( 'Confirm your order', 'funnel-builder' ),
 					],
 
@@ -942,15 +980,16 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 
 			$this->add_tab( __( 'Payment Gateways', 'funnel-builder' ), 5 );
 			$this->add_heading( __( 'Section', 'funnel-builder' ) );
-			$this->add_text( 'wfacp_payment_method_heading_text', __( 'Heading', 'funnel-builder' ), esc_attr__( 'Payment Information', 'funnel-builder' ), [], 'wfacp_field_text_wrap' );
-			$this->add_textArea( 'wfacp_payment_method_subheading', __( 'Sub heading', 'funnel-builder' ), esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' ) );
+			$this->add_text( 'wfacp_payment_method_heading_text', __( 'Heading', 'funnel-builder' ), WFACP_Common::translation_string_to_check( esc_attr__( 'Payment Information', 'funnel-builder' ) ), [], 'wfacp_field_text_wrap' );
+			$this->add_textArea( 'wfacp_payment_method_subheading', __( 'Sub heading', 'funnel-builder' ), WFACP_Common::translation_string_to_check( esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' ) ) );
 
 			$this->end_tab();
 
 			$this->add_tab( __( 'Checkout Button(s)', 'funnel-builder' ), 5 );
 			$this->form_buttons();
 			$this->end_tab();
-
+			$this->ajax_session_settings[] = 'wfacp_payment_method_heading_text';
+			$this->ajax_session_settings[] = 'wfacp_payment_method_subheading';
 
 		}
 
@@ -1440,7 +1479,7 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 				'{{WRAPPER}} #wfacp-e-form  #payment li.wc_payment_method input.input-radio:checked::before',
 				'{{WRAPPER}} #wfacp-e-form  #payment.wc_payment_method input[type=radio]:checked:before',
 				'{{WRAPPER}} #wfacp-e-form  button[type=submit]:not(.white):not(.black)',
-				'{{WRAPPER}} #wfacp-e-form  button[type=button]:not(.white):not(.black)',
+				'{{WRAPPER}} #wfacp-e-form  button[type=button]:not(.white):not(.black):not(.woopay-express-button)',
 				'{{WRAPPER}} #wfacp-e-form .wfacp-coupon-section .wfacp-coupon-page .wfacp-coupon-field-btn',
 				'{{WRAPPER}} #wfacp-e-form input[type=checkbox]:checked',
 				'{{WRAPPER}} #wfacp-e-form #payment input[type=checkbox]:checked',
@@ -1570,7 +1609,7 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			foreach ( $sections as $keys => $val ) {
 				foreach ( $val as $loop_key => $field ) {
 					if ( in_array( $loop_key, [ 'wfacp_start_divider_billing', 'wfacp_start_divider_shipping' ], true ) ) {
-						$address_key_group = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'funnel-builder' ) : __( 'Shipping Address', 'funnel-builder' );
+						$address_key_group = ( $loop_key == 'wfacp_start_divider_billing' ) ? __( 'Billing Address', 'woocommerce' ) : __( 'Shipping Address', 'woocommerce' );
 						$this->add_heading( $address_key_group, 'none' );
 					}
 

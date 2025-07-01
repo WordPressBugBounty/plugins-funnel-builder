@@ -74,7 +74,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Wcnl_Postcode' ) ) {
 					$postcode_countries = WPO_WCNLPC()->countries->get_countries_requiring_postcode_fields();
 				}
 
-				if ( ! empty( $postcode_countries ) && ! empty( $obj ) && $obj instanceof WPO\WC\Postcode_Checker\WC_NLPostcode_Fields && method_exists( $obj, 'postcode_field_countries' ) ) {
+				if ( empty( $postcode_countries ) && ! empty( $obj ) && $obj instanceof WPO\WC\Postcode_Checker\WC_NLPostcode_Fields && method_exists( $obj, 'postcode_field_countries' ) ) {
 					$postcode_countries = $obj->postcode_field_countries();
 				}
 			} catch ( Exception|Error $e ) {
@@ -553,6 +553,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Wcnl_Postcode' ) ) {
 			<?php
 		}
 	}
+
 
 	WFACP_Compatibility_With_Wcnl_Postcode::get_instance();
 }

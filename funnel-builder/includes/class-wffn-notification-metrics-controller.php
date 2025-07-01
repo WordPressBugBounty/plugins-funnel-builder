@@ -89,7 +89,7 @@ if ( ! class_exists( 'WFFN_Notification_Metrics_Controller' ) ) {
 			$is_valid = false;
 			if ( isset( $this->data['metrics']['total_orders'] ) ) {
 				$total_orders = $this->data['metrics']['total_orders'];
-				if ( $total_orders['count'] > 0 || $total_orders['previous_count'] > 0 ) {
+				if ( $total_orders['count'] > 0 ) {
 					$is_valid = true;
 				}
 			}

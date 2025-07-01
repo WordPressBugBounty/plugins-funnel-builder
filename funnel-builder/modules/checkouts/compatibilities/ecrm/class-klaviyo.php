@@ -2,17 +2,21 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * plugin name Klaviyo by Klaviyo, Inc. (3.3.5)
+ * Plugin URI: https://wordpress.org/plugins/klaviyo/
+ */
 if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
-	/**
-	 * plugin name Klaviyo by Klaviyo, Inc. (3.3.5)
-	 * Plugin URI: https://wordpress.org/plugins/klaviyo/
-	 */
 	#[AllowDynamicProperties]
 	class WFACP_Compatibility_With_Klaviyo {
 
 		private $billing_new_fields = [
 			'kl_newsletter_checkbox',
+			'billing_kl_newsletter_checkbox',
+			'billing_kl_sms_consent_checkbox',
 			'kl_sms_consent_checkbox',
+
 		];
 
 		private $klavio_settings = [];
@@ -130,6 +134,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 				return;
 			}
 			$klaviyo_settings = get_option( 'klaviyo_settings' );
+
 			if ( ! empty( $klaviyo_settings['klaviyo_newsletter_list_id'] ) ) {
 				remove_action( 'woocommerce_checkout_before_terms_and_conditions', 'checkout_additional_checkboxes' );
 			}
@@ -215,6 +220,10 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 
 
 			if ( empty( $key ) && in_array( $key, [ 'billing_kl_sms_consent_checkbox' ] ) ) {
+				return '';
+			}
+
+			if ( ! is_array( $this->klavio_settings ) || count( $this->klavio_settings ) == 0 ) {
 				return '';
 			}
 

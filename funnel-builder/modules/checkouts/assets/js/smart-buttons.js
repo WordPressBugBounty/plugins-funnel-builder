@@ -27,6 +27,7 @@
         DOMLoaded() {
             $(document.body).on('updated_checkout', this.handleCheckout.bind(this));
             $(document.body).on('fkwcs_smart_buttons_showed', this.handleWfgsGateway.bind(this));
+            $(document.body).on('fkwcs_generate_smart_buttons', this.handleCheckout.bind(this));
             this.checkButtons();
 
         }
@@ -97,9 +98,7 @@
 
 
         getAvailableButtons() {
-
             return wfacp_frontend.smart_button_wrappers.dynamic_buttons;
-
         }
 
         noConflictButton() {
@@ -107,14 +106,12 @@
         }
 
         checkButtons() {
-
             let noConflictButtons = this.noConflictButton();
             for (let c = 0; c < noConflictButtons.length; c++) {
                 this.findButtonElements(noConflictButtons[c]);
             }
-
-
             let buttons = this.getAvailableButtons();
+
             for (let i in buttons) {
                 let parent = buttons[i];
                 this.domInsert(parent, i);
@@ -145,7 +142,7 @@
                     }
                 });
 
-                observer.observe(container, { childList: true, subtree: true });
+                observer.observe(container, {childList: true, subtree: true});
             } else {
                 // Fallback code for older browsers that do not support MutationObserver
                 container.addEventListener('DOMNodeInserted', () => {
@@ -213,7 +210,7 @@
                 if (null === element) {
                     return;
                 }
-                
+
                 if (typeof element.shadowRoot == "object" && null !== element.shadowRoot) {
                     element.shadowRoot.innerHTML = '';
                     $('#pay_with_amazon').css('opacity', '1');

@@ -3,16 +3,15 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.10.2
+ * Version: 3.11.0
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: funnel-builder
- * Elementor tested up to: 3.28.0
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.8.0
+ * Tested up to: 6.8.1
  * Requires PHP: 7.4
  * WooFunnels: true
  *
@@ -152,31 +151,35 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		/**
 		 * Defining constants
 		 */
-		public function define_plugin_properties()  {
+		public function define_plugin_properties() {
 
 
-			define( 'WFFN_VERSION', '3.10.2' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.53' );
+			define( 'WFFN_VERSION', '3.11.0' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.62' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
 			define( 'WFFN_DB_VERSION', '3.3.9' );
+			define( 'WFFN_REVIEW_RATING_COUNT', 897 );
 			define( 'WFFN_SLUG', 'wffn' );
 			define( 'WFFN_PLUGIN_FILE', __FILE__ );
 			define( 'WFFN_PLUGIN_DIR', __DIR__ );
 			define( 'WFFN_PLUGIN_URL', untrailingslashit( plugin_dir_url( WFFN_PLUGIN_FILE ) ) );
 			define( 'WFFN_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-			define( 'WFFN_TEMPLATE_UPLOAD_DIR', WP_CONTENT_DIR . '/uploads/wffn_templates/' );
+			define( 'WFFN_TEMPLATE_UPLOAD_DIR', $this->get_content_dir() . '/wffn_templates/' );
 			( defined( 'WFFN_IS_DEV' ) && true === WFFN_IS_DEV ) ? define( 'WFFN_VERSION_DEV', time() ) : define( 'WFFN_VERSION_DEV', WFFN_VERSION );
 			( ! defined( 'WFFN_REACT_ENVIRONMENT' ) ) ? define( 'WFFN_REACT_ENVIRONMENT', 1 ) : '';
 
+		}
+
+		public function get_content_dir() {
+			return wp_upload_dir()['basedir'];
 		}
 
 		/**
 		 * Load classes on plugins_loaded hook
 		 */
 		public function load_hooks() {
-
 			add_action( 'init', array( $this, 'localization' ) );
 			add_action( 'plugins_loaded', array( $this, 'load_classes' ), 1 );
 			add_action( 'plugins_loaded', array( $this, 'register_classes' ), 1 );
@@ -271,13 +274,6 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 			/**Global Header */
 			include_once __DIR__ . '/admin/includes/class-wffn-header.php';
 
-			/**Automation Recipes Loader */
-			include_once __DIR__ . '/admin/class-bwfan-recipe-loader.php';
-
-			if ( is_admin() ) {
-				include_once __DIR__ . '/admin/includes/class-wffn-stripe-admin-controller.php';
-
-			}
 		}
 
 		/**
@@ -482,7 +478,6 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 * @param $plugin
 		 */
 		public function check_activation( $plugin ) {
-
 			if ( $plugin === plugin_basename( WFFN_PLUGIN_FILE ) ) {
 				$pro_first_active = get_option( 'fk_fb_active_date', [] );
 				if ( empty( $pro_first_active ) || ! isset( $pro_first_active['lite'] ) ) {

@@ -16,7 +16,7 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 
 			add_filter( 'woofunnels_global_settings', function ( $menu ) {
 				array_push( $menu, array(
-					'title'    => __( 'General', 'woofunnels' ),
+					'title'    => __( 'General', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 					'slug'     => 'woofunnels_general_settings',
 					'link'     => apply_filters( 'bwf_general_settings_link', 'javascript:void(0)' ),
 					'priority' => 5,
@@ -66,7 +66,7 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 			BWF_Admin_Breadcrumbs::render_sticky_bar();
 			?>
             <div class="wrap bwf-funnel-common">
-                <h1 class="wp-heading-inline"><?php esc_html_e( 'Settings', 'woofunnels' ); ?></h1>
+                <h1 class="wp-heading-inline"><?php esc_html_e( 'Settings', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></h1>
 				<?php
 				$admin_settings = BWF_Admin_Settings::get_instance();
 				$admin_settings->render_tab_html( 'woofunnels_general_settings' );
@@ -77,42 +77,42 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
                     <div class="bwf-tabs-view-vertical bwf-widget-tabs">
                         <div class="bwf-tabs-wrapper">
                             <div class="bwf-tab-title" data-tab="<?php $i ++;
-							echo $i; ?>" role="tab">
-								<?php esc_html_e( 'Permalinks', 'woofunnels' ); ?>
+							echo esc_attr($i); ?>" role="tab">
+								<?php esc_html_e( 'Permalinks', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                             </div>
                             <div class="bwf-tab-title" data-tab="<?php $i ++;
-							echo $i; ?>" role="tab">
-								<?php esc_html_e( 'Facebook Pixel', 'woofunnels' ); ?>
+							echo esc_attr($i); ?>" role="tab">
+								<?php esc_html_e( 'Facebook Pixel', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                             </div>
                             <div class="bwf-tab-title" data-tab="<?php $i ++;
-							echo $i; ?>" role="tab">
-								<?php esc_html_e( 'Google Analytics', 'woofunnels' ); ?>
+							echo esc_attr($i); ?>" role="tab">
+								<?php esc_html_e( 'Google Analytics', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                             </div>
 
 
 							<?php if ( apply_filters( 'bwf_enable_ecommerce_integration_gad', false ) ) { ?>
                                 <div class="bwf-tab-title" data-tab="<?php $i ++;
-								echo $i; ?>" role="tab">
-									<?php esc_html_e( 'Google Ads', 'woofunnels' ); ?>
+								echo esc_attr($i); ?>" role="tab">
+									<?php esc_html_e( 'Google Ads', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                                 </div>
 							<?php }
 							if ( apply_filters( 'bwf_enable_ecommerce_integration_pinterest', false ) ) { ?>
                                 <div class="bwf-tab-title" data-tab="<?php $i ++;
-								echo $i; ?>" role="tab">
-									<?php esc_html_e( 'Pinterest', 'woofunnels' ); ?>
+								echo esc_attr($i); ?>" role="tab">
+									<?php esc_html_e( 'Pinterest', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                                 </div>
 							<?php }
 
 							if ( apply_filters( 'bwf_enable_ecommerce_integration_tiktok', false ) ) { ?>
                                 <div class="bwf-tab-title" data-tab="<?php $i ++;
-								echo $i; ?>" role="tab">
-									<?php esc_html_e( 'TikTok', 'woofunnels' ); ?>
+								echo esc_attr($i); ?>" role="tab">
+									<?php esc_html_e( 'TikTok', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                                 </div>
 							<?php }
 							if ( apply_filters( 'bwf_enable_ecommerce_integration_snapchat', false ) ) { ?>
                                 <div class="bwf-tab-title" data-tab="<?php $i ++;
-								echo $i; ?>" role="tab">
-									<?php esc_html_e( 'Snapchat', 'woofunnels' ); ?>
+								echo esc_attr($i); ?>" role="tab">
+									<?php esc_html_e( 'Snapchat', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?>
                                 </div>
 							<?php } ?>
 
@@ -130,7 +130,7 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
                                 </form>
                                 <div class="bwf_form_button">
                                     <span class="bwf_loader_global_save spinner" style="float: left;"></span>
-                                    <button v-on:click.self="onSubmit" class="bwf_save_btn_style"><?php esc_html_e( 'Save Changes', 'woofunnels' ); ?></button>
+                                    <button v-on:click.self="onSubmit" class="bwf_save_btn_style"><?php esc_html_e( 'Save Changes', 'woofunnels' ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></button>
 
                                 </div>
                             </div>
@@ -145,136 +145,138 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 
 		public function default_general_settings() {
 			return apply_filters( 'bwf_general_settings_default_config', array(
-				'tiktok_pixel'                      => '',
-				'is_tiktok_add_to_cart_bump'        => '',
-				'tiktok_add_to_cart_event'          => '',
-				'tiktok_initiate_checkout_event'    => '',
-				'is_tiktok_purchase_event'          => array(),
-				'is_tiktok_complete_payment_event'  => array(),
-				'pint_key'                          => '',
-				'is_pint_lead_op'                   => array(),
-				'is_pint_add_to_cart_bump'          => '',
-				'is_pint_custom_bump'               => '',
-				'is_pint_page_view_lp'              => array(),
-				'is_pint_page_view_op'              => array(),
-				'is_pint_pageview_event'            => array(),
-				'is_pint_page_view_global'          => '',
-				'pint_is_page_view'                 => '',
-				'pint_add_to_cart_event'            => '',
-				'pint_initiate_checkout_event'      => '',
-				'is_pint_purchase_event'            => array(),
-				'is_pint_custom_events'             => '',
-				'pint_variable_as_simple'           => '',
-				'pint_content_id_type'              => '0',
-				'pint_content_id_prefix'            => '',
-				'pint_content_id_suffix'            => '',
-				'pint_exclude_from_total'           => array(),
-				'gad_key'                           => '',
-				'gad_conversion_label'              => '',
-				'is_gad_page_view_global'           => '',
-				'is_gad_view_item_global'           => '',
-				'is_gad_page_view_lp'               => array(),
-				'is_gad_page_view_op'               => array(),
-				'is_gad_lead_op'                    => array(),
-				'is_gad_add_to_cart_bump'           => '',
-				'is_gad_custom_bump'                => '',
-				'google_ads_is_page_view'           => '',
-				'google_ads_add_to_cart_event'      => '',
-				'is_gad_pageview_event'             => array(),
-				'is_gad_purchase_event'             => array(),
-				'is_gad_custom_events'              => '',
-				'google_ads_variable_as_simple'     => '',
-				'google_ads_content_id_type'        => '0',
-				'google_ads_content_id_prefix'      => '',
-				'google_ads_content_id_suffix'      => '',
-				'gad_exclude_from_total'            => array(),
-				'ga_key'                            => '',
-				'is_ga_page_view_global'            => '',
-				'is_ga_view_item_global'            => '',
-				'is_ga_page_view_lp'                => array(),
-				'is_ga_page_view_op'                => array(),
-				'is_ga_lead_op'                     => array(),
-				'google_ua_is_page_view'            => '',
-				'google_ua_add_to_cart_event'       => '',
-				'google_ua_initiate_checkout_event' => '',
-				'google_ua_add_payment_info_event'  => '',
-				'is_ga_purchase_page_view'          => array(),
-				'is_ga_purchase_event'              => array(),
-				'is_ga_custom_events'               => '',
-				'google_ua_variable_as_simple'      => '',
-				'google_ua_content_id_type'         => '0',
-				'google_ua_content_id_prefix'       => '',
-				'google_ua_content_id_suffix'       => '',
-				'ga_exclude_from_total'             => array(),
-				'fb_pixel_key'                      => '',
-				'is_fb_purchase_conversion_api'     => array(),
-				'conversion_api_access_token'       => '',
-				'is_fb_conv_enable_test'            => array(),
-				'conversion_api_test_event_code'    => '',
-				'is_fb_conversion_api_log'          => array(),
-				'is_fb_page_view_global'            => '',
-				'is_fb_page_product_content_global' => '',
-				'is_fb_page_view_lp'                => array(),
-				'is_fb_page_view_op'                => array(),
-				'is_fb_lead_op'                     => array(),
-				'is_fb_add_to_cart_bump'            => '',
-				'is_fb_custom_bump'                 => '',
-				'label_section_head_fb'             => '',
-				'pixel_is_page_view'                => '',
-				'pixel_initiate_checkout_event'     => '',
-				'pixel_add_to_cart_event'           => '',
-				'pixel_add_payment_info_event'      => '',
-				'is_fb_purchase_page_view'          => array(),
-				'is_fb_purchase_event'              => array(),
-				'enable_general_event'              => array(),
-				'general_event_name'                => 'GeneralEvent',
-				'is_fb_custom_events'               => '',
-				'is_fb_enable_content'              => [],
-				'pixel_variable_as_simple'          => '',
-				'pixel_content_id_type'             => '0',
-				'pixel_content_id_prefix'           => '',
-				'pixel_content_id_suffix'           => '',
-				'exclude_from_total'                => array(),
-				'is_fb_advanced_event'              => array(),
-				'is_tiktok_advanced_event'          => array(),
-				'default_selected_builder'          => 'elementor',
-				'track_utms'                        => "1",
-				'snapchat_pixel'                    => '',
-				'is_snapchat_page_view_global'      => '',
-				'is_snapchat_page_view_lp'          => array(),
-				'is_snapchat_page_view_op'          => array(),
-				'is_snapchat_add_to_cart_bump'      => '',
-				'label_section_head_snapchat'       => '',
-				'snapchat_is_page_view'             => '',
-				'snapchat_add_to_cart_event'        => '',
-				'snapchat_initiate_checkout_event'  => '',
-				'snapchat_add_payment_info_event'   => '',
-				'is_snapchat_purchase_event'        => array(),
-				'snapchat_variable_as_simple'       => '',
-				'is_fb_add_to_cart_global'          => '',
-				'is_ga_add_to_cart_global'          => '',
-				'is_gad_add_to_cart_global'         => '',
-				'is_snapchat_add_to_cart_global'    => '',
-				'is_tiktok_page_view_global'        => '',
-				'is_tiktok_page_view_lp'            => array(),
-				'is_tiktok_page_view_op'            => array(),
-				'is_tiktok_pageview_event'          => array(),
-				'tiktok_is_page_view'               => '',
-				'tiktok_variable_as_simple'         => '',
-				'is_tiktok_add_to_cart_global'      => '',
-				'is_pint_add_to_cart_global'        => '',
-				'is_pint_page_visit_global'         => '',
-				'track_traffic_source'              => [], //for backcompat, not calling anywhere
-				'ga_track_traffic_source'           => [], //for backcompat, not calling anywhere
-				'is_ga_add_to_cart_bump'            => '',
-				'is_ga_custom_bump'                 => '',
-				'custom_aud_opt_conf'               => [],
-				'allow_theme_css'                   => array( 'wfacp_checkout' ),
-				'bwf_enable_notification'           => true,
-				'bwf_notification_frequency'        => array( 'weekly', 'monthly' ),
-				'bwf_notification_user_selector'    => array(),
-				'bwf_external_user'                 => array(),
-				'bwf_notification_time'             => [
+				'tiktok_pixel'                            => '',
+				'is_tiktok_add_to_cart_bump'              => '',
+				'tiktok_add_to_cart_event'                => '',
+				'tiktok_initiate_checkout_event'          => '',
+				'is_tiktok_purchase_event'                => array(),
+				'pint_key'                                => '',
+				'is_pint_lead_op'                         => array(),
+				'is_pint_add_to_cart_bump'                => '',
+				'is_pint_custom_bump'                     => '',
+				'is_pint_page_view_lp'                    => array(),
+				'is_pint_page_view_op'                    => array(),
+				'is_pint_pageview_event'                  => array(),
+				'is_pint_page_view_global'                => '',
+				'pint_is_page_view'                       => '',
+				'pint_add_to_cart_event'                  => '',
+				'pint_initiate_checkout_event'            => '',
+				'is_pint_purchase_event'                  => array(),
+				'is_pint_custom_events'                   => '',
+				'pint_variable_as_simple'                 => '',
+				'pint_content_id_type'                    => '0',
+				'pint_content_id_prefix'                  => '',
+				'pint_content_id_suffix'                  => '',
+				'pint_exclude_from_total'                 => array(),
+				'gad_key'                                 => '',
+				'gad_conversion_label'                    => '',
+				'gad_lead_conversion_label'               => '',
+				'gad_addtocart_checkout_conversion_label' => '',
+				'gad_addtocart_bump_conversion_label'     => '',
+				'gad_addtocart_global_conversion_label'   => '',
+				'is_gad_page_view_global'                 => '',
+				'is_gad_view_item_global'                 => '',
+				'is_gad_page_view_lp'                     => array(),
+				'is_gad_page_view_op'                     => array(),
+				'is_gad_lead_op'                          => array(),
+				'is_gad_add_to_cart_bump'                 => '',
+				'is_gad_custom_bump'                      => '',
+				'google_ads_is_page_view'                 => '',
+				'google_ads_add_to_cart_event'            => '',
+				'is_gad_pageview_event'                   => array(),
+				'is_gad_purchase_event'                   => array(),
+				'is_gad_custom_events'                    => '',
+				'google_ads_variable_as_simple'           => '',
+				'google_ads_content_id_type'              => '0',
+				'google_ads_content_id_prefix'            => '',
+				'google_ads_content_id_suffix'            => '',
+				'gad_exclude_from_total'                  => array(),
+				'ga_key'                                  => '',
+				'is_ga_page_view_global'                  => '',
+				'is_ga_view_item_global'                  => '',
+				'is_ga_page_view_lp'                      => array(),
+				'is_ga_page_view_op'                      => array(),
+				'is_ga_lead_op'                           => array(),
+				'google_ua_is_page_view'                  => '',
+				'google_ua_add_to_cart_event'             => '',
+				'google_ua_initiate_checkout_event'       => '',
+				'google_ua_add_payment_info_event'        => '',
+				'is_ga_purchase_page_view'                => array(),
+				'is_ga_purchase_event'                    => array(),
+				'is_ga_custom_events'                     => '',
+				'google_ua_variable_as_simple'            => '',
+				'google_ua_content_id_type'               => '0',
+				'google_ua_content_id_prefix'             => '',
+				'google_ua_content_id_suffix'             => '',
+				'ga_exclude_from_total'                   => array(),
+				'fb_pixel_key'                            => '',
+				'conversion_api_access_token'             => '',
+				'is_fb_conv_enable_test'                  => array(),
+				'conversion_api_test_event_code'          => '',
+				'is_fb_conversion_api_log'                => array(),
+				'is_fb_page_view_global'                  => '',
+				'is_fb_page_product_content_global'       => '',
+				'is_fb_page_view_lp'                      => array(),
+				'is_fb_page_view_op'                      => array(),
+				'is_fb_lead_op'                           => array(),
+				'is_fb_add_to_cart_bump'                  => '',
+				'is_fb_custom_bump'                       => '',
+				'label_section_head_fb'                   => '',
+				'pixel_is_page_view'                      => '',
+				'pixel_initiate_checkout_event'           => '',
+				'pixel_add_to_cart_event'                 => '',
+				'pixel_add_payment_info_event'            => '',
+				'is_fb_purchase_page_view'                => array(),
+				'is_fb_purchase_event'                    => array(),
+				'enable_general_event'                    => array(),
+				'general_event_name'                      => 'GeneralEvent',
+				'is_fb_custom_events'                     => '',
+				'is_fb_enable_content'                    => [],
+				'pixel_variable_as_simple'                => '',
+				'pixel_content_id_type'                   => '0',
+				'pixel_content_id_prefix'                 => '',
+				'pixel_content_id_suffix'                 => '',
+				'exclude_from_total'                      => array(),
+				'is_fb_advanced_event'                    => array(),
+				'is_tiktok_advanced_event'                => array(),
+				'default_selected_builder'                => 'elementor',
+				'track_utms'                              => "1",
+				'snapchat_pixel'                          => '',
+				'is_snapchat_page_view_global'            => '',
+				'is_snapchat_page_view_lp'                => array(),
+				'is_snapchat_page_view_op'                => array(),
+				'is_snapchat_add_to_cart_bump'            => '',
+				'label_section_head_snapchat'             => '',
+				'snapchat_is_page_view'                   => '',
+				'snapchat_add_to_cart_event'              => '',
+				'snapchat_initiate_checkout_event'        => '',
+				'snapchat_add_payment_info_event'         => '',
+				'is_snapchat_purchase_event'              => array(),
+				'snapchat_variable_as_simple'             => '',
+				'is_fb_add_to_cart_global'                => '',
+				'is_ga_add_to_cart_global'                => '',
+				'is_gad_add_to_cart_global'               => '',
+				'is_snapchat_add_to_cart_global'          => '',
+				'is_tiktok_page_view_global'              => '',
+				'is_tiktok_page_view_lp'                  => array(),
+				'is_tiktok_page_view_op'                  => array(),
+				'is_tiktok_pageview_event'                => array(),
+				'tiktok_is_page_view'                     => '',
+				'tiktok_variable_as_simple'               => '',
+				'is_tiktok_add_to_cart_global'            => '',
+				'is_pint_add_to_cart_global'              => '',
+				'is_pint_page_visit_global'               => '',
+				'track_traffic_source'                    => [], //for backcompat, not calling anywhere
+				'ga_track_traffic_source'                 => [], //for backcompat, not calling anywhere
+				'is_ga_add_to_cart_bump'                  => '',
+				'is_ga_custom_bump'                       => '',
+				'custom_aud_opt_conf'                     => [],
+				'allow_theme_css'                         => array( 'wfacp_checkout' ),
+				'bwf_enable_notification'                 => true,
+				'bwf_notification_frequency'              => array( 'weekly', 'monthly' ),
+				'bwf_notification_user_selector'          => array(),
+				'bwf_external_user'                       => array(),
+				'bwf_notification_time'                   => [
 					'hours'   => '10',
 					'minutes' => '00',
 					'ampm'    => 'am'
@@ -317,19 +319,19 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 			$localized_data = [
 				'nonce_general_settings' => wp_create_nonce( 'bwf_general_settings_update' ),
 				'texts'                  => array(
-					'settings_success'    => __( 'Changes saved', 'woofunnels' ),
-					'permalink_help_text' => __( 'Leave empty to remove slug completely from url', 'woofunnels' ),
+					'settings_success'    => __( 'Changes saved', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+					'permalink_help_text' => __( 'Leave empty to remove slug completely from url', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 				),
 				'globalOptionsFields'    => array(
 					'options'       => $this->filter_admin_options( $this->get_option() ),
 					'legends_texts' => array(
-						'fb'         => __( 'Facebook Pixel', 'woofunnels' ),
-						'ga'         => __( 'Google Analytics', 'woofunnels' ),
-						'gad'        => __( 'Google Ads', 'woofunnels' ),
-						'pint'       => __( 'Pinterest', 'woofunnels' ),
-						'permalinks' => __( 'Permalinks', 'woofunnels' ),
-						'tiktok'     => __( 'Tiktok', 'woofunnels' ),
-						'snapchat'   => __( 'Snapchat', 'woofunnels' ),
+						'fb'         => __( 'Facebook Pixel', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'ga'         => __( 'Google Analytics', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'gad'        => __( 'Google Ads', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'pint'       => __( 'Pinterest', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'permalinks' => __( 'Permalinks', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'tiktok'     => __( 'Tiktok', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
+						'snapchat'   => __( 'Snapchat', 'woofunnels' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 					),
 					'fields'        => $this->all_fields()
 				)
@@ -368,8 +370,8 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 			$localized_data['checkout_page_slug']  = $checkout_page_slug;
 			$localized_data['permalink_structure'] = get_option( 'permalink_structure' );
 			$localized_data['errors']              = array(
-				'checkout_slug' => sprintf( __( 'Error: The permalink "%s" is reserved by Native WooCommerce Checkout Page. Try another permalink.', 'woofunnels' ), $checkout_page_slug ),
-				'empty_base'    => sprintf( __( 'Error: The current Permalinks settings does not allow blank values. Switch Permalink settings to \'Post name\'. <a href="%s">Click Here To Change</a>', 'woofunnels' ), admin_url( 'options-permalink.php' ) ),
+				'checkout_slug' => sprintf( __( 'Error: The permalink "%s" is reserved by Native WooCommerce Checkout Page. Try another permalink.', 'woofunnels' ), $checkout_page_slug ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch, WordPress.WP.I18n.MissingTranslatorsComment
+				'empty_base'    => sprintf( __( 'Error: The current Permalinks settings does not allow blank values. Switch Permalink settings to \'Post name\'. <a href="%s">Click Here To Change</a>', 'woofunnels' ), admin_url( 'options-permalink.php' ) ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch, WordPress.WP.I18n.MissingTranslatorsComment
 			);
 
 			return $localized_data;
@@ -390,8 +392,8 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 			$localized_data['checkout_page_slug']  = $checkout_page_slug;
 			$localized_data['permalink_structure'] = get_option( 'permalink_structure' );
 			$localized_data['errors']              = array(
-				'checkout_slug' => sprintf( __( 'Error: The permalink "%s" is reserved by Native WooCommerce Checkout Page. Try another permalink.', 'woofunnels' ), $checkout_page_slug ),
-				'empty_base'    => sprintf( __( 'Error: The current Permalinks settings does not allow blank values. Switch Permalink settings to \'Post name\'. <a href="%s">Click Here To Change</a>', 'woofunnels' ), admin_url( 'options-permalink.php' ) ),
+				'checkout_slug' => sprintf( __( 'Error: The permalink "%s" is reserved by Native WooCommerce Checkout Page. Try another permalink.', 'woofunnels' ), $checkout_page_slug ),  // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch, WordPress.WP.I18n.MissingTranslatorsComment
+				'empty_base'    => sprintf( __( 'Error: The current Permalinks settings does not allow blank values. Switch Permalink settings to \'Post name\'. <a href="%s">Click Here To Change</a>', 'woofunnels' ), admin_url( 'options-permalink.php' ) ),  // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch, WordPress.WP.I18n.MissingTranslatorsComment
 			);
 
 			$localized_data['pro_status'] = [];
@@ -444,7 +446,7 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 			$options = ( is_array( $options ) && wp_unslash( bwf_clean( $options ) ) ) ? bwf_clean( $options ) : 0;
 			$resp    = [
 				'status' => false,
-				'msg'    => __( 'Settings Updated', 'woofunnels' ),
+				'msg'    => __( 'Settings Updated', 'woofunnels' ),  // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 				'data'   => '',
 			];
 
@@ -503,7 +505,7 @@ if ( ! class_exists( 'BWF_Admin_General_Settings' ) ) {
 		public function maybe_change_title( $title ) {
 			if ( 'bwf_settings' === filter_input( INPUT_GET, 'tab', FILTER_UNSAFE_RAW ) || 'bwf_settings' === filter_input( INPUT_GET, 'section', FILTER_UNSAFE_RAW ) ) {
 				$admin_title = get_bloginfo( 'name' );
-				$title       = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress' ), 'FunnelKit', $admin_title );
+				$title       = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress', 'woofunnels' ), 'FunnelKit', $admin_title ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch, WordPress.WP.I18n.MissingTranslatorsComment
 			}
 
 			return $title;

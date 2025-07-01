@@ -98,30 +98,12 @@ if ( ! class_exists( 'WFFN_Funnels_DB' ) ) {
 
 		public function get_specific_rows( $where_key, $where_value ) {
 			global $wpdb;
+			$where_key   = esc_sql( $where_key );
+			$where_value = esc_sql( $where_value );
+
 			return $wpdb->get_results( 'SELECT * FROM ' . self::_table() . " WHERE $where_key = '$where_value'", ARRAY_A );//phpcs:ignore
 		}
 
-		public function get_specific_columns( $column_names, $where_pairs ) {
-			global $wpdb;
-			$sql_query = 'SELECT ';
-
-			if ( is_array( $column_names ) && count( $column_names ) > 0 ) {
-				foreach ( $column_names as $column_name => $column_alias ) {
-					$sql_query .= "$column_name as $column_alias ";
-				}
-			}
-
-			$sql_query .= 'FROM ' . self::_table();
-
-			if ( is_array( $where_pairs ) && count( $where_pairs ) > 0 ) {
-				$sql_query .= ' WHERE 1 = 1';
-				foreach ( $where_pairs as $where_key => $where_value ) {
-					$sql_query .= ' AND ' . $where_key . " = '$where_value'";
-				}
-			}
-
-			return $wpdb->get_row( $sql_query, ARRAY_A );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		}
 
 		public function get_results( $query ) {
 			global $wpdb;
@@ -161,17 +143,36 @@ if ( ! class_exists( 'WFFN_Funnels_DB' ) ) {
 		}
 
 		/**
-		 * @param $contact_id
+		 * @param $object_id
 		 * @param $meta_key
 		 * @param $meta_value
 		 *
 		 * @return void
 		 */
-		public function update_meta( $contact_id, $meta_key, $meta_value ) {
+		public function update_meta( $object_id, $meta_key, $meta_value ) {
 			include_once plugin_dir_path( WFFN_PLUGIN_FILE ) . 'admin/db/class-wffn-db-tables.php';
 			$tables = WFFN_DB_Tables::get_instance();
 			$tables->define_tables();
-			update_metadata( 'bwf_funnel', $contact_id, $meta_key, $meta_value );
+			update_metadata( 'bwf_funnel', $object_id, $meta_key, $meta_value );
+
+		}
+
+
+
+		/**
+		 * Delete a metadata
+		 * @param $object_id
+		 * @param $meta_key
+		 * @param $meta_value
+		 *
+		 * @return void
+		 */
+		public function delete_meta( $object_id, $meta_key ) {
+			include_once plugin_dir_path( WFFN_PLUGIN_FILE ) . 'admin/db/class-wffn-db-tables.php';
+			$tables = WFFN_DB_Tables::get_instance();
+			$tables->define_tables();
+			delete_metadata( 'bwf_funnel', $object_id, $meta_key );
+
 		}
 
 		/**

@@ -97,7 +97,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_entity_edit_link( $step_id ) {
+		public function get_entity_edit_link( $step_id ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$link = 'javascript:void(0);';
 
 			return $link;
@@ -112,13 +112,6 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 			$link = 'javascript:void(0);';
 			if ( $step_id > 0 && get_post( $step_id ) instanceof WP_Post ) {
 				$link = esc_url( get_the_permalink( $step_id ) );
-				$type = get_post_type( $step_id );
-				if ( 'wfacp_checkout' === $type ) {
-					if ( empty( WFACP_Common::get_page_product( $step_id ) ) ) {
-						$link = add_query_arg( [ 'wfacp_preview' => true ], $link );
-						$link = str_replace( "#038;", "&", $link );
-					}
-				}
 			}
 
 			return $link;
@@ -145,7 +138,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 			return [];
 		}
 
-		public function get_entity_tags( $step_id, $funnel_id ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function get_entity_tags( $step_id, $funnel_id ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return array();
 		}
 
@@ -474,7 +467,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_step_designs( $term ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function get_step_designs( $term ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return array();
 		}
 
@@ -483,7 +476,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return array
 		 */
-		public function get_substep_designs( $term ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function get_substep_designs( $term ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return array();
 		}
 
@@ -497,7 +490,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 			return in_array( $feature, $this->get_supports(), true );
 		}
 
-		public function claim_environment( $environment ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function claim_environment( $environment ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return false;
 		}
 
@@ -506,7 +499,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return bool|WFFN_Funnel
 		 */
-		public function get_funnel_to_run( $environment ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function get_funnel_to_run( $environment ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return false;
 		}
 
@@ -665,7 +658,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return array
 		 */
-		public function _get_export_metadata( $step ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function _get_export_metadata( $step ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return array();
 		}
 
@@ -708,7 +701,7 @@ if ( ! class_exists( 'WFFN_Step_Base' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function has_import_scheduled( $id ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function has_import_scheduled( $id ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			return false;
 		}
 

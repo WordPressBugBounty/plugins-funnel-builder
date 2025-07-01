@@ -235,7 +235,12 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 		public function get_write_api_permission_check() {
 			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' );
 		}
+		private function _should_display_block_incompatible_notice() {
+			$wc_cart_page     = get_post( wc_get_page_id( 'cart' ) );
+			$wc_checkout_page = get_post( wc_get_page_id( 'checkout' ) );
 
+			return has_block( 'woocommerce/checkout', $wc_checkout_page ) || has_block( 'woocommerce/cart', $wc_cart_page );
+		}
 		public function get_store_checkout( WP_REST_Request $request ) {
 			$funnel_id = $request->get_param( 'funnel_id' );
 			$funnel    = new WFFN_Funnel( $funnel_id );
@@ -262,6 +267,10 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 						'type'     => WFFN_Common::store_native_checkout_slug(),
 						'substeps' => $sub_step_data,
 					);
+
+					if($this->_should_display_block_incompatible_notice()) {
+						$native_checkout['is_checkout_block'] = true;
+					}
 					array_unshift( $steps, $native_checkout );
 				}
 				$steps = wffn_rest_api_helpers()->add_step_edit_details( $steps );
@@ -289,6 +298,7 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 
 			if ( ! empty( $steps ) && is_array( $steps ) && count( $steps ) > 0 ) {
 				$is_pro = class_exists( 'WFFN_Pro_Core' );
+				remove_all_filters('pre_get_posts');
 				foreach ( $steps as $step ) {
 					$funnel_id_meta = get_post_meta( $step['id'], '_bwf_in_funnel', true );
 					$steps_ids      = [ $step['id'] ];
@@ -304,16 +314,15 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 						}
 					}
 
-					if ( ! empty( $funnel_id_meta ) && empty( $variant_ids ) ) {
-						continue;
-					}
 
 					$steps_ids       = empty( $funnel_id_meta ) ? array_merge( $steps_ids, $variant_ids ) : $variant_ids;
 					$get_integration = WFFN_Core()->steps->get_integration_object( $step['type'] );
 
 					if ( $get_integration instanceof WFFN_Step ) {
 						foreach ( $steps_ids as $step_id ) {
-							$get_integration->update_funnel_meta_in_step( $step_id, $funnel_id );
+							if ( $funnel_id_meta !== $funnel_id ) {
+								$get_integration->update_funnel_meta_in_step( $step_id, $funnel_id );
+							}
 						}
 					}
 				}
@@ -899,7 +908,7 @@ if ( ! class_exists( 'WFFN_REST_Store_Checkout' ) ) {
 			$type      = isset( $request['type'] ) ? $request['type'] : '';
 			$builder   = isset( $request['builder'] ) ? $request['builder'] : '';
 			$template  = isset( $request['template'] ) ? str_replace( '_funnel', '', $request['template'] ) : '';
-			$title     = $type === 'wc_checkout' ? __( 'Checkout', 'funnel-builder' ) : __( 'Thank you Page', 'funnel-builder' );
+			$title     = $type === 'wc_checkout' ? __( 'Checkout Page', 'funnel-builder' ) : __( 'Thank you Page', 'funnel-builder' );
 			$resp      = [];
 
 			$builder_status = wffn_rest_api_helpers()->check_builder_status( $builder, $template );

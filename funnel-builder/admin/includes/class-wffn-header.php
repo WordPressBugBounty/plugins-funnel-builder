@@ -130,14 +130,14 @@ if ( ! class_exists( 'WFFN_Header' ) ) {
 							'name'   => __( 'Get Help', 'funnel-builder' ),
 							'desc'   => __( 'Contact support team', 'funnel-builder' ),
 							'icon'   => 'support',
-							'link'   => self::prepare_web_url( 'https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Admin+Menu+Support&utm_campaign=fb+lite+plugin' ),
+							'link'   => self::prepare_web_url( 'https://funnelkit.com/support/?utm_source=WordPress&utm_medium=Admin+Menu+Support&utm_campaign=FB+Lite+Plugin' ),
 							'target' => '_blank'
 						],
 						'help'    => [
 							'name'   => __( 'Read Docs', 'funnel-builder' ),
 							'desc'   => __( 'Get help along the way', 'funnel-builder' ),
 							'icon'   => 'help',
-							'link'   => self::prepare_web_url( 'https://funnelkit.com/documentation/?utm_source=WordPress&utm_medium=Admin+Menu+Doc&utm_campaign=fb+lite+plugin' ),
+							'link'   => self::prepare_web_url( 'https://funnelkit.com/documentation/?utm_source=WordPress&utm_medium=Admin+Menu+Doc&utm_campaign=FB+Lite+Plugin' ),
 							'target' => '_blank'
 						]
 					]

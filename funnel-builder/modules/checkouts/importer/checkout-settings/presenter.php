@@ -43,7 +43,7 @@ $pageLayout = [
 	'fieldsets'                   => [
 		'single_step' => [
 			[
-				'name'        => __( 'Customer Information', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Customer Information', 'funnel-builder' )),
 				'class'       => '',
 				'is_default'  => 'yes',
 				'sub_heading' => '',
@@ -102,14 +102,14 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Shipping Method', 'woocommerce' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Shipping Method', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [ 'shipping_calculator' => true ],
 				'fields'      => [ isset( $advanced_field['shipping_calculator'] ) ? $advanced_field['shipping_calculator'] : [] ],
 			],
 			[
-				'name'        => __( 'Your Products', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Your Products', 'woofunnels-aero-checkout' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [
@@ -122,7 +122,7 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Order Summary', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [

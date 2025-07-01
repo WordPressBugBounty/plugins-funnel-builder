@@ -52,7 +52,8 @@ if ( ! class_exists( 'WFFN_REST_Setup' ) ) {
 					'args'                => array(),
 				),
 			) );
-		}	
+		}
+
 		public function get_read_api_permission_check() {
 			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'read' );
 		}
@@ -73,8 +74,8 @@ if ( ! class_exists( 'WFFN_REST_Setup' ) ) {
 				$get_funnel = new WFFN_Funnel( $global_funnel_id );
 				if ( $get_funnel instanceof WFFN_Funnel && 0 !== $get_funnel->get_id() ) {
 					$statuses['override_global_checkout'] = array(
-						'funnel_id'   => $global_funnel_id,
-						'funnel_name' => $get_funnel->get_title(),
+						'funnel_id'     => $global_funnel_id,
+						'funnel_name'   => $get_funnel->get_title(),
 						'funnel_status' => $get_funnel->get_status(),
 					);
 				}
@@ -95,6 +96,52 @@ if ( ! class_exists( 'WFFN_REST_Setup' ) ) {
 				$statuses['funnels'] = [ absint( $funnels['items'][0]['id'] ) ];
 			} else {
 				$statuses['funnels'] = 0;
+
+			}
+
+			/**
+			 * Updates the global checkout funnel metadata if no override exists.
+			 *
+			 * This function checks if the `override_global_checkout` status is empty. If it is,
+			 * it retrieves funnels marked as global, deletes their `_is_global` metadata,
+			 * and updates the `override_global_checkout` status with the funnel details.
+			 *
+			 * @global array $statuses The array containing various funnel statuses.
+			 */
+			if ( empty( $statuses['override_global_checkout'] ) ) {
+				$args    = array(
+					'offset'  => 0,
+					'limit'   => 10,
+					'meta'    => array(
+						'key'     => '_is_global',
+						'compare' => '=',
+						'value'   => 'yes'
+					),
+					'context' => 'listing',
+				);
+				$funnels = WFFN_Core()->admin->get_funnels( $args );
+				if ( isset( $funnels['items'] ) && ! empty( $funnels['items'] ) ) {
+					foreach ( $funnels['items'] as $item ) {
+
+						if ( ! empty( $statuses['override_global_checkout'] ) ) {
+							/**
+							 * If we found that we have recovered a global checkout funnel, then simply remove others metadata
+							 */
+							WFFN_Core()->get_dB()->delete_meta( $item['id'], '_is_global' );
+							continue;
+						}
+						$get_funnel = new WFFN_Funnel( $item['id'] );
+
+						$statuses['override_global_checkout'] = array(
+							'funnel_id'     => $get_funnel->get_id(),
+							'funnel_name'   => $get_funnel->get_title(),
+							'funnel_status' => $get_funnel->get_status(),
+						);
+						WFFN_Common::update_store_checkout_meta( $item['id'], 1 );
+
+
+					}
+				}
 
 			}
 

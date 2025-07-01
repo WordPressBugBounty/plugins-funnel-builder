@@ -44,6 +44,15 @@ if ( ! class_exists( 'WFACP_Gutenberg_Importer' ) ) {
 			if ( isset( $data['error'] ) ) {
 				return $data;
 			}
+
+			/**
+			 * Translation of Elementor Templates
+			 */
+			if ( isset( $data['data'] ) ) {
+
+				$data['data'] = WFACP_Common::translation_string_to_check( $data['data'] );
+
+			}
 			$content = $data['data'];
 			if ( ! empty( $content ) ) {
 				$contents = json_decode( $content, true );

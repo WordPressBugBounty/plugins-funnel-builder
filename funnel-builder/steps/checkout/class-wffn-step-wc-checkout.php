@@ -264,7 +264,7 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 
 						global $wpdb;
 
-						$post_meta_all = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$checkout_page_id" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+						$post_meta_all = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=%s", $checkout_page_id ) ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 						if ( ! empty( $post_meta_all ) ) {
 							$sql_query_selects = [];
@@ -421,7 +421,7 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 			/**
 			 * @todo we need to also take care of the embed forms here
 			 */
-			if ( 'wfacp_checkout' !== $environment['post_type'] ) {
+			if ( ! is_array( $environment ) || 'wfacp_checkout' !== $environment['post_type'] ) {
 				return false;
 			}
 			if ( $this->is_disabled( $this->get_entity_status( $environment['id'] ) ) ) {

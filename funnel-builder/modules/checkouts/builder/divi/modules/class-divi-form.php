@@ -40,6 +40,12 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 			$do_not_show_fields        = WFACP_Common::get_html_excluded_field();
 			$exclude_fields            = [];
 			$this->custom_class_tab_id = $this->add_tab( __( 'Field Classes', 'funnel-builder' ), 3 );
+
+			/**
+			 * Display Notice link in the checkout design
+			 */
+
+			$notice_html=WFACP_Common::get_notice_html_in_editor('divi');
 			foreach ( $steps as $step_key => $fieldsets ) {
 				foreach ( $fieldsets as $section_key => $section_data ) {
 					if ( empty( $section_data['fields'] ) ) {
@@ -79,6 +85,7 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 					}
 					$tab_id = $this->add_tab( $title, 5 );
 					$this->register_fields( $section_data['fields'], $tab_id );
+					$this->custom_notice( $tab_id,$notice_html,'wfacp_section_notice_'.$step_key.'_'.$section_key,'');;
 				}
 			}
 		}
@@ -224,7 +231,7 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 		private function payment_method() {
 			$tab_id = $this->add_tab( __( 'Payment Gateways', 'funnel-builder' ), 5 );
 			$this->add_heading( $tab_id, __( 'Section', 'funnel-builder' ) );
-			$this->add_text( $tab_id, 'wfacp_payment_method_heading_text', __( 'Heading', 'funnel-builder' ), esc_attr__( 'Payment Information', 'funnel-builder' ), [], '' );
+			$this->add_text( $tab_id, 'wfacp_payment_method_heading_text', __( 'Heading', 'funnel-builder' ), WFACP_Common::translation_string_to_check( esc_attr__( 'Payment Information', 'funnel-builder' ) ), [], '' );
 			$this->add_textArea( $tab_id, 'wfacp_payment_method_subheading', __( __( 'Sub Heading', 'funnel-builder' ), 'woofunnel-aero-checkout' ), '' );
 
 		}
@@ -243,7 +250,7 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 				if ( $i == $count ) {
 					$text_key            = 'place_order';
 					$button_key          = 'wfacp_payment_place_order_text';
-					$button_default_text = __( 'PLACE ORDER NOW', 'funnel-builder' );
+					$button_default_text = WFACP_Common::translation_string_to_check( __( 'PLACE ORDER NOW', 'funnel-builder' ) );
 					$button_label        = __( 'Place Order', 'funnel-builder' );
 				}
 				$this->add_text( $tab_id, $button_key, __( $button_label, 'woofunnel-aero-checkout' ), esc_js( $button_default_text ), [] );
@@ -277,8 +284,8 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 			$this->add_responsive_control( 'enable_callapse_order_summary' );
 			$this->add_switcher( $tab_id, 'order_summary_enable_product_image_collapsed', __( 'Enable Image', 'funnel-builder' ), 'yes' );
 
-			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'funnel-builder' ), __( 'Show Order Summary', 'funnel-builder' ) );
-			$this->add_text( $tab_id, 'cart_expanded_title', __( 'Expanded View Text', 'funnel-builder' ), __( 'Hide Order Summary', 'funnel-builder' ) );
+			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'funnel-builder' ), WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) ) );
+			$this->add_text( $tab_id, 'cart_expanded_title', __( 'Expanded View Text', 'funnel-builder' ), WFACP_Common::translation_string_to_check( __( 'Hide Order Summary', 'funnel-builder' ) ) );
 
 			$collapse_enable_coupon = [
 				'collapse_enable_coupon' => 'on',
@@ -288,6 +295,8 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 			$this->add_text( $tab_id, 'collapse_coupon_button_text', __( 'Coupon Button Text', 'funnel-builder' ), __( 'Apply', 'woocommerce' ), $collapse_enable_coupon );
 			$this->add_switcher( $tab_id, 'collapse_order_quantity_switcher', __( 'Quantity Switcher', 'funnel-builder' ), 'on' );
 			$this->add_switcher( $tab_id, 'collapse_order_delete_item', __( 'Allow Deletion', 'funnel-builder' ), 'on' );
+
+
 		}
 
 		protected function register_styles() {
@@ -997,7 +1006,7 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 				'%%order_class%% #wfacp-e-form  #payment li.wc_payment_method input.input-radio:checked::before',
 				'%%order_class%% #wfacp-e-form  #payment.wc_payment_method input[type=radio]:checked:before',
 				'%%order_class%% #wfacp-e-form  button[type=submit]:not(.white):not(.black)',
-				'%%order_class%% #wfacp-e-form  button[type=button]:not(.white):not(.black)',
+				'%%order_class%% #wfacp-e-form  button[type=button]:not(.white):not(.black):not(.woopay-express-button)',
 				'%%order_class%% #wfacp-e-form .wfacp-coupon-section .wfacp-coupon-page .wfacp-coupon-field-btn',
 				'%%order_class%% #wfacp-e-form input[type=checkbox]:checked',
 				'%%order_class%% #wfacp-e-form #payment input[type=checkbox]:checked',
@@ -1386,6 +1395,8 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 		private function order_summary_fields() {
 			$tab_id = $this->add_tab( __( 'Order Summary', 'woofunnel-aero-checkout' ), 5 );
 			$this->add_switcher( $tab_id, 'order_summary_enable_product_image', __( 'Enable Image', 'woofunnels-aero-checkout' ), 'on' );
+
+			$this->price_strike_through_content_settings( $tab_id, 'order_summary_field' );
 
 		}
 

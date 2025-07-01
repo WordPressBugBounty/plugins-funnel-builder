@@ -83,7 +83,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 		 *
 		 * @param array $time_array An array of time values.
 		 *
-		 * @return int|bool The timestamp or false if required keys are missing.
+		 * @return int The timestamp or false if required keys are missing.
 		 */
 		public static function create_timestamp_from_array( $time_array ) {
 			// Check if required keys exist in the array
@@ -228,7 +228,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			try {
 				$last_sent = new DateTime( self::$executed_last[ $frequency ] );
 			} catch ( Exception|Error $e ) {
-				WFFN_Core()->logger->log( "Frequency {$frequency} and value " . self::$executed_last[$frequency], 'notification-error', true );
+				WFFN_Core()->logger->log( "Frequency {$frequency} and value " . self::$executed_last[ $frequency ], 'notification-error', true );
 				WFFN_Core()->logger->log( "Exception {$e->getMessage()}", 'notification-error', true );
 
 				return false;
@@ -295,7 +295,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 		 * @return array The recipients for the email.
 		 */
 		private static function get_recipients() {
-			$recipients = array( get_option( 'admin_email' ) );
+			$recipients = [];
 
 			if ( isset( self::$global_settings['bwf_notification_user_selector'] ) && is_array( self::$global_settings['bwf_notification_user_selector'] ) ) {
 				foreach ( self::$global_settings['bwf_notification_user_selector'] as $user ) {
@@ -320,7 +320,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			$recipients = array_filter( $recipients, function ( $email ) {
 				return ( strpos( $email, 'support@' ) === false );
 			} );
-
+			$recipients = array_unique($recipients);
 			return $recipients;
 		}
 
@@ -336,10 +336,9 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			$date_string = self::get_date_string( $dates, $frequency );
 			switch ( strtolower( $frequency ) ) {
 				case 'weekly':
-					return sprintf( __( 'Weekly Report for %s', 'FunnelKit' ), $date_string );
-
+					return sprintf( __( '%s - Weekly Report for %s', 'FunnelKit' ), get_bloginfo( 'name' ), $date_string );
 				case 'monthly':
-					return sprintf( __( 'Monthly Report for %s', 'FunnelKit' ), $date_string );
+					return sprintf( __( '%s - Monthly Report for %s', 'FunnelKit' ), get_bloginfo( 'name' ), $date_string );
 
 				default:
 					return __( 'Report', 'FunnelKit' );
@@ -438,33 +437,58 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			$general_settings = BWF_Admin_General_Settings::get_instance();
 			$general_settings->update_global_settings_fields( $get_config );
 			$resp['status'] = true;
-			self::set_schedule_for_email();
 
 			return $resp;
 		}
 
+
 		/**
-		 * Set schedule for email notifications.
+		 * @hook over `fk_fb_every_day`
+		 * Sets up the notification schedule if notifications are enabled.
 		 *
-		 * @return void
+		 * This method loads the notification settings, filters out frequencies
+		 * if an email was already sent, and schedules a single event for the
+		 * performance notification if not already scheduled.
+		 *
+		 * @return bool|void|WP_Error Returns false if no frequencies are left or if the event is already scheduled.
 		 */
-		public static function set_schedule_for_email() {
-			$settings = self::load_settings();
-			if ( empty( $settings['bwf_enable_notification'] ) ) {
-				wp_clear_scheduled_hook( 'wffn_performance_notification' );
+		public static function maybe_setup_notification_schedule() {
+			/** global settings */
+			self::$global_settings = self::load_settings();
+			if ( empty( self::$global_settings['bwf_enable_notification'] ) ) {
+				return;
+			}
+			$today       = new DateTime();
+			$frequencies = self::get_frequencies();
+
+			/** Filter out the frequencies if an email was already sent */
+			$frequencies = array_filter( $frequencies, function ( $frequency ) use ( $today ) {
+				/** Case: weekly. Not Monday */
+				if ( 'weekly' === $frequency && 1 === intval( $today->format( 'N' ) ) ) {
+					/** 1 means Monday */
+					return true;
+				}
+
+				/** Case: monthly. Not 1st */
+				if ( 'monthly' === $frequency && 1 === intval( $today->format( 'd' ) ) ) {
+					return true;
+				}
+				return false;
+			} );
+			if ( empty( $frequencies ) ) {
 				return;
 			}
 
-			$notification_time = $settings['bwf_notification_time'];
+			$notification_time = self::$global_settings['bwf_notification_time'];
 			$desired_timestamp = self::create_timestamp_from_array( $notification_time );
-			$next_scheduled    = wp_next_scheduled( 'wffn_performance_notification' );
 
-			if ( ! $next_scheduled || $next_scheduled !== $desired_timestamp ) {
-				if ( $next_scheduled ) {
-					wp_clear_scheduled_hook( 'wffn_performance_notification' );
-				}
-				wp_schedule_event( $desired_timestamp, 'daily', 'wffn_performance_notification' );
+			if ( wp_next_scheduled( 'wffn_performance_notification' ) === false ) {
+				return wp_schedule_single_event( $desired_timestamp, 'wffn_performance_notification' );
 			}
+
+			return false;
 		}
+
+
 	}
 }

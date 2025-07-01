@@ -26,6 +26,7 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 		protected $rest_base = 'wizard';
 
 		public function __construct() {
+			add_action( 'init', array( $this, 'suppress_warnings' ) );
 			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		}
 
@@ -141,46 +142,52 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 			$plugin_slug     = $request->get_param( 'slug' );
 			$plugin_status   = $request->get_param( 'status' );
 			$default_builder = $request->get_param( 'default_builder' );
-
 			$plugin_init     = isset( $plugin_init ) ? $plugin_init : '';
 			$plugin_slug     = isset( $plugin_slug ) ? $plugin_slug : '';
 			$plugin_status   = isset( $plugin_status ) ? $plugin_status : '';
 			$default_builder = isset( $default_builder ) ? $default_builder : '';
-			$activate        = '';
 
+			try {
+				$activate        = '';
 
-			if ( $plugin_init === '' || $plugin_slug === '' ) {
-				return rest_ensure_response( $resp );
-			}
-
-			if ( ! function_exists( 'activate_plugin' ) ) {
-				include_once ABSPATH . 'wp-admin/includes/plugin.php';
-			}
-
-			if ( $plugin_status === 'install' && $plugin_slug !== '' ) {
-				$install_plugin = WFFN_Common::install_plugin( $plugin_slug );
-				if ( isset( $install_plugin['status'] ) && $install_plugin['status'] === false ) {
-					return rest_ensure_response( $install_plugin );
+				if ( $plugin_init === '' || $plugin_slug === '' ) {
+					return rest_ensure_response( $resp );
 				}
-			}
 
-			$activate = activate_plugin( $plugin_init, '', false, true );
+				if ( ! function_exists( 'activate_plugin' ) ) {
+					include_once ABSPATH . 'wp-admin/includes/plugin.php';
+				}
 
-			if ( '' !== $default_builder && ( ! is_wp_error( $activate ) || $plugin_status === 'activated' ) ) {
-				$get_config                             = get_option( 'bwf_gen_config', true );
-				$get_config['default_selected_builder'] = $default_builder;
-				$general_settings                       = BWF_Admin_General_Settings::get_instance();
+				if ( $plugin_status === 'install' && $plugin_slug !== '' ) {
+					$install_plugin = WFFN_Common::install_plugin( $plugin_slug );
+					if ( isset( $install_plugin['status'] ) && $install_plugin['status'] === false ) {
+						return rest_ensure_response( $install_plugin );
+					}
+				}
 
-				$general_settings->update_global_settings_fields( $get_config );
-			}
+				$activate = activate_plugin( $plugin_init, '', false, true );
 
-			if ( is_wp_error( $activate ) ) {
-				$resp = array(
-					'status'  => false,
-					'message' => $activate->get_error_message(),
-					'slug'    => $plugin_slug,
-				);
-			} else {
+				if ( '' !== $default_builder && ( ! is_wp_error( $activate ) || $plugin_status === 'activated' ) ) {
+					$get_config                             = get_option( 'bwf_gen_config', true );
+					$get_config['default_selected_builder'] = $default_builder;
+					$general_settings                       = BWF_Admin_General_Settings::get_instance();
+
+					$general_settings->update_global_settings_fields( $get_config );
+				}
+
+				if ( is_wp_error( $activate ) ) {
+					$resp = array(
+						'status'  => false,
+						'message' => $activate->get_error_message(),
+						'slug'    => $plugin_slug,
+					);
+				} else {
+					$resp = array(
+						'status' => true,
+						'slug'   => $plugin_slug,
+					);
+				}
+			} catch ( Exception|Error $e ) {
 				$resp = array(
 					'status' => true,
 					'slug'   => $plugin_slug,
@@ -201,62 +208,65 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 				'message' => __( 'Something went wrong. Please try again', 'funnel-builder' )
 			);
 
-			$plugins = array(
-				array(
-					'slug'   => 'woocommerce',
-					'init'   => 'woocommerce/woocommerce.php',
-					'status' => WFFN_Common::get_plugin_status( 'woocommerce/woocommerce.php' ),
-				),
-				array(
-					'slug'   => 'wp-marketing-automations',
-					'init'   => 'wp-marketing-automations/wp-marketing-automations.php',
-					'status' => WFFN_Common::get_plugin_status( 'wp-marketing-automations/wp-marketing-automations.php' ),
-				),
-				array(
-					'slug'   => 'funnelkit-stripe-woo-payment-gateway',
-					'init'   => 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php',
-					'status' => WFFN_Common::get_plugin_status( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' ),
-				),
-				array(
-					'slug'   => 'cart-for-woocommerce',
-					'init'   => 'cart-for-woocommerce/plugin.php',
-					'status' => WFFN_Common::get_plugin_status( 'cart-for-woocommerce/plugin.php' ),
-				)
-			);
+			try {
+				$plugins = array(
+					array(
+						'slug'   => 'woocommerce',
+						'init'   => 'woocommerce/woocommerce.php',
+						'status' => WFFN_Common::get_plugin_status( 'woocommerce/woocommerce.php' ),
+					),
+					array(
+						'slug'   => 'wp-marketing-automations',
+						'init'   => 'wp-marketing-automations/wp-marketing-automations.php',
+						'status' => WFFN_Common::get_plugin_status( 'wp-marketing-automations/wp-marketing-automations.php' ),
+					),
+					array(
+						'slug'   => 'funnelkit-stripe-woo-payment-gateway',
+						'init'   => 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php',
+						'status' => WFFN_Common::get_plugin_status( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' ),
+					),
+					array(
+						'slug'   => 'cart-for-woocommerce',
+						'init'   => 'cart-for-woocommerce/plugin.php',
+						'status' => WFFN_Common::get_plugin_status( 'cart-for-woocommerce/plugin.php' ),
+					)
+				);
 
-			if ( ! function_exists( 'activate_plugin' ) ) {
-				include_once ABSPATH . 'wp-admin/includes/plugin.php';
-			}
+				if ( ! function_exists( 'activate_plugin' ) ) {
+					include_once ABSPATH . 'wp-admin/includes/plugin.php';
+				}
 
-			foreach ( $plugins as $plugin ) {
-				$plugin_init   = $plugin['init'];
-				$plugin_slug   = $plugin['slug'];
-				$plugin_status = $plugin['status'];
-				if ( $plugin_status === 'install' && $plugin_slug !== '' ) {
-					$install_plugin = WFFN_Common::install_plugin( $plugin_slug );
-					if ( isset( $install_plugin['status'] ) && $install_plugin['status'] === false ) {
-						return rest_ensure_response( $install_plugin );
+				foreach ( $plugins as $plugin ) {
+					$plugin_init   = $plugin['init'];
+					$plugin_slug   = $plugin['slug'];
+					$plugin_status = $plugin['status'];
+					if ( $plugin_status === 'install' && $plugin_slug !== '' ) {
+						$install_plugin = WFFN_Common::install_plugin( $plugin_slug );
+						if ( isset( $install_plugin['status'] ) && $install_plugin['status'] === false ) {
+							return rest_ensure_response( $install_plugin );
+						}
 					}
-				}
-				$activate = activate_plugin( $plugin_init, '', false, true );
+					$activate = activate_plugin( $plugin_init, '', false, true );
 
-				if ( "woocommerce/woocommerce.php" === $plugin_init ) {
-					update_option( 'bwf_needs_rewrite', 'yes', true );
-				}
+					if ( "woocommerce/woocommerce.php" === $plugin_init ) {
+						update_option( 'bwf_needs_rewrite', 'yes', true );
+					}
 
-				if ( is_wp_error( $activate ) ) {
-					$resp = array(
-						'status'  => false,
-						'message' => $activate->get_error_message(),
-						'slug'    => $plugin_slug,
-					);
+					if ( is_wp_error( $activate ) ) {
+						$resp = array(
+							'status'  => false,
+							'message' => $activate->get_error_message(),
+							'slug'    => $plugin_slug,
+						);
 
-					return rest_ensure_response( $resp );
+						return rest_ensure_response( $resp );
+					}
+
 				}
+			} catch ( Exception|Error $e ) {
 
 			}
-			$substeps_data            = WFFN_Common::get_substeps_data();
-			$substeps_data['substep'] = true;
+
 			$resp                     = array(
 				'status' => true,
 				'slug'   => '',
@@ -293,7 +303,6 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 				'status'  => false,
 				'message' => __( 'Something went wrong. Please try again', 'funnel-builder' )
 			);
-
 
 			$op_email = $request->get_param( 'op_email' );
 
@@ -342,7 +351,6 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 
 		public function track_optin() {
 
-
 			WooFunnels_optIn_Manager::Allow_optin( true );
 
 			$resp = array(
@@ -353,7 +361,20 @@ if ( ! class_exists( 'WFFN_REST_Wizard' ) ) {
 			return rest_ensure_response( $resp );
 		}
 
-
+		/**
+		 * Avoid error and db error in wizard api
+		 * @return void
+		 */
+		function suppress_warnings() {
+			if ( ( isset( $_GET['path'] ) && '/user-setup' === $_GET['path'] ) || ( ! empty( $_SERVER['REQUEST_URI'] ) && ( strpos( $_SERVER['REQUEST_URI'], 'funnelkit-app/wizard' ) !== false ) ) ) {//phpcs:ignore
+				global $wpdb;
+				$wpdb->hide_errors();
+				if ( ! function_exists( 'set_error_handler' ) ) {
+					return;
+				}
+				set_error_handler( function () {} );// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler
+			}
+		}
 	}
 
 

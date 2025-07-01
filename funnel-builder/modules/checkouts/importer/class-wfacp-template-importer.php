@@ -133,7 +133,9 @@ if ( ! class_exists( 'WFACP_Template_Importer' ) ) {
 				"domain"   => $this->get_domain(),
 				"license"  => $license,
 				"template" => $template_id,
-				"builder"  => $builder
+				"builder"  => $builder,
+				"version"  => 4,
+				"locale" => get_locale()
 			);
 
 			$requestBody  = wp_json_encode( $requestBody );
@@ -216,9 +218,7 @@ if ( ! class_exists( 'WFACP_Template_Importer' ) ) {
 			if ( ! empty( $import_page_settings ) ) {
 				$page_settings = WFACP_Common::get_page_settings( $aero_id );
 
-				if ( isset( $page_settings['enable_address_field_number_validation'] ) ) {
-					$page_settings['enable_address_field_number_validation'] = "true";
-				}
+
 
 				foreach ( $import_page_settings as $key => $setting ) {
 					$page_settings[ $key ] = $import_page_settings[ $key ];

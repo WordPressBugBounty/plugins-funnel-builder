@@ -10,7 +10,6 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 		public static $plugin_compatibilities = array();
 
 		public static function load_all_compatibilities() {
-
 			$compatibilities = array(
 				'class-wffn-beaver-builder-compatibility.php'            => class_exists( 'FLBuilderLoader' ),
 				'class-wffn-cartflows-compatibility.php'                 => class_exists( 'Cartflows_Checkout_Markup' ),
@@ -24,12 +23,15 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 				'class-wffn-weglot-compatibility.php'                    => ( defined( 'WEGLOT_VERSION' ) || class_exists( 'WeglotWP\Third\Woocommerce\WC_Filter_Urls_Weglot' ) ),
 				'class-wffn-breakdance-builder-compatibility.php'        => defined( 'BREAKDANCE_WOO_DIR' ),
 				'class-wffn-pys-compatibility.php'                       => class_exists( 'PixelYourSite\EventsManager' ),
+				'class-wffn-paghiper-compatibility.php'                 => class_exists( 'WC_Paghiper' ),
 				'rest/class-bwfan-compatibility-with-sg-cache.php'       => function_exists( 'sg_cachepress_purge_cache' ),
 				'rest/class-wffn-clearfy-compatibility.php'              => class_exists( 'Clearfy_Plugin' ),
 				'rest/class-wffn-force-login-compability.php'            => function_exists( 'v_forcelogin_rest_access' ),
 				'rest/class-wffn-password-protected-compability.php'     => class_exists( 'Password_Protected' ),
 				'rest/class-wffn-permatters-compability.php'             => defined( 'PERFMATTERS_VERSION' ),
 				'rest/class-wffn-wp-rest-authenticate-compatibility.php' => function_exists( 'mo_api_auth_activate_miniorange_api_authentication' ),
+				'class-wffn-wpml-plugin-compatibility.php'               => class_exists( 'SitePress' ) && defined( 'ICL_SITEPRESS_VERSION' ),
+				'class-wffn-polylang-plugin-compatibility.php'           => function_exists( 'pll_default_language' ) && function_exists( 'pll_home_url' ),
 			);
 
 			add_action( 'after_setup_theme', [ __CLASS__, 'themes' ] );
@@ -70,6 +72,22 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 
 		public static function get_compatibility_class( $slug ) {
 			return ( isset( self::$plugin_compatibilities[ $slug ] ) ) ? self::$plugin_compatibilities[ $slug ] : false;
+		}
+
+
+
+		public static function get_language_compatible_plugin() {
+			if ( empty( self::$plugin_compatibilities ) ) {
+				return '';
+			}
+
+			foreach ( self::$plugin_compatibilities as $plugins_class ) {
+				if ( property_exists( $plugins_class, 'is_language_support' ) && true === $plugins_class->is_language_support ) {
+					return call_user_func( array( $plugins_class, 'get_plugin_nicename' ) );
+				}
+			}
+
+			return '';
 		}
 
 

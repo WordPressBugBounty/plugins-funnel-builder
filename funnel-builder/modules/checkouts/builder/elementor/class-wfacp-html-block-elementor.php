@@ -3,18 +3,22 @@ if ( ! class_exists( 'WFACP_Elementor_HTML_BLOCK' ) ) {
 	#[AllowDynamicProperties]
 	abstract class WFACP_Elementor_HTML_BLOCK extends WFACP_EL_Fields {
 
+		private $settings = [];
+
 		public function __construct( $data = [], $args = null ) {
 			parent::__construct( $data, $args );
 		}
 
 
 		final protected function render() {
-			WFACP_Elementor::set_locals( $this->get_name(), $this->get_id() );
+
 			if ( ! wp_doing_ajax() && is_admin() ) {
 				return;
 			}
+
 			if ( apply_filters( 'wfacp_print_elementor_widget', true, $this->get_id(), $this ) ) {
-				$setting = $this->get_settings();
+				$setting        = $this->get_settings();
+				$this->settings = $setting;
 				if ( ! wfacp_elementor_edit_mode() ) {
 					$hide   = false;
 					$device = WFACP_Common::get_device_mode();
@@ -31,9 +35,12 @@ if ( ! class_exists( 'WFACP_Elementor_HTML_BLOCK' ) ) {
 						return;
 					}
 				}
+				WFACP_Elementor::set_locals( $this->get_name(), $this->get_id() );
 				$id = $this->get_id();
+				// Only Update ajax settings
 				WFACP_Common::set_session( $id, $setting );
 				$this->html();
+				$this->save_ajax_settings();
 			}
 		}
 
@@ -41,10 +48,12 @@ if ( ! class_exists( 'WFACP_Elementor_HTML_BLOCK' ) ) {
 
 		}
 
+
 		protected function order_summary( $field_key ) {
 
-			$this->add_tab( __( 'Order Summary', 'woofunnel-aero-checkout' ), 2 );
+			$this->add_tab( WFACP_Common::translation_string_to_check( __( 'Order Summary', 'woocommerce' ) ), 2 );
 			$this->add_heading( 'Product' );
+
 
 			$cart_item_color = [
 				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody .wfacp_order_summary_item_name',
@@ -67,12 +76,17 @@ if ( ! class_exists( 'WFACP_Elementor_HTML_BLOCK' ) ) {
 				'{{WRAPPER}} #wfacp-e-form  table.shop_table tbody tr td span:not(.wfacp-pro-count)',
 			];
 
+
 			$this->add_typography( $field_key . '_cart_item_typo', implode( ',', $cart_item_color ) );
 
 			$this->add_color( $field_key . '_cart_item_color', $cart_item_color, '#666666' );
 
 			$border_image_color = [ '{{WRAPPER}} #wfacp-e-form table.shop_table tr.cart_item .product-image img' ];
 			$this->add_border_color( 'mini_product_image_border_color', $border_image_color, '', __( 'Image Border Color', 'woofunnel-aero-checkout' ), false, [ 'order_summary_enable_product_image' => 'yes' ] );
+
+
+			/* ------------------------------------ End ------------------------------------ */
+
 
 			$this->add_heading( __( 'Subtotal', 'woocommerce' ) );
 
@@ -298,6 +312,24 @@ if ( ! class_exists( 'WFACP_Elementor_HTML_BLOCK' ) ) {
 			}
 		}
 
-	}
+		protected function save_ajax_settings() {
+			$id            = $this->get_id();
+			$ajax_settings = $this->parse_ajax_settings( $this->settings, $this->ajax_session_settings );
+			WFACP_Common::set_session( $id, $ajax_settings );
+		}
 
+		protected function parse_ajax_settings( $settings, $ajax_keys ) {
+			if ( empty( $ajax_keys ) || empty( $this->ajax_session_settings ) ) {
+				return $settings;
+			}
+			$output_settings = [];
+			foreach ( $this->ajax_session_settings as $key ) {
+				if ( isset( $settings[ $key ] ) ) {
+					$output_settings[ $key ] = $settings[ $key ];
+				}
+			}
+
+			return $output_settings;
+		}
+	}
 }

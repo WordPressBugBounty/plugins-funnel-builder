@@ -58,9 +58,9 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Oxygen' ) ) {
 
 			$template = [
 				'slug'        => 'oxy',
-				'title'       => __( 'Oxygen', 'funnel-builder' ),
+				'title'       => __( 'Oxygen Classic', 'funnel-builder' ),
 				'button_text' => __( 'Edit', 'funnel-builder' ),
-				'description' => __( 'Use Oxygen Builder modules to create your own designs. Or pick from professionally-designed templates.', 'funnel-builder' ),
+				'description' => __( 'Use Oxygen Classic Builder modules to create your own designs. Or pick from professionally-designed templates.', 'funnel-builder' ),
 				'edit_url'    => add_query_arg( [
 					'ct_builder'        => true,
 					'oxy_wffn_optin_id' => $this->edit_id

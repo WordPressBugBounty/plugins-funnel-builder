@@ -149,6 +149,15 @@ if ( WFACP_Common::is_cart_is_virtual() ) {
 		<?php
 	}
 }
+
+$aero_version = WFACP_Common::get_checkout_page_version();
+$asterisk     = get_option( 'woocommerce_checkout_highlight_required_fields', 'yes' );
+
+if ( version_compare( $aero_version, '1.9.3.2', '<=' ) || wc_string_to_bool( $asterisk ) ) {
+	echo "body .wfacp_main_form.woocommerce label.wfacp-form-control-label abbr.required{ display: inline;}";
+}
+
+
 if ( WFACP_Core()->pay->is_order_pay() ) {
 	?>
     body.wfacp_main_wrapper.woocommerce-order-pay header.wfacp-header.wfacp_header {

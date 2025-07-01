@@ -3,7 +3,7 @@
 if ( ! class_exists( 'WFACP_WC_Quaderno' ) ) {
 	/**
 	 * WooCommerce Quaderno by Quaderno
-	 * Plugin URI: https://quaderno.io/integrations/woocommerce/?utm_source=wordpress&utm_campaign=woocommerce
+	 * Plugin URI: https://quaderno.io/integrations/woocommerce/
 	 */
 	#[AllowDynamicProperties]
 	class WFACP_WC_Quaderno {

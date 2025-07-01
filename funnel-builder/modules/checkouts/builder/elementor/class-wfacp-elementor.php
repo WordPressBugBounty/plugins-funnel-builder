@@ -18,6 +18,7 @@ if ( ! class_exists( 'WFACP_Elementor' ) ) {
 			add_action( 'wfacp_duplicate_pages', [ $this, 'duplicate_template' ], 10, 3 );
 			add_action( 'wfacp_update_page_design', [ $this, 'update_page_design' ], 10, 2 );
 			add_action( 'elementor/elements/categories_registered', [ $this, 'add_widget_categories' ] );
+			add_action( 'woocommerce_checkout_terms_and_conditions', [ $this, 'remove_the_content_filter' ] );
 		}
 
 
@@ -254,6 +255,9 @@ if ( ! class_exists( 'WFACP_Elementor' ) ) {
 			if ( ! empty( $elementor_css_present ) ) {
 				delete_post_meta( $wfacp_id, '_elementor_css' );
 			}
+		}
+		public function remove_the_content_filter() {
+			remove_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
 		}
 	}
 

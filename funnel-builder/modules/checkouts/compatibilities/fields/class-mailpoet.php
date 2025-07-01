@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MailPoet 3 (New) by MailPoet
+ * MailPoet 3 (New) by MailPoet v.5.12.3
  * Plugin URI: http://www.mailpoet.com
  */
 if ( ! class_exists( 'WFACP_MailPoet' ) ) {
@@ -53,7 +53,24 @@ if ( ! class_exists( 'WFACP_MailPoet' ) ) {
 				return;
 			}
 
+
 			$this->instance = WFACP_Common::remove_actions( 'woocommerce_checkout_before_terms_and_conditions', 'MailPoet\Config\HooksWooCommerce', 'extendWooCommerceCheckoutForm' );
+
+			try {
+				if ( is_null( $this->instance ) && class_exists( 'MailPoet\Config\Hooks' ) ) {
+					$default_optin_position      = MailPoet\Config\Hooks::DEFAULT_OPTIN_POSITION;
+					$optin_position_setting_name = MailPoet\WooCommerce\Subscription::OPTIN_POSITION_SETTING_NAME;
+					$optInPosition               = MailPoet\Settings\SettingsController::getInstance()->get( $optin_position_setting_name, $default_optin_position );
+
+					$optInHook = MailPoet\Config\Hooks::OPTIN_HOOKS[ $optInPosition ] ?? MailPoet\Config\Hooks::OPTIN_HOOKS[ $default_optin_position ];
+
+					$this->instance = WFACP_Common::remove_actions( $optInHook, 'MailPoet\Config\HooksWooCommerce', 'extendWooCommerceCheckoutForm' );
+
+				}
+			} catch ( Exception $e ) {
+
+			}
+
 
 		}
 
@@ -115,16 +132,20 @@ if ( ! class_exists( 'WFACP_MailPoet' ) ) {
 			if ( ! $instance instanceof WFACP_Template_Common ) {
 				return;
 			}
-			$bodyClass = "body ";
+
 			$px        = $instance->get_template_type_px() . "px";
 			if ( 'pre_built' !== $instance->get_template_type() ) {
-				$bodyClass = "body #wfacp-e-form ";
+
 				$px        = "7px";
 			}
 
 
+
 			$cssHtml = "<style>";
-			$cssHtml .= $bodyClass . "#wfacp_mail_poet {padding-left:$px;padding-right:$px;margin-bottom: 16px;}";
+			$cssHtml .= "body #wfacp-sec-wrapper #wfacp_mail_poet {padding-left:$px;padding-right:$px;margin-bottom: 16px;clear:both;}";
+			$cssHtml .=  "body #wfacp-sec-wrapper #wfacp_mail_poet input {position: relative;left: auto;right: auto;bottom: auto;top: auto; margin-top: -2px;}";
+			$cssHtml .=  "body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_mail_poet  > label {padding-left: 0 !important;font-weight: normal;}";
+			$cssHtml .=  "body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_mail_poet  > label span {font-weight: normal;    margin-left: 8px;}";
 			$cssHtml .= "</style>";
 			echo $cssHtml;
 
@@ -134,5 +155,5 @@ if ( ! class_exists( 'WFACP_MailPoet' ) ) {
 	}
 
 	WFACP_Plugin_Compatibilities::register( new WFACP_MailPoet(), 'wfacp-mailpoet' );
-}
 
+}

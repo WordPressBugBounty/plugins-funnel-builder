@@ -973,6 +973,14 @@ if ( ! class_exists( 'WFACP_OXY_Field' ) ) {
 			return file_get_contents( __DIR__ . '/css/wfacp-oxygen.css' );
 
 		}
+		public function custom_notice( $control, $notice_html ,$key,$label='' ) {
+
+			$custom_control = $control->addCustomControl($notice_html);
+			$custom_control->setParam( $key, '' );
+
+
+			return $custom_control;
+		}
 
 
 	}

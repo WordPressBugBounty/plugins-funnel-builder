@@ -1,8 +1,9 @@
 <?php
+
+/**
+ * WooCommerce Smart Coupons by StoreApps
+ */
 if ( ! class_exists( 'WFACP_Storeapps_Coupons' ) ) {
-	/**
-	 * WooCommerce Smart Coupons by StoreApps
-	 */
 	class WFACP_Storeapps_Coupons {
 		/**
 		 * Constructor
@@ -36,14 +37,10 @@ if ( ! class_exists( 'WFACP_Storeapps_Coupons' ) ) {
 		}
 
 		public function handle_auto_apply() {
-
-			if ( ! wp_doing_ajax() || ! did_action( 'wfacp_after_template_found' ) ) {
+			if ( did_action( 'wc_ajax_checkout' ) || ! wp_doing_ajax() || ! did_action( 'wfacp_after_template_found' ) ) {
 				return;
 			}
-			add_filter( 'woocommerce_notice_types', function () {
-				return [];
-			} );
-
+			add_filter( 'woocommerce_notice_types', '__return_empty_array' );
 		}
 	}
 

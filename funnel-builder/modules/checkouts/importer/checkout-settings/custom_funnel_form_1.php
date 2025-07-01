@@ -42,12 +42,12 @@ $pageLayout = [
 	'fieldsets'                   => [
 		'single_step' => [
 			0 => [
-				'name'        => 'Customer Information',
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Customer Information', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'fields'      => [
 					[
-						'label'        => __( 'First name', 'funnel-builder' ),
+						'label'        => __( 'First name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => [ 0 => 'form-row-first', ],
 						'autocomplete' => 'given-name',
@@ -58,7 +58,7 @@ $pageLayout = [
 						'placeholder'  => '',
 					],
 					[
-						'label'        => __( 'Last name', 'funnel-builder' ),
+						'label'        => __( 'Last name', 'woocommerce' ),
 						'required'     => 'true',
 						'class'        => [ 0 => 'form-row-last', ],
 						'autocomplete' => 'family-name',
@@ -82,7 +82,7 @@ $pageLayout = [
 					],
 
 					[
-						'label'        => __( 'Phone', 'funnel-builder' ),
+						'label'        => __( 'Phone', 'woocommerce' ),
 						'type'         => 'tel',
 						'class'        => [ 'form-row-wide' ],
 						'id'           => 'billing_phone',
@@ -105,7 +105,7 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Shipping Method', 'funnel-builder' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Shipping Method', 'funnel-builder' )),
 				'class'       => '',
 				'sub_heading' => '',
 				'html_fields' => [ 'shipping_calculator' => true ],
@@ -115,7 +115,7 @@ $pageLayout = [
 			],
 
 			[
-				'name'        => __( 'Order Summary', 'funnel-builder' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )),
 				'class'       => 'wfacp_order_summary_box',
 				'sub_heading' => '',
 				'html_fields' => [

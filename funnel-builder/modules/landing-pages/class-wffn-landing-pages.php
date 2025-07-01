@@ -732,14 +732,18 @@ if ( ! class_exists( 'WFFN_Landing_Pages' ) ) {
 				return;
 			}
 
-
 			// Bail if this query doesn't match our very specific rewrite rule.
-			if ( ! isset( $query->query['page'] ) || 2 !== count( $query->query ) ) {
+			if ( ! isset( $query->query['page'] ) ) {
 				return;
 			}
 
 			// Bail if we're not querying based on the post name.
 			if ( empty( $query->query['name'] ) ) {
+				return;
+			}
+
+			// If query does not match (not exactly 2 parameters or 3 with 'lang'), return early.
+			if ( !( count( $query->query ) === 2 || ( count( $query->query ) === 3 && isset( $query->query['lang'] ) ) ) ) {
 				return;
 			}
 

@@ -406,16 +406,9 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 			return false;
 		}
 
-		public function do_track_cp_tiktok() {
-			$do_cp_purchase = $this->admin_general_settings->get_option( 'is_tiktok_complete_payment_event' );
-			if ( is_array( $do_cp_purchase ) && count( $do_cp_purchase ) > 0 && 'yes' === $do_cp_purchase[0] ) {
-				return true;
-			}
 
-			return false;
-		}
 
-		public function maybe_print_tiktok_ecomm( $id, $purchase = false, $complete_payment = false ) {  //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		public function maybe_print_tiktok_ecomm( $id, $purchase = false ) {  //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 			$data = $this->data;
 			if ( true === $this->do_track_tiktok() && is_array( $data ) ) {
 				include_once WFFN_Core()->thank_you_pages->get_module_path() . 'js-blocks/analytics-tiktok.phtml'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingNonPHPFile.IncludingNonPHPFile,WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction

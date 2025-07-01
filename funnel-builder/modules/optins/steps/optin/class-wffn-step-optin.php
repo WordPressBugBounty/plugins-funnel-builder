@@ -70,7 +70,7 @@ if ( ! class_exists( 'WFFN_Step_Optin' ) ) {
 		}
 
 
-		public function get_step_designs( $term, $funnel_id = 0 ) {
+		public function get_step_designs( $term, $funnel_id = 0 ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$active_pages    = WFOPP_Core()->optin_pages->get_optin_pages( $term );
 			$inside_funnels  = [];
 			$outside_funnels = [];
@@ -180,9 +180,10 @@ if ( ! class_exists( 'WFFN_Step_Optin' ) ) {
 		 * @return bool
 		 */
 		public function claim_environment( $environment ) {
-			if ( 'wffn_optin' !== $environment['post_type'] ) {
+			if ( ! is_array( $environment ) || 'wffn_optin' !== $environment['post_type'] ) {
 				return false;
 			}
+
 			if ( $this->is_disabled( $this->get_entity_status( $environment['id'] ) ) ) {
 				return false;
 			}

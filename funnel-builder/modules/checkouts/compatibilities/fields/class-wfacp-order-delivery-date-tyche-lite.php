@@ -8,6 +8,7 @@ if ( ! class_exists( 'WFACP_Compatibility_Order_Delivery_Date_Tyche_lite' ) ) {
 	#[AllowDynamicProperties] 
  class WFACP_Compatibility_Order_Delivery_Date_Tyche_lite {
 		public function __construct() {
+			add_action( 'wfacp_after_checkout_page_found', [ $this, 'remove_action' ] );
 			add_filter( 'wfacp_advanced_fields', [ $this, 'add_field' ], 20 );
 			add_action( 'wfacp_header_print_in_head', [ $this, 'enqueue_js' ] );
 			add_filter( 'wfacp_html_fields_oddt', '__return_false' );

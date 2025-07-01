@@ -165,7 +165,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.33182 5.8912C8.65 7.80539 7.88636 8.73514 7.19091 8.80351C6.41364 8.89921 5.73182 8.55739 5.09091 7.70968C5.05163 7.65831 5.00578 7.61234 4.95455 7.57295C5.13886 7.32655 5.23479 7.02496 5.22681 6.71706C5.21883 6.40916 5.1074 6.11298 4.91057 5.8765C4.71374 5.64003 4.44305 5.47712 4.14235 5.41417C3.84165 5.35122 3.52856 5.39191 3.2538 5.52965C2.97905 5.6674 2.75872 5.89413 2.62853 6.1731C2.49834 6.45208 2.4659 6.76696 2.53648 7.06672C2.60706 7.36649 2.77651 7.63358 3.01739 7.82473C3.25826 8.01587 3.55645 8.11987 3.86364 8.11987L3.87727 8.28394L4.99546 12.7139C5.10481 13.1574 5.35872 13.5516 5.71692 13.834C6.07511 14.1164 6.51709 14.2707 6.97273 14.2726H13.0273C13.4829 14.2707 13.9249 14.1164 14.2831 13.834C14.6413 13.5516 14.8952 13.1574 15.0045 12.7139L16.1227 8.28394C16.1334 8.22993 16.1379 8.1749 16.1364 8.11987C16.4435 8.11987 16.7417 8.01587 16.9826 7.82473C17.2235 7.63358 17.3929 7.36649 17.4635 7.06672C17.5341 6.76696 17.5017 6.45208 17.3715 6.1731C17.2413 5.89413 17.021 5.6674 16.7462 5.52965C16.4714 5.39191 16.1584 5.35122 15.8577 5.41417C15.5569 5.47712 15.2863 5.64003 15.0894 5.8765C14.8926 6.11298 14.7812 6.40916 14.7732 6.71706C14.7652 7.02496 14.8611 7.32655 15.0455 7.57295C14.9951 7.60811 14.9493 7.64945 14.9091 7.69601C14.2409 8.54372 13.5455 8.88554 12.8091 8.80351C12.1273 8.73514 11.3909 7.79172 10.6682 5.8912C10.931 5.74306 11.1375 5.51174 11.2553 5.23343C11.3731 4.95512 11.3955 4.64551 11.3192 4.35304C11.2428 4.06056 11.0719 3.80171 10.8332 3.61697C10.5946 3.43224 10.3015 3.33203 10 3.33203C9.69847 3.33203 9.40545 3.43224 9.16676 3.61697C8.92807 3.80171 8.75718 4.06056 8.68082 4.35304C8.60446 4.64551 8.62693 4.95512 8.74472 5.23343C8.86251 5.51174 9.06897 5.74306 9.33182 5.8912ZM14.0909 15.2981C14.2717 15.2981 14.4452 15.3701 14.573 15.4983C14.7009 15.6265 14.7727 15.8004 14.7727 15.9817C14.7727 16.163 14.7009 16.3369 14.573 16.4651C14.4452 16.5933 14.2717 16.6654 14.0909 16.6654H5.90909C5.72826 16.6654 5.55484 16.5933 5.42697 16.4651C5.29911 16.3369 5.22727 16.163 5.22727 15.9817C5.22727 15.8004 5.29911 15.6265 5.42697 15.4983C5.55484 15.3701 5.72826 15.2981 5.90909 15.2981H14.0909Z" fill="#353030"/>
                             </svg>
-                            <span> <?php echo wp_kses_post( __( 'Get more with FunnelKit PRO—upgrade from Lite for additional features <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Dashboard+Widget+TopBar" target="_blank">Upgrade to PRO</a>' ) ); ?></span>
+                            <span> <?php echo wp_kses_post( __( 'Get more with FunnelKit PRO—upgrade from Lite for additional features <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Dashboard+Widget+TopBar" target="_blank">Upgrade to PRO</a>' ) ); ?></span>
                         </div>
 						<?php
 						break;
@@ -194,7 +194,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                                 <path d="M12.5433 8.95637C12.5433 9.24461 12.3141 9.47817 12.0317 9.47817C11.7493 9.47817 11.5201 9.24461 11.5201 8.95637C11.5201 8.66831 11.7493 8.43475 12.0317 8.43475C12.3141 8.43475 12.5433 8.66832 12.5433 8.95637Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"></path>
                             </svg>
 
-                            <span><?php echo wp_kses_post( $all_texts_from_pro['license']['states'][4]['notice']['text'] ); ?> <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html( $all_texts_from_pro['license']['states'][4]['notice']['primary_action'] ); ?></a></span>
+                            <span><?php echo wp_kses_post( $all_texts_from_pro['license']['states'][4]['notice']['text'] ); ?> <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html( $all_texts_from_pro['license']['states'][4]['notice']['primary_action'] ); ?></a></span>
                         </div>
 						<?php
 						break;
@@ -207,7 +207,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                                 <path d="M12.5433 8.95637C12.5433 9.24461 12.3141 9.47817 12.0317 9.47817C11.7493 9.47817 11.5201 9.24461 11.5201 8.95637C11.5201 8.66831 11.7493 8.43475 12.0317 8.43475C12.3141 8.43475 12.5433 8.66832 12.5433 8.95637Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"></path>
                             </svg>
 
-                            <span><?php echo wp_kses_post( str_replace( '{{TIME_GRACE_EXPIRED}}', ( new DateTime( $license_config['f']['ed'] ) )->modify( '+' . $license_config['gp'][0] . ' days' )->format( 'F j, Y' ), $all_texts_from_pro['license']['states'][3]['notice']['text'] ) ); ?> <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html( $all_texts_from_pro['license']['states'][3]['notice']['primary_action'] ); ?></a></span>
+                            <span><?php echo wp_kses_post( str_replace( '{{TIME_GRACE_EXPIRED}}', ( new DateTime( $license_config['f']['ed'] ) )->modify( '+' . $license_config['gp'][0] . ' days' )->format( 'F j, Y' ), $all_texts_from_pro['license']['states'][3]['notice']['text'] ) ); ?> <a href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html( $all_texts_from_pro['license']['states'][3]['notice']['primary_action'] ); ?></a></span>
                         </div>
 						<?php
 						break;
@@ -322,7 +322,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                 var fkwidget = {};
                 fkwidget.basenames = ['funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php', 'wp-marketing-automations/wp-marketing-automations.php', 'wp-marketing-automations-pro/wp-marketing-automations-pro.php', 'cart-for-woocommerce/plugin.php'];
                 fkwidget.slugs = ['funnelkit-stripe-woo-payment-gateway', 'wp-marketing-automations', 'wp-marketing-automations-pro', 'cart-for-woocommerce'];
-                fkwidget.stripe = <?php echo wp_json_encode( WFFN_Stripe_Admin_Controller::get_instance()->stripe_state() ); ?>;
+                fkwidget.stripe = <?php echo wp_json_encode( WFFN_Common::stripe_state() ); ?>;
                 fkwidget.automations = '<?php echo esc_attr( WFFN_Common::get_plugin_status( 'wp-marketing-automations/wp-marketing-automations.php' ) ); ?>';
                 fkwidget.cart = '<?php echo esc_attr( WFFN_Common::get_plugin_status( 'cart-for-woocommerce/plugin.php' ) ); ?>';
                 fkwidget.automations_pro = '<?php echo esc_attr( WFFN_Common::get_plugin_status( 'wp-marketing-automations-pro/wp-marketing-automations-pro.php' ) ); ?>';
@@ -377,7 +377,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                                 return;
                             }
 
-                            if (jQuery.inArray("wizard_close_4", fkwidget.dismissed) === -1 && fkwidget.cart !== 'activated') {
+                            if (fkwidget.is_wc === 'yes' && jQuery.inArray("wizard_close_4", fkwidget.dismissed) === -1 && fkwidget.cart !== 'activated') {
                                 fkwidget.current_index = 4;
                                 jQuery('#bwf-d-cart').show();
                             }
@@ -423,6 +423,25 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                                     $('.bwf-button').attr('href', mapping.href);
                                 }
                             }
+
+
+                            const redirectMapping = {
+                                2: {
+                                    'install': 'admin.php?page=autonami',
+                                    'activate': 'admin.php?page=autonami',
+                                },
+                                3: {
+                                    'activate': 'admin.php?page=autonami',
+                                },
+                                4: {
+                                    'install': 'admin.php?page=fkcart',
+                                    'activate': 'admin.php?page=fkcart',
+                                }
+                            }
+                            const redirect = redirectMapping?.[fkwidget.current_index]?.[currentStatus];
+                            if (redirect) {
+                                $('.bwf-button').attr('data-redirect', redirect);
+                            }
                         }
 
                         showHideWidget();
@@ -463,6 +482,10 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                                         console.log(e.responseJSON);
                                     })
                                 } else {
+                                    if (btn.attr('data-redirect')) {
+                                        window.location.href = btn.attr('data-redirect');
+                                        return;
+                                    }
 
                                     if (fkwidget.current_index === 2) {
                                         fkwidget.automations = 'activated';
@@ -877,6 +900,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                     margin-top: 15px;
                     font-size: 16px;
                 }
+
                 .bwf-widget-action-box.bfcm-widget .bwf-button a {
                     color: #000;
                     text-decoration: none;
@@ -1103,7 +1127,7 @@ if ( ! class_exists( 'WFFN_Admin_Dashboard_Widget' ) ) {
                         </p>
 
                         <button class="bwf-button">
-                            <span><a target="_blank" href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=fb+lite+plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html__( 'Get FunnelKit Pro', 'funnel-builder' ); ?></a></span>
+                            <span><a target="_blank" href="https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Dashboard+Widget+TopBar"><?php echo esc_html__( 'Get FunnelKit Pro', 'funnel-builder' ); ?></a></span>
                         </button>
                     </div>
                 </div>

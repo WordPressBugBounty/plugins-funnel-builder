@@ -16,24 +16,24 @@ foreach ( $section_order as $item_section ) {
 	switch ( $item_section ) {
 		case 'order_details':
 			?>
-            <div class="wfty_box wfty_order_details">
-                <div class="wfty-order-details-heading wfty_title"><?php echo esc_html( $order_details_heading ); ?></div>
+			<div class="wfty_box wfty_order_details">
+				<div class="wfty-order-details-heading wfty_title"><?php echo esc_html( $order_details_heading ); ?></div>
 
 				<?php
 				$order_status = $this->order->has_status( 'failed' ); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 				$pay_url      = $this->order->get_checkout_payment_url(); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 				if ( $order_status ) {
 					?>
-                    <div class="wfty-order-notice">
-                        <p class="wfty-notice-text"><?php esc_html_e( 'Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.', 'woocommerce' ); ?></p>
-                        <p class="wfty-notice-actions">
-                            <a href="<?php echo esc_url( $pay_url ); ?>" class="wfty_n_btn"><?php esc_html_e( 'Pay', 'woocommerce' ); ?></a>
+					<div class="wfty-order-notice">
+						<p class="wfty-notice-text"><?php esc_html_e( 'Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again.', 'woocommerce' ); ?></p>
+						<p class="wfty-notice-actions">
+							<a href="<?php echo esc_url( $pay_url ); ?>" class="wfty_n_btn"><?php esc_html_e( 'Pay', 'woocommerce' ); ?></a>
 							<?php if ( is_user_logged_in() ) : ?>
-                                <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="wfty_n_btn"><?php esc_html_e( 'My account', 'woocommerce' ); ?></a>
+								<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="wfty_n_btn"><?php esc_html_e( 'My account', 'woocommerce' ); ?></a>
 							<?php endif; ?>
-                        </p>
+						</p>
 						<?php do_action( 'wfty_subscription_notice', $this->order ); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable ?>
-                    </div>
+					</div>
 					<?php
 				}
 				?>
@@ -54,8 +54,11 @@ foreach ( $section_order as $item_section ) {
 						$order_items        = $order_obj->get_items();
 						$show_purchase_note = $order_obj->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
 						$show_images_class  = ( true === $order_show_images ) ? 'wfty_show_images' : 'wfty_hide_images';
+
+						do_action('woocommerce_order_details_before_order_table', $order_obj);
+
 						?>
-                        <div class="wfty_pro_list_cont <?php echo esc_attr( $show_images_class ); ?>">
+						<div class="wfty_pro_list_cont <?php echo esc_attr( $show_images_class ); ?>">
 							<?php
 							foreach ( $order_items as $item_id => $item ) {
 								$product = apply_filters( 'woocommerce_order_item_product', $item->get_product(), $item );
@@ -66,10 +69,10 @@ foreach ( $section_order as $item_section ) {
 								$purchase_note     = $product ? $product->get_purchase_note() : '';
 								$product_permalink = apply_filters( 'woocommerce_order_item_permalink', $is_visible ? esc_url( $product->get_permalink( $item ) ) : '', $item, $order_obj );
 								?>
-                                <div class="wfty_pro_list wfty_clearfix">
-                                    <div class="wfty_leftDiv wfty_clearfix">
+								<div class="wfty_pro_list wfty_clearfix">
+									<div class="wfty_leftDiv wfty_clearfix">
 										<?php if ( true === $order_show_images ) { ?>
-                                            <div class="wfty_p_img">
+											<div class="wfty_p_img">
 												<?php
 												$thumbnail = ( $product ) ? $product->get_image( 'shop_thumbnail' ) : '';
 												if ( ! $product_permalink ) {
@@ -78,9 +81,9 @@ foreach ( $section_order as $item_section ) {
 													printf( '<a href="%s">%s</a>', esc_url( $product_permalink ), wp_kses_post( $thumbnail ) );
 												}
 												?>
-                                            </div>
+											</div>
 										<?php } ?>
-                                        <div class="wfty_p_name">
+										<div class="wfty_p_name">
 											<?php
 											$product_permalink = apply_filters( 'woocommerce_order_item_permalink', $is_visible ? $product->get_permalink( $item ) : '', $item, $order_obj );
 											$quantity          = '<span class="wfty_quantity_value_box"><span class="multiply">x</span>';
@@ -96,27 +99,27 @@ foreach ( $section_order as $item_section ) {
 											do_action( 'woocommerce_order_item_meta_end', $item_id, $item, $order_obj, false );
 											echo '</div>';
 											?>
-                                        </div>
+										</div>
 
-                                    </div>
-                                    <div class="wfty_rightDiv"><?php echo wp_kses_post( $order_obj->get_formatted_line_subtotal( $item ) ); ?></div>
-                                    <div class="wfty-clearfix"></div>
+									</div>
+									<div class="wfty_rightDiv"><?php echo wp_kses_post( $order_obj->get_formatted_line_subtotal( $item ) ); ?></div>
+									<div class="wfty-clearfix"></div>
 									<?php if ( end( $order_items )->get_id() !== $item_id ) { ?>
-                                        <hr class="wfty-hr"/>
+										<hr class="wfty-hr"/>
 									<?php } ?>
-                                </div>
+								</div>
 								<?php if ( $show_purchase_note && $purchase_note ) : ?>
-                                    <div class="wfty_leftDiv wfty_clearfix">
-                                        <div class="wfty_p_name"><?php echo wp_kses_post( wpautop( do_shortcode( wp_kses_post( $purchase_note ) ) ) ); ?></div>
-                                    </div>
+									<div class="wfty_leftDiv wfty_clearfix">
+										<div class="wfty_p_name"><?php echo wp_kses_post( wpautop( do_shortcode( wp_kses_post( $purchase_note ) ) ) ); ?></div>
+									</div>
 								<?php
 								endif;
 
 							}
 							do_action( 'woocommerce_order_items_table', $order_obj );
 							?>
-                            <table>
-                                <tfoot>
+							<table>
+								<tfoot>
 								<?php
 								$item_total      = $order_obj->get_order_item_totals();
 								$shipping_option = get_option( 'woocommerce_ship_to_countries' );
@@ -131,22 +134,22 @@ foreach ( $section_order as $item_section ) {
 								}
 								foreach ( $item_total as $total ) {
 									?>
-                                    <tr>
-                                        <th scope="row"><?php echo esc_html( str_replace( ':', '', $total['label'] ) ); ?></th>
-                                        <td><?php echo wp_kses_post( $total['value'] ); ?></td>
-                                    </tr>
+									<tr>
+										<th scope="row"><?php echo esc_html( str_replace( ':', '', $total['label'] ) ); ?></th>
+										<td><?php echo wp_kses_post( $total['value'] ); ?></td>
+									</tr>
 									<?php
 								}
 								?>
-                                </tfoot>
-                            </table>
-                        </div>
+								</tfoot>
+							</table>
+						</div>
 					<?php }
 				}
 				$payment_method = $this->order->get_payment_method(); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 				do_action( "woocommerce_thankyou_{$payment_method}", $this->order->get_id() ); //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 				?>
-            </div>
+			</div>
 			<?php
 			break;
 
@@ -171,8 +174,8 @@ foreach ( $section_order as $item_section ) {
 
 				echo '<div class="wfty_box wfty_order_download" >';
 				echo '<div class="wfty_title">' . esc_html( $order_download_heading ) . '</div>';
-                $order_downloads_show_file_downloads  = $this->data['order_downloads_show_file_downloads'];
-                $order_downloads_show_file_expiry  = $this->data['order_downloads_show_file_expiry'];
+				$order_downloads_show_file_downloads  = $this->data['order_downloads_show_file_downloads'];
+				$order_downloads_show_file_expiry  = $this->data['order_downloads_show_file_expiry'];
 				add_filter( 'woocommerce_account_downloads_columns', function ( $array ) use ( $order_downloads_show_file_downloads, $order_downloads_show_file_expiry ) {
 					if ( isset( $array['download-remaining'] ) && 'false' === $order_downloads_show_file_downloads ) {
 						unset( $array['download-remaining'] );
@@ -196,15 +199,15 @@ foreach ( $section_order as $item_section ) {
 				}, 999 );
 
 				?>
-                <table class="shop_table shop_table_responsive wfty_order_downloads">
-                    <thead>
-                    <tr>
+				<table class="shop_table shop_table_responsive wfty_order_downloads">
+					<thead>
+					<tr>
 						<?php foreach ( wc_get_account_downloads_columns() as $column_id => $column_name ) :
 							?>
-                            <th class="<?php echo esc_attr( $column_id ); ?>"><span class="nobr"><?php echo esc_html( $column_name ); ?></span></th>
+							<th class="<?php echo esc_attr( $column_id ); ?>"><span class="nobr"><?php echo esc_html( $column_name ); ?></span></th>
 						<?php endforeach; ?>
-                    </tr>
-                    </thead>
+					</tr>
+					</thead>
 
 					<?php
 					$order_ids   = array();
@@ -229,9 +232,9 @@ foreach ( $section_order as $item_section ) {
 						$downloads = apply_filters( 'wfty_maybe_update_download_data', $downloads, $order_obj );
 
 						foreach ( $downloads as $download ) : ?>
-                            <tr>
+							<tr>
 								<?php foreach ( wc_get_account_downloads_columns() as $column_id => $column_name ) : ?>
-                                    <td class="<?php echo esc_attr( $column_id ); ?>" data-title="<?php echo esc_attr( $column_name ); ?>">
+									<td class="<?php echo esc_attr( $column_id ); ?>" data-title="<?php echo esc_attr( $column_name ); ?>">
 										<?php
 										if ( has_action( 'woocommerce_account_downloads_column_' . $column_id ) ) {
 											do_action( 'woocommerce_account_downloads_column_' . $column_id, $download );
@@ -256,15 +259,15 @@ foreach ( $section_order as $item_section ) {
 											}
 										}
 										?>
-                                    </td>
+									</td>
 								<?php endforeach; ?>
-                            </tr>
+							</tr>
 						<?php endforeach; ?>
 
 					<?php } ?>
 
-                </table>
-                </div>
+				</table>
+				</div>
 				<?php
 			}
 			break;
@@ -274,4 +277,9 @@ foreach ( $section_order as $item_section ) {
 }
 
 $args = isset( $this->data ) ? $this->data : []; //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
-do_action( 'wfty_woocommerce_order_details_after_order_table', $order_obj, $args );
+$default_printing_hook_thankyou = apply_filters( 'wfacp_default_custom_field_print_hook_for_thankyou', 'woocommerce_order_details_after_order_table' );
+if ( '' !== $default_printing_hook_thankyou ) {
+			remove_action( $default_printing_hook_thankyou, [ 'WFACP_Common', 'print_custom_field_at_thankyou' ], 999 );
+}
+
+do_action( 'woocommerce_order_details_after_order_table', $order_obj, $args );

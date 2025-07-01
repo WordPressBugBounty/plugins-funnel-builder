@@ -14,6 +14,7 @@ if ( $post->post_type !== WFACP_Common::get_post_type_slug() && ! is_null( $temp
 }
 $wfacp_template      = wfacp_template();
 $template_type = $wfacp_template->get_template_type();
+add_filter( 'wfacp_skip_form_printing', '__return_true' );
 ?>
     <!DOCTYPE html>
     <html <?php language_attributes(); ?> class="no-js wfacp_html_canvas">
@@ -31,7 +32,7 @@ $template_type = $wfacp_template->get_template_type();
 	}
 
 	do_action( 'wfacp_template_body_top' );
-
+	add_filter( 'wfacp_skip_form_printing', '__return_false' );
 
 	$atts_string = WFACP_Common::get_template_container_atts();
 

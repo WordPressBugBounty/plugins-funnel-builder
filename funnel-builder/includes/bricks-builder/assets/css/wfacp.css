@@ -10,6 +10,12 @@
     pointer-events: none
 }
 
+body .wfacp_mini_cart_start_h .wfacp_order_summary_container table.wfacp_mini_cart_reviews tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td > span * ,
+body #wfacp-e-form #wfacp-sec-wrapper table.shop_table tfoot tr:not(.order-total):not(.cart-discount).wfacp-saving-amount td *{
+    color: #09b29c;
+}
+
+
 /* Mobile portrait styles */
 @media (max-width: 478px) {
     .wfacp_mobile {
@@ -36,4 +42,6 @@
     .wfacp_desktop {
         display: block;
     }
+
+
 }

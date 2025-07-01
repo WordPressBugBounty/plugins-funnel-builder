@@ -13,7 +13,7 @@ wffnTIKTOKResult = true;
 
 if(false === wffnTIKTOKResult) {
 <?php
-if ( is_array( $data ) && isset( $data['tiktok'] ) && ( true === $purchase || true === $complete_payment ) ) {
+if ( is_array( $data ) && isset( $data['tiktok'] ) && ( true === $purchase ) ) {
 	if ( isset( $data['tiktok']['advanced'] ) ) {
 		unset( $data['tiktok']['advanced'] );
 	}
@@ -22,15 +22,10 @@ if ( is_array( $data ) && isset( $data['tiktok'] ) && ( true === $purchase || tr
 
     wffnTikTokPurchaseData = (typeof wffnAddTrafficParamsToEvent !== "undefined")?wffnAddTrafficParamsToEvent(wffnTikTokPurchaseData):wffnTikTokPurchaseData;
 	<?php if ( true === $purchase ) { ?>
-        ttq.instance('<?php echo $id; ?>').track('PlaceAnOrder',wffnTikTokPurchaseData);
+        ttq.instance('<?php echo $id; ?>').track('Purchase',wffnTikTokPurchaseData);
 	<?php } ?>
 
-	<?php if ( true === $complete_payment ) { ?>
-        wffnTikTokPurchaseData.content_type = 'product';
-        setTimeout(function () {
-        ttq.instance('<?php echo $id; ?>').track('CompletePayment',wffnTikTokPurchaseData);
-        }, 1500);
-	<?php } ?>
+
 
 	<?php
 }

@@ -49,7 +49,7 @@ $customizer_data = [
 		'wfacp_form_section_embed_forms_2_sub_heading_font_weight'                    => 'wfacp-normal',
 		'wfacp_form_section_embed_forms_2_sec_heading_color'                          => '#424141',
 		'wfacp_form_section_embed_forms_2_field_border_color'                         => '#c3c0c0',
-		'wfacp_form_section_embed_forms_2_btn_order-place_btn_text'                   => __( 'PLACE ORDER NOW', 'woofunnels-aero-checkout' ),
+		'wfacp_form_section_embed_forms_2_btn_order-place_btn_text'                   => WFACP_Common::translation_string_to_check(__( 'PLACE ORDER NOW', 'woofunnels-aero-checkout' )),
 		'wfacp_form_section_embed_forms_2_btn_order-place_btn_font_weight'            => 'bold',
 		'wfacp_form_product_switcher_section_embed_forms_2_product_switcher_bg_color' => '#ffffff',
 		'wfacp_form_section_embed_forms_2_btn_order-place_border_radius'              => '10',
@@ -179,7 +179,7 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Shipping Address', 'woofunnels-aero-checkout' ),
+				'name'        => __( 'Shipping Address', 'woocommerce' ),
 				'class'       => '',
 				'sub_heading' => '',
 				'fields'      => [
@@ -188,7 +188,7 @@ $pageLayout = [
 				],
 			],
 			[
-				'name'        => __( 'Order Summary', 'woofunnels-aero-checkout' ),
+				'name'        => WFACP_Common::translation_string_to_check(__( 'Order Summary', 'woocommerce' )),
 				'class'       => 'wfacp_order_summary_box',
 				'sub_heading' => '',
 				'html_fields' => [

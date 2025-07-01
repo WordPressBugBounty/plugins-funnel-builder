@@ -250,7 +250,12 @@ if ( ! class_exists( 'WFFN_REST_Steps' ) ) {
 						foreach ( $steps as $step ) {
 							if ( $data->id === $step['id'] ) {
 								$step_data = $get_step->populate_data_properties( $step, $funnel_id );
-
+								if ( $duplicate_id > 0 && isset( $step_data['_data'] ) && !isset( $step_data['_data']['view_link'] ) ) {
+									$get_step_data = wffn_rest_api_helpers()->add_step_edit_details( [ $step_data ] );
+									if ( is_array( $get_step_data ) && isset( $get_step_data[0] ) ) {
+										$step_data = $get_step_data[0];
+									}								
+								}
 								break;
 							}
 						}
@@ -582,6 +587,8 @@ if ( ! class_exists( 'WFFN_REST_Steps' ) ) {
 			if ( isset( $result['error'] ) ) {
 				$resp['msg'] = $result['error'];
 			}
+
+
 
 			if ( isset( $result['status'] ) && true === $result['status'] ) {
 

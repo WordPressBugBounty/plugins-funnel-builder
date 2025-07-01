@@ -178,7 +178,7 @@ if ( ! class_exists( 'WFFN_Step_Oty' ) ) {
 		 * @return bool
 		 */
 		public function claim_environment( $environment ) {
-			if ( 'wffn_oty' !== $environment['post_type'] ) {
+			if ( ! is_array( $environment ) || 'wffn_oty' !== $environment['post_type'] ) {
 				return false;
 			}
 

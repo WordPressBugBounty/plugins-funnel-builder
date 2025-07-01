@@ -55,6 +55,15 @@ if ( ! class_exists( 'WFFN_Optin_Action_Webhook' ) ) {
 
 				$op_webhook_url = urldecode( $optin_action_settings['op_webhook_url'] );
 				$post_fields    = $this->send_utm_tracking_data( $post_fields );
+
+				if ( isset( $posted_data['optin_page_id'] ) && absint( $posted_data['optin_page_id'] ) > 0 ) {
+					$optin_data = get_post( absint( $posted_data['optin_page_id'] ) );
+					if ( $optin_data instanceof WP_Post ) {
+						$post_fields['page']      = $optin_data->post_title;
+						$post_fields['page_link'] = get_permalink( $optin_data->ID );
+					}
+				}
+
 				$post_fields    = apply_filters( 'wffn_optin_posted_data_before_send_webhook', $post_fields, $fields_settings, $optin_action_settings );
 
 				$optin_webhook_request = wp_remote_post( $op_webhook_url, array( 'body' => apply_filters( 'wffn_optin_filter_webhook_fields', $post_fields ) ) );

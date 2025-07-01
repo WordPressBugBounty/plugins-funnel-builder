@@ -10,7 +10,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 
 		private static $ins = null;
 		public $environment = null;
-		public $funnel_setup_result=null;
+		public $funnel_setup_result = null;
 
 		/**
 		 * WFFN_Public constructor..
@@ -45,10 +45,13 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 			add_action( 'woocommerce_thankyou', array( $this, 'maybe_log_thankyou_visited' ), 999, 1 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'maybe_setup_tracking_script' ), 11 );
 			add_action( 'woocommerce_add_to_cart', [ $this, 'maybe_track_add_to_cart' ], 10, 4 );
-			add_filter( 'woocommerce_add_to_cart_fragments', [ $this, 'send_pending_events' ], 10 );
+			add_filter( 'woocommerce_add_to_cart_fragments', [ $this, 'send_pending_events' ], 99 );
 			add_filter( 'fkcart_fragments', [ $this, 'send_pending_events' ], 10 );
 			add_filter( 'wc_add_to_cart_message_html', [ $this, 'send_pending_events_on_cart' ], 100, 1 );
+			add_action( 'woocommerce_ajax_added_to_cart', [ $this, 'clear_pending_events_data_from_session' ], 10 );
 			add_action( 'woocommerce_thankyou', array( $this, 'maybe_destroyed_funnel_session' ), 999, 1 );
+			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+			add_action( 'wp_footer', [ $this, 'send_pending_events_on_footer' ], 9999 );
 
 		}
 
@@ -190,6 +193,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 						'hash'          => WFFN_Core()->data->get_transient_key(),
 						'next_link'     => WFFN_Core()->data->get_next_url( $environment['id'] ),
 						'support_track' => $step->supports( 'track_views' ),
+						'fid'           => $funnel->get_id(),
 					) );
 				}
 			}catch ( Exception|Error $e ) {
@@ -216,26 +220,47 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 				if ( in_array( $post->post_type, array( 'wffn_landing', 'wffn_optin', 'wffn_oty', 'wffn_ty' ), true ) ) {
 
 					wp_deregister_script( 'js-cookie' );
-					wp_register_script( 'js-cookie', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/js.cookie.min.js', array( 'jquery' ), WFFN_VERSION, array( 'is_footer' => false, 'strategy' => 'defer') );
+					wp_register_script( 'js-cookie', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/js.cookie.min.js', array( 'jquery' ), WFFN_VERSION, array(
+						'is_footer' => false,
+						'strategy'  => 'defer'
+					) );
 				}
 			}
 
 			wp_enqueue_script( 'js-cookie' );
 			wp_enqueue_script( 'jquery' );
-			wp_enqueue_script( 'wffn-public', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/public' . $suffix . '.js', [ 'js-cookie', 'jquery' ], WFFN_VERSION, array( 'is_footer' => true, 'strategy' => 'defer') );
+			wp_enqueue_script( 'wffn-public', plugin_dir_url( WFFN_PLUGIN_FILE ) . 'assets/' . $live_or_dev . '/js/public' . $suffix . '.js', [
+				'js-cookie',
+				'jquery'
+			], WFFN_VERSION, array( 'is_footer' => true, 'strategy' => 'defer' ) );
 
 			wp_localize_script( 'wffn-public', 'wffnfunnelData', $this->funnel_setup_result );
 			wp_localize_script( 'wffn-public', 'wffnfunnelEnvironment', $this->environment );
 
 			wp_localize_script( 'wffn-public', 'wffnfunnelVars', apply_filters( 'wffn_localized_data', array(
-				'ajaxUrl' => admin_url( 'admin-ajax.php' )
+				'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
+				'restUrl'      => rest_url() . 'wffn/front',
+				'is_ajax_mode' => true,
 			) ) );
 
 		}
 
 
 		public function setup_funnel_ajax() {
-			$result = $this->maybe_setup_funnel( $_POST ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$get_data = isset( $_POST['data'] ) ? wffn_clean( $_POST['data'] ) : '';//phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$result   = ( array( 'success' => false ) );
+			if ( ! empty( $get_data ) ) {
+				try {
+
+					$get_data = json_decode( stripslashes( $get_data ), true );
+					if ( is_array( $get_data ) ) {
+						$result = $this->maybe_record_data_with_funnel_setup( array( 'data' => $get_data ) );
+					}
+				} catch ( Exception|Error $e ) {
+					WFFN_Core()->logger->log( "Error in send data : " . __FUNCTION__ . $e->getMessage(), 'wffn', true );
+
+				}
+			}
 			wp_send_json( $result );
 		}
 
@@ -244,7 +269,20 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 		 * This function allows individual step classes to take care of their specific step viewed
 		 */
 		public function frontend_analytics() {
+			$get_data = isset( $_POST['data'] ) ? wffn_clean( $_POST['data'] ) : '';//phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$result   = $this->send_frontend_analytics( $get_data );
+			if ( is_array( $result ) ) {
+				$result['funnel_setup'] = false;
+			}
+			wp_send_json( $result );
+		}
+
+		public function send_frontend_analytics( $args = array() ) {
 			$current_step = WFFN_Core()->data->get_current_step();
+			$response     = [
+				'track_views' => false,
+				'ecom_event'  => false
+			];
 
 			/**
 			 * Check if we have valid session to proceed
@@ -256,7 +294,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 				/**
 				 * Start Marking Impressions
 				 */
-				$get_data = isset( $_POST['data'] ) ? wffn_clean( $_POST['data'] ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$get_data = isset( $args ) ? wffn_clean( $args ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
 				if ( ! empty( $get_data ) ) {
 					$get_data = json_decode( wp_kses_stripslashes( $get_data ), true );
 					$get_data = $this->maybe_setup_step_in_cache( $get_data, $current_step );
@@ -269,8 +307,9 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 				$get_step_object = WFFN_Core()->steps->get_integration_object( $current_step['type'] );
 
 				if ( ! empty( $get_data ) ) {
-					if ( is_array( $get_data ) && count( $get_data ) > 0 ) {
+					if ( is_array( $get_data ) && ! empty( $get_data['events'] ) ) {
 						$get_step_object->maybe_ecomm_events( $get_data );
+						$response['ecom_event'] = true;
 					}
 				}
 				$funnel = WFFN_Core()->data->get_session_funnel();
@@ -285,8 +324,11 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 					 * Now that we have recorded the analytics, we can check if we can mark the funnel ended and clean up the session data
 					 */
 					$this->maybe_end_funnel_and_clear_data();
+					$response['track_views'] = true;
 				}
 			}
+
+			return $response;
 		}
 
 		/**
@@ -294,17 +336,28 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 		 * This function allows individual step classes to take care of their specific step viewed
 		 */
 		public function tracking_events() {
-			$is_sitewide = filter_input( INPUT_POST, 'is_sitewide', FILTER_VALIDATE_BOOLEAN );
+			$get_data = isset( $_POST ) ? wffn_clean( $_POST ) : '';//phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$this->send_tracking_events( $get_data );
+		}
 
+		public function send_tracking_events( $args = array() ) {
+			/**
+			 * handel case for sitewide events come from api
+			 */
+			if ( isset( $args['data'] ) && isset( $args['data']['is_sitewide'] ) ) {
+				$args = $args['data'];
+			}
+			$is_sitewide = isset( $args['is_sitewide'] ) ? true : false;
 			if ( true === $is_sitewide ) {
-				$get_data = isset( $_POST['events'] ) ? wffn_clean( $_POST['events'] ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
-
-				WFFN_Tracking_SiteWide::get_instance()->maybe_ecomm_events( $get_data );
-
+				$get_data = isset( $args['events'] ) ? wffn_clean( $args['events'] ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
+				if ( ! empty( $get_data ) ) {
+					WFFN_Tracking_SiteWide::get_instance()->maybe_ecomm_events( $get_data );
+				}
 				return;
 			}
-			$post_data = isset( $_POST['data'] ) ? wffn_clean( $_POST['data'] ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$post_data = json_decode( wp_kses_stripslashes( $post_data ), true );
+
+			$post_data = isset( $args['data'] ) ? wffn_clean( $args['data'] ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$post_data = ! is_array($post_data) ? json_decode( wp_kses_stripslashes( $post_data ), true ) : $post_data;
 
 			$current_step = WFFN_Core()->data->get_current_step();
 			if ( empty( $current_step ) && isset( $post_data['step_data'] ) && isset( $post_data['step_data']['post_type'] ) ) {
@@ -522,8 +575,8 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 			 * Check if we already tracked view of this step in the current session
 			 */
 			$get_all_visit_data = WFFN_Core()->data->get( 'step_analytics' );
-			if(false===$get_all_visit_data){
-				$get_all_visit_data=[];
+			if ( false === $get_all_visit_data ) {
+				$get_all_visit_data = [];
 			}
 
 			/**
@@ -619,15 +672,33 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 
 		public function maybe_track_add_to_cart( $cart_item_key, $product_id, $quantity, $variation_id ) {
 			WFFN_Tracking_SiteWide::get_instance()->add_to_cart_process( $cart_item_key, $product_id, $quantity, $variation_id );
+
+			$events = WFFN_Tracking_SiteWide::get_instance()->get_pending_events();
+			if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+					$final_events = [];
+					if ( ! empty( WC()->session->get( 'wffn_pending_data' ) ) ) {
+						$final_events = array_merge( WC()->session->get( 'wffn_pending_data' ), array( $events ) );
+					} else {
+						$final_events[] = $events;
+					}
+					WC()->session->set( 'wffn_pending_data', $final_events );
+				}
+			}
 		}
 
 		public function send_pending_events( $fragments ) {
 
-			$events = WFFN_Tracking_SiteWide::get_instance()->get_pending_events();
-
-
+			$events                    = WFFN_Tracking_SiteWide::get_instance()->get_pending_events();
 			$fragments['wffnTracking'] = [ 'pending_events' => $events ];
 
+			/**
+			 * Session events not clear on fkcart fragment and refreshed fragments
+			 * Some theme not run wc ajax but run refreshed
+			 */
+			if ( function_exists( 'did_filter' ) && ( ( 0 === did_filter( 'fkcart_fragments' ) ) && ( 0 === did_action( 'wc_ajax_get_refreshed_fragments' ) ) ) ) {
+				$this->clear_pending_events_data_from_session();
+			}
 			return $fragments;
 		}
 
@@ -645,11 +716,40 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 
 			if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
 				$message .= "<div id='wffn_late_event' dir='" . json_encode( $events ) . "'></div>"; //phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+				WFFN_Core()->public->clear_pending_events_data_from_session();
 			}
 
 			return $message;
 		}
 
+		/**
+		 * handle pending events data and fire data which theme not run wc ajax
+		 * pending event data fire on next reload or next page
+		 * @return void
+		 */
+		public static function send_pending_events_on_footer() {
+			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+				$events = WC()->session->get( 'wffn_pending_data' );
+				if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
+					echo "<div id='wffn_late_event' style='display:none' dir='" . json_encode( $events ) . "'></div>"; //phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
+					WFFN_Core()->public->clear_pending_events_data_from_session();
+				}
+			}
+
+		}
+
+		public function clear_pending_events_data_from_session() {
+			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+
+				if ( function_exists( 'is_checkout' ) && is_checkout() ) {
+					return;
+				}
+				$events = WC()->session->get( 'wffn_pending_data' );
+				if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
+					WC()->session->set( 'wffn_pending_data', '' );
+				}
+			}
+		}
 
 
 		/**
@@ -705,13 +805,13 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 			return $args;
 		}
 
-			/*
-		* Destroyed funnel session in case order created by funnel checkout and
-		* funnel not have thankyou step and user land on native thankyou page
-		* @param $order_id
-		*
-		* @return void
-		*/
+		/*
+	* Destroyed funnel session in case order created by funnel checkout and
+	* funnel not have thankyou step and user land on native thankyou page
+	* @param $order_id
+	*
+	* @return void
+	*/
 		public function maybe_destroyed_funnel_session( $order_id ) {
 			if ( isset( $_GET['wfty_source'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return;
@@ -735,6 +835,118 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 					WFFN_Core()->data->destroy_session();
 				}
 			}
+		}
+
+		public function register_routes() {
+			register_rest_route( 'wffn', '/' . 'front/', array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array( $this, 'handle_api_request' ),
+				'permission_callback' => '__return_true',
+			) );
+		}
+
+		public function handle_api_request( WP_REST_Request $request ) {
+			$params = $request->get_params();
+
+			$resp   = [
+				'status'       => true,
+				'funnel_setup' => false,
+				'track_views'  => false,
+				'ecom_event'   => false,
+			];
+
+			try {
+				if ( empty( $params['action'] ) ) {
+					return rest_ensure_response( $resp );
+				}
+				$action = sanitize_text_field( $params['action'] );
+				switch ( $action ) {
+					case 'wffn_maybe_setup_funnel':
+						$resp = $this->maybe_record_data_with_funnel_setup( $params );
+						break;
+
+					case 'wffn_frontend_analytics':
+						$analytics_result    = WFFN_Core()->public->send_frontend_analytics( wp_json_encode( $params['data'] ) );
+						$resp['track_views'] = $analytics_result['track_views'] ?? false;
+						$resp['ecom_event']  = $analytics_result['ecom_event'] ?? false;
+						break;
+
+					case 'wffn_tracking_events':
+						WFFN_Core()->public->send_tracking_events( $params );
+						$resp['ecom_event'] = true;
+						break;
+				}
+			} catch ( Exception|Error $e ) {
+				WFFN_Core()->logger->log( "Error in send data : " . __FUNCTION__ . $e->getMessage(), 'wffn', true );
+
+			}
+
+			return rest_ensure_response( $resp );
+		}
+
+		/**
+		 * @param $args
+		 * @param $track_data
+		 *
+		 * @return false[]
+		 */
+		public function maybe_record_frontend_analytics( $args, $track_data ) {
+			$response = [
+				'track_views' => false,
+				'ecom_event'  => false
+			];
+
+			if ( empty( $args ) || ! is_array( $args ) || empty ( $track_data ) ) {
+				return $response;
+			}
+
+			if ( isset( $args['is_preview'] ) && true === wffn_string_to_bool( $args['is_preview'] ) ) {
+				return $response;
+			}
+
+			if ( ! isset( $args['hash'] ) || empty( $args['current_step']['id'] ) ) {
+				return $response;
+			}
+
+			return WFFN_Core()->public->send_frontend_analytics( wp_json_encode( $track_data, true ) );
+
+		}
+
+		/**
+		 * Try to setup funnel and record analytics and fire ecom events in single call
+		 *
+		 * @param $data
+		 *
+		 * @return void
+		 */
+		public function maybe_record_data_with_funnel_setup( $args ) {
+			$resp   = [
+				'status'       => true,
+				'funnel_setup' => false,
+				'track_views'  => false,
+				'ecom_event'   => false,
+			];
+			$result = WFFN_Core()->public->maybe_setup_funnel( $args['data'] );
+			if ( is_array( $result ) && ! empty( $result['success'] ) ) {
+				if ( ! empty( $args['data']['hash'] ) && ! empty( $result['hash'] ) && $args['data']['hash'] === $result['hash'] ) {
+					$resp['funnel_setup'] = false;
+				} else {
+					$resp['funnel_setup'] = true;
+				}
+				$resp = array_merge( $result, $resp );
+			}
+
+
+			if ( is_array( $resp ) && ! empty( $args['data']['track_data'] ) ) {
+				$tracking_result = $this->maybe_record_frontend_analytics( $resp, $args['data']['track_data'] );
+				if ( ! empty( $tracking_result ) ) {
+					$resp['track_views'] = $tracking_result['track_views'] ?? false;
+					$resp['ecom_event']  = $tracking_result['ecom_event'] ?? false;
+				}
+			}
+
+			return $resp;
+
 		}
 
 	}

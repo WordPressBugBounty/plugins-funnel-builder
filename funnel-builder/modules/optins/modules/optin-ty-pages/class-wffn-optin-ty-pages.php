@@ -608,7 +608,7 @@ if ( ! class_exists( 'WFFN_Optin_TY_Pages' ) ) {
 
 
 			// Bail if this query doesn't match our very specific rewrite rule.
-			if ( ! isset( $query->query['page'] ) || 2 !== count( $query->query ) ) {
+			if ( ! isset( $query->query['page'] ) ) {
 				return;
 			}
 
@@ -617,6 +617,10 @@ if ( ! class_exists( 'WFFN_Optin_TY_Pages' ) ) {
 				return;
 			}
 
+			// If query does not match (not exactly 2 parameters or 3 with 'lang'), return early.
+			if ( !( count( $query->query ) === 2 || ( count( $query->query ) === 3 && isset( $query->query['lang'] ) ) ) ) {
+				return;
+			}
 			// Add thank you optin page step post type to existing post type array.
 			if ( isset( $query->query_vars['post_type'] ) && is_array( $query->query_vars['post_type'] ) ) {
 
