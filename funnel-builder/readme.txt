@@ -1,10 +1,10 @@
-=== WooCommerce Checkout & Funnel Builder by FunnelKit ===
+=== FunnelKit - Funnel Builder for WooCommerce Checkout ===
 Contributors: amans2k, xlplugins, teamwoofunnels
-Tags: Funnel Builder, WooCommerce, WooCommerce Checkout, Sales Funnels, One Click Upsells
+Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 3.11.0.1
+Stable tag: 3.11.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,10 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+= 3.11.0.2 (July 02, 2025) =
+* Improved: Funnel: Admin tool for "verify tables" improved to recover missing columns. (#7768)
+* Fixed: Checkout: Compatibility with Klaviyo plugin updated for checkout fields default value. (#7790)
+
 = 3.11.0.1 (July 01, 2025) =
 * Fixed: Funnel: Site Wide pixel tracking events was not working for Facebook, Google Analytics and Google Ads. (#7782)
 * Fixed: Funnel: Prevent showing label ID for Google ads conversion labels in settings when empty. (#7786)

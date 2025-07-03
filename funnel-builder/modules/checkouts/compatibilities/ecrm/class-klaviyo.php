@@ -19,6 +19,8 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 
 		];
 
+		private $sms_consent_text = false;
+
 		private $klavio_settings = [];
 
 
@@ -53,28 +55,8 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 
 
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'remove_other_action' ] );
-
-			add_filter( 'wfacp_default_values', [ $this, 'return_null_value_if_null_set' ], 15, 2 );
 			add_action( 'wfacp_after_kl_sms_consent_checkbox_field', [ $this, 'kl_sms_consent' ] );
 		}
-
-		/**
-		 * If checkbox is not checked, then return null value
-		 *
-		 * @param $value
-		 * @param $key
-		 *
-		 * @return mixed|null
-		 */
-
-		public function return_null_value_if_null_set( $value, $key ) {
-			if ( $key === 'kl_newsletter_checkbox' && is_null( $value ) ) {
-				$new_value = $value;
-			}
-
-			return $new_value;
-		}
-
 
 		public function add_field() {
 
@@ -168,7 +150,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 			if ( $key == 'kl_sms_consent_checkbox' ) {
 				$args['label'] = ! empty( $klaviyo_settings['klaviyo_sms_consent_text'] ) ? $klaviyo_settings['klaviyo_sms_consent_text'] : $args['label'];
 				if ( isset( $args['description'] ) ) {
-					unset( $args['description'] );
+					$args['description']='';
 				}
 			}
 
@@ -299,8 +281,13 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Klaviyo' ) ) {
 			if ( ! function_exists( 'kl_sms_compliance_text' ) || ! is_array( $this->klavio_settings ) || count( $this->klavio_settings ) <= 0 ) {
 				return;
 			}
+			if($this->sms_consent_text==true){
+				return;
+			}
+
 
 			if ( isset( $this->klavio_settings['klaviyo_sms_subscribe_checkbox'] ) && ! empty( $this->klavio_settings['klaviyo_sms_subscribe_checkbox'] ) && isset( $this->klavio_settings['klaviyo_sms_list_id'] ) && ! empty( $this->klavio_settings['klaviyo_sms_list_id'] ) ) {
+				$this->sms_consent_text=true;
 				echo '<p class="kl_sms_compliance_text form-row wfacp-form-control-wrapper wfacp-col-full kl_sms_consent_checkbox_field ">';
 				kl_sms_compliance_text();
 				echo '</p>';

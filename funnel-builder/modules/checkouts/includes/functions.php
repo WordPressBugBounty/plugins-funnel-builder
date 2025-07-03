@@ -162,7 +162,7 @@ if ( ! function_exists( 'wfacp_form_field' ) ) {
 			$args['custom_attributes']['autofocus'] = 'autofocus';
 		}
 
-		if ( $args['description'] ) {
+		if (isset($args['description'])  ) {
 			$args['custom_attributes']['aria-describedby'] = $args['id'] . '-description';
 		}
 
@@ -314,7 +314,7 @@ if ( ! function_exists( 'wfacp_form_field' ) ) {
 
 			$field_html .= '<span class="woocommerce-input-wrapper">' . $field;
 
-			if ( $args['description'] ) {
+			if (isset($args['description'])  ) {
 				$field_html .= '<span class="description" id="' . esc_attr( $args['id'] ) . '-description" aria-hidden="true">' . wp_kses_post( $args['description'] ) . '</span>';
 			}
 

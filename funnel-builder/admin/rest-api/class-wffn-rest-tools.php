@@ -389,26 +389,20 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 				return rest_ensure_response( $resp );
 			}
+
 			if ( $woofunnels_verify !== '' ) {
 				global $wpdb;
+				$wpdb->hide_errors();
+				$wpdb->suppress_errors();
 				$tables          = $this->get_tables_list();
 				$filtered_tables = $this->get_filtered_tables( $tables );
-				$missing_tables  = $this->check_missing_tables( $filtered_tables );
 
-				if ( empty( array_filter( $missing_tables ) ) ) {
-					return rest_ensure_response( [ 'status' => true, 'msg' => 'All required tables are present in the database.' ] );
-				}
-
-				$missing_table_names             = array_merge( ...array_values( array_filter( $missing_tables ) ) );
-				$missing_table_names_with_prefix = array_map( function ( $table ) use ( $wpdb ) {
-					return $wpdb->prefix . $table;
-				}, $missing_table_names );
+				$this->force_create_tables( $filtered_tables );
 
 				return rest_ensure_response( [
 					'status' => true,
-					'msg'    => 'The following tables were created: ' . implode( ', ', $missing_table_names_with_prefix )
+					'msg'    => 'Tables have been successfully verified.'
 				] );
-
 			}
 
 			if ( $tracking !== '' ) {
@@ -473,91 +467,93 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 		}
 
-
-		public function check_missing_tables( $tables ) {
-			$missing_tables = [];
+		/**
+		 * Force creates all database tables without checking if they exist.
+		 *
+		 * This method deletes existing version options and executes table creation
+		 * methods for all filtered tables to ensure they are properly created/recreated.
+		 *
+		 * @param array $tables Associative array where keys are version keys and values are table lists
+		 * @return array List of all table names that were processed for creation
+		 * @since 1.0.0
+		 */
+		public function force_create_tables( $tables ) {
+			$all_created_tables = [];
 
 			foreach ( $tables as $version_key => $table_list ) {
-				$missing_tables[ $version_key ] = $this->wffn_validate_db_tables( $table_list );
+				delete_option( $version_key );
+				$this->execute_table_creation( $version_key );
+
+				$all_created_tables = array_merge( $all_created_tables, $table_list );
 			}
 
-			return $missing_tables;
+			return $all_created_tables;
 		}
 
+		/**
+		 * Executes table creation based on the version key.
+		 *
+		 * Maps version keys to their corresponding class instances and methods,
+		 * then calls the appropriate methods to create database tables.
+		 *
+		 * @param string $version_key The version key identifier for table creation
+		 * @return void
+		 * @since 1.0.0
+		 */
+		private function execute_table_creation( $version_key ) {
+			$option_key_map = [
+				'_wfocu_db_version'  => [ 'class' => 'WFOCU_Admin', 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
+				'_wffn_db_version'   => [ 'class' => 'WFFN_ADMIN', 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
+				'_wfopp_db_version'  => [ 'class' => 'WFOPP_DB_Tables', 'method' => 'add_if_needed' ],
+				'wfob_db_ver_3_0'    => [ 'class' => 'WFOB_Reporting', 'method' => 'create_table' ],
+				'wfacp_db_ver_2_1'   => [ 'class' => 'WFACP_Reporting', 'method' => 'create_table' ],
+				'_bwf_db_table_list' => [ 'class' => 'WooFunnels_Create_DB_Tables', 'method' => 'create' ]
+			];
+
+			if ( isset( $option_key_map[ $version_key ] ) ) {
+				$table_handler = $option_key_map[ $version_key ];
+				$tables = $table_handler['class']::get_instance();
+
+				if ( isset( $table_handler['method'] ) ) {
+					$tables->{$table_handler['method']}();
+				}
+
+				if ( isset( $table_handler['update_method'] ) ) {
+					$tables->{$table_handler['update_method']}();
+				}
+			}
+		}
+
+		/**
+		 * Filters the tables list based on whether funnel pro is active.
+		 *
+		 * If funnel pro is active, all tables are included. Otherwise, certain
+		 * pro-specific tables are excluded from the list.
+		 *
+		 * @param array $tables Complete list of tables grouped by version keys
+		 * @return array Filtered tables array based on pro activation status
+		 * @since 1.0.0
+		 */
 		public function get_filtered_tables( array $tables ): array {
 			$is_funnel_pro_active = WFFN_Common::wffn_is_funnel_pro_active();
 
 			return array_filter( $tables, function ( $table_list, $version_key ) use ( $is_funnel_pro_active ) {
-
 				if ( $is_funnel_pro_active ) {
 					return true;
 				}
-
-				return ! in_array( $version_key, [ '_wfocu_db_version', 'wfob_db_ver_3_0', 'wfacp_db_ver_2_1' ] ); // @codingStandardsIgnoreLine
+				return ! in_array( $version_key, [ '_wfocu_db_version', 'wfob_db_ver_3_0', 'wfacp_db_ver_2_1' ] , true );
 			}, ARRAY_FILTER_USE_BOTH );
 		}
 
-
-		public function wffn_validate_db_tables( $tables ) {
-			global $wpdb;
-
-			$table_names = array_map( function ( $table ) use ( $wpdb ) {
-				return $wpdb->prefix . $table;
-			}, $tables );
-
-			$placeholders = implode( ',', array_fill( 0, count( $table_names ), '%s' ) );
-			$query        = $wpdb->prepare( "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = %s AND TABLE_NAME IN ($placeholders)", array_merge( [ $wpdb->dbname ], $table_names ) ); // @codingStandardsIgnoreLine
-
-			$existing_tables = $wpdb->get_col( $query ); // @codingStandardsIgnoreLine
-
-			$missing_tables = array_diff( $table_names, $existing_tables );
-
-			if ( ! empty( $missing_tables ) ) {
-
-				$missing_tables = array_map( function ( $table ) use ( $wpdb ) {
-					return str_replace( $wpdb->prefix, '', $table );
-				}, $missing_tables );
-
-				$option_keys_to_delete = $this->get_option_keys_for_missing_tables( $tables );
-				$option_key_map        = [
-					'_wfocu_db_version'  => [ 'class' => WFOCU_Admin::class, 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
-					'_wffn_db_version'   => [ 'class' => WFFN_ADMIN::class, 'method' => 'check_db_version', 'update_method' => 'maybe_update_database_update' ],
-					'_wfopp_db_version'  => [ 'class' => WFOPP_DB_Tables::class, 'method' => 'add_if_needed' ],
-					'wfob_db_ver_3_0'    => [ 'class' => WFOB_Reporting::class, 'method' => 'create_table' ],
-					'wfacp_db_ver_2_1'   => [ 'class' => WFACP_Reporting::class, 'method' => 'create_table' ],
-					'_bwf_db_table_list' => [ 'class' => WooFunnels_Create_DB_Tables::class, 'method' => 'create' ]
-				];
-
-				if ( ! empty( $option_keys_to_delete ) ) {
-					foreach ( $option_keys_to_delete as $option_key ) {
-						delete_option( $option_key );
-						if ( isset( $option_key_map[ $option_key ] ) ) {
-							$table_handler = $option_key_map[ $option_key ];
-							$tables        = $table_handler['class']::get_instance();
-							if ( isset( $table_handler['method'] ) ) {
-								$tables->{$table_handler['method']}();
-							}
-							if ( isset( $table_handler['update_method'] ) ) {
-								$tables->{$table_handler['update_method']}();
-							}
-						}
-					}
-				}
-			}
-
-			return ! empty( $missing_tables ) ? $missing_tables : [];
-		}
-
-		public function get_option_keys_for_missing_tables( array $tables ): array {
-			$table_to_option_map = $this->get_tables_list();
-
-			$option_keys = array_keys( array_filter( $table_to_option_map, function ( $required_tables ) use ( $tables ) {
-				return ! empty( array_intersect( $tables, $required_tables ) );
-			} ) );
-
-			return $option_keys;
-		}
-
+		/**
+		 * Returns the complete list of database tables organized by version keys.
+		 *
+		 * Each version key corresponds to a specific plugin/module and contains
+		 * an array of table names that belong to that version.
+		 *
+		 * @return array Associative array mapping version keys to their table lists
+		 * @since 1.0.0
+		 */
 		private function get_tables_list(): array {
 			return [
 				'_wfocu_db_version'  => [ 'wfocu_session', 'wfocu_event', 'wfocu_event_meta' ],

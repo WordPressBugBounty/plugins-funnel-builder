@@ -285,7 +285,7 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			}
 
 
-			if ( ! in_array( $key, $this->register_checkout_fields ) && is_array( $this->wc_checkout_fields[ $field_key ] ) && ! array_key_exists( $key, $this->wc_checkout_fields[ $field_key ] ) ) {
+			if ( ! in_array( $key, $this->register_checkout_fields ) && isset($this->wc_checkout_fields[ $field_key ] ) &&  is_array( $this->wc_checkout_fields[ $field_key ] ) && ! array_key_exists( $key, $this->wc_checkout_fields[ $field_key ] ) ) {
 
 
 				return [];
