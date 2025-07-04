@@ -86,6 +86,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'plugins/class-woocommerce-coupon-messages.php'                  => function_exists( 'woocommerce_coupon_messages_plugins_loaded' ),
 				'plugins/class-woocommerce-pre-orders.php'                       => function_exists( 'woocommerce_pre_orders_load_block_classes' ),
 				'plugins/class-woocommerce-social-login.php'                     => class_exists( 'WC_Social_Login_Loader' ),
+				'plugins/class-woolentor-addon.php'                     => defined('WOOLENTOR_VERSION'),
 				'plugins/class-woosb.php'                                        => function_exists( 'woosb_init' ),
 				'plugins/class-wp-zasielkovna.php'                               => function_exists( 'run_wp_zasielkovna_shipping' ),//Move to template found
 				'plugins/class-wpc-quanity-premium.php'                          => function_exists( 'woopq_init' ),

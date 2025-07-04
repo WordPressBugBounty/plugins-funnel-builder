@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.8.1
 Requires PHP: 7.4
-Stable tag: 3.11.0.2
+Stable tag: 3.11.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,10 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+= 3.11.1 (July 04, 2025) =
+* Fixed: Checkout: Checkout form fields were flickering on focus since the last update. (#7806)
+* Fixed: Funnel: version check improved to ensure no errors in admin UI. (#7802)
+
 = 3.11.0.2 (July 02, 2025) =
 * Improved: Funnel: Admin tool for "verify tables" improved to recover missing columns. (#7768)
 * Fixed: Checkout: Compatibility with Klaviyo plugin updated for checkout fields default value. (#7790)
