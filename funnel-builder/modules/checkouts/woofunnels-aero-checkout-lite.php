@@ -119,7 +119,7 @@ if ( ! class_exists( 'WFACP_Core' ) ):
 
 		private function do_dependency_check() {
 			include_once WFACP_PLUGIN_DIR . '/woo-includes/woo-functions.php';
-			if ( ! wfacp_is_woocommerce_active() ) {
+			if (function_exists('wfacp_is_woocommerce_active') && ! wfacp_is_woocommerce_active() ) {
 				$this->is_dependency_exists = false;
 			}
 		}

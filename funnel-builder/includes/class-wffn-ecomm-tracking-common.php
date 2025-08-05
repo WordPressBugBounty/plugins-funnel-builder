@@ -873,10 +873,11 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 		 * @return void|null
 		 */
 		public function fire_conv_api_event( $event, $pixel_id, $access_token, $key, $is_ajax = false ) {
-			$type     = $event['event'];
-			$event_id = $event['event_id'];
-
-
+			$type     = isset( $event['event'] ) ? $event['event'] : '';
+			$event_id = isset( $event['event_id'] ) ? $event['event_id'] : '';
+			if ( empty( $type ) || empty( $event_id ) ) {
+				return;
+			}
 			BWF_Facebook_Sdk_Factory::setup( trim( $pixel_id ), trim( $access_token ) );
 
 			$get_test      = $this->get_conversion_api_test_event_code();

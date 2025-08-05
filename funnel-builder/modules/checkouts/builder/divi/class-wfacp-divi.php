@@ -293,6 +293,10 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 		}
 
 		public function remove_the_content_filter() {
+			if ( defined( 'BRICKS_VERSION' ) ) {
+				// If Bricks is active, we don`t need to remove the filter that changes the global post variable.
+				return;
+			}
 			remove_filter( 'the_content', [ $this, 'replace_divi_our_page_content' ], 1 );
 		}
 

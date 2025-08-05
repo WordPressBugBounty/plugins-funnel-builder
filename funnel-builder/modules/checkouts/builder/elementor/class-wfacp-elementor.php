@@ -257,6 +257,10 @@ if ( ! class_exists( 'WFACP_Elementor' ) ) {
 			}
 		}
 		public function remove_the_content_filter() {
+			if ( defined( 'BRICKS_VERSION' ) ) {
+				// If Bricks is active, we don`t need to remove the filter that changes the global post variable.
+				return;
+			}
 			remove_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
 		}
 	}

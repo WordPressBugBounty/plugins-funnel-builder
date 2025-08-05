@@ -512,6 +512,9 @@ if ( ! class_exists( 'WFFN_REST_Tools' ) ) {
 
 			if ( isset( $option_key_map[ $version_key ] ) ) {
 				$table_handler = $option_key_map[ $version_key ];
+				if ( ! class_exists( $table_handler['class'] ) ) {
+					return;
+				}
 				$tables = $table_handler['class']::get_instance();
 
 				if ( isset( $table_handler['method'] ) ) {

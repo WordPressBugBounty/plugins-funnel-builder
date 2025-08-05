@@ -23,8 +23,9 @@ if ( ! class_exists( 'WFACP_Importer' ) ) {
 		//@todo: Warning! For Development Purpose Only. Delete it when going to Production level
 		//remove flag that prevent local WP sites (Same IP, Hosts) to download images from each other
 		add_filter( 'http_request_host_is_external', '__return_true' );
-
-		add_action( 'admin_init', [ $this, 'maybe_import' ] );
+		if ( isset(  $_POST['wfacp-action'] ) && 'import' === $_POST['wfacp-action'] ) {
+			add_action( 'admin_init', [ $this, 'maybe_import' ] );
+		}
 	}
 
 	/**

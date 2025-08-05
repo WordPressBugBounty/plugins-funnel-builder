@@ -439,14 +439,12 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 		}
 
 		public static function is_load_admin_assets( $screen_type = 'single' ) {
-			$screen = get_current_screen();
 
 			if ( filter_input( INPUT_GET, 'page' ) == 'wfacp' && filter_input( INPUT_GET, 'wfacp_id' ) > 0 ) {
-				//&& filter_input( INPUT_GET, 'id' ) !== ''
 				return true;
 			}
 
-			return apply_filters( 'wfacp_enqueue_scripts', false, $screen_type, $screen );
+			return apply_filters( 'wfacp_enqueue_scripts', false, $screen_type );
 		}
 
 		public static function get_admin_menu() {
@@ -3013,6 +3011,8 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 				}
 
 				$total = WC()->cart->get_cart_contents_total();
+				$regular_price = round( $regular_price, 2 );
+				$total = round( $total, 2 );
 
 				// Only proceed if there's actually a saving
 				if ( $regular_price <= $total ) {

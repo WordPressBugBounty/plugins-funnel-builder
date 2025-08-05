@@ -29,13 +29,13 @@ $order_subscription_heading = ( isset( WFFN_Core()->thank_you_pages->data->compo
 
         </thead>
         <tbody>
-		<?php foreach ( $subscriptions as $subscription_id => $subscription ) : //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable ?>
+		<?php foreach ( $subscriptions as $subscription ) : ?>
             <tr class="order">
                 <td data-title="Subscription" class="subscription-id order-number wfty_left">
                     <a href="<?php echo esc_url( $subscription->get_view_order_url() ); ?>"><strong><?php echo sprintf( esc_html_x( '#%s', 'hash before order number', 'woocommerce-subscriptions' ), esc_html( $subscription->get_order_number() ) ); ?></strong></a>
-                    <small>( <?php echo esc_attr( wcs_get_subscription_status_name( $subscription->get_status() ) ); ?>)</small>
+                    <small>(<?php echo esc_attr( wcs_get_subscription_status_name( $subscription->get_status() ) ); ?>)</small>
                 </td>
-                <td data-title="Next Payment" class="subscription-next-payment order-date wfty_center "> <?php echo esc_attr( $subscription->get_date_to_display( 'next_payment' ) ); ?></td>
+                <td data-title="Next Payment" class="subscription-next-payment order-date wfty_center "> <?php echo esc_attr( $subscription->get_date_to_display( 'next_payment' ) ); //phpcs:ignore WordPressVIPMinimum.Security.ProperEscapingFunction.notAttrEscAttr ?></td>
                 <td data-title="Total" class="subscription-total order-total wfty_center "> <?php echo wp_kses_post( $subscription->get_formatted_order_total() ); ?></td>
                 <td data-title="Action" class="subscription-actions order-actions wfty_center">
                     <a href="<?php echo esc_url( $subscription->get_view_order_url() ); ?>" class="button view"><?php echo esc_html_x( 'View', 'view a subscription', 'woocommerce-subscriptions' ); ?></a>

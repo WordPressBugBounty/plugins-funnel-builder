@@ -91,7 +91,9 @@ if ( ! class_exists( 'WFTYBlocks_Render_Block' ) ) {
 
 		public function do_customer_details_block( $attributes, $content ) {// phpcs:ignore
 			$output   = '';
-			$defaults = array();
+			$defaults = array(
+				'enable_extra_content' => '',
+			);
 
 			$settings = wp_parse_args( $attributes, $defaults );
 
@@ -120,13 +122,12 @@ if ( ! class_exists( 'WFTYBlocks_Render_Block' ) ) {
 				$customer_layout .= " wfty_cont_style";
 			}
 
-			$output .= '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading . '"]';
+			$enable_extra_content = isset($settings['enable_extra_content']) ? $settings['enable_extra_content'] : '';
+			$output .= '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading . '" enable_extra_content="' . esc_attr($enable_extra_content) . '"]';
 
 			$output .= '</div>';
 
-
 			return $output;
-
 		}
 
 		public function do_order_details_block( $attributes, $content ) {// phpcs:ignore

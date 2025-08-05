@@ -27,26 +27,39 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			/** Admin enqueue scripts*/
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_assets' ), 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'js_variables' ), 0 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_register_breadcrumb_nodes' ), 5 );
-
+			if ( $this->is_wffn_flex_page( 'all' ) ) {
+			 	add_action( 'admin_enqueue_scripts', array( $this, 'js_variables' ), 0 );
+			}
+			if ( $this->is_wffn_flex_page() ) {
+				add_action( 'admin_enqueue_scripts', array( $this, 'maybe_register_breadcrumb_nodes' ), 5 );
+			}
 			/**
 			 * DB updates and table installation
 			 */
-			add_action( 'admin_init', array( $this, 'check_db_version' ), 990 );
+			$get_db_version = get_option( '_wffn_db_version', '0.0.0' );
+
+			if ( version_compare( WFFN_DB_VERSION, $get_db_version, '>' ) ) {
+				add_action( 'admin_init', array( $this, 'check_db_version' ), 990 );
+			}
 			add_action( 'admin_init', array( $this, 'maybe_update_database_update' ), 995 );
 
 
 			add_action( 'admin_init', array( $this, 'reset_wizard' ) );
-			add_action( 'admin_init', array( $this, 'maybe_force_redirect_to_wizard' ) );
+			if ( $this->is_wffn_flex_page() && ( ! isset( $_GET['path'] ) || '/user-setup' !== $_GET['path'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+				add_action( 'admin_init', array( $this, 'maybe_force_redirect_to_wizard' ) );
+			}
 			add_action( 'admin_head', array( $this, 'hide_from_menu' ) );
 
 
 			add_filter( 'get_pages', array( $this, 'add_landing_in_home_pages' ), 10, 2 );
 			add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ), 1 );
-
-			add_action( 'admin_notices', array( $this, 'maybe_show_notices' ) );
-			add_action( 'admin_notices', array( $this, 'remove_all' ), - 1 );
+			global $wffn_notices;
+			if ( is_array( $wffn_notices ) || !empty( $wffn_notices ) ) {
+				add_action( 'admin_notices', array( $this, 'maybe_show_notices' ) );
+			}
+			if ( $this->is_wffn_flex_page( 'all' ) ) {
+				add_action( 'admin_notices', array( $this, 'remove_all' ), - 1 );
+			}
 			add_filter( 'plugin_action_links_' . WFFN_PLUGIN_BASENAME, array( $this, 'plugin_actions' ) );
 
 			/** Initiate Background updater if action scheduler is not available for template importing */
@@ -63,8 +76,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			add_action( 'before_delete_post', array( $this, 'delete_funnel_step_permanently' ), 10, 2 );
 			add_filter( 'wffn_rest_get_funnel_steps', array( $this, 'maybe_delete_funnel_step' ), 10, 2 );
-
-			add_action( 'admin_bar_menu', array( $this, 'add_menu_in_admin_bar' ), 99 );
+            add_action( 'admin_bar_menu', array( $this, 'add_menu_in_admin_bar' ), 99 );
 
 			add_action( 'wffn_rest_plugin_activate_response', array( $this, 'maybe_add_auth_link_stripe' ), 10, 2 );
 
@@ -142,7 +154,9 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			/** Email notification callback */
 			add_action( 'fk_fb_every_day', array( $this, 'maybe_setup_notification_schedule' ) );
 			add_action( 'wffn_performance_notification', array( $this, 'run_notifications' ) );
-			add_action( 'admin_init', array( $this, 'test_notification_admin' ) );
+			if ( isset( $_GET['wffn_email_preview'] ) && current_user_can( 'administrator' ) ) { // @codingStandardsIgnoreLine
+				add_action( 'admin_init', array( $this, 'test_notification_admin' ) );
+			}
 			add_action( 'bwf_global_save_settings_funnelkit_notifications', array( $this, 'save_settings_for_email_notification' ), 10, 1 );
 
 
@@ -497,7 +511,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-1751613337' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-1754392255' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -518,6 +532,20 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 		public function get_local_app_path() {
 			return '/admin/views/contact/dist/';
+		}
+		
+		public function get_editor_priority_theme_name() {
+			$current_theme = strtolower(get_template());
+			$theme_map = array(
+				'flatsome' => 'Flatsome',
+				'avada' => 'Avada'
+			);
+			
+			$block_editor_priority_theme = isset( $theme_map[ $current_theme ] ) 
+				? $theme_map[ $current_theme ] 
+				: '';
+			
+			return $block_editor_priority_theme;
 		}
 
 		public function load_react_app( $app_name = 'main' ) {
@@ -540,6 +568,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				'admin_url'           => admin_url(),
 				'multilingual'        => $this->is_language_support_enabled(),
 				'multilingual_name'   => WFFN_Plugin_Compatibilities::get_language_compatible_plugin(),
+				'block_editor_priority_theme'   => $this->get_editor_priority_theme_name(),
 			);
 			if ( class_exists( 'WooCommerce' ) ) {
 				$currency                          = get_woocommerce_currency();
@@ -1204,23 +1233,17 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 		public function maybe_show_notices() {
 
-
 			global $wffn_notices;
-			if ( ! is_array( $wffn_notices ) || empty( $wffn_notices ) ) {
-				return;
-			}
-
 			foreach ( $wffn_notices as $notice ) {
 				echo wp_kses_post( $notice );
 			}
 		}
 
 		public function remove_all() {
-			if ( $this->is_wffn_flex_page( 'all' ) ) {
 
 				remove_all_actions( 'admin_notices' );
 				remove_all_actions( 'all_admin_notices' );
-			}
+
 		}
 
 		/**
@@ -1310,6 +1333,144 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		/**
+		 * Detect available page builders and set default settings
+		 * 
+		 * This method checks for the following page builders in order of priority:
+		 * - Elementor (elementor/elementor.php)
+		 * - Divi (divi-builder/divi-builder.php or Divi theme)
+		 * - Oxygen (oxygen/functions.php)
+		 * - Bricks (Bricks theme)
+		 * 
+		 * Only works if current default builder is 'elementor' or blank.
+		 * 
+		 * @return string|null The detected page builder slug or null if none found
+		 */
+		public function detect_and_set_default_page_builder() {
+			try {
+				$general_settings = BWF_Admin_General_Settings::get_instance();
+				$current_default = $general_settings->get_option( 'default_selected_builder' );
+				
+				// Only proceed if current default is 'elementor' or blank
+				if ( ! empty( $current_default ) && $current_default !== 'elementor' ) {
+					return null;
+				}
+				
+				$detected_builder = null;
+				$page_builders = [
+					'elementor' => [
+						'plugin_file' => 'elementor/elementor.php',
+						'check_function' => function() {
+							return class_exists( '\Elementor\Plugin' );
+						}
+					],
+					'divi' => [
+						'plugin_file' => 'divi-builder/divi-builder.php',
+						'check_function' => function() {
+							return WFFN_Core()->page_builders->is_divi_theme_enabled();
+						}
+					],
+					'oxy' => [
+						'plugin_file' => 'oxygen/functions.php',
+						'check_function' => function() {
+							return class_exists( 'OxygenElement' );
+						}
+					],
+					'bricks' => [
+						'plugin_file' => '',
+						'check_function' => function() {
+							return WFFN_Core()->page_builders->is_bricks_theme_enabled();
+						}
+					]
+				];
+
+				// Check each page builder
+				foreach ( $page_builders as $builder_slug => $builder_config ) {
+					$is_available = false;
+					
+					// Check if plugin file exists and is active
+					if ( ! empty( $builder_config['plugin_file'] ) ) {
+						$plugin_status = WFFN_Common::get_plugin_status( $builder_config['plugin_file'] );
+						$is_available = ( 'activated' === $plugin_status );
+					}
+					
+					// If no plugin file or plugin not active, check using custom function
+					if ( ! $is_available && isset( $builder_config['check_function'] ) ) {
+						$is_available = $builder_config['check_function']();
+					}
+					
+					if ( $is_available ) {
+						$detected_builder = $builder_slug;
+						break;
+					}
+				}
+
+				// Set default builder if detected, otherwise set to blank
+				if ( ! empty( $detected_builder ) ) {
+					// Only update if no default is set or if it's different from detected
+					if ( empty( $current_default ) || $current_default !== $detected_builder ) {
+						// Update using the proper settings method
+						$general_settings->update_global_settings_fields( array( 'default_selected_builder' => $detected_builder ) );
+						
+						// Log the detection for debugging
+						BWF_Logger::get_instance()->log( 
+							sprintf( 'Page builder detected and set as default: %s', $detected_builder ), 
+							'wffn_page_builder_detection' 
+						);
+					}
+				} else {
+					// No builder detected, set to blank if not already blank
+					if ( ! empty( $current_default ) ) {
+						// Update using the proper settings method
+						$general_settings->update_global_settings_fields( array( 'default_selected_builder' => '' ) );
+						
+						// Log the reset for debugging
+						BWF_Logger::get_instance()->log( 
+							'No page builder detected, default set to blank', 
+							'wffn_page_builder_detection' 
+						);
+					}
+				}
+
+				return $detected_builder;
+			} catch ( \Throwable $e ) {
+				BWF_Logger::get_instance()->log( 
+					sprintf( 'Error detecting page builder: %s', $e->getMessage() ), 
+					'wffn_page_builder_detection' 
+				);
+				return null;
+			}
+		}
+
+		/**
+		 * Get the currently detected/default page builder
+		 * 
+		 * @return string The page builder slug or empty string if none set
+		 */
+		public function get_detected_page_builder() {
+			try {
+				$general_settings = BWF_Admin_General_Settings::get_instance();
+				$default_builder = $general_settings->get_option( 'default_selected_builder' );
+				
+				// If no default is set, try to detect one
+				if ( empty( $default_builder ) ) {
+					$detected_builder = $this->detect_and_set_default_page_builder();
+					$default_builder = ( $detected_builder !== null ) ? $detected_builder : '';
+				}
+				
+				// Ensure we always return a string
+				return ( is_string( $default_builder ) ) ? $default_builder : '';
+			} catch ( \Throwable $e ) {
+				BWF_Logger::get_instance()->log( 
+					sprintf( 'Error getting detected page builder: %s', $e->getMessage() ), 
+					'wffn_page_builder_detection' 
+				);
+				return '';
+			}
+		}
+
+
+
+		/**
 		 * Keep the menu open when editing the flows.
 		 * Highlights the wanted admin (sub-) menu items for the CPT.
 		 *
@@ -1345,19 +1506,12 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function check_db_version() {
-
-			$get_db_version = get_option( '_wffn_db_version', '0.0.0' );
-
-			if ( version_compare( WFFN_DB_VERSION, $get_db_version, '>' ) ) {
-
-
+			
 				include_once plugin_dir_path( WFFN_PLUGIN_FILE ) . 'admin/db/class-wffn-db-tables.php';
 				$tables = WFFN_DB_Tables::get_instance();
 				$tables->define_tables();
 				$tables->add_if_needed();
-
-			}
-
+				
 		}
 
 		/**
@@ -1370,20 +1524,23 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 			try {
 				$task_list = array(
-					'3.3.1' => array( 'wffn_handle_store_checkout_config' ),
-					'3.3.3' => array( 'wffn_alter_conversion_table' ),
-					'3.3.4' => array( 'wffn_add_utm_columns_in_conversion_table' ),
-					'3.3.5' => array( 'wffn_update_migrate_data_for_currency_switcher' ),
-					'3.3.6' => array( 'wffn_alter_conversion_table_add_source' ),
-					'3.3.7' => array( 'wffn_update_email_default_settings' ),
-					'3.3.8' => array( 'wffn_set_default_value_in_autoload_option' ),
-					'3.3.9' => array( 'wffn_cleanup_data_for_conversion' ),
+					'3.3.1'  => array( 'wffn_handle_store_checkout_config' ),
+					'3.3.3'  => array( 'wffn_alter_conversion_table' ),
+					'3.3.4'  => array( 'wffn_add_utm_columns_in_conversion_table' ),
+					'3.3.5'  => array( 'wffn_update_migrate_data_for_currency_switcher' ),
+					'3.3.6'  => array( 'wffn_alter_conversion_table_add_source' ),
+					'3.3.7'  => array( 'wffn_update_email_default_settings' ),
+					'3.3.8'  => array( 'wffn_set_default_value_in_autoload_option' ),
+					'3.3.9'  => array( 'wffn_cleanup_data_for_conversion' ),
+					'3.4.0'  => array( 'wffn_detect_and_set_default_page_builder' ),
+					'4.0.0'  => array( 'wffn_add_order_number_column_in_conversion_table' ),
+					
 				);
 
 				$task_list_for_new_install = array(
 					'wffn_update_email_default_settings',
-					'wffn_set_default_value_in_autoload_option'
-
+					'wffn_set_default_value_in_autoload_option',
+					'wffn_detect_and_set_default_page_builder',
 				);
 				$current_db_version        = get_option( '_wffn_db_version', '0.0.0' );
 
@@ -1756,7 +1913,6 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			if ( ! $user ) {
 				return;
 			}
-
 			global $post;
 			$wp_admin_bar->add_node( [
 				'id'    => 'wffn_funnel',
@@ -2420,15 +2576,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function maybe_force_redirect_to_wizard() {
-
-
-			if ( ! $this->is_wffn_flex_page() ) {
-				return;
-			}
-			if ( isset( $_GET['path'] ) && '/user-setup' === $_GET['path'] ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-				return;
-			}
-
+			
 			if ( false === $this->is_wizard_available( true ) ) {
 				return;
 			}
@@ -2449,49 +2597,52 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 * @return bool true if all checks are passed, false otherwise
 		 */
 		public function is_wizard_available( $force = false ) {
+			try {
+				$first_version = get_option('wffn_first_v', '0.0.0');
+				if ($force !== false && false === version_compare($first_version, WFFN_VERSION, '=')) {
 
-			$first_version = get_option( 'wffn_first_v', '0.0.0' );
-			if ( $force !== false && false === version_compare( $first_version, WFFN_VERSION, '=' ) ) {
+					/**
+					 * bail out if old users versions
+					 */
+					return false;
+				}
 
-				/**
-				 * bail out if old users versions
-				 */
+				if (WFFN_Core()->admin_notifications->is_user_dismissed(get_current_user_id(), 'onboarding_wizard')) {
+					/**
+					 * This flag tells us that the wizard notice has already been dismissed
+					 */
+					return false;
+				}
+
+				$status = get_option('_wffn_onboarding_completed', false);
+				if (false !== $status) {
+					/**
+					 * bail out if wizard started/skipped/completed
+					 */
+					return false;
+				}
+
+
+				if ($force !== false && WFFN_Core()->admin_notifications->is_user_dismissed(get_current_user_id(), 'wizard_open')) {
+					/**
+					 * This flag tells us that the wizard first step is already opened
+					 * We are using this to make sure we never redirect multiple times.
+					 */
+					return false;
+				}
+
+				if (false !== get_option('_bwfan_onboarding_completed', false) && 'activated' === WFFN_Common::get_plugin_status('funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php')) {
+					/**
+					 * This checks if user has completed wizard from automations plugin & we have stripe plugin activated
+					 */
+					return false;
+				}
+
+
+				return true;
+			} catch (Exception | Error $e) {
 				return false;
 			}
-
-			if ( WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'onboarding_wizard' ) ) {
-				/**
-				 * This flag tells us that the wizard notice has already been dismissed
-				 */
-				return false;
-			}
-
-			$status = get_option( '_wffn_onboarding_completed', false );
-			if ( false !== $status ) {
-				/**
-				 * bail out if wizard started/skipped/completed
-				 */
-				return false;
-			}
-
-
-			if ( $force !== false && WFFN_Core()->admin_notifications->is_user_dismissed( get_current_user_id(), 'wizard_open' ) ) {
-				/**
-				 * This flag tells us that the wizard first step is already opened
-				 * We are using this to make sure we never redirect multiple times.
-				 */
-				return false;
-			}
-
-			if ( false !== get_option( '_bwfan_onboarding_completed', false ) && 'activated' === WFFN_Common::get_plugin_status( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' ) ) {
-				/**
-				 * This checks if user has completed wizard from automations plugin & we have stripe plugin activated
-				 */
-				return false;
-			}
-
-
-			return true;
 
 		}
 
@@ -2952,12 +3103,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 * @return void
 		 */
 		public function test_notification_admin() {
-			if ( ! current_user_can( 'administrator' ) ) {
-				return;
-			}
-			if ( ! isset( $_GET['wffn_email_preview'] ) ) { // @codingStandardsIgnoreLine
-				return;
-			}
+			
 			WFFN_Email_Notification::test_notification_admin();
 		}
 

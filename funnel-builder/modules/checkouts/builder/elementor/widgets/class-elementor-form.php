@@ -316,6 +316,8 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			$this->add_tab( __( 'Collapsible Order Summary', 'funnel-builder' ), 5 );
 
 			$this->add_switcher( 'enable_callapse_order_summary', __( 'Enable', 'funnel-builder' ), '', '', 'no', 'yes', [], '', '' );
+			$this->add_switcher( 'enable_order_field_collapsed', __( 'Expanded Order Summary', 'woofunnels-aero-checkout' ), '', '', 'no', 'yes', [], '', '' );
+
 			$this->add_switcher_without_responsive( 'order_summary_enable_product_image_collapsed', __( 'Enable Image', 'funnel-builder' ), '', '', "yes", 'yes', [], '', '', 'wfacp_elementor_device_hide' );
 			$enable_callapse_order_summary_condition = [];
 
@@ -347,6 +349,10 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			$this->ajax_session_settings[] = 'collapse_enable_coupon_collapsible';
 			$this->ajax_session_settings[] = 'collapse_order_quantity_switcher';
 			$this->ajax_session_settings[] = 'collapse_order_delete_item';
+
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed';
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed_tablet';
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed_mobile';
 			$this->end_tab();
 
 		}

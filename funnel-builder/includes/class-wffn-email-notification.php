@@ -202,8 +202,9 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 		 * @return bool True if the email was sent, false otherwise.
 		 */
 		public static function mail_sent( $frequency ) {
-			$today = new DateTime();
-
+			
+			$timezone = wp_timezone();
+			$today = new DateTime( 'now', $timezone );
 			/** Case: weekly. Not Monday */
 			if ( 'weekly' === $frequency && 1 !== intval( $today->format( 'N' ) ) ) {
 				/** 1 means Monday */
@@ -375,7 +376,8 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 		 */
 		public static function format_date( $date_string ) {
 			// Convert date string to a DateTime object
-			$date = new DateTime( $date_string );
+			$timezone = wp_timezone();
+			$date = new DateTime( $date_string, $timezone );
 
 			return $date->format( 'F j, Y' );
 		}
@@ -460,27 +462,7 @@ if ( ! class_exists( 'WFFN_Email_Notification' ) ) {
 			if ( empty( self::$global_settings['bwf_enable_notification'] ) ) {
 				return;
 			}
-			$today       = new DateTime();
-			$frequencies = self::get_frequencies();
-
-			/** Filter out the frequencies if an email was already sent */
-			$frequencies = array_filter( $frequencies, function ( $frequency ) use ( $today ) {
-				/** Case: weekly. Not Monday */
-				if ( 'weekly' === $frequency && 1 === intval( $today->format( 'N' ) ) ) {
-					/** 1 means Monday */
-					return true;
-				}
-
-				/** Case: monthly. Not 1st */
-				if ( 'monthly' === $frequency && 1 === intval( $today->format( 'd' ) ) ) {
-					return true;
-				}
-
-				return false;
-			} );
-			if ( empty( $frequencies ) ) {
-				return;
-			}
+			
 
 			$notification_time = self::$global_settings['bwf_notification_time'];
 			$desired_timestamp = self::create_timestamp_from_array( $notification_time );

@@ -228,6 +228,7 @@ if ( ! class_exists( 'Elementor_WFTY_Order_Details_Widget' ) ) {
 
 				'selectors' => [
 					'{{WRAPPER}} .elementor-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list *' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .elementor-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_p_name *' => 'color: {{VALUE}}',
 				],
 			] );
 
@@ -235,7 +236,7 @@ if ( ! class_exists( 'Elementor_WFTY_Order_Details_Widget' ) ) {
 				'name'  => 'product_typography',
 				'label' => 'Typography',
 
-				'selector'       => '{{WRAPPER}} .elementor-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list *',
+				'selector'       => '{{WRAPPER}} .elementor-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list * , {{WRAPPER}} .elementor-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_p_name *',
 				'fields_options' => [
 					// first mimic the click on Typography edit icon
 					'typography'  => [ 'default' => 'yes' ],

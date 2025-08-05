@@ -10,8 +10,12 @@ if ( ! class_exists( 'WFACP_Exporter' ) ) {
 		private static $ins = null;
 
 		public function __construct() {
-			add_action( 'admin_init', [ $this, 'maybe_export' ] );
-			add_action( 'admin_init', [ $this, 'maybe_export_single' ] );
+			if ( isset( $_POST['wfacp-action'] ) && 'export' === $_POST['wfacp-action'] ) {
+				add_action( 'admin_init', [ $this, 'maybe_export' ] );
+			}
+			if ( isset(  $_GET['action'] ) && 'wfacp-export' ===  $_GET['action'] ) {
+				add_action( 'admin_init', [ $this, 'maybe_export_single' ] );
+			}
 		}
 
 		/**
@@ -26,9 +30,6 @@ if ( ! class_exists( 'WFACP_Exporter' ) ) {
 		}
 
 		public function maybe_export() {
-			if ( empty( $_POST['wfacp-action'] ) || 'export' != $_POST['wfacp-action'] ) {
-				return;
-			}
 
 			$nonce = filter_input( INPUT_POST, 'wfacp-action-nonce', FILTER_UNSAFE_RAW );
 			if ( ! wp_verify_nonce( $nonce, 'wfacp-action-nonce' ) ) {
@@ -159,9 +160,6 @@ if ( ! class_exists( 'WFACP_Exporter' ) ) {
 		}
 
 		public function maybe_export_single() {
-			if ( empty( $_GET['action'] ) || 'wfacp-export' != $_GET['action'] ) {
-				return;
-			}
 
 			$_wpnonce = filter_input( INPUT_GET, '_wpnonce', FILTER_UNSAFE_RAW );
 			if ( ! wp_verify_nonce( $_wpnonce, 'wfacp-export' ) ) {

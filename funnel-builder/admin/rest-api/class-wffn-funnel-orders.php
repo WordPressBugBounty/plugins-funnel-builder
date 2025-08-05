@@ -508,7 +508,11 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 
 			if ( ! empty( $search_filter ) ) {
 				$search_filter = "%" . $search_filter . "%";
-				$where_query[] = $wpdb->prepare( " (CONCAT(cust.f_name,' ',cust.l_name) like %s OR cust.email like %s OR tracking.source like %s)", $search_filter, $search_filter, $search_filter );
+				if ( $this->order_number_column_exists() ) {
+					$where_query[] = $wpdb->prepare( " (CONCAT(cust.f_name,' ',cust.l_name) like %s OR cust.email like %s OR tracking.source like %s OR tracking.order_number like %s)", $search_filter, $search_filter, $search_filter, $search_filter );
+				} else {
+					$where_query[] = $wpdb->prepare( " (CONCAT(cust.f_name,' ',cust.l_name) like %s OR cust.email like %s OR tracking.source like %s)", $search_filter, $search_filter, $search_filter );
+				}
 			}
 
 			$conv_filter = apply_filters( 'wffn_filter_data_conversion_query', [], 'order', $where_query, $filters );
@@ -532,7 +536,8 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 				$output_data['total_count'] = $count_results[0]['total_count'] ?? 0;
 			}
 
-			$order_stats_query = "SELECT (CASE WHEN TIMESTAMPDIFF( SECOND, tracking.first_click, tracking.timestamp ) != 0 THEN TIMESTAMPDIFF( SECOND, tracking.first_click, tracking.timestamp ) ELSE 0 END ) as 'convert_time', tracking.source as 'order_id', tracking.step_id as 'wfacp_id', tracking.funnel_id as 'fid', tracking.contact_id as 'cid', cust.f_name as 'f_name', cust.l_name as 'l_name', cust.email as 'email', cust.contact_no as 'phone', tracking.value as 'total_sales', tracking.timestamp as 'date' " . $case_string . " FROM  `{$wpdb->prefix}bwf_conversion_tracking` as tracking JOIN {$wpdb->prefix}bwf_contact as cust ON cust.id = tracking.contact_id " . $conv_join . " WHERE {$where_query} GROUP BY tracking.source ORDER BY tracking.timestamp DESC {$limit_str}";
+			$order_number_field = $this->order_number_column_exists() ? "tracking.order_number as 'order_number'," : "";
+			$order_stats_query = "SELECT (CASE WHEN TIMESTAMPDIFF( SECOND, tracking.first_click, tracking.timestamp ) != 0 THEN TIMESTAMPDIFF( SECOND, tracking.first_click, tracking.timestamp ) ELSE 0 END ) as 'convert_time', tracking.source as 'order_id', {$order_number_field} tracking.step_id as 'wfacp_id', tracking.funnel_id as 'fid', tracking.contact_id as 'cid', cust.f_name as 'f_name', cust.l_name as 'l_name', cust.email as 'email', cust.contact_no as 'phone', tracking.value as 'total_sales', tracking.timestamp as 'date' " . $case_string . " FROM  `{$wpdb->prefix}bwf_conversion_tracking` as tracking JOIN {$wpdb->prefix}bwf_contact as cust ON cust.id = tracking.contact_id " . $conv_join . " WHERE {$where_query} GROUP BY tracking.source ORDER BY tracking.timestamp DESC {$limit_str}";
 
 			$results = $wpdb->get_results( $order_stats_query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			foreach ( $results as &$result ) {
@@ -669,6 +674,10 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 				return rest_ensure_response( $response );
 			}
 
+			foreach ( $final_orders as &$order ) {
+				$order['order_url'] = WFFN_Common::add_order_urls( $order['order_id'] );
+			}
+
 			$prepared_data = $this->prepare_order_data( $final_orders, $return_data );
 
 			$response['status']                      = true;
@@ -725,6 +734,8 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 			return array_map( function ( $result ) use ( $return_data ) {
 				$data = [
 					'order_id'     => $result['order_id'],
+					'order_number' => $result['order_number'] ?? '',
+					'order_url'    => $result['order_url'] ?? '',
 					'email'        => $result['email'] ?? '',
 					'name'         => $result['f_name'] ?? '' . ' ' . $result['l_name'] ?? '',
 					'phone'        => $result['phone'] ?? '',
@@ -762,6 +773,19 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 			}, $final_orders );
 		}
 
+		/**
+		 * Check if order_number column exists in bwf_conversion_tracking table
+		 *
+		 * @return bool
+		 */
+		private function order_number_column_exists() {
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'bwf_conversion_tracking';
+			$query = $wpdb->prepare("SHOW COLUMNS FROM {$table_name} LIKE %s",'order_number');//phpcs:ignore
+			$result = $wpdb->get_results( $query );//phpcs:ignore
+			return ! empty( $result );
+		}
+		
 		public function get_price_format( $price ) {
 			if ( ! function_exists( 'wc_price' ) ) {
 				return $price;

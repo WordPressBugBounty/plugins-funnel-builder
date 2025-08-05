@@ -650,7 +650,16 @@ WHERE sess.order_id IN (%1s) AND event_t.action_type_id IN (4,6);", $order_ids_s
 				$conversion_data['contact_id']     = ! empty( $cid ) ? $cid : $conversion['contact_id'];
 				$conversion_data['checkout_total'] = floatval( $aero_total );
 				$conversion_data['value']          = ( $conversion_data['checkout_total'] + $conversion_data['offer_total'] + $conversion_data['bump_total'] );
-
+				if ( function_exists( 'wc_get_order' ) ) {
+					$order = wc_get_order( $order_id );
+					if ( $order && method_exists( $order, 'get_order_number' ) ) {
+						$temp_order_number = $order->get_order_number();
+						$conversion_data['order_number'] = $temp_order_number;
+					}else {
+						$need_to_delete_orders[] = $order_id;
+						continue;
+					}
+				}
 				// Run Update for conversion
 				$need_to_update_orders[] = $conversion_data;
 			} else {
@@ -688,6 +697,7 @@ WHERE sess.order_id IN (%1s) AND event_t.action_type_id IN (4,6);", $order_ids_s
 					'referrer'          => '',
 					'journey'           => '',
 					'source'            => 0,
+					'order_number'      => '',
 					'device'            => 'desktop',
 					'browser'           => '',
 					'country'           => '',
@@ -707,12 +717,22 @@ WHERE sess.order_id IN (%1s) AND event_t.action_type_id IN (4,6);", $order_ids_s
 						$upsell_args['timestamp']      = $upsell_order['offertime'];
 						$upsell_args['step_id']        = $step_id;
 						$upsell_args['offer_total']    = floatval( $upsell_order['total_sales'] );
+						if ( function_exists( 'wc_get_order' ) ) {
+							$upsell_order_obj = wc_get_order( $upsell_order['order_id'] );
+							if ( $upsell_order_obj && method_exists( $upsell_order_obj, 'get_order_number' ) ) {
+								$temp_order_number = $upsell_order_obj->get_order_number();
+								$upsell_args['order_number'] = $temp_order_number;
+							}else {
+								$need_to_delete_orders[] = $order_id;
+								continue;
+							}
+						}
 						$upsell_args['utm_source']     = ! empty( $conversion ) ? $conversion_tracking->string_length( $conversion['utm_source'] ) : '';
 						$upsell_args['utm_medium']     = ! empty( $conversion ) ? $conversion_tracking->string_length( $conversion['utm_medium'] ) : '';
 						$upsell_args['utm_campaign']   = ! empty( $conversion ) ? $conversion_tracking->string_length( $conversion['utm_campaign'] ) : '';
 						$upsell_args['utm_term']       = ! empty( $conversion ) ? $conversion_tracking->string_length( $conversion['utm_term'] ) : '';
 						$upsell_args['utm_content']    = ! empty( $conversion ) ? $conversion_tracking->string_length( $conversion['utm_content'] ) : '';
-						$upsell_args['value']          = $upsell_args['offer_total'];
+
 						$need_to_create_orders[]       = $upsell_args;
 					}
 					/***
@@ -736,6 +756,16 @@ WHERE sess.order_id IN (%1s) AND event_t.action_type_id IN (4,6);", $order_ids_s
 				$args['step_id']        = $step_id;
 				$args['offer_total']    = floatval( $offer_total );
 				$args['value']          = ( $args['checkout_total'] + $args['offer_total'] + $args['bump_total'] );
+				if ( function_exists( 'wc_get_order' ) ) {
+					$order = wc_get_order( $order_id );
+					if ( $order && method_exists( $order, 'get_order_number' ) ) {
+						$temp_order_number = $order->get_order_number();
+						$args['order_number'] = $temp_order_number;
+					}else {
+						$need_to_delete_orders[] = $order_id;
+						continue;
+					}
+				}
 
 				$need_to_create_orders[] = $args;
 			}
@@ -761,6 +791,7 @@ WHERE sess.order_id IN (%1s) AND event_t.action_type_id IN (4,6);", $order_ids_s
 		if ( ! empty( $need_to_create_orders ) ) {
 			WFFN_Conversion_Tracking_Migrator::insert_multiple_conversion_rows( $need_to_create_orders );
 		}
+		do_action( 'wffn_conversion_migration_complete_batch' );
 
 		return true;
 	}

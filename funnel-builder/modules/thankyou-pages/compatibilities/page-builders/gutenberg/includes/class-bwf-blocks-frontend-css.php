@@ -345,7 +345,7 @@ if ( ! class_exists( 'WFTY_Blocks_Frontend_CSS' ) ) {
 				$css->add_property( 'font', $this->has_attr( $attr, 'headingFont', $screen ) );
 				$css->add_property( 'text', $this->has_attr( $attr, 'headingTextStyle', $screen ) );
 
-				$css->set_selector( $selector_wrapper . ' .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .wfty_t,' . $selector_wrapper . " .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .woocommerce-Price-amount.amount, " . $selector_wrapper . " .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .woocommerce-Price-amount.amount span" );
+				$css->set_selector( $selector_wrapper . ' .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .wfty_t,' . $selector_wrapper . " .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .woocommerce-Price-amount.amount, " . $selector_wrapper . " .wfty_order_details .wfty_pro_list_cont .wfty_pro_list .woocommerce-Price-amount.amount span,".$selector_wrapper . " .wfty_order_details .wfty_pro_list_cont .wfty_p_name *" );
 				$css->add_property( 'color', $this->has_attr( $attr, 'productColor', $screen ) );
 				$css->add_property( 'line-height', $this->has_attr( $attr, 'productLineHeight', $screen ), true );
 				$css->add_property( 'letter-spacing', $this->has_attr( $attr, 'productLetterSpacing', $screen ), true );

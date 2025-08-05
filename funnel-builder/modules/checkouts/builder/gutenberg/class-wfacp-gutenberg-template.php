@@ -859,6 +859,29 @@ if ( ! class_exists( 'WFACP_Gutenberg_Template' ) ) {
 			return $this->add_fragment_collapsible_order_summary( $fragments );
 		}
 
+		public function enable_order_field_collapsed_by_default( $device = 'desktop' ) {
+			$field_key = 'enable_order_field_collapsed';
+
+			if ( $device === 'tablet' ) {
+				$field_key .= '_tablet';
+			} elseif ( $device === 'mobile' ) {
+				$field_key .= '_mobile';
+			}
+
+			if ( isset( $this->form_data[ $field_key ] ) && true === $this->form_data[ $field_key ] ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function should_hide_order_summary_by_default() {
+			// Check if any device has collapsed enabled
+			return $this->enable_order_field_collapsed_by_default( 'desktop' ) ||
+			       $this->enable_order_field_collapsed_by_default( 'tablet' ) ||
+			       $this->enable_order_field_collapsed_by_default( 'mobile' );
+		}
+
 	}
 
 }

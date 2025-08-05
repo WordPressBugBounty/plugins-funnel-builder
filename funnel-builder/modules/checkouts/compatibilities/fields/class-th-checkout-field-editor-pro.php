@@ -5,6 +5,7 @@
  *
  */
 
+
 if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh {
@@ -55,6 +56,11 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			/* prevent third party fields and wrapper*/
 
 			add_action( 'wfacp_add_billing_shipping_wrapper', '__return_false' );
+
+			add_filter( 'wfacp_get_checkout_fields', [ $this, 'check_insert_after_field_exist' ], 9999 );
+
+			add_filter( 'wfacp_third_party_billing_fields', [ $this, 'disabled_third_party_billing_fields' ] );
+			add_action( 'wfacp_update_posted_data_vice_versa_keys', [ $this, 'update_posted_data_vice_versa_keys' ] );
 		}
 
 
@@ -98,6 +104,8 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			if ( ! is_array( $wcfe_fields ) || count( $wcfe_fields ) == 0 ) {
 				return;
 			}
+
+
 			$this->wcfe_fields = $wcfe_fields;
 
 
@@ -106,10 +114,18 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 				foreach ( $value->fields as $field_key => $field_value ) {
 					$this->other_fields[ $field_key ] = $field_value;
 
+
+
 					if ( in_array( $field_key, $this->register_checkout_fields ) ) {
 
 						continue;
 					}
+
+					if(!$field_value instanceof WCFE_Checkout_Field){
+						continue;
+					}
+
+
 
 					$this->wc_checkout_fields[ $key ][ $field_key ]                   = (array) $field_value->property_set;
 					$this->wc_checkout_fields[ $key ][ $field_key ]['wfacp_th_field'] = true;
@@ -119,6 +135,7 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 
 
 			}
+
 
 
 			if ( isset( $this->wc_checkout_fields['billing'] ) ) {
@@ -225,6 +242,7 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 				if ( isset( $this->th_checkout_fields[ $key ] ) ) {
 					$field = $this->th_checkout_fields[ $key ];
 
+
 					/* For Class Attribute */
 					if ( ! is_array( $field['class'] ) ) {
 						$field['class'] = [];
@@ -285,9 +303,7 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			}
 
 
-			if ( ! in_array( $key, $this->register_checkout_fields ) && isset($this->wc_checkout_fields[ $field_key ] ) &&  is_array( $this->wc_checkout_fields[ $field_key ] ) && ! array_key_exists( $key, $this->wc_checkout_fields[ $field_key ] ) ) {
-
-
+			if ( ! in_array( $key, $this->register_checkout_fields ) && (isset($this->wc_checkout_fields[ $field_key ])  && is_array( $this->wc_checkout_fields[ $field_key ] ) ) &&  ( isset($this->wc_checkout_fields[ $field_key ]) && ! array_key_exists( $key, $this->wc_checkout_fields[ $field_key ] )) ) {
 				return [];
 			}
 
@@ -358,13 +374,17 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 				}
 
 
-				$key                  = str_replace( "{$type}_", '', $key );
-				$field['class'][]     = 'wfacp-col-full';
-				$field['cssready'][]  = 'wfacp-col-full';
-				$field['third_party'] = 'yes';
+				$key                       = str_replace( "{$type}_", '', $key );
+				$field['class'][]          = 'wfacp-col-full';
+				$field['cssready'][]       = 'wfacp-col-full';
+				$field['third_party']      = 'yes';
+				$field['third_party_type'] = $type;
+				$field['custom']           = "1";
+
 
 				new WFACP_Add_Address_Field( $key, $field, $type );
 			}
+
 
 		}
 
@@ -378,6 +398,7 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			if ( $type == '' ) {
 				return $args;
 			}
+
 
 
 			if ( $type == 'file' && ! in_array( 'wfacp_th_file_type', $args['class'] ) ) {
@@ -402,6 +423,33 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 
 
 			return $args;
+
+		}
+
+		public function check_insert_after_field_exist( $fields ) {
+			try {
+				if ( is_array( $fields ) && count( $fields ) > 0 ) {
+					foreach ( $fields as $key => $field ) {
+						if ( $key != 'billing' && $key != 'shipping' ) {
+							continue;
+						}
+						foreach ( $field as $k => $v ) {
+							if ( isset( $v['third_party'] ) ) {
+								$fields[ $key ][ $v['name'] ] = $v;
+								unset( $fields[ $key ][ $k ] );
+							}
+						}
+					}
+				}
+
+				return $fields;
+			} catch ( Exception $e ) {
+				// Log the error
+				error_log( 'Error in check_insert_after_field_exist: ' . $e->getMessage() );
+
+				// Return the original fields to prevent checkout from breaking
+				return $fields;
+			}
 		}
 
 		public function internal_css() {
@@ -568,6 +616,32 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
                 .ui-widget.ui-widget-content {
                     z-index: 999 !important;
                 }
+
+                body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form #wc_checkout_add_ons .wfacp-form-control-wrapper.wfacp_checkbox_field label.wfacp-form-control-label,
+                body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form #wc_checkout_add_ons .wfacp-form-control-wrapper.wc_checkout_add_ons_fileupload label.wfacp-form-control-label {
+                    position: relative;
+                    left: auto;
+                    right: auto;
+                    bottom: auto;
+                    margin: 0;
+                    padding-left: 0 !important;
+                    display: inline-block !important;
+                    top: auto;
+                    pointer-events: auto;
+                }
+
+                body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form #wc_checkout_add_ons .wfacp-form-control-wrapper.wfacp_checkbox_field label.wfacp-form-control-label input[type="checkbox"],
+                body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form #wc_checkout_add_ons .wfacp-form-control-wrapper.wc_checkout_add_ons_fileupload label.wfacp-form-control-label input[type="checkbox"] {
+                    position: relative;
+                    top: 0;
+                    margin: 0 4px 0 0;
+                    left: auto;
+                    bottom: auto;
+                    right: auto;
+                }
+                #wfacp-e-form .wfacp_th_file_type label.wfacp-form-control-label:not(.radio):not(.checkbox) {
+                    opacity: 0;
+                }
             </style>
 
             <script>
@@ -612,6 +686,45 @@ if ( ! class_exists( 'WFACP_TH_Checkout_Field_Editor_pro_ThemeHigh' ) ) {
 			}
 
 			return true;
+		}
+
+		public function disabled_third_party_billing_fields( $fields ) {
+
+			if (isset($this->wc_checkout_fields['billing'] ) && is_array( $this->wc_checkout_fields['billing'] ) && count( $this->wc_checkout_fields['billing'] ) ) {
+				foreach ( $this->wc_checkout_fields['billing'] as $key => $v ) {
+
+
+					if ( isset( $fields[ $key ] ) ) {
+						unset( $fields[ $key ] );
+					}
+				}
+			}
+
+			return $fields;
+		}
+
+		public function update_posted_data_vice_versa_keys( $keys ) {
+			$missingKeys = [];
+			if ( is_array( $this->wc_checkout_fields ) && count( $this->wc_checkout_fields ) > 0 ) {
+				foreach ( $this->wc_checkout_fields as $i => $default_checkout_field ) {
+					if ( $i == 'billing' || $i == 'shipping' ) {
+						foreach ( $default_checkout_field as $key => $field ) {
+							if ( strpos( $key, $i ) !== false ) {
+								$missingKeys[] = $key;
+								continue;
+							}
+							$missingKeys[] = $i . "_" . $key;
+						}
+					}
+
+				}
+			}
+			if ( is_array( $missingKeys ) && count( $missingKeys ) > 0 ) {
+				foreach ( $missingKeys as $i => $v ) {
+					$keys[ $v ] = $v;
+				}
+			}
+			return $keys;
 		}
 
 	}

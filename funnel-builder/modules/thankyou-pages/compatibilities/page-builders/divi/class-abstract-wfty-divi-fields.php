@@ -85,7 +85,7 @@ if ( ! class_exists( 'WFTY_Divi_Field' ) ) {
 			return $key;
 		}
 
-		protected function add_switcher( $tab_id, $key, $label = '', $default = 'off', $conditions = [] ) {
+		protected function add_switcher( $tab_id, $key, $label = '', $default = 'off', $conditions = [], $description = '' ) {
 			if ( empty( $label ) ) {
 				$label = __( 'Enable', 'funnel-builder' );
 			}
@@ -99,6 +99,10 @@ if ( ! class_exists( 'WFTY_Divi_Field' ) ) {
 					'off' => esc_html__( 'No', 'et_builder' ),
 				),
 			);
+
+			if ( ! empty( $description ) ) {
+				$this->modules_fields[ $key ]['description'] = $description;
+			}
 
 			$this->assign_tab( $key, $tab_id );
 			if ( is_array( $conditions ) && ! empty( $conditions ) ) {

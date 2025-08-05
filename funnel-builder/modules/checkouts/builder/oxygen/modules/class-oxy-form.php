@@ -611,6 +611,9 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 
 			$this->add_switcher( $tab_id, 'enable_callapse_order_summary', __( 'Enable', 'woofunnels-aero-checkout' ), 'off' );
 
+			// Add the enable_order_field_collapsed setting
+			$this->add_switcher( $tab_id, 'enable_order_field_collapsed', __( 'Expanded Order Summary', 'woofunnels-aero-checkout' ), 'off' );
+
 			$this->add_heading( $tab_id, __( 'Collapsed', 'woofunnels-aero-checkout' ) );
 
 			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'woofunnels-aero-checkout' ), WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) ) );
@@ -666,6 +669,14 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 			$this->ajax_session_settings[] = 'collapse_enable_quantity_number';
 			$this->ajax_session_settings[] = 'collapse_order_quantity_switcher';
 			$this->ajax_session_settings[] = 'collapse_order_delete_item';
+
+			// Add AJAX session settings for enable_order_field_collapsed
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed';
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed_tablet';
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed_phone';
+			$this->ajax_session_settings[] = 'enable_order_field_collapsed_page_width';
+
+
 			$this->collapsible_order_summary( $tab_id );
 		}
 
@@ -1170,6 +1181,7 @@ if ( ! class_exists( 'WFACP_OXY_Form' ) ) {
 				'enable_progress_bar',
 				'enable_callapse_order_summary',
 				'enable_product_image_collapsed',
+				'enable_order_field_collapsed'
 			];
 			if ( isset( $setting['collapse_enable_quantity_number'] ) && "off" === $setting['collapse_enable_quantity_number'] ) {
 				echo "<style>";

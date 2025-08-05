@@ -48,6 +48,8 @@ if ( ! class_exists( 'Oxygen_WFTY_Customer_Details_Widget' ) ) {
 				'2c' => __( 'Two Columns', 'funnel-builder' ),
 				'1c' => __( 'Full Width', 'funnel-builder' ),
 			], '2c' );
+			// Add switcher for extra content
+			$this->add_switcher( $tab_id, 'enable_extra_content', __( 'Show Extra Thankyou Content', 'funnel-builder' ) . '||' . __( 'When enabled, this will display additional content/hooks from WooCommerce on the thank you page. Useful for compatibility with payment gateways and plugins.', 'funnel-builder' ), 'off' );
 
 			$this->add_typography( $tab_id, 'customer_details_heading', '.oxy-customer-details-wrapper .wfty-customer-info-heading.wfty_title' );
 
@@ -63,7 +65,7 @@ if ( ! class_exists( 'Oxygen_WFTY_Customer_Details_Widget' ) ) {
 		}
 
 
-		protected function html( $settings, $defaults, $content ) {//phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		protected function html( $settings, $defaults, $content ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 			$heading_text    = $settings['customer_details_heading'];
 			$customer_layout = ( isset( $settings['customer_layout'] ) && '2c' !== $settings['customer_layout'] ) ? ' wfty_full_width' : '2c'; //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
 			$customer_layout .= ( isset( $settings['customer_layout_tablet'] ) && '2c' === $settings['customer_layout_tablet'] ) ? ' wfty_2c_tab_width' : ''; //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable
@@ -71,12 +73,11 @@ if ( ! class_exists( 'Oxygen_WFTY_Customer_Details_Widget' ) ) {
 			if ( $customer_layout !== '' && $customer_layout !== '2c' ) {
 				$customer_layout .= " wfty_cont_style";
 			}
-
+			$enable_extra_content = ( isset( $settings['enable_extra_content'] ) && $settings['enable_extra_content'] === 'on' ) ? 'yes' : 'no';
 			?>
             <div class="oxy-customer-details-wrapper">
 				<?php
-				echo do_shortcode( '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading_text . '"]' );
-
+				echo do_shortcode( '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading_text . '" enable_extra_content="' . $enable_extra_content . '"]' );
 				?>
             </div>
 			<?php

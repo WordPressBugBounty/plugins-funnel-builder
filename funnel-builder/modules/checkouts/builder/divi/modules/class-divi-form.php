@@ -282,6 +282,12 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 			$tab_id = $this->add_tab( __( 'Collapsible Order Summary', 'funnel-builder' ), 5 );
 			$this->add_switcher( $tab_id, 'enable_callapse_order_summary', __( 'Enable', 'funnel-builder' ), 'off' );
 			$this->add_responsive_control( 'enable_callapse_order_summary' );
+
+			// Add the enable_order_field_collapsed setting with responsive controls
+			$this->add_switcher( $tab_id, 'enable_order_field_collapsed', __( 'Expanded Order Summary', 'woofunnels-aero-checkout' ), 'off' );
+			$this->add_responsive_control( 'enable_order_field_collapsed' );
+
+
 			$this->add_switcher( $tab_id, 'order_summary_enable_product_image_collapsed', __( 'Enable Image', 'funnel-builder' ), 'yes' );
 
 			$this->add_text( $tab_id, 'cart_collapse_title', __( 'Collapsed View Text ', 'funnel-builder' ), WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) ) );

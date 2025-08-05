@@ -55,7 +55,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'plugins/class-ddpro.php'                                        => function_exists( 'ddp_check_ddpdm' ),
 				'plugins/class-digit.php'                                        => function_exists( 'digits_version' ),
 				'plugins/class-divi-body-commerce.php'                           => defined( 'DE_DB_WOO_VERSION' ),
-				'plugins/class-ecomus-addons.php'                               =>  class_exists('Ecomus\Addons'),
+				'plugins/class-ecomus-addons.php'                                => class_exists( 'Ecomus\Addons' ),
 				'plugins/class-germanized.php'                                   => class_exists( 'WooCommerce_Germanized' ),
 				'plugins/class-happy-elementor.php'                              => function_exists( 'ha_let_the_journey_begin' ),
 				'plugins/class-indeed-ultimate-affiliate-pro.php'                => class_exists( 'UAP_Main' ),
@@ -71,7 +71,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'plugins/class-skyverge-url-coupons.php'                         => function_exists( 'wc_url_coupons' ),
 				'plugins/class-ti-wishlist.php'                                  => class_exists( 'TINVWL_URL' ),
 				'plugins/class-wc-avatax.php'                                    => class_exists( 'WC_AvaTax_Loader' ),
-				'plugins/class-wc-chained-product.php'                           => function_exists('initialize_chained_products'),
+				'plugins/class-wc-chained-product.php'                           => function_exists( 'initialize_chained_products' ),
 				'plugins/class-wc-force-sell.php'                                => class_exists( 'WC_Force_Sells' ),
 				'plugins/class-wc-post-nl.php'                                   => class_exists( 'WCPOST' ) || class_exists( 'WooCommerce_PostNL' ),
 				'plugins/class-wcbooster.php'                                    => class_exists( 'WC_Jetpack' ),
@@ -86,10 +86,11 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'plugins/class-woocommerce-coupon-messages.php'                  => function_exists( 'woocommerce_coupon_messages_plugins_loaded' ),
 				'plugins/class-woocommerce-pre-orders.php'                       => function_exists( 'woocommerce_pre_orders_load_block_classes' ),
 				'plugins/class-woocommerce-social-login.php'                     => class_exists( 'WC_Social_Login_Loader' ),
-				'plugins/class-woolentor-addon.php'                     => defined('WOOLENTOR_VERSION'),
+				'plugins/class-woolentor-addon.php'                              => defined( 'WOOLENTOR_VERSION' ),
 				'plugins/class-woosb.php'                                        => function_exists( 'woosb_init' ),
 				'plugins/class-wp-zasielkovna.php'                               => function_exists( 'run_wp_zasielkovna_shipping' ),//Move to template found
 				'plugins/class-wpc-quanity-premium.php'                          => function_exists( 'woopq_init' ),
+				'plugins/class-wployalty.php'                                    => defined( 'WLR_PLUGIN_VERSION' ),
 				'plugins/class-wpml.php'                                         => class_exists( 'SitePress' ),
 				'plugins/class-xlwcty.php'                                       => class_exists( 'XLWCTY_Core' ),
 				'plugins/class-yith-discount.php'                                => class_exists( 'YITH_WC_Dynamic_Discounts' ),
@@ -111,6 +112,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'others/class-wc-order-pay.php'                                  => true,
 				'library/class-add-address-field.php'                            => true,
 				'library/class-insert-field-after-other-field.php'               => true,
+				'gateways/class-authorize-net-cim.php'                           => class_exists( 'WC_Authorize_Net_CIM_Loader' )
 			);
 			self::add_files( $files );
 		}
@@ -126,7 +128,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'setup-theme/class-checkout-field-editor.php'           => function_exists( 'thwcfd_init_checkout_field_editor_lite' ) || defined( 'WOOCCM_PATH' ) || function_exists( 'woocommerce_init_checkout_field_editor' ),
 				'setup-theme/class-convert-kit-wc.php'                  => class_exists( 'CKWC_Integration' ),
 				'setup-theme/class-divi-builder.php'                    => class_exists( 'ET_Builder_Plugin', false ),
-				'setup-theme/class-easy-product-bundles-for-wc.php'                    => function_exists( 'ASNP_WEPB' ),
+				'setup-theme/class-easy-product-bundles-for-wc.php'     => function_exists( 'ASNP_WEPB' ),
 				'setup-theme/class-elementor-pro.php'                   => defined( 'ELEMENTOR_VERSION' ) && class_exists( 'ElementorPro\Plugin' ),
 				'setup-theme/class-fifu.php'                            => function_exists( 'fifu_woo_template' ),
 				'setup-theme/class-gumlet.php'                          => class_exists( 'Gumlet' ),
@@ -268,6 +270,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'fields/class-yth-delivery-date-shipping-manager.php'   => function_exists( 'yith_delivery_date_init_plugin' ),
 				'fields/class-yth-wc-eu-vat.php'                        => function_exists( 'yith_ywev_premium_init' ),
 				'template-found/class-price-based-on-countries.php'     => class_exists( 'WC_Product_Price_Based_Country' ),
+				'template-found/innosend.php'                           => class_exists( '\App\APS_Instance' ),
 			];
 			self::add_files( $files );
 		}

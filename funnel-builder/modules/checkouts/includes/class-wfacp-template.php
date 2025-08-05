@@ -86,11 +86,12 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 		public $optional_collapsible_fields = [];
 
 		protected $custom_modules = [];
-
+		private $is_user_logged_in;
 		protected function __construct() {
 			$this->img_path        = WFACP_PLUGIN_URL . '/admin/assets/img/';
 			$this->img_public_path = WFACP_PLUGIN_URL . '/assets/img/';
 			$this->url             = WFACP_PLUGIN_URL . '/public/templates/' . $this->get_template_slug() . '/views/';
+			$this->is_user_logged_in = is_user_logged_in();
 			$this->page_settings   = WFACP_Common::get_page_settings( WFACP_Common::get_id() );
 			$this->setup_data_hooks();
 
@@ -432,7 +433,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			$page_settings        = $this->page_settings;
 
 			$autopopulate_fields = 'no';
-			if ( wc_string_to_bool( $page_settings['enable_autopopulate_fields'] ) && ! is_user_logged_in() ) {
+			if ( wc_string_to_bool( $page_settings['enable_autopopulate_fields'] ) && ! $this->is_user_logged_in ) {
 				$autopopulate_fields = 'yes';
 			}
 
@@ -693,7 +694,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 		}
 
 		public function checkout_form_login() {
-			if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
+			if ( $this->is_user_logged_in || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
 				return;
 			}
 			include WFACP_TEMPLATE_COMMON . '/checkout/form-login.php';
@@ -1929,107 +1930,124 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 		}
 
 		public function merge_builder_data( $field, $field_index ) {
+			try {
 
-			$template_slug = $this->get_template_slug();
-			$template_slug = sanitize_title( $template_slug );
-			$css_ready     = $this->get_field_css_ready( $template_slug, $field_index );
-			if ( '' !== $css_ready ) {
-				$field['cssready'] = explode( ',', $css_ready );
-			}
-
-			$css_classes = $this->default_css_class();
-
-			if ( isset( $this->css_classes[ $field_index ] ) ) {
-				$css_classes = $this->css_classes[ $field_index ];
-			}
-			$wrapper_class = 'wfacp-form-control-wrapper ';
-
-			if ( isset( $field['cssready'] ) && is_array( $field['cssready'] ) && count( $field['cssready'] ) > 0 ) {
-				$wrapper_class .= implode( ' ', $field['cssready'] );
-			} else {
-				$wrapper_class .= ' ' . $css_classes['class'];
-			}
-			$input_class = 'wfacp-form-control';
-			$label_class = 'wfacp-form-control-label';
-			if ( isset( $field['input_class'] ) && ! is_array( $field['input_class'] ) ) {
-				$field['input_class'] = [];
-			}
-
-			if ( ! isset( $field['label_class'] ) || ! is_array( $field['label_class'] ) ) {
-				$field['label_class'] = [];
-			}
-			$field['class'][]       = $wrapper_class;
-			$field['input_class'][] = $input_class;
-			$field['label_class'][] = $label_class;
-			$field['class']         = array_unique( $field['class'] );
-			$field['input_class']   = array_unique( $field['input_class'] );
-			$field['label_class']   = array_unique( $field['label_class'] );
-			if ( isset( $field['required'] ) ) {
-				$field['class'][] = 'wfacp_field_required';
-			}
-			if ( $field_index == 'billing_address_2' || $field_index == 'street_address_2' || $field_index == 'shipping_address_2' ) {
-				$search_index = array_search( 'screen-reader-text', $field['label_class'] );
-				if ( false !== $search_index ) {
-					unset( $field['label_class'][ $search_index ] );
-				}
-			}
-
-			if ( isset( $field['type'] ) ) {
-
-
-				if ( $field['type'] == 'multiselect' ) {
-
-					$field['class'][]                       = 'wfacp_custom_field_multiselect';
-					$field['type']                          = 'select';
-					$field['name']                          = $field['id'] . '[]';
-					$field['custom_attributes']['multiple'] = 'multiple';
-					if ( isset( $field['multiselect_maximum'] ) ) {
-						$field['custom_attributes']['data-max-selection'] = $field['multiselect_maximum'];
-					}
-					if ( isset( $field['multiselect_maximum_error'] ) ) {
-						$field['custom_attributes']['data-max-error'] = $field['multiselect_maximum_error'];
-					}
-
-				} elseif ( 'email' == $field['type'] ) {
-					$field['validate'][] = 'email';
-				} elseif ( 'checkbox' == $field['type'] ) {
-					$field['class'][] = 'wfacp_checkbox_field';
-					unset( $field['label_class'][0] );
-					if ( isset( $field['field_type'] ) && $field['field_type'] != 'advanced' ) {
-						unset( $field['input_class'][0] );
-					}
-				} elseif ( 'select2' == $field['type'] ) {
-					$field['class'][]       = 'wfacp_custom_field_select2';
-					$field['org_type']      = $field['type'];
-					$field['type']          = 'select';
-					$field['input_class'][] = 'wfacp_select2_custom_field';
-					$options                = $field['options'];
-					$field['options']       = array_merge( [ '' => $field['placeholder'] ], $options );
-				} elseif ( 'textarea' == $field['type'] ) {
-					$field['class'][] = 'wfacp_textarea_fields';
+				$template_slug = $this->get_template_slug();
+				$template_slug = sanitize_title( $template_slug );
+				$css_ready     = $this->get_field_css_ready( $template_slug, $field_index );
+				if ( '' !== $css_ready ) {
+					$field['cssready'] = explode( ',', $css_ready );
 				}
 
-				if ( in_array( $field['type'], [ 'date' ] ) ) {
-					$default = $field['default'];
-					if ( '' !== $default ) {
-						$default          = str_replace( '/', '-', $default );
-						$field['default'] = date( 'Y-m-d', strtotime( $default ) );
+				$css_classes = $this->default_css_class();
+
+				if ( isset( $this->css_classes[ $field_index ] ) ) {
+					$css_classes = $this->css_classes[ $field_index ];
+				}
+				$wrapper_class = 'wfacp-form-control-wrapper ';
+
+				if ( isset( $field['cssready'] ) && is_array( $field['cssready'] ) && count( $field['cssready'] ) > 0 ) {
+					$wrapper_class .= implode( ' ', $field['cssready'] );
+				} else {
+					$wrapper_class .= ' ' . $css_classes['class'];
+				}
+				$input_class = 'wfacp-form-control';
+				$label_class = 'wfacp-form-control-label';
+
+				if ( isset( $field['input_class'] ) && ! is_array( $field['input_class'] ) ) {
+					$field['input_class'] = [];
+				}
+				if ( ! isset( $field['label_class'] ) || ! is_array( $field['label_class'] ) ) {
+					$field['label_class'] = [];
+				}
+				$field['class'][]       = $wrapper_class;
+				$field['input_class'][] = $input_class;
+				$field['label_class'][] = $label_class;
+				$field['class']         = array_unique( $field['class'] );
+				$field['input_class']   = array_unique( $field['input_class'] );
+				$field['label_class']   = array_unique( $field['label_class'] );
+				if ( isset( $field['validate'] ) && ! is_array( $field['validate'] ) ) {
+					$field['validate'] = [];
+				}
+				// if field is required field then we add additional class to p tag . we use this class to handle use different billing address cases;
+				if ( isset( $field['required'] ) ) {
+					$field['class'][] = 'wfacp_field_required';
+				}
+				if ( $field_index == 'billing_address_2' || $field_index == 'shipping_address_2' || $field_index == 'street_address_2' ) {
+					$search_index = array_search( 'screen-reader-text', $field['label_class'] );
+					if ( false !== $search_index ) {
+						unset( $field['label_class'][ $search_index ] );
 					}
-					unset( $default );
 				}
-			}
 
-			if ( in_array( $field_index, [ 'billing_postcode', 'shipping_postcode', 'billing_city', 'shipping_city' ] ) ) {
-				$field['class'][] = 'update_totals_on_change';
-			}
+				if ( isset( $field['type'] ) ) {
+					if ( $field['type'] == 'multiselect' ) {
+						$field['class'][]                       = 'wfacp_custom_field_multiselect';
+						$field['type']                          = 'select';
+						$field['name']                          = $field['id'] . '[]';
+						$field['custom_attributes']['multiple'] = 'multiple';
+						if ( isset( $field['multiselect_maximum'] ) ) {
+							$field['custom_attributes']['data-max-selection'] = $field['multiselect_maximum'];
+						}
+						if ( isset( $field['multiselect_maximum_error'] ) ) {
+							$field['custom_attributes']['data-max-error'] = $field['multiselect_maximum_error'];
+						}
 
-			if ( in_array( $field_index, [ 'billing_country', 'shipping_country' ] ) ) {
-				if ( ! empty( $this->base_country[ $field_index ] ) ) {
-					$field['default'] = $this->base_country[ $field_index ];
+					} elseif ( 'email' == $field['type'] ) {
+						$field['validate'][] = 'email';
+					} elseif ( 'checkbox' == $field['type'] ) {
+						$field['class'][] = 'wfacp_checkbox_field';
+						unset( $field['label_class'][0] );
+						if ( isset( $field['field_type'] ) && $field['field_type'] != 'advanced' ) {
+							unset( $field['input_class'][0] );
+						}
+					} elseif ( 'select2' == $field['type'] ) {
+						$field['class'][]       = 'wfacp_custom_field_select2';
+						$field['org_type']      = $field['type'];
+						$field['type']          = 'select';
+						$field['input_class'][] = 'wfacp_select2_custom_field';
+						$options                = $field['options'];
+						$field['options']       = [ '' => $field['placeholder'] ] + $options;;
+
+					} elseif ( 'textarea' == $field['type'] ) {
+						$field['class'][]       = 'wfacp_textarea_fields';
+						$field['input_class'][] = 'wfacp_textarea';
+					}
+
+					if ( in_array( $field['type'], [ 'date' ] ) ) {
+						$default = $field['default'];
+						if ( '' !== $default ) {
+							$default          = str_replace( '/', '-', $default );
+							$field['default'] = date( 'Y-m-d', strtotime( $default ) );
+						}
+						unset( $default );
+					}
 				}
-			}
-			if ( in_array( $field_index, [ 'billing_state', 'shipping_state' ] ) ) {
-				$field['class'][] = 'wfacp_state_wrap';
+
+				if ( in_array( $field_index, [ 'billing_postcode', 'shipping_postcode', 'billing_city', 'shipping_city' ] ) ) {
+					$field['class'][] = 'update_totals_on_change';
+				}
+
+				if ( in_array( $field_index, [ 'billing_country', 'shipping_country' ] ) && ! $this->is_user_logged_in ) {
+					if ( ! empty( $this->base_country[ $field_index ] ) ) {
+						$field['default'] = $this->base_country[ $field_index ];
+					}
+				}
+
+				if ( in_array( $field_index, [ 'billing_state', 'shipping_state' ] ) ) {
+					$field['class'][] = 'wfacp_state_wrap';
+					if ( ! $this->is_user_logged_in ) {
+						if ( $field_index == 'billing_state' ) {
+							$default_country = $this->base_country['billing_country'];
+						} else {
+							$default_country = $this->base_country['shipping_country'];
+						}
+						if ( ! empty( $default_country ) ) {
+							$field['country'] = $default_country;
+						}
+					}
+				}
+			} catch ( Exception|Error $e ) {
 
 			}
 

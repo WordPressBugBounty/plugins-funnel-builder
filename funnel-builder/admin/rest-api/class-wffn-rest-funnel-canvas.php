@@ -226,7 +226,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 				foreach ( $get_views as $view_data ) {
 					if ( isset( $data[ $view_data['object_id'] ] ) ) {
 						$data[ $view_data['object_id'] ]['views']           = is_null( $view_data['views'] ) ? 0 : intval( $view_data['views'] );
-						$data[ $view_data['object_id'] ]['conversions']     = is_null( $view_data['converted'] ) ? 0 : intval( $view_data['converted'] );
+						$data[ $view_data['object_id'] ]['conversions']     += empty( $view_data['converted'] ) ? 0 : intval( $view_data['converted'] );
+						$data[ $view_data['object_id'] ]['revenue']         += empty( $view_data['revenue'] ) ? 0 : floatval( number_format( $view_data['revenue'], 2, '.', '' ) );
 						$data[ $view_data['object_id'] ]['conversion_rate'] = $this->get_percentage( $data[ $view_data['object_id'] ]['views'], $data[ $view_data['object_id'] ]['conversions'] );
 					}
 				}
@@ -244,8 +245,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 						foreach ( $get_all_data['variants'][ $control_id ] as $v ) {
 							if ( isset( $data[ $v ] ) ) {
 								$data[ $control_id ]['views']           = $data[ $control_id ]['views'] + $data[ $v ]['views'];
-								$data[ $control_id ]['conversions']     = $data[ $control_id ]['conversions'] + $data[ $v ]['conversions'];
-								$data[ $control_id ]['revenue']         = floatval( number_format( $data[ $control_id ]['revenue'] + $data[ $v ]['revenue'], 2, '.', '' ) );
+								$data[ $control_id ]['conversions']     += $data[ $v ]['conversions'];
+								$data[ $control_id ]['revenue']         += $data[ $v ]['revenue'];
 								$data[ $control_id ]['conversion_rate'] = $this->get_percentage( $data[ $control_id ]['views'], $data[ $control_id ]['conversions'] );
 								unset( $data[ $v ] );
 							}
@@ -447,11 +448,31 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 			 */
 			$bump_ids = array_keys( $steps, 'wc_order_bump', true );
 			if ( count( $bump_ids ) > 0 ) {
-				$bump_ids = implode( ',', $bump_ids );
+				$get_bump_record = array();
+				
+				// Query each bump ID separately since they're stored in JSON fields
+				foreach ( $bump_ids as $bump_id ) {
+					$bump_sql = $wpdb->prepare( 
+						"SELECT %d as 'object_id', 
+						COUNT(CASE WHEN conv.bump_total > 0 AND (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN 1 END) AS `converted`, 
+						COUNT(CASE WHEN (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN 1 END) as views, 
+						SUM(CASE WHEN (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN conv.bump_total ELSE 0 END) as 'revenue' 
+						FROM " . $wpdb->prefix . 'bwf_conversion_tracking' . " AS conv 
+						WHERE conv.type = 2", 
+						$bump_id,
+						'%' . $wpdb->esc_like( $bump_id ) . '%',
+						'%' . $wpdb->esc_like( $bump_id ) . '%',
+						'%' . $wpdb->esc_like( $bump_id ) . '%',
+						'%' . $wpdb->esc_like( $bump_id ) . '%',
+						'%' . $wpdb->esc_like( $bump_id ) . '%',
+						'%' . $wpdb->esc_like( $bump_id ) . '%'
+					);
 
-				$bump_sql = "SELECT bump.bid as 'object_id', COUNT(CASE WHEN converted = 1 THEN 1 END) AS `converted`, COUNT(bump.ID) as views, SUM(bump.total) as 'revenue' FROM " . $wpdb->prefix . 'wfob_stats' . " AS bump WHERE bump.bid IN ( " . $bump_ids . " ) GROUP BY bump.bid";
-
-				$get_bump_record = $wpdb->get_results( $bump_sql, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					$bump_result = $wpdb->get_results( $bump_sql, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+					if ( !empty( $bump_result ) ) {
+						$get_bump_record[] = $bump_result[0];
+					}
+				}
 
 				$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 				if ( true === $db_error['db_error'] ) {
@@ -467,8 +488,8 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 				foreach ( $converted_data as $item ) {
 					if ( isset( $data[ $item['object_id'] ] ) ) {
 						$data[ $item['object_id'] ]['views']           = empty( $item['views'] ) ? $data[ $item['object_id'] ]['views'] : intval( $item['views'] );
-						$data[ $item['object_id'] ]['conversions']     = empty( $item['converted'] ) ? $data[ $item['object_id'] ]['conversions'] : intval( $item['converted'] );
-						$data[ $item['object_id'] ]['revenue']         = empty( $item['revenue'] ) ? $data[ $item['object_id'] ]['revenue'] : floatval( number_format( $item['revenue'], 2, '.', '' ) );
+						$data[ $item['object_id'] ]['conversions']     += empty( $item['converted'] ) ? 0 : intval( $item['converted'] );
+						$data[ $item['object_id'] ]['revenue']         += empty( $item['revenue'] ) ? 0 : floatval( number_format( $item['revenue'], 2, '.', '' ) );
 						$data[ $item['object_id'] ]['conversion_rate'] = $this->get_percentage( $data[ $item['object_id'] ]['views'], $data[ $item['object_id'] ]['conversions'] );
 
 						if(isset($item['source_id']) && array_key_exists($item['source_id'], $data)) {
@@ -878,7 +899,21 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 			if ( ! class_exists( 'WFOB_Core' ) || version_compare( WFOB_VERSION, '1.8,1', '<=' ) ) {
 				return $data;
 			}
-			$get_query = "SELECT COUNT(CASE WHEN converted = 1 THEN 1 END) AS `converted`, COUNT(bump.ID) as viewed, SUM(bump.total) as 'revenue' FROM " . $wpdb->prefix . 'wfob_stats' . " AS bump WHERE bump.bid = " . $step_id . " ORDER BY bump.bid ASC";
+			
+			$get_query = $wpdb->prepare( 
+				"SELECT 
+				COUNT(CASE WHEN conv.bump_total > 0 AND (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN 1 END) AS `converted`, 
+				COUNT(CASE WHEN (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN 1 END) as viewed, 
+				SUM(CASE WHEN (conv.bump_accepted LIKE %s OR conv.bump_rejected LIKE %s) THEN conv.bump_total ELSE 0 END) as 'revenue' 
+				FROM " . $wpdb->prefix . 'bwf_conversion_tracking' . " AS conv 
+				WHERE conv.type = 2", 
+				'%' . $wpdb->esc_like( $step_id ) . '%',
+				'%' . $wpdb->esc_like( $step_id ) . '%',
+				'%' . $wpdb->esc_like( $step_id ) . '%',
+				'%' . $wpdb->esc_like( $step_id ) . '%',
+				'%' . $wpdb->esc_like( $step_id ) . '%',
+				'%' . $wpdb->esc_like( $step_id ) . '%'
+			);
 
 			$get_data = $wpdb->get_row( $get_query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			if ( method_exists( 'WFFN_Common', 'maybe_wpdb_error' ) ) {

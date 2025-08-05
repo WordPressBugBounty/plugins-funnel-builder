@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Order Delivery Date Pro for WooCommerce v.10.6.0 Tyche Softwares
+ * Order Delivery Date Pro for WooCommerce v.12.7.0 Tyche Softwares
  * class WFACP_Compatibility_Order_Delivery_Date_Tyche_Pro
  */
 if ( ! class_exists( 'WFACP_Compatibility_Order_Delivery_Date_Tyche_Pro' ) ) {
@@ -296,13 +296,73 @@ if ( ! class_exists( 'WFACP_Compatibility_Order_Delivery_Date_Tyche_Pro' ) ) {
                 }
 
                 body #wfacp-sec-wrapper #orddd_time_slot_0_field > label {
-                    position: relative !important;
+
                     position: relative;
                     left: auto;
                     right: auto;
                     top: auto;
                     bottom: auto;
                     font-size: 14px !important;
+                }
+
+
+
+                body #wfacp-sec-wrapper table.ui-datepicker-calendar th {
+                    padding: 10px;
+                    text-align: center;
+                    font-weight: bold;
+                    border: 0;
+                    font-size: 12px;
+                    color: #1D2327;
+                }
+
+                body #wfacp-sec-wrapper table.ui-datepicker-calendar {
+                    font-size: 13px;
+                    margin: 0;
+                    border: none;
+                    border-collapse: collapse;
+                    width: auto;
+                    box-sizing: border-box;
+                    display: table;
+                }
+
+                body #wfacp-sec-wrapper table.ui-datepicker-calendar thead {
+                    font-weight: 600;
+                    display: table-header-group;
+                }
+                body #wfacp-sec-wrapper  .ui-datepicker td .ui-state-default {
+                    background: #EEE9FE !important;
+                    width: 35px;
+                    height: 32px;
+
+                    color: #1D2327 !important;
+                    line-height: 32px;
+                    padding: 0;
+                    margin: 2px auto;
+                }
+                body #wfacp-sec-wrapper .ui-widget {
+                    font-size: 1.1em;
+                }
+                body #wfacp-sec-wrapper .orddd-checkout-fields .ui-datepicker .ui-datepicker-buttonpane button {
+                    background: #F6F3FF !important
+                }
+
+                #wfacp-sec-wrapper .order-type ul li {
+                    margin-right: 20px;
+                }
+
+                #wfacp-sec-wrapper  .order-type ul {
+                    display: flex;
+                    flex-direction: row;
+                    margin-bottom: 16px;
+                }
+
+
+                body #wfacp-sec-wrapper table.ui-datepicker-calendar * {
+                    font-size:100%;
+                }
+                body #wfacp-sec-wrapper table.ui-datepicker-calendar td {
+                    padding: 1px;
                 }
 
             </style>

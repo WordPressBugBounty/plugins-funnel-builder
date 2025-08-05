@@ -1010,6 +1010,7 @@ if ( ! class_exists( 'WFFN_REST_API_Dashboard_EndPoint' ) ) {
 						'step_id'         => 0,
 						'post_title'      => '',
 						'order_id'        => $result['source'],
+						'order_number'    => $result['order_number'] ?? '',
 						'id'              => $result['step_id'],
 						'tot'             => $result['value'],
 						'type'            => '',
@@ -1133,7 +1134,17 @@ if ( ! class_exists( 'WFFN_REST_API_Dashboard_EndPoint' ) ) {
 			if ( ! class_exists( 'WFOB_Core' ) ) {
 				return 0;
 			}
-			$get_revenue = $wpdb->get_var( $wpdb->prepare( "SELECT CONVERT( stats.total USING utf8) as 'value' FROM " . $wpdb->prefix . "wfob_stats AS stats where stats.converted= %d AND stats.bid = %d AND stats.oid = %d ", 1, absint( $bump_id ), $order_id ) );
+			
+			$get_revenue = $wpdb->get_var( $wpdb->prepare( 
+				"SELECT CONVERT( conv.bump_total USING utf8) as 'value' 
+				FROM " . $wpdb->prefix . "bwf_conversion_tracking AS conv 
+				WHERE conv.type = 2 
+				AND conv.source = %d 
+				AND conv.bump_accepted LIKE %s 
+				AND conv.bump_total > 0", 
+				$order_id, 
+				'%' . $wpdb->esc_like( $bump_id ) . '%'
+			) );
 
 			if ( ! empty( $get_revenue ) ) {
 				return $get_revenue;

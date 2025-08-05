@@ -13,7 +13,7 @@ if ( ! class_exists( 'WFACP_EveryPay' ) ) {
 		}
 
 		public function template_found() {
-			if ( wp_doing_ajax() ) {
+			if ( wp_doing_ajax() ||  !is_checkout() ) {
 				return;
 			}
 			$is_global_checkout = WFACP_Core()->public->is_checkout_override();

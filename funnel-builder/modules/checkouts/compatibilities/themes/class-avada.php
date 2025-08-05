@@ -2,12 +2,13 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 
+if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 	#[AllowDynamicProperties]
 	class WFACP_Compatibility_With_Active_Avada {
 
 		public $js_folder_url = '';
+		public $instance = null;
 
 		public function __construct() {
 
@@ -15,6 +16,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 
 			add_filter( 'wfacp_do_not_allow_shortcode_printing', [ $this, 'do_not_execute_shortcode' ] );
 			add_filter( 'elementor/frontend/builder_content_data', [ $this, 'remove_avada_parse_elementor_content' ], 9, 2 );
+
 		}
 
 		public function wp_enqueue_script() {
@@ -28,7 +30,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 		public function remove_actions() {
 
 			$id = WFACP_Common::get_id();
-			if ( absint( $id ) <= 0 ) {
+			if ( absint( $id ) <= 0 || !is_checkout() ) {
 				return;
 			}
 
@@ -155,6 +157,9 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 
 			return $status;
 		}
+
+
+
 	}
 
 

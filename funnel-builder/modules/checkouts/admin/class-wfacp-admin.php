@@ -21,7 +21,10 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 		protected function __construct() {
 			$this->current_section = __DIR__ . '/views/sections/design.php';
 			$this->wfacp_id        = WFACP_Common::get_id();
-			add_action( 'admin_init', [ $this, 'show_post_not_exist' ], 1 );
+			if ( isset( $_GET['page'] ) && 'wfacp' == $_GET['page'] && isset( $_GET['wfacp_id'] ) && $_GET['wfacp_id'] > 0 ) {
+
+				add_action( 'admin_init', [ $this, 'show_post_not_exist' ], 1 );
+			}
 			add_action( 'admin_head', array( $this, 'hide_from_menu' ) );
 			add_action( 'admin_menu', [ $this, 'register_admin_menu' ], 90 );
 			add_action( 'admin_menu', [ $this, 'remove_page_attributes' ], 90 );
@@ -34,7 +37,10 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 			 * Admin enqueue scripts
 			 */
 			add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_assets' ], 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_register_breadcrumbs' ), 10 );
+			if ( WFACP_Common::is_load_admin_assets( 'builder' ) ) {
+
+				add_action( 'admin_enqueue_scripts', array( $this, 'maybe_register_breadcrumbs' ), 10 );
+			}
 			/**
 			 * Admin customizer enqueue scripts
 			 */
@@ -42,19 +48,21 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 
 			add_filter( 'woocommerce_billing_fields', [ $this, 'add_css_ready_classes' ] );
 			add_filter( 'woocommerce_shipping_fields', [ $this, 'add_css_ready_classes' ] );
-			add_action( 'admin_menu', [ $this, 'set_section' ] );
+			if ( WFACP_Common::get_id() > 0 && isset( $_GET['section'] ) ) {
 
+				add_action( 'admin_menu', [ $this, 'set_section' ] );
+			}
 			add_action( 'woocommerce_admin_order_data_after_order_details', [ $this, 'show_advanced_field_order' ] );
 
-
-			add_action( 'in_admin_header', [ $this, 'maybe_remove_all_notices_on_page' ] );
-
+			if ( isset( $_GET['page'] ) && 'wfacp' == $_GET['page'] ) {
+				add_action( 'in_admin_header', [ $this, 'maybe_remove_all_notices_on_page' ] );
+			}
 			add_action( 'in_admin_header', [ $this, 'restrict_notices_display' ] );
 
 			add_filter( 'wfacp_builder_merge_field_arguments', [ $this, 'wfacp_builder_merge_field_arguments' ], 10, 4 );
-
-			add_action( 'admin_print_styles', [ $this, 'remove_theme_css_and_scripts' ], 100 );
-
+			if ( WFACP_Common::is_builder()) {
+				add_action( 'admin_print_styles', [ $this, 'remove_theme_css_and_scripts' ], 100 );
+			}
 			$post_type = WFACP_Common::get_post_type_slug();
 			add_action( 'add_meta_boxes_' . $post_type, [ $this, 'add_meta_boxes_for_shortcodes' ], 10, 2 );
 			add_filter( 'wfacp_checkout_post_list', [ $this, 'append_checkout_post_list' ] );
@@ -114,7 +122,7 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 		 * Check if its our builder page and registered required nodes to prepare a breadcrumb
 		 */
 		public function maybe_register_breadcrumbs() {
-			if ( WFACP_Common::is_load_admin_assets( 'builder' ) ) {
+			
 				/**
 				 * Only register primary node if not added yet
 				 */
@@ -129,12 +137,10 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 					'link'  => '',
 					'class' => 'wfacp_page_title'
 				) );
-			}
-
+		
 		}
 
 		public function set_section() {
-			if ( WFACP_Common::get_id() > 0 && isset( $_GET['section'] ) ) {
 
 				$this->current_page = filter_input( INPUT_GET, 'section', FILTER_UNSAFE_RAW );
 				if ( file_exists( __DIR__ . '/views/sections/' . $this->current_page . '.php' ) ) {
@@ -142,7 +148,7 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 				}
 				$this->current_section = apply_filters( 'wfacp_builder_pages_path', $this->current_section, $this->current_page, $this );
 
-			}
+
 
 		}
 
@@ -2145,15 +2151,13 @@ if ( ! class_exists( 'WFACP_admin' ) ) {
 		}
 
 		public function show_post_not_exist() {
-			if ( isset( $_GET['page'] ) && 'wfacp' == $_GET['page'] && isset( $_GET['wfacp_id'] ) && $_GET['wfacp_id'] > 0 ) {
-
 
 				$wfacp_id = filter_input( INPUT_GET, 'wfacp_id', FILTER_UNSAFE_RAW );
 				$post     = get_post( $wfacp_id );
 				if ( is_null( $post ) || $post->post_type != WFACP_Common::get_post_type_slug() ) {
 					wp_die( __( 'You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?' ) );
 				}
-			}
+
 		}
 
 		function get_advanced_field() {

@@ -481,6 +481,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					}
 				}
 
+				// Reset array values to correct index for 'collapsible_optional_fields'
+				if ( isset( $optional_field_db_values['collapsible_optional_fields'] ) && is_array( $optional_field_db_values['collapsible_optional_fields'] ) ) {
+					$optional_field_db_values['collapsible_optional_fields'] = array_values( $optional_field_db_values['collapsible_optional_fields'] );
+				}
+
 				if ( isset( $o_field['field_type'] ) && 'address' === $o_field['field_type'] ) {
 					$billing_optional_fields[] = $op_field_data;
 				} else if ( isset( $o_field['field_type'] ) && 'shipping-address' === $o_field['field_type'] ) {
@@ -1894,7 +1899,11 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 				foreach ( $advanced_fields as $af_id => $_field ) {
 					$_field['id']           = $af_id;
 					$label                  = ! empty( $_field['label'] ) ? $_field['label'] : '';
-					$_field['allow_delete'] = isset( $_field['is_wfacp_field'] );
+
+					if(!isset($_field['allow_delete'])){
+						$_field['allow_delete'] = isset( $_field['is_wfacp_field'] );
+					}
+
 					$_field['label']        = ! empty( $_field['data_label'] ) ? ucwords( $_field['data_label'] ) : ucwords( $label );
 					$_field['data_label']   = ! empty( $_field['data_label'] ) ? $_field['data_label'] : $_field['label'];
 
@@ -2640,8 +2649,8 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					if ( 'same_as_billing' !== $field['key'] && 'same_as_shipping' !== $field['key'] ) {
 
 						// Populate hint data from fields_options
-						$field['hint']                  = ! empty( $field_options[ $field['key'] ]['hint'] ) ? $field_options[ $field['key'] ]['hint'] : '';
-						$field['configuration_message'] = ! empty( $field_options[ $field['key'] ]['configuration_message'] ) ? $field_options[ $field['key'] ]['configuration_message'] : '';
+						$field['hint']                  = ! empty( $options[ $field['key'] ]['hint'] ) ? $options[ $field['key'] ]['hint'] : '';
+						$field['configuration_message'] = ! empty( $options[ $field['key'] ]['configuration_message'] ) ? $options[ $field['key'] ]['configuration_message'] : '';
 						// Set key for field type
 						$field['key'] = $type . '_' . $field['key'];
 

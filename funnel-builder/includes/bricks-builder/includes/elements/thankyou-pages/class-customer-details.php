@@ -89,6 +89,16 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\ThankYouPages\Customer_Details'
 				'css'      => array(),
 			);
 
+			// Control for enabling extra content
+			$this->controls['enableExtraContent'] = array(
+				'group'   => 'contentCustomerDetails',
+				'label'   => esc_html__( 'Show Extra Thankyou Content' ),
+				'description' => esc_html__( 'When enabled, this will display additional content/hooks from WooCommerce on the thank you page. Useful for compatibility with payment gateways and plugins.' ),
+				'type'    => 'checkbox',
+				'default' => false,
+				'rerender' => true,
+			);
+
 			$this->controls['typographySectionHeading'] = array(
 				'group'   => 'styleHeading',
 				'label'   => esc_html__( 'Typography' ),
@@ -187,6 +197,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\ThankYouPages\Customer_Details'
 			$settings       = $this->settings;
 			$heading_text   = $settings['customerDetailsHeading'];
 			$layout_setting = $settings['customerLayout'];
+			$enable_extra_content = !empty($settings['enableExtraContent']) ? 'yes' : 'no';
 
 			if ( $layout_setting === '50' ) {
 				$layout_setting = '2c';
@@ -198,7 +209,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\ThankYouPages\Customer_Details'
             <div <?php echo $this->render_attributes( '_root' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
                 <div <?php echo $this->render_attributes( 'wrapper' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 					<?php
-					echo do_shortcode( '[wfty_customer_details layout_settings ="' . $layout_setting . '" customer_details_heading="' . $heading_text . '"]' );
+					echo do_shortcode( '[wfty_customer_details layout_settings ="' . $layout_setting . '" customer_details_heading="' . $heading_text . '" enable_extra_content="' . $enable_extra_content . '"]' );
 					?>
                 </div>
             </div>

@@ -201,7 +201,7 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\ThankYouPages\Order_Details' ) 
 				'css'     => array(
 					array(
 						'property' => 'typography',
-						'selector' => '.bricks-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list *',
+						'selector' => '.bricks-order-details-wrapper .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list * , .wffn_order_details_table .wfty_pro_list_cont .wfty_p_name *',
 					),
 				),
 			);

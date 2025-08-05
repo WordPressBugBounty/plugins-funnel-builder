@@ -352,7 +352,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 					'enable_checkout_terms'  => ! ! wc_terms_and_conditions_page_id(),
 					'enable_checkout_policy' => ! ! wc_privacy_policy_page_id(),
 					'icon_list'              => $this->checkout_botton_icon_list(),
-					'wfacp_section_notice'   => WFACP_Common::get_notice_html_in_editor('gutenberg'),
+					'wfacp_section_notice'   => WFACP_Common::get_notice_html_in_editor( 'gutenberg' ),
 				) );
 
 
@@ -460,12 +460,15 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 
 			//Payment Gateways Attributes
 			$attributes['wfacp_payment_method_heading_text'] = WFACP_Common::translation_string_to_check( esc_attr__( 'Payment Information', 'funnel-builder' ) );
-			$attributes['wfacp_payment_method_subheading']   = WFACP_Common::translation_string_to_check(esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' ));
+			$attributes['wfacp_payment_method_subheading']   = WFACP_Common::translation_string_to_check( esc_attr__( 'All transactions are secure and encrypted. Credit card information is never stored on our servers.', 'funnel-builder' ) );
 
 			//Collapsible Order Summary Attributes
 			$attributes['enable_callapse_order_summary']                = false;
 			$attributes['enable_callapse_order_summary_tablet']         = true;
 			$attributes['enable_callapse_order_summary_mobile']         = true;
+			$attributes['enable_order_field_collapsed']                      = false;
+			$attributes['enable_order_field_collapsed_tablet']               = false;
+			$attributes['enable_order_field_collapsed_mobile']              = false;
 			$attributes['cart_collapse_title']                          = WFACP_Common::translation_string_to_check( __( 'Show Order Summary', 'funnel-builder' ) );
 			$attributes['cart_expanded_title']                          = WFACP_Common::translation_string_to_check( __( 'Hide Order Summary', 'funnel-builder' ) );
 			$attributes['order_summary_enable_product_image_collapsed'] = true;
@@ -724,8 +727,8 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 
 				$this->wfacp_id = $post_id;
 				global $post;
-				$post       = get_post( $this->wfacp_id );
-				$this->post = $post;
+				$post->post_content.="<!-- funnelkit-gutenberg -->";
+				$this->post=get_post( $this->wfacp_id );
 				add_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
 			}
 		}
@@ -734,6 +737,10 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 			if ( 0 === did_action( 'wfacp_after_template_found' ) ) {
 				return $content;
 			}
+			if(false===strpos($content,'funnelkit-gutenberg')){
+				return $content;
+			}
+			
 			global $post;
 			if ( ! is_null( $this->post ) ) {
 				$post    = $this->post;
@@ -867,6 +874,10 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 
 
 		public function remove_the_content_filter() {
+			if ( defined( 'BRICKS_VERSION' ) ) {
+				// If Bricks is active, we don`t need to remove the filter that changes the global post variable.
+				return;
+			}
 			remove_filter( 'the_content', [ $this, 'change_global_post_var_to_our_page_post' ], 5 );
 		}
 	}

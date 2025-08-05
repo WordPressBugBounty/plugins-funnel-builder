@@ -19,6 +19,8 @@ if ( ! class_exists( 'WFTY_Customer_Details' ) ) {
 				'2c' => __( 'Two Columns', 'elementor' ),
 				'1c' => __( 'Full Width', 'elementor' ),
 			], '2c' );
+			// Add checkbox for extra content
+			$this->add_switcher( $tab_id, 'enable_extra_content', __( 'Show Extra Thankyou Content', 'funnel-builder' ), false,[],__( 'When enabled, this will display additional content/hooks from WooCommerce on the thank you page. Useful for compatibility with payment gateways and plugins.', 'funnel-builder' ) );
 
 			$this->style_field();
 
@@ -95,10 +97,11 @@ if ( ! class_exists( 'WFTY_Customer_Details' ) ) {
 			if ( $customer_layout !== '' && $customer_layout !== '2c' ) {
 				$customer_layout .= " wfty_cont_style";
 			}
+			$enable_extra_content = ( isset( $settings['enable_extra_content'] ) && $settings['enable_extra_content'] === 'on' ) ? 'yes' : 'no';
 			ob_start();
 			?>
 			<?php
-			echo do_shortcode( '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading_text . '"]' );
+			echo do_shortcode( '[wfty_customer_details layout_settings ="' . $customer_layout . '" customer_details_heading="' . $heading_text . '" enable_extra_content="' . $enable_extra_content . '"]' );
 			?>
 			<?php
 			return ob_get_clean();

@@ -62,9 +62,9 @@ if ( ! class_exists( 'WFTY_Order_Details' ) ) {
 			$this->add_switcher( $detail_id, 'order_details_img', __( 'Show Images', 'funnel-builder' ), 'on' );
 
 			$font_side_default['font_size']['default'] = '15px';
-			$this->add_typography( $detail_id, $key . '_product_typography', '%%order_class%% .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv a *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv .wfty_info, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_rightDiv *', '', '', $font_side_default );
+			$this->add_typography( $detail_id, $key . '_product_typography', '%%order_class%% .wffn_order_details_table .wfty_pro_list_cont .wfty_pro_list *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv a *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv .wfty_info, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_rightDiv *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont .wfty_p_name *', '', '', $font_side_default );
 
-			$this->add_color( $detail_id, $key . '_product_text_color', '%%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_hide_images .wfty_pro_list *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv a *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv .wfty_info, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_rightDiv *', __( 'Color', 'funnel-builder' ), '#565656' );
+			$this->add_color( $detail_id, $key . '_product_text_color', '%%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_hide_images .wfty_pro_list *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv a *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_leftDiv .wfty_info, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont.wfty_show_images .wfty_pro_list .wfty_rightDiv *, %%order_class%% .wffn_order_details_table .wfty_pro_list_cont .wfty_p_name * ', __( 'Color', 'funnel-builder' ), '#565656' );
 
 			$this->add_heading( $detail_id, __( 'Subtotal', 'funnel-builder' ) );
 
@@ -162,7 +162,7 @@ if ( ! class_exists( 'WFTY_Order_Details' ) ) {
 				'shipping_price' => '3.00',
 				'shipping'       => 'false',
 				'currency'       => html_entity_decode( get_woocommerce_currency_symbol() ),
-				'img_url'        => WC()->plugin_url() . '/assets/images/placeholder.png',
+				'img_url'        => wc_placeholder_img_src('thumbnail'),
 				'pro_name'       => __( 'Test Product', 'funnel-builder' ),
 				'sub_head'       => __( 'Subtotal', 'funnel-builder' ),
 				'ship_head'      => __( 'Shipping', 'funnel-builder' ),

@@ -25,14 +25,14 @@ if ( ! class_exists( 'WFACP_Plugins_Compatibility' ) ) {
 			/**
 			 * Customizer compatibility for buzzstorepro theme
 			 */
-			add_action( 'after_setup_theme', function () {
+			if ( class_exists( 'WFACP_Common' ) && WFACP_Common::is_customizer() ) {
 
-				if ( class_exists( 'WFACP_Common' ) && WFACP_Common::is_customizer() ) {
+				add_action( 'after_setup_theme', function () {
+
 					remove_action( 'customize_register', 'buzzstorepro_customize_register' );
 
-				}
-			} );
-
+				} );
+			}
 			/**
 			 * Customizer compatibility for Easy Google Fonts plugin
 			 */

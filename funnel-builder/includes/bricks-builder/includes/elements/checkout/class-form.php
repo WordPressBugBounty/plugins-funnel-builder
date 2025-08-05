@@ -369,6 +369,14 @@ if ( ! class_exists( '\FunnelKit\Bricks\Elements\Checkout\Form' ) ) {
 						'value'    => 'block',
 					),
 				) );
+
+			$this->add_switcher( 'enable_order_field_collapsed', __( 'Expanded Order Summary' ), false, array(
+				array(
+					'selector' => '.wfacp_order_summary_container',
+					'property' => 'display',
+					'value'    => 'block',
+				),
+			) );
 			$this->add_switcher( 'order_summary_enable_product_image_collapsed', __( 'Enable Image' ), true );
 
 			$this->add_text( 'cart_collapse_title', __( 'Collapsed View Text' ), __( 'Show Order Summary' ) );

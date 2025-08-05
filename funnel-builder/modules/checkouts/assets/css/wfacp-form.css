@@ -919,6 +919,11 @@ body #wfacp-e-form .wfacp_main_form .wfacp-coupon-section .wfacp-coupon-page .wf
     height: auto;
     margin-bottom: 0;
     max-width: 100%;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
 }
 
 body #wfacp-e-form .wfacp_main_form p.wfacp_custom_field_radio_wrap .wfacp-form-control:not(.wfacp_radio_field) {
@@ -2860,10 +2865,19 @@ body .wfacp_main_form del {
 .et-db #et-boc #wfacp-e-form .wfacp_show_icon_wrap {
     max-width: 195px;
     float: left;
-    background: url(../img/cart.svg) no-repeat 0px 50%;
+    position:relative;
     background-size: 15px;
     padding-left: 25px;
     min-height: 20px;
+}
+#wfacp-e-form .wfacp_show_icon_wrap svg,
+.et-db #et-boc #wfacp-e-form .wfacp_show_icon_wrap svg {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -8px;
 }
 
 #wfacp-e-form span.amount {
@@ -5310,6 +5324,28 @@ body button.button.wfacp-coupon-btn {
     border: none;
 }
 
+
+
+/* Desktop: If setting is ENABLED, element should be VISIBLE */
+@media (min-width: 1025px) {
+    #wfacp-e-form .wfacp_mb_mini_cart_sec_accordion_content.wfacp_display_none.wfacp_collapsed_active_desktop.wfacp_collapsed_trigger {
+        display: block ;
+    }
+}
+
+/* Tablet: If setting is ENABLED, element should be VISIBLE */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #wfacp-e-form .wfacp_mb_mini_cart_sec_accordion_content.wfacp_display_none.wfacp_collapsed_active_tablet.wfacp_collapsed_trigger {
+        display: block ;
+    }
+}
+
+/* Mobile: If setting is ENABLED, element should be VISIBLE */
+@media (max-width: 767px) {
+    #wfacp-e-form .wfacp_mb_mini_cart_sec_accordion_content.wfacp_display_none.wfacp_collapsed_active_mobile.wfacp_collapsed_trigger {
+        display: block;
+    }
+}
 /*-------------------------------------------Media Query--------------------------------------------*/
 
 @media (pointer: coarse) {

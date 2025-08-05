@@ -1634,6 +1634,33 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 				return [ 'status' => 'not_installed', 'other_exists' => $other_stripe_exists ];
 			}
 		}
+
+		/**
+		 * Add order URL for single order ID
+		 *
+		 * @param int $order_id Order ID
+		 * @return string Order edit URL
+		 */
+		public static function add_order_urls( $order_id ): string {
+			if ( empty( $order_id ) ) {
+				return '';
+			}
+
+			$order_id = absint( $order_id );
+
+			if ( $order_id <= 0 ) {
+				return '';
+			}
+
+			$hpos_enabled = BWF_WC_Compatibility::is_hpos_enabled();
+
+			if ( $hpos_enabled ) {
+				return admin_url( "admin.php?page=wc-orders&action=edit&id={$order_id}" );
+			} else {
+				return admin_url( "post.php?post={$order_id}&action=edit" );
+			}
+		}
+
 	}
 
 }

@@ -190,6 +190,9 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Divi' ) ) {
 
 
 		public function change_template_include_hook() {
+			if( !is_checkout()){
+				return;
+			}
 			$design = WFACP_Common::get_page_design( WFACP_Common::get_id() );
 
 			if ( 'divi' == $design['selected_type'] ) {

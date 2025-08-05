@@ -10,7 +10,9 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 		public function __construct() {
 
 			add_action( 'wp_enqueue_scripts', array( $this, 'remove_conflicted_themes_styles' ), 9999 );
-			add_action( 'wp_print_scripts', array( $this, 'print_custom_css_in_head' ), 1000 );
+			if ( ! is_admin() ) {
+				add_action( 'wp_print_scripts', array( $this, 'print_custom_css_in_head' ), 1000 );
+			}
 			add_action( 'wp_footer', array( $this, 'print_custom_js_in_footer' ) );
 			add_filter( 'bwf_general_settings_default_config', array( $this, 'migrate_modify_allowed_theme_settings' ) );
 

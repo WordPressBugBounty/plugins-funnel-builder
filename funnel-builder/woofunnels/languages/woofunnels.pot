@@ -7,7 +7,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-04T07:17:17+00:00\n"
+"POT-Creation-Date: 2025-08-05T11:12:15+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: woofunnels\n"
@@ -294,8 +294,8 @@ msgstr ""
 
 #: helpers/settings.php:40
 #: helpers/settings.php:41
-#: includes/class-bwf-admin-general-settings.php:81
-#: includes/class-bwf-admin-general-settings.php:332
+#: includes/class-bwf-admin-general-settings.php:85
+#: includes/class-bwf-admin-general-settings.php:337
 msgid "Permalinks"
 msgstr ""
 
@@ -310,8 +310,8 @@ msgstr ""
 
 #: helpers/settings.php:63
 #: helpers/settings.php:64
-#: includes/class-bwf-admin-general-settings.php:85
-#: includes/class-bwf-admin-general-settings.php:328
+#: includes/class-bwf-admin-general-settings.php:89
+#: includes/class-bwf-admin-general-settings.php:333
 msgid "Facebook Pixel"
 msgstr ""
 
@@ -324,7 +324,11 @@ msgid "294123501257422"
 msgstr ""
 
 #: helpers/settings.php:72
-msgid "Log into your Facebook ads account to find your Pixel ID. <a target=\"_blank\" href=\"https://funnelkit.com/docs/funnel-builder/how-to/configure-facebook-conversion-api/#step-4-go-to-settings\">Learn More</a>"
+msgid "Log into your Facebook ads account to find your Pixel ID."
+msgstr ""
+
+#: helpers/settings.php:72
+msgid "Learn More"
 msgstr ""
 
 #: helpers/settings.php:78
@@ -332,7 +336,11 @@ msgid "Enter Access Token"
 msgstr ""
 
 #: helpers/settings.php:79
-msgid "Send events directly from server to Facebook through the Conversion API. An access token is required to use the server-side API. <a target=\"_blank\" href=\"https://funnelkit.com/docs/funnel-builder/global-settings/facebook-conversion-api/\">Generate Access Token</a>"
+msgid "Send events directly from server to Facebook through the Conversion API. An access token is required to use the server-side API."
+msgstr ""
+
+#: helpers/settings.php:79
+msgid "Generate Access Token"
 msgstr ""
 
 #: helpers/settings.php:91
@@ -685,8 +693,8 @@ msgstr ""
 
 #: helpers/settings.php:419
 #: helpers/settings.php:420
-#: includes/class-bwf-admin-general-settings.php:89
-#: includes/class-bwf-admin-general-settings.php:329
+#: includes/class-bwf-admin-general-settings.php:93
+#: includes/class-bwf-admin-general-settings.php:334
 msgid "Google Analytics"
 msgstr ""
 
@@ -730,8 +738,8 @@ msgstr ""
 
 #: helpers/settings.php:650
 #: helpers/settings.php:651
-#: includes/class-bwf-admin-general-settings.php:96
-#: includes/class-bwf-admin-general-settings.php:330
+#: includes/class-bwf-admin-general-settings.php:100
+#: includes/class-bwf-admin-general-settings.php:335
 msgid "Google Ads"
 msgstr ""
 
@@ -774,8 +782,8 @@ msgstr ""
 
 #: helpers/settings.php:905
 #: helpers/settings.php:906
-#: includes/class-bwf-admin-general-settings.php:102
-#: includes/class-bwf-admin-general-settings.php:331
+#: includes/class-bwf-admin-general-settings.php:106
+#: includes/class-bwf-admin-general-settings.php:336
 msgid "Pinterest"
 msgstr ""
 
@@ -805,7 +813,7 @@ msgstr ""
 
 #: helpers/settings.php:1135
 #: helpers/settings.php:1136
-#: includes/class-bwf-admin-general-settings.php:109
+#: includes/class-bwf-admin-general-settings.php:113
 msgid "TikTok"
 msgstr ""
 
@@ -828,8 +836,8 @@ msgstr ""
 
 #: helpers/settings.php:1280
 #: helpers/settings.php:1281
-#: includes/class-bwf-admin-general-settings.php:115
-#: includes/class-bwf-admin-general-settings.php:334
+#: includes/class-bwf-admin-general-settings.php:119
+#: includes/class-bwf-admin-general-settings.php:339
 msgid "Snapchat"
 msgstr ""
 
@@ -851,7 +859,7 @@ msgid "First Party Tracking"
 msgstr ""
 
 #: helpers/settings.php:1413
-#: includes/class-bwf-ecomm-tracking-common.php:874
+#: includes/class-bwf-ecomm-tracking-common.php:878
 msgid "Conversion Tracking"
 msgstr ""
 
@@ -7064,97 +7072,97 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:69
+#: includes/class-bwf-admin-general-settings.php:73
 msgid "Settings"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:133
+#: includes/class-bwf-admin-general-settings.php:137
 msgid "Save Changes"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:322
+#: includes/class-bwf-admin-general-settings.php:327
 msgid "Changes saved"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:323
+#: includes/class-bwf-admin-general-settings.php:328
 msgid "Leave empty to remove slug completely from url"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:333
+#: includes/class-bwf-admin-general-settings.php:338
 msgid "Tiktok"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:373
-#: includes/class-bwf-admin-general-settings.php:395
+#: includes/class-bwf-admin-general-settings.php:378
+#: includes/class-bwf-admin-general-settings.php:400
 msgid "Error: The permalink \"%s\" is reserved by Native WooCommerce Checkout Page. Try another permalink."
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:374
-#: includes/class-bwf-admin-general-settings.php:396
+#: includes/class-bwf-admin-general-settings.php:379
+#: includes/class-bwf-admin-general-settings.php:401
 msgid "Error: The current Permalinks settings does not allow blank values. Switch Permalink settings to 'Post name'. <a href=\"%s\">Click Here To Change</a>"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:449
+#: includes/class-bwf-admin-general-settings.php:454
 msgid "Settings Updated"
 msgstr ""
 
-#: includes/class-bwf-admin-general-settings.php:508
+#: includes/class-bwf-admin-general-settings.php:516
 msgid "%1$s &lsaquo; %2$s &#8212; WordPress"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:989
+#: includes/class-bwf-ecomm-tracking-common.php:993
 msgid "Funnel"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:994
+#: includes/class-bwf-ecomm-tracking-common.php:998
 msgid "First Interaction"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1000
+#: includes/class-bwf-ecomm-tracking-common.php:1004
 msgid "Conversion Time"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1006
+#: includes/class-bwf-ecomm-tracking-common.php:1010
 msgid "UTM Source"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1012
+#: includes/class-bwf-ecomm-tracking-common.php:1016
 msgid "UTM Medium"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1018
+#: includes/class-bwf-ecomm-tracking-common.php:1022
 msgid "UTM Campaign"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1024
+#: includes/class-bwf-ecomm-tracking-common.php:1028
 msgid "UTM Term"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1030
+#: includes/class-bwf-ecomm-tracking-common.php:1034
 msgid "UTM Content"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1036
+#: includes/class-bwf-ecomm-tracking-common.php:1040
 msgid "Referrer"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1042
+#: includes/class-bwf-ecomm-tracking-common.php:1046
 msgid "Click ID"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1043
+#: includes/class-bwf-ecomm-tracking-common.php:1047
 msgid "Yes"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1043
+#: includes/class-bwf-ecomm-tracking-common.php:1047
 msgid "No"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1048
+#: includes/class-bwf-ecomm-tracking-common.php:1052
 msgid "Device"
 msgstr ""
 
-#: includes/class-bwf-ecomm-tracking-common.php:1054
+#: includes/class-bwf-ecomm-tracking-common.php:1058
 msgid "Browser"
 msgstr ""
 
@@ -7163,50 +7171,50 @@ msgstr ""
 msgid "Cheating huh?"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:571
+#: includes/class-woofunnels-dashboard-loader.php:574
 msgid "To enable this update please activate your FunnelKit license by visiting the Dashboard Page."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:592
-#: includes/class-woofunnels-dashboard-loader.php:615
-#: includes/class-woofunnels-dashboard-loader.php:636
-#: includes/class-woofunnels-dashboard-loader.php:657
+#: includes/class-woofunnels-dashboard-loader.php:595
+#: includes/class-woofunnels-dashboard-loader.php:618
+#: includes/class-woofunnels-dashboard-loader.php:639
+#: includes/class-woofunnels-dashboard-loader.php:660
 msgid "Tools"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:668
+#: includes/class-woofunnels-dashboard-loader.php:671
 msgid "All Plugins transients cleared."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:685
+#: includes/class-woofunnels-dashboard-loader.php:688
 msgid "WooFunnels transients"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:686
+#: includes/class-woofunnels-dashboard-loader.php:689
 msgid "This tool will clear all the WooFunnels plugins transients cache."
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:689
+#: includes/class-woofunnels-dashboard-loader.php:692
 msgid "Clear transients"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:697
+#: includes/class-woofunnels-dashboard-loader.php:700
 msgid "Turn Off"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:700
+#: includes/class-woofunnels-dashboard-loader.php:703
 msgid "Turn On"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:705
+#: includes/class-woofunnels-dashboard-loader.php:708
 msgid "Usage Tracking"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:706
+#: includes/class-woofunnels-dashboard-loader.php:709
 msgid "This action controls Usage Tracking"
 msgstr ""
 
-#: includes/class-woofunnels-dashboard-loader.php:722
+#: includes/class-woofunnels-dashboard-loader.php:725
 msgid "Logs"
 msgstr ""
 

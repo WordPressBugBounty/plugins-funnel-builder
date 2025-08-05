@@ -173,9 +173,8 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 
 		public function update_default_builder( WP_REST_Request $request ) {
 
-			$get_config = get_option( 'bwf_gen_config', true );
+			$get_config = get_option( 'bwf_gen_config', array() );
 			$settings   = $request->get_param( 'settings' );
-
 			if ( ! empty( $settings['default_selected_builder'] ) ) {
 				$get_config['default_selected_builder'] = $settings['default_selected_builder'];
 			}

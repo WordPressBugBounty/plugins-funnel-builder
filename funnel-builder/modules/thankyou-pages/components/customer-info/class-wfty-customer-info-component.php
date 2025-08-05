@@ -46,6 +46,7 @@ if ( ! class_exists( 'WFTY_Customer_Info_Component' ) ) {
 
 			$this->data['customer_details_heading'] = isset( $this->data['customer_details_heading'] ) ? $this->data['customer_details_heading'] : WFFN_Core()->thank_you_pages->get_optionsShortCode( 'customer_details_heading', $order_id );
 			$this->data['layout_settings']          = isset( $this->data['layout_settings'] ) ? $this->data['layout_settings'] : WFFN_Core()->thank_you_pages->get_optionsShortCode( 'layout_settings', $order_id );
+			$this->data['enable_extra_content']      = isset( $this->data['enable_extra_content'] ) ? $this->data['enable_extra_content'] : 'no';
 		}
 
 		public function get_formatted_address( $dummy_data ) {

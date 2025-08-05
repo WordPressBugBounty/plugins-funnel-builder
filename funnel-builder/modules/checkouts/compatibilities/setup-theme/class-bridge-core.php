@@ -23,7 +23,7 @@ if ( ! class_exists( 'WFACP_Compatibility_Bridge_Core' ) ) {
 					add_action( 'elementor/widgets/widgets_registered', 'bridge_core_load_elementor_shortcodes' );
 				}
 
-				if ( WFACP_Common::get_id() > 0 ) {
+				if ( WFACP_Common::get_id() > 0  && !is_checkout()) {
 					$instance = WFACP_Elementor::get_instance();
 					if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.5.0', '>=' ) ) {
 						add_action( 'elementor/widgets/register', [ $instance, 'initialize_widgets' ] );

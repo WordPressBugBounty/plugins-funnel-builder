@@ -1895,6 +1895,29 @@ if ( ! class_exists( 'WFACP_template_Bricks' ) ) {
 			}
 
 		}
+
+		public function enable_order_field_collapsed_by_default( $device = 'desktop' ) {
+			$field_key = 'enable_order_field_collapsed';
+
+			if ( $device === 'tablet' ) {
+				$field_key .= ':tablet_portrait';
+			} elseif ( $device === 'mobile' ) {
+				$field_key .= ':mobile_portrait';
+			}
+
+			if ( isset( $this->form_data[ $field_key ] ) && 'yes' == $this->form_data[ $field_key ] ) {
+				return true;
+			}
+
+			return false;
+		}
+
+		public function should_hide_order_summary_by_default() {
+			// Check if any device has collapsed enabled
+			return $this->enable_order_field_collapsed_by_default( 'desktop' ) ||
+			       $this->enable_order_field_collapsed_by_default( 'tablet' ) ||
+			       $this->enable_order_field_collapsed_by_default( 'mobile' );
+		}
 	}
 
 	return WFACP_template_Bricks::get_instance();

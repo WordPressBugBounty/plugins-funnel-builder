@@ -207,7 +207,7 @@ if ( ! class_exists( 'WFTY_Gutenberg' ) ) {
 					'shipping_price' => '3.00',
 					'shipping'       => 'false',
 					'currency'       => html_entity_decode( get_woocommerce_currency_symbol() ),
-					'img_url'        => WC()->plugin_url() . '/assets/images/placeholder.png',
+					'img_url'        => wc_placeholder_img_src('thumbnail'),
 					'pro_name'       => __( 'Test Product', 'funnel-builder' ),
 					'sub_head'       => __( 'Subtotal', 'funnel-builder' ),
 					'ship_head'      => __( 'Shipping', 'funnel-builder' ),

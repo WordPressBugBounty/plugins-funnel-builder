@@ -64,7 +64,8 @@ if ( ! class_exists( 'Oxygen_WFTY_Order_Details_Widget' ) ) {
 			$product_name_typography = [
 				'.wfty_wrap .wfty_order_details .wfty_pro_list .wfty_leftDiv .wfty_p_name a',
 				'.wfty_wrap .wfty_order_details .wfty_pro_list .wfty_leftDiv .wfty_p_name a span',
-				'.wfty_wrap .wfty_order_details .wfty_pro_list .wfty_leftDiv .wfty_p_name .wfty_quantity_value_box *'
+				'.wfty_wrap .wfty_order_details .wfty_pro_list .wfty_leftDiv .wfty_p_name .wfty_quantity_value_box *',
+                '.wffn_order_details_table .wfty_pro_list_cont .wfty_p_name *'
 			];
 			$divider_color           = [
 				'.wffn_order_details_table table',
@@ -196,7 +197,7 @@ if ( ! class_exists( 'Oxygen_WFTY_Order_Details_Widget' ) ) {
 		}
 
 
-		protected function html( $settings, $defaults, $content ) {//phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
+		protected function html( $settings, $defaults, $content ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
 			$order_heading_text         = $settings['order_details_heading'];
 			$order_subscription_heading = isset( $settings['order_subscription_heading'] ) ? $settings['order_subscription_heading'] : '';

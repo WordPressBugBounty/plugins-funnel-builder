@@ -3,14 +3,14 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'WFTY_Order_Details_Component' ) ) {
 	#[AllowDynamicProperties]
-
-  class WFTY_Order_Details_Component extends WFTY_Shortcode_Component_Abstract {
+	class WFTY_Order_Details_Component extends WFTY_Shortcode_Component_Abstract {
 
 		public function __construct( $shortcode_args = [] ) {
 			parent::__construct( $shortcode_args );
 			add_filter( 'wc_get_template', array( $this, 'subs_get_template' ), 10, 5 );
 
 			if ( class_exists( 'WC_Subscriptions_Order' ) ) {
+				remove_action( 'woocommerce_order_details_after_order_table', array( 'WC_Subscriptions_Order', 'add_subscriptions_to_view_order_templates' ), 10 );
 				add_action( 'wfty_woocommerce_order_subscription', array( 'WC_Subscriptions_Order', 'add_subscriptions_to_view_order_templates' ), 10, 1 );
 				add_action( 'wfty_subscription_notice', array( 'WC_Subscriptions_Order', 'subscription_thank_you' ) );
 			}

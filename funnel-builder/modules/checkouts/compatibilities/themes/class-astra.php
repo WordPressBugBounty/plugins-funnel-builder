@@ -20,7 +20,8 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Astra' ) ) {
 
 		public function actions() {
 
-			if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) || ! class_exists( 'WFACP_Common' ) ) {
+
+			if ( ! class_exists( 'ASTRA_Ext_WooCommerce_Markup' ) || ! class_exists( 'WFACP_Common' ) || !is_checkout()) {
 				return;
 			}
 			$id = WFACP_Common::get_id();

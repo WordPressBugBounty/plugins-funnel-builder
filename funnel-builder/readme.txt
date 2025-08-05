@@ -2,9 +2,9 @@
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Requires PHP: 7.4
-Stable tag: 3.11.1
+Stable tag: 3.12.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,34 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.12.0 (August 04, 2025) =
+* Added: Funnels: Compatibility with Sequential Order Numbers plugin to improve order tracking and consistency. (#7602)
+* Added: Checkout: Added a new setting to open the collapsible order summary by default for every page builder widget. (#7904)
+* Added: Thank you Page: New setting to display additional WooCommerce content/hooks on thank you pages for improved compatibility with payment gateways and plugins. (#7831)
+* Improved: Checkout: Improved preparation of state field select when a user is logged in. (#7897)
+* Improved: Checkout: Enhanced compatibility with Bricks builder. (#7853)
+* Improved: Checkout: Updated compatibility with Delivery Date Pro for WooCommerce. (#7858)
+* Improved: Checkout: Enhanced compatibility with Checkout Field Editor Pro by Themehigh. (#7842, #7914)
+* Improved: Checkout: Optimized "You Save" percentage calculation to avoid rounding errors. (#7826)
+* Improved: Funnel: Optimized plugin codebase to improve memory consumption on admin interfaces. (#7818)
+* Improved: Checkout: Updated compatibility with Rank Math SEO plugin. (#7836)
+* Improved: Checkout: Enhanced cart icon SVG to better handle color conflicts with themes. (#7906)
+* Improved: Checkout: Enhanced compatibility with WPLoyalty plugin for more seamless integration. (#7824)
+* Improved: Funnel: Optimized queries for better plugin performance. (#7872, #7882)
+* Improved: Checkout: Improved compatibility with Avada Fusion Builder when using Block editor. (#7902, #7908)
+* Improved: Checkout: Enhanced compatibility with WooCommerce Sequential Order Numbers 3rd party add-ons. (#7602)
+* Improved: Checkout: Enhanced compatibility with Innosend plugin for smoother operation. (#7931)
+* Improved: Funnel: Optimized performance notifications to ensure they work with sites using different time zones. (#7943)
+* Improved: Funnel: Enhanced admin tool for base table verification, especially for sites without WooCommerce installed. (#7946)
+* Fixed: Checkout: Resolved design distortion of international dropdown when fewer than five countries are listed on mobile. (#7839)
+* Fixed: Checkout: Removed "required" option from HTML fields to avoid validation errors. (#7851)
+* Fixed: Thank You Page: Resolved subscription details showing twice on the thank you page after the last update. (#7817)
+* Fixed: Funnel: Fixed distorted CSS in some block controls. (#7901)
+* Fixed: Checkout: Resolved issue where inline stats in funnel steps weren't showing correctly when there were multiple conversion sources. (#7821)
+* Fixed: Checkout: Corrected revenue calculation in checkout analytics when multiple sources are present. (#7821)
+* Fixed: Checkout: Resolved issue where the Date of Birth field was still showing a delete icon after being removed from sections in the field editor UI. (#7912)
+
 = 3.11.1 (July 04, 2025) =
 * Fixed: Checkout: Checkout form fields were flickering on focus since the last update. (#7806)
 * Fixed: Funnel: version check improved to ensure no errors in admin UI. (#7802)

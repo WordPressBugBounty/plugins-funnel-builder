@@ -285,6 +285,10 @@ body .wfacp_main_form .wfacp_coupon_btn_wrap label.wfacp-form-control-label {
 body #wfacp_checkout_form {
     position: relative;
 }
+body #wfacp-e-form #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form p.form-row.wfacp_dropdown.wfacp_drop_list select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
     body .wfacp_main_form select,
@@ -5533,7 +5537,7 @@ body .select2-search--dropdown {
 /* ---------------------------------------------Input Wrapper fields------------------------*/
 
 body #wfacp-sec-wrapper span.woocommerce-input-wrapper {
-    display: block;
+    display: block;  width: 100%;
 }
 
 #wfacp-sec-wrapper .wfacp_main_form .wfacp_collapsible:hover,

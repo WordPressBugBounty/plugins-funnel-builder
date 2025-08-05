@@ -800,8 +800,12 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 					);
 
 					if ( ! empty( $order_id ) && absint( $order_id ) > 0 && function_exists( 'wc_get_order' ) ) {
+						$conv_order['order_url'] = WFFN_Common::add_order_urls( $order_id );
 						$order_data = wc_get_order( $order_id );
 						if ( $order_data instanceof WC_Order ) {
+							$order_number = $order_data->get_order_number() ?? '';
+
+							$conv_order['order_number'] = $order_number;
 							$conv_order['customer_info'] = [
 								'email'            => $order_data->get_billing_email(),
 								'phone'            => $order_data->get_billing_phone(),

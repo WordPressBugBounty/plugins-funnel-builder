@@ -27,7 +27,7 @@ foreach ( $section_order as $item ) {
 							<?php if ( $order_show_images ) { ?>
                                 <div class="wfty_p_img">
                                     <a href="javascript:void(0);">
-                                        <img height="100" width="100" class="attachment-shop_thumbnail size-shop_thumbnail" src="<?php echo esc_url( WC()->plugin_url() ) ?>/assets/images/placeholder.png">
+                                        <img height="100" width="100" class="attachment-shop_thumbnail size-shop_thumbnail" src="<?php echo esc_url( wc_placeholder_img_src('thumbnail') ); ?>">
                                     </a>
                                 </div>
 							<?php } ?>

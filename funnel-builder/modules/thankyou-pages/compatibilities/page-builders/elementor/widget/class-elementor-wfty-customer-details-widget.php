@@ -80,6 +80,16 @@ if ( ! class_exists( 'Elementor_WFTY_Customer_Details_Widget' ) ) {
 				'default' => isset( $defaults['customer_details_heading'] ) ? $defaults['customer_details_heading'] : __( 'Customer Details', 'funnel-builder' )
 			] );
 
+			$this->add_control( 'enable_extra_content', [
+				'label'        => __( 'Show Extra Thankyou Content', 'funnel-builder' ),
+				'description'  => __( 'When enabled, this will display additional content/hooks from WooCommerce on the thank you page. Useful for compatibility with payment gateways and plugins.', 'funnel-builder' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => __( 'On', 'funnel-builder' ),
+				'label_off'    => __( 'Off', 'funnel-builder' ),
+				'return_value' => 'yes',
+				'default'      => '', // Default is off
+			] );
+
 			$this->add_control( 'layout_label', [
 				'label' => __( 'Layout', 'funnel-builder' ),
 				'type'  => Controls_Manager::HEADING,
@@ -260,11 +270,12 @@ if ( ! class_exists( 'Elementor_WFTY_Customer_Details_Widget' ) ) {
 			if ( $layout_setting === '50' ) {
 				$layout_setting = '2c';
 			}
+			$enable_extra_content = isset( $settings['enable_extra_content'] ) && $settings['enable_extra_content'] === 'yes' ? 'yes' : 'no';
 			$this->add_render_attribute( 'wrapper', 'class', 'elementor-customer-details-wrapper' );
 			?>
             <div <?php echo $this->get_render_attribute_string( 'wrapper' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 				<?php
-				echo do_shortcode( '[wfty_customer_details layout_settings ="' . $layout_setting . '" customer_details_heading="' . $heading_text . '"]' );
+				echo do_shortcode( '[wfty_customer_details layout_settings ="' . $layout_setting . '" customer_details_heading="' . $heading_text . '" enable_extra_content="' . $enable_extra_content . '"]' );
 				?>
             </div>
 			<?php

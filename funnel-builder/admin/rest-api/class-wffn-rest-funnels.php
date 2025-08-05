@@ -1161,7 +1161,13 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 			do_action( 'wffn_rest_before_get_templates' );
 			$general_settings        = BWF_Admin_General_Settings::get_instance();
 			$default_builder         = $general_settings->get_option( 'default_selected_builder' );
-			$resp['default_builder'] = ( ! empty( $default_builder ) ) ? $default_builder : 'elementor';
+			
+			// If no default builder is set, try to detect one
+			if ( empty( $default_builder ) ) {
+				$default_builder = WFFN_Core()->admin->get_detected_page_builder();
+			}
+			
+			$resp['default_builder'] = $default_builder;
 
 			$templates = WooFunnels_Dashboard::get_all_templates();
 			$json_data = isset( $templates['funnel'] ) ? $templates['funnel'] : [];

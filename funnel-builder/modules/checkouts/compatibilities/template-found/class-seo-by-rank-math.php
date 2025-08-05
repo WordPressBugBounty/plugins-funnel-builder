@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       Rank Math SEO
- * Version:           1.0.56.1
+ * Version:           1.0.248
  * Plugin URI:        https://s.rankmath.com/home
  * Author:            Rank Math
  */
@@ -12,12 +12,13 @@ if ( ! class_exists( 'WFACP_Seo_By_Rank_Math' ) ) {
 	class WFACP_Seo_By_Rank_Math {
 		public function __construct() {
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'add_action' ] );
+			add_action( 'wfacp_after_template_found', [ $this, 'remove_integrations_action' ] );
+
 		}
 
 		public function add_action() {
 			WFACP_Common::remove_actions( 'rank_math/frontend/robots', 'RankMath\WooCommerce\WooCommerce', 'robots' );
 			add_filter( 'rank_math/frontend/description', [ $this, 'modify_rank_math_description' ], 10, 1 );
-
 		}
 
 		/**
@@ -40,6 +41,18 @@ if ( ! class_exists( 'WFACP_Seo_By_Rank_Math' ) ) {
 			}
 
 			return $post->post_title;
+
+		}
+
+		public function remove_integrations_action() {
+			if(!class_exists('\RankMath\Frontend\Frontend') || !method_exists('\RankMath\Frontend\Frontend', 'integrations') ){
+				return;
+			}
+
+			if(false===WFACP_Core()->public->is_checkout_override()){
+				return;
+			}
+			WFACP_Common::remove_actions( 'wp', 'RankMath\Frontend\Frontend', 'integrations');
 
 		}
 	}

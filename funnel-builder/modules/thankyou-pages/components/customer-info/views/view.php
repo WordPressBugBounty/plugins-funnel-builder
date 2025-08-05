@@ -91,5 +91,6 @@ $texts = apply_filters( 'wffn_thankyou_customer_info_text', array(
 
 </div>
 <?php
-WFFN_Core()->thank_you_pages->execute_wc_thankyou_hooks(true);
+$enable_extra_content_flag = ( isset( $this->data['enable_extra_content'] ) && $this->data['enable_extra_content'] === 'yes' ) ? true : false;
+WFFN_Core()->thank_you_pages->execute_wc_thankyou_hooks( $enable_extra_content_flag );
 

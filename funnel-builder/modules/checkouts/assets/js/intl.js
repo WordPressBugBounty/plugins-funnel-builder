@@ -181,7 +181,8 @@
             if (preferredCountries.length > 0 && preferredCountries.indexOf(initial_country) < 0) {
                 initial_country = '';
             }
-            let intl = window.intlTelInput(input, {
+
+            let int_obj = {
                 initialCountry: initial_country,
                 separateDialCode: true,
                 formatOnDisplay: false,
@@ -189,7 +190,18 @@
                 preferredCountries: [],
                 onlyCountries: this.preferredCountries(type),
                 utilsScript: wfacp_frontend.intl_util_scripts,
-            });
+            };
+
+
+            if (this.preferredCountries(type).length < 5 && window.innerWidth <= 767) {
+                int_obj.dropdownContainer = document.querySelector("#" + type + "_phone_field");
+                $('body').addClass('wfacp_intl_country_less');
+            } else {
+                $('body').removeClass('wfacp_intl_country_less');
+            }
+            let intl = window.intlTelInput(input, int_obj);
+
+
             let self = this;
             input.removeEventListener("countrychange", function () {
                 self.field_position(intl);
