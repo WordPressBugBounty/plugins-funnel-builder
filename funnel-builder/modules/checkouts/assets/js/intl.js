@@ -162,7 +162,7 @@
             billing_input.addEventListener("focusout", function () {
                 self.fill_valid_number(type);
             });
-            self.helping_text(billing_phone);
+
             self.fill_valid_number(type);
             if ('' !== billing_phone.val()) {
                 billing_phone.trigger('change');
@@ -365,14 +365,6 @@
 
         countrychange() {
         }
-
-        helping_text(field_element) {
-            if (wfacp_frontend.phone_helping_text != '') {
-                field_element.parents('form-row').addClass("wfacp-helping-text-wrap");
-                field_element.after('<span class="wfacp-helping-text" wfacp-helping-text="' + wfacp_frontend.phone_helping_text + '"></span>');
-            }
-        }
-
         field_position(intl) {
             let selected_flag = $(intl.selectedFlag);
             let flag_w = 0;

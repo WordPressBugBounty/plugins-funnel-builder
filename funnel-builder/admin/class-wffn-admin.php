@@ -47,7 +47,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			add_action( 'admin_init', array( $this, 'maybe_update_database_update' ), 995 );
 
 			add_action( 'admin_init', array( $this, 'reset_wizard' ) );
-			if ( $this->is_wffn_flex_page() && ( ! isset( $_GET['path'] ) || '/user-setup' !== $_GET['path'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+			if ( $this->is_wffn_flex_page() && ( ! isset( $_GET['path'] ) || '/user-setup' !== sanitize_text_field( wp_unslash( $_GET['path'] ) ) ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				add_action( 'admin_init', array( $this, 'maybe_force_redirect_to_wizard' ) );
 			}
 			add_action( 'admin_head', array( $this, 'hide_from_menu' ) );
@@ -59,7 +59,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				add_action( 'admin_notices', array( $this, 'maybe_show_notices' ) );
 			}
 			if ( $this->is_wffn_flex_page( 'all' ) ) {
-				add_action( 'admin_notices', array( $this, 'remove_all' ), - 1 );
+				add_action( 'in_admin_header', array( $this, 'remove_all' ), - 1 );
 			}
 			add_filter( 'plugin_action_links_' . WFFN_PLUGIN_BASENAME, array( $this, 'plugin_actions' ) );
 
@@ -800,7 +800,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				wp_enqueue_style( 'wffn-flex-admin', $this->get_admin_url() . '/assets/css/admin.css', array(), WFFN_VERSION_DEV );
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-20251209133743' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-20260311122822' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -1089,11 +1089,13 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 				$data['pro_version_number']     = defined( 'WFFN_PRO_VERSION' ) ? WFFN_PRO_VERSION : '0.0.0';
 				$data['cart_analytics_version'] = '3.11.0';
+				$data['site_domain']            = $this->get_site_domain_for_admin();
 
 				$data['review_count']    = WFFN_REVIEW_RATING_COUNT;
 				$data['feature_enabled'] = array(
 					'funnel_categories' => defined( 'WFFN_PRO_VERSION' ) && version_compare( WFFN_PRO_VERSION, '3.11.0', '>=' ),
 				);
+				$data['fkcart_settings'] = $this->get_fkcart_settings();
 
 				?>
 				<script>window.wffn = <?php echo wp_json_encode( apply_filters( 'wffn_localize_admin', $data ) ); ?>;</script>
@@ -1126,6 +1128,69 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				</script>
 				<?php
 			}
+		}
+
+		/**
+		 * Get the domain that should be localized for the React admin app.
+		 *
+		 * @return string
+		 */
+		private function get_site_domain_for_admin() {
+			global $sitepress;
+
+			$domain = site_url();
+
+			if ( isset( $sitepress ) && ! is_null( $sitepress ) ) {
+				$default_language = $sitepress->get_default_language();
+				$domain           = $sitepress->convert_url( $sitepress->get_wp_api()->get_home_url(), $default_language );
+			}
+
+			if ( function_exists( 'pll_default_language' ) && function_exists( 'pll_home_url' ) ) {
+				$default_language = pll_default_language();
+				$domain           = pll_home_url( $default_language );
+			}
+
+			if ( is_multisite() && $this->is_funnel_builder_network_active() ) {
+				$domain = get_site_url( get_network()->site_id );
+			}
+
+			$domain = str_replace( array( 'https://', 'http://' ), '', $domain );
+			$domain = trim( $domain, '/' );
+
+			return $domain;
+		}
+
+		private function is_funnel_builder_network_active() {
+			$active_plugins = get_site_option( 'active_sitewide_plugins', array() );
+			$active_plugins = apply_filters( 'active_plugins', $active_plugins );
+
+			return is_array( $active_plugins ) && ( in_array( WFFN_PLUGIN_BASENAME, $active_plugins, true ) || array_key_exists( WFFN_PLUGIN_BASENAME, $active_plugins ) );
+		}
+
+		/**
+		 * Get Cart for WooCommerce plugin settings for admin localization.
+		 * Returns enabled, rewards, and upsells status from the Cart plugin when active.
+		 *
+		 * @return array{enabled: bool, rewards: bool, upsells: bool}
+		 */
+		public function get_fkcart_settings() {
+			$default = array(
+				'enabled' => false,
+				'rewards' => false,
+				'upsells' => false,
+			);
+
+			if ( ! class_exists( 'FKCart\Includes\Data' ) ) {
+				return apply_filters( 'wffn_fkcart_settings', $default );
+			}
+
+			$settings = array(
+				'enabled' => \FKCart\Includes\Data::is_cart_enabled(),
+				'rewards' => \FKCart\Includes\Data::is_rewards_enabled(),
+				'upsells' => \FKCart\Includes\Data::is_upsells_enabled(),
+			);
+
+			return apply_filters( 'wffn_fkcart_settings', $settings );
 		}
 
 		/**
@@ -1176,7 +1241,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			if ( empty( $license_key ) ) {
 				return false;
 			} elseif ( isset( $license_key['manually_deactivated'] ) && 1 === $license_key['manually_deactivated'] ) {
-				return 'deactiavted';
+				return 'deactivated';
 			} elseif ( isset( $license_key['expired'] ) && 1 === $license_key['expired'] ) {
 				return 'expired';
 			} elseif ( isset( $license_key['activated'] ) && 0 === $license_key['activated'] ) {
@@ -1256,13 +1321,13 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			if ( isset( $args['s'] ) ) {
 				$search_str = wffn_clean( $args['s'] );
 			} else {
-				$search_str = isset( $_REQUEST['s'] ) ? wffn_clean( $_REQUEST['s'] ) : '';  // phpcs:ignore WordPress.Security.NonceVerification , WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+				$search_str = isset( $_REQUEST['s'] ) ? wffn_clean( wp_unslash( $_REQUEST['s'] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}
 			$need_draft_count = $args['need_draft_count'] ?? false;
 			if ( isset( $args['status'] ) ) {
 				$status = wffn_clean( $args['status'] );
 			} else {
-				$status = isset( $_REQUEST['status'] ) ? wffn_clean( $_REQUEST['status'] ) : '';  // phpcs:ignore WordPress.Security.NonceVerification , WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+				$status = isset( $_REQUEST['status'] ) ? wffn_clean( wp_unslash( $_REQUEST['status'] ) ) : '';  // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}
 			$args['meta'] = isset( $args['meta'] ) ? $args['meta'] : array();
 			$limit        = isset( $args['limit'] ) ? absint( $args['limit'] ) : $this->posts_per_page();
@@ -1565,9 +1630,10 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function remove_all() {
-
-				remove_all_actions( 'admin_notices' );
-				remove_all_actions( 'all_admin_notices' );
+			remove_all_actions( 'admin_notices' );
+			remove_all_actions( 'all_admin_notices' );
+			remove_all_actions( 'user_admin_notices' );
+			remove_all_actions( 'network_admin_notices' );
 		}
 
 		/**
@@ -2311,26 +2377,63 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 					$funnel_id = get_post_meta( $post->ID, '_bwf_in_funnel', true );
 				}
 				if ( ! empty( $funnel_id ) && abs( $funnel_id ) !== 0 ) {
-					$funnel_link = BWF_Admin_Breadcrumbs::maybe_add_refs(
-						add_query_arg(
-							array(
-								'page' => 'bwf',
-								'path' => '/funnels/' . $funnel_id . '/steps',
-							),
-							admin_url( 'admin.php' )
-						)
-					);
+					$is_store_checkout = ( method_exists( 'WFFN_Common', 'get_store_checkout_id' ) && absint( $funnel_id ) === WFFN_Common::get_store_checkout_id() );
 
-					$step_link = BWF_Admin_Breadcrumbs::maybe_add_refs(
-						add_query_arg(
-							array(
-								'page'      => 'bwf',
-								'path'      => '/' . $step['slug'] . '/' . $post->ID . '/design',
-								'funnel_id' => $funnel_id,
-							),
-							admin_url( 'admin.php' )
-						)
-					);
+					if ( $is_store_checkout ) {
+						$store_checkout_map = array(
+							'funnel-checkout' => 'checkout',
+							'funnel-offer'    => 'offer',
+							'funnel-thankyou' => 'thankyou',
+						);
+						$step_type          = isset( $store_checkout_map[ $step['slug'] ] ) ? $store_checkout_map[ $step['slug'] ] : null;
+
+						if ( null !== $step_type ) {
+							$funnel_link  = BWF_Admin_Breadcrumbs::maybe_add_refs(
+								add_query_arg(
+									array(
+										'page' => 'bwf',
+										'path' => '/store-checkout',
+									),
+									admin_url( 'admin.php' )
+								)
+							);
+							$step_link    = BWF_Admin_Breadcrumbs::maybe_add_refs(
+								add_query_arg(
+									array(
+										'page' => 'bwf',
+										'path' => '/store-checkout/' . $step_type . '/' . $post->ID . '/design',
+									),
+									admin_url( 'admin.php' )
+								)
+							);
+							$funnel_title = __( 'Edit Store Checkout', 'funnel-builder' );
+						} else {
+							$is_store_checkout = false;
+						}
+					}
+
+					if ( ! $is_store_checkout ) {
+						$funnel_link  = BWF_Admin_Breadcrumbs::maybe_add_refs(
+							add_query_arg(
+								array(
+									'page' => 'bwf',
+									'path' => '/funnels/' . $funnel_id . '/steps',
+								),
+								admin_url( 'admin.php' )
+							)
+						);
+						$step_link    = BWF_Admin_Breadcrumbs::maybe_add_refs(
+							add_query_arg(
+								array(
+									'page'      => 'bwf',
+									'path'      => '/' . $step['slug'] . '/' . $post->ID . '/design',
+									'funnel_id' => $funnel_id,
+								),
+								admin_url( 'admin.php' )
+							)
+						);
+						$funnel_title = __( 'Edit Funnel', 'funnel-builder' );
+					}
 
 					/**
 					 * Add submenu for the frontend if its our step
@@ -2339,7 +2442,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 						array(
 							'id'     => 'wffn_edit_funnel',
 							'parent' => 'wffn_funnel',
-							'title'  => __( 'Edit Funnel', 'funnel-builder' ),
+							'title'  => $funnel_title,
 							'href'   => $funnel_link,
 						)
 					);
@@ -2567,7 +2670,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function is_license_active_for_checkout() {
-			$hashes = $this->get_license_hashes();
+			$hashes = $this->get_license_basename_sha1();
 
 			if ( $this->is_basic_exists() ) {
 				$license_basic = $this->license_data( $hashes['basic'] );
@@ -2575,7 +2678,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				if ( empty( $license_basic ) ) {
 					return false;
 				} elseif ( isset( $license_basic['is_manually_deactivated'] ) && 1 === $license_basic['is_manually_deactivated'] ) {
-					return 'deactiavted';
+					return 'deactivated';
 				} elseif ( isset( $license_basic['expired'] ) && 1 === $license_basic['expired'] ) {
 					return 'expired';
 				} elseif ( isset( $license_basic['activated'] ) && 0 === $license_basic['activated'] ) {
@@ -2590,7 +2693,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				if ( empty( $license_pro ) ) {
 					return false;
 				} elseif ( isset( $license_pro['is_manually_deactivated'] ) && 1 === $license_pro['is_manually_deactivated'] ) {
-					return 'deactiavted';
+					return 'deactivated';
 				} elseif ( isset( $license_pro['expired'] ) && 1 === $license_pro['expired'] ) {
 					return 'expired';
 				} elseif ( isset( $license_pro['activated'] ) && 0 === $license_pro['activated'] ) {
@@ -2606,7 +2709,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				if ( empty( $license_checkout ) ) {
 					return false;
 				} elseif ( isset( $license_checkout['is_manually_deactivated'] ) && 1 === $license_checkout['is_manually_deactivated'] ) {
-					return 'deactiavted';
+					return 'deactivated';
 				} elseif ( isset( $license_checkout['expired'] ) && 1 === $license_checkout['expired'] ) {
 					return 'expired';
 				} elseif ( isset( $license_checkout['activated'] ) && 0 === $license_checkout['activated'] ) {
@@ -2620,7 +2723,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function get_license_expiry_for_checkout() {
-			$hashes = $this->get_license_hashes();
+			$hashes = $this->get_license_basename_sha1();
 
 			if ( $this->is_basic_exists() ) {
 				$licenses = $this->license_data( $hashes['basic'] );
@@ -2665,7 +2768,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function is_license_active_for_upsell() {
-			$hashes = $this->get_license_hashes();
+			$hashes = $this->get_license_basename_sha1();
 
 			if ( defined( 'WFFN_PRO_VERSION' ) & ! $this->is_basic_exists() ) {
 				$license_pro = $this->license_data( $hashes['pro'] );
@@ -2673,7 +2776,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				if ( empty( $license_pro ) ) {
 					return false;
 				} elseif ( isset( $license_pro['is_manually_deactivated'] ) && 1 === $license_pro['is_manually_deactivated'] ) {
-					return 'deactiavted';
+					return 'deactivated';
 				} elseif ( isset( $license_pro['expired'] ) && 1 === $license_pro['expired'] ) {
 					return 'expired';
 				} elseif ( isset( $license_pro['activated'] ) && 0 === $license_pro['activated'] ) {
@@ -2689,7 +2792,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				if ( empty( $license_upsells ) ) {
 					return false;
 				} elseif ( isset( $license_upsells['is_manually_deactivated'] ) && 1 === $license_upsells['is_manually_deactivated'] ) {
-					return 'deactiavted';
+					return 'deactivated';
 				} elseif ( isset( $license_upsells['expired'] ) && 1 === $license_upsells['expired'] ) {
 					return 'expired';
 				} elseif ( isset( $license_upsells['activated'] ) && 0 === $license_upsells['activated'] ) {
@@ -2703,7 +2806,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function get_license_expiry_for_upsell() {
-			$hashes = $this->get_license_hashes();
+			$hashes = $this->get_license_basename_sha1();
 			if ( defined( 'WFFN_PRO_VERSION' ) & ! $this->is_basic_exists() ) {
 				$licenses = $this->license_data( $hashes['pro'] );
 				if ( empty( $licenses ) || empty( $licenses['license'] ) ) {
@@ -2733,7 +2836,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			return '';
 		}
 
-		public function get_license_hashes() {
+		public function get_license_basename_sha1() {
 			return array(
 				'checkout' => '742fc61c1b455e2b1efa4154a92da8fb7f9866d3',
 				'upsell'   => 'e837ebc716ca979006da34eecdce9f650ced6bef',
@@ -2741,6 +2844,97 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				'basic'    => 'e234ca9ec3e4856bb05ea9f8ec90e7f3831b05c5',
 
 			);
+		}
+
+		/**
+		 * Get license hash from data_extra for a specific module
+		 * Follows the same pattern as get_license_expiry_for_checkout and get_license_expiry_for_upsell
+		 *
+		 * @param string $module Module identifier: 'f' (funnel builder), 'ck' (checkout), 'ul' (upsell)
+		 * @return string Hash value or empty string if not found
+		 */
+		private function get_license_hash( $module = 'f' ) {
+			$hashes = $this->get_license_basename_sha1();
+
+			// Handle module 'ck' (checkout) - same pattern as get_license_expiry_for_checkout
+			if ( 'ck' === $module ) {
+				if ( $this->is_basic_exists() ) {
+					$licenses = $this->license_data( $hashes['basic'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				if ( defined( 'WFFN_PRO_VERSION' ) & ! $this->is_basic_exists() ) {
+					$licenses = $this->license_data( $hashes['pro'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				if ( class_exists( 'WFACP_Core' ) ) {
+					$licenses = $this->license_data( $hashes['checkout'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				return '';
+			}
+
+			// Handle module 'ul' (upsell) - same pattern as get_license_expiry_for_upsell
+			if ( 'ul' === $module ) {
+				if ( defined( 'WFFN_PRO_VERSION' ) & ! $this->is_basic_exists() ) {
+					$licenses = $this->license_data( $hashes['pro'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				if ( class_exists( 'WFOCU_Core' ) ) {
+					$licenses = $this->license_data( $hashes['upsell'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				return '';
+			}
+
+			// Handle module 'f' (funnel builder) - check basic first, then pro
+			if ( 'f' === $module ) {
+				if ( $this->is_basic_exists() ) {
+					$licenses = $this->license_data( $hashes['basic'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				if ( defined( 'WFFN_PRO_VERSION' ) ) {
+					$licenses = $this->license_data( $hashes['pro'] );
+					if ( ! empty( $licenses ) && ! empty( $licenses['license'] ) && is_array( $licenses['license'] ) ) {
+						if ( isset( $licenses['license']['h'] ) && ! empty( $licenses['license']['h'] ) ) {
+							return $licenses['license']['h'];
+						}
+					}
+				}
+
+				return '';
+			}
+
+			return '';
 		}
 
 
@@ -2880,17 +3074,19 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 						// on expiry it could be both true and false, not recommended checking this value
 						'ed' => $this->get_license_expiry(),
 						'ib' => $this->is_basic_exists(),
+						'h'  => $this->get_license_hash( 'f' ), // License validation hash
 					),
 					'ck' => array(
 						'e'  => wfacp_pro_dependency(), // should cover aero, basic and pro addon
 						'la' => $this->is_license_active_for_checkout(),
 						'ed' => $this->get_license_expiry_for_checkout(),
-
+						'h'  => $this->get_license_hash( 'ck' ), // License validation hash
 					),
 					'ul' => array(
 						'e'  => function_exists( 'WFOCU_Core' ), // should cover upstroke & pro addon
 						'la' => $this->is_license_active_for_upsell(),
 						'ed' => $this->get_license_expiry_for_upsell(),
+						'h'  => $this->get_license_hash( 'ul' ), // License validation hash
 					),
 					'gp' => array( 2, 2 ),
 				);
@@ -2912,14 +3108,16 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		 * @return void
 		 */
 		public function redirect_checkout_edit_link_on_new_ui() {
-			$funnel_id = get_post_meta( $_GET['wfacp_id'], '_bwf_in_funnel', true ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized , WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$checkout_id = filter_input( INPUT_GET, 'wfacp_id', FILTER_VALIDATE_INT );
+			if ( empty( $checkout_id ) ) {
+				return;
+			}
+			$funnel_id = get_post_meta( $checkout_id, '_bwf_in_funnel', true );
 			if ( ! empty( $funnel_id ) && abs( $funnel_id ) > 0 ) {
 				// @codingStandardsIgnoreStart
 				$edit_link = add_query_arg( [
 					'page' => 'bwf',
-					'path' => "/funnel-checkout/" . $_GET['wfacp_id'] . "/design"
-					//phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotValidated,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-
+					'path' => "/funnel-checkout/" . $checkout_id . "/design"
 				], admin_url( 'admin.php' ) );
 				// @codingStandardsIgnoreEnd
 				wp_redirect( $edit_link );

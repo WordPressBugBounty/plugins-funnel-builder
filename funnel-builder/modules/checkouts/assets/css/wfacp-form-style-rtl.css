@@ -67,8 +67,8 @@ body.wfacpef_page #wfacp-e-form .wfacp-payment-title.wfacp-hg-by-box.wfacp_embed
 }
 
 #wfacp-e-form .wfacp-order-summary-toggle-text {
-    padding-right: 0;;
-    padding-left: 12px
+    padding-right: 0;
+    padding-left: 12px;
 }
 
 #wfacp-e-form .wfacp-order-summary-toggle-price {
@@ -113,7 +113,7 @@ body .wfacp_main_form.woocommerce .mc4wp-checkbox label span {
 #wfacp-e-form .wfacp_form_cart .wfacp-coupon-page .woocommerce-error {
     padding: 0 10px 0 0 !important;
     border-left: none !important;
-    border-right: 2px solid #24ae4e !important
+    border-right: 2px solid #24ae4e !important;
 }
 
 body #wfacp-e-form .wfacp_form_cart .wfacp-coupon-page .woocommerce-error {
@@ -1251,11 +1251,11 @@ body .woocommerce-Price-bidi {
     direction: inherit;
     unicode-bidi: inherit;
 }
-@media (min-width: 768px)and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
     #wfacp-e-form .wfacp-terms-footer span.woocommerce-terms-and-conditions-checkbox-text {
         text-align: right;
         padding-left: 0;
-        padding-right: 5px
+        padding-right: 5px;
     }
 }
 
@@ -1272,7 +1272,7 @@ body .woocommerce-Price-bidi {
     }
 }
 
-@media (min-width: 320px)and (max-width: 767px) {
+@media (min-width: 320px) and (max-width: 767px) {
     #wfacp-e-form .step-by-step ul li {
         margin-left: 0;
     }

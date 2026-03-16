@@ -1,27 +1,27 @@
 <?php
 if ( ! class_exists( 'WFACP_DIVI' ) ) {
 	class WFACP_DIVI {
-		private static $ins = null;
-		private static $front_locals = [];
+		private static $ins           = null;
+		private static $front_locals  = array();
 		private $set_our_page_content = '';
 
 		private function __construct() {
-			add_action( 'after_setup_theme', [ $this, 'init' ] );
-			add_action( 'wfacp_register_template_types', [ $this, 'register_template_type' ], 12 );
-			add_filter( 'wfacp_register_templates', [ $this, 'register_templates' ] );
-			add_filter( 'wfacp_template_edit_link', [ $this, 'add_template_edit_link' ], 10, 2 );
-			add_action( 'woocommerce_checkout_terms_and_conditions', [ $this, 'remove_the_content_filter' ] );
+			add_action( 'after_setup_theme', array( $this, 'init' ) );
+			add_action( 'wfacp_register_template_types', array( $this, 'register_template_type' ), 12 );
+			add_filter( 'wfacp_register_templates', array( $this, 'register_templates' ) );
+			add_filter( 'wfacp_template_edit_link', array( $this, 'add_template_edit_link' ), 10, 2 );
+			add_action( 'woocommerce_checkout_terms_and_conditions', array( $this, 'remove_the_content_filter' ) );
 		}
 
 		public function init() {
 			if ( ! ( class_exists( 'ET_Builder_Plugin' ) || function_exists( 'et_setup_theme' ) ) ) {
 				return;
 			}
-			add_filter( 'wfacp_is_theme_builder', [ $this, 'is_divi_page' ] );
-			add_action( 'wfacp_template_removed', [ $this, 'delete_divi_data' ] );
-			add_action( 'wfacp_duplicate_pages', [ $this, 'duplicate_template' ], 10, 3 );
-			add_action( 'wfacp_get_divi_form_data', [ $this, 'builder_actions' ], 10, 2 );
-			add_action( 'et_save_post', [ $this, 'migrate_label' ] );
+			add_filter( 'wfacp_is_theme_builder', array( $this, 'is_divi_page' ) );
+			add_action( 'wfacp_template_removed', array( $this, 'delete_divi_data' ) );
+			add_action( 'wfacp_duplicate_pages', array( $this, 'duplicate_template' ), 10, 3 );
+			add_action( 'wfacp_get_divi_form_data', array( $this, 'builder_actions' ), 10, 2 );
+			add_action( 'et_save_post', array( $this, 'migrate_label' ) );
 			$this->register();
 		}
 
@@ -31,7 +31,6 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			}
 
 			return self::$ins;
-
 		}
 
 		public static function set_locals( $name, $id ) {
@@ -40,17 +39,16 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 
 		public static function get_locals() {
 			return self::$front_locals;
-
 		}
 
 		public function is_divi_page( $status ) {
 
 			// At load
-			if ( isset( $_REQUEST['et_fb'] ) ) {
+			if ( isset( $_REQUEST['et_fb'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder detection parameter
 				$status = true;
 			}
 			// when ajax running for form html
-			if ( isset( $_REQUEST['wc-ajax'] ) && 'wfacp_get_divi_data' == $_REQUEST['wc-ajax'] ) {
+			if ( isset( $_REQUEST['wc-ajax'] ) && 'wfacp_get_divi_data' == $_REQUEST['wc-ajax'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- AJAX request detection for Divi builder
 				$status = true;
 			}
 			if ( function_exists( 'et_fb_is_builder_ajax' ) && et_fb_is_builder_ajax() ) {
@@ -62,30 +60,29 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 
 		private function register() {
 
-			add_action( 'wfacp_checkout_page_found', [ $this, 'initialize_divi_widgets' ] );
-			add_action( 'wfacp_template_load', [ $this, 'load_divi_abs_class' ], 10, 2 );
-			add_action( 'divi_extensions_init', [ $this, 'init_extension' ] );
-			add_action( 'admin_bar_menu', [ $this, 'add_admin_bar_link' ], 1003 );
+			add_action( 'wfacp_checkout_page_found', array( $this, 'initialize_divi_widgets' ) );
+			add_action( 'wfacp_template_load', array( $this, 'load_divi_abs_class' ), 10, 2 );
+			add_action( 'divi_extensions_init', array( $this, 'init_extension' ) );
+			add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_link' ), 1003 );
 		}
 
 		/**
 		 * @param $loader WFACP_Template_loader
 		 */
 		public function register_template_type( $loader ) {
-			$template = [
+			$template = array(
 				'slug'    => 'divi',
 				'title'   => __( 'Divi', 'woofunnels-aero-checkout' ),
-				'filters' => WFACP_Common::get_template_filter()
-			];
+				'filters' => WFACP_Common::get_template_filter(),
+			);
 
 			$loader->register_template_type( $template );
 		}
 
 		public function register_templates( $designs ) {
 
-
 			$templates       = WooFunnels_Dashboard::get_all_templates();
-			$designs['divi'] = ( isset( $templates['wc_checkout'] ) && isset( $templates['wc_checkout']['divi'] ) ) ? $templates['wc_checkout']['divi'] : [];
+			$designs['divi'] = ( isset( $templates['wc_checkout'] ) && isset( $templates['wc_checkout']['divi'] ) ) ? $templates['wc_checkout']['divi'] : array();
 
 			if ( is_array( $designs['divi'] ) && count( $designs['divi'] ) > 0 ) {
 				foreach ( $designs['divi'] as $key => $val ) {
@@ -94,9 +91,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				}
 			}
 
-
 			return $designs;
-
 		}
 
 
@@ -105,13 +100,13 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			$design = WFACP_Common::get_page_design( $post_id );
 			if ( 'divi' == $design['selected_type'] ) {
 				add_filter( 'et_builder_add_outer_content_wrap', '__return_true', 999 );
-				if ( ! isset( $_REQUEST['et_fb'] ) ) {
+				if ( ! isset( $_REQUEST['et_fb'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder detection parameter
 					global $post;
 					$post                       = get_post( $post_id );
 					$this->set_our_page_content = $post->post_content;
 					remove_filter( 'the_content', 'et_builder_add_builder_content_wrapper' );
 					add_filter( 'wfacp_assign_default_theme_template', '__return_false' );
-					add_filter( 'the_content', [ $this, 'replace_divi_our_page_content' ], 1 );
+					add_filter( 'the_content', array( $this, 'replace_divi_our_page_content' ), 1 );
 				}
 			}
 		}
@@ -126,7 +121,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 		}
 
 		public function et_builder_add_builder_content_wrapper( $content ) {
-			$is_bfb_new_page = isset( $_GET['is_new_page'] ) && '1' === $_GET['is_new_page'];
+			$is_bfb_new_page = isset( $_GET['is_new_page'] ) && '1' === $_GET['is_new_page']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Divi builder parameter detection
 
 			if ( ! is_singular() && ! $is_bfb_new_page && ! et_theme_builder_is_layout_post_type( get_post_type( get_the_ID() ) ) ) {
 				return $content;
@@ -141,7 +136,6 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			 * @param bool $wrap
 			 *
 			 * @since 4.0
-			 *
 			 */
 			if ( function_exists( 'et_builder_get_builder_content_opening_wrapper' ) ) {
 				$content = et_builder_get_builder_content_opening_wrapper() . $content . et_builder_get_builder_content_closing_wrapper();
@@ -150,7 +144,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			return $content;
 		}
 
-		public function load_divi_abs_class( $wfacp_id, $template = [] ) {
+		public function load_divi_abs_class( $wfacp_id, $template = array() ) {
 			if ( empty( $template ) ) {
 				return;
 			}
@@ -161,11 +155,17 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 		}
 
 		public function add_template_edit_link( $links, $admin ) {
-			$url           = add_query_arg( [
-				'et_fb'       => '1',
-				'et_wfacp_id' => $admin->wfacp_id
-			], get_the_permalink( $admin->wfacp_id ) );
-			$links['divi'] = [ 'url' => $url, 'button_text' => __( 'Edit', 'elementor' ) ];
+			$url           = add_query_arg(
+				array(
+					'et_fb'       => '1',
+					'et_wfacp_id' => $admin->wfacp_id,
+				),
+				get_the_permalink( $admin->wfacp_id )
+			);
+			$links['divi'] = array(
+				'url'         => $url,
+				'button_text' => __( 'Edit', 'elementor' ),
+			);
 
 			return $links;
 		}
@@ -175,29 +175,30 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 
 			if ( wp_doing_ajax() ) {
 
-				if ( isset( $_REQUEST['action'] ) && "et_fb_get_saved_templates" == $_REQUEST['action'] && isset( $_REQUEST['et_post_type'] ) && WFACP_Common::get_post_type_slug() !== $_REQUEST['et_post_type'] ) {
+				if ( isset( $_REQUEST['action'] ) && 'et_fb_get_saved_templates' == $_REQUEST['action'] && isset( $_REQUEST['et_post_type'] ) && WFACP_Common::get_post_type_slug() !== $_REQUEST['et_post_type'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder AJAX action detection
 					return;
 				}
 
-				if ( isset( $_REQUEST['action'] ) && "et_fb_update_builder_assets" == $_REQUEST['action'] && isset( $_REQUEST['et_post_type'] ) && WFACP_Common::get_post_type_slug() !== $_REQUEST['et_post_type'] ) {
+				if ( isset( $_REQUEST['action'] ) && 'et_fb_update_builder_assets' == $_REQUEST['action'] && isset( $_REQUEST['et_post_type'] ) && WFACP_Common::get_post_type_slug() !== $_REQUEST['et_post_type'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder AJAX action detection
 					return;
 				}
 
 				$post_id = 0;
-				if ( isset( $_REQUEST['action'] ) && "heartbeat" == $_REQUEST['action'] && isset( $_REQUEST['data'] ) ) {
-					if ( isset( $_REQUEST['data']['et'] ) ) {
-						$post_id = $_REQUEST['data']['et']['post_id'];
+				if ( isset( $_REQUEST['action'] ) && 'heartbeat' == $_REQUEST['action'] && isset( $_REQUEST['data'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WordPress heartbeat AJAX action
+					if ( isset( $_REQUEST['data']['et'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder heartbeat data
+						// phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder heartbeat data, sanitized with absint below
+						$post_id = isset( $_REQUEST['data']['et']['post_id'] ) ? absint( wp_unslash( $_REQUEST['data']['et']['post_id'] ) ) : 0;
 
 					}
 				}
 
-				if ( isset( $_REQUEST['post_id'] ) ) {
-					$post_id = absint( $_REQUEST['post_id'] );
+				if ( isset( $_REQUEST['post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder AJAX parameter
+					$post_id = absint( wp_unslash( $_REQUEST['post_id'] ) );// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash , WordPress.Security.NonceVerification.Recommended  , FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 				}
-				if ( isset( $_REQUEST['et_post_id'] ) ) {
-					$post_id = absint( $_REQUEST['et_post_id'] );
+				if ( isset( $_REQUEST['et_post_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder AJAX parameter
+					$post_id = absint( wp_unslash( $_REQUEST['et_post_id'] ) );// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash , WordPress.Security.NonceVerification.Recommended  , FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 				}
-				if ( $post_id > 0 ) {
+				if ( $post_id > 0 ) {// phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 					$post = get_post( $post_id );
 					if ( is_null( $post ) || $post->post_type !== WFACP_Common::get_post_type_slug() ) {
 						return;
@@ -205,13 +206,11 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				}
 			}
 
-			if ( isset( $_REQUEST['et_fb'] ) && ! isset( $_REQUEST['et_wfacp_id'] ) ) {
+			if ( isset( $_REQUEST['et_fb'] ) && ! isset( $_REQUEST['et_wfacp_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Divi builder detection parameters
 				return;
 			}
 
 			include __DIR__ . '/class-wfacp-divi-extension.php';
-
-
 		}
 
 		public function add_admin_bar_link() {
@@ -227,7 +226,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 					if ( ! is_null( $post ) && $post->post_type == WFACP_Common::get_post_type_slug() ) {
 						$wfacp_id     = $post->ID;
 						$href         = $node['href'];
-						$node['href'] = add_query_arg( [ 'et_wfacp_id' => $wfacp_id ], $href );
+						$node['href'] = add_query_arg( array( 'et_wfacp_id' => $wfacp_id ), $href );
 						$wp_admin_bar->add_node( $node );
 					}
 				}
@@ -238,28 +237,37 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 		 * Delete Elementor saved data from postmeta of aerocheckout ID
 		 */
 		public function delete_divi_data( $post_id ) {
-			wp_update_post( [ 'ID' => $post_id, 'post_content' => '' ] );
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_content' => '',
+				)
+			);
 			delete_post_meta( $post_id, 'et_enqueued_post_fonts' );
 		}
 
 		public function duplicate_template( $new_post_id, $post_id, $data ) {
 			if ( 'divi' == $data['_wfacp_selected_design']['selected_type'] ) {
-				$data = [
+				$data = array(
 					'_et_pb_use_builder'     => get_post_meta( $post_id, '_et_pb_use_builder', true ),
 					'et_enqueued_post_fonts' => get_post_meta( $post_id, 'et_enqueued_post_fonts', true ),
-				];
+				);
 				foreach ( $data as $meta_key => $meta_value ) {
 					update_post_meta( $new_post_id, $meta_key, $meta_value );
 				}
 			}
-
 		}
 
 		public function builder_actions( $post, $json ) {
-			add_filter( 'wfacp_forms_field', function ( $field, $key ) use ( $json ) {
+			add_filter(
+				'wfacp_forms_field',
+				function ( $field, $key ) use ( $json ) {
 
-				return $this->modern_label( $field, $key, $json );
-			}, 20, 2 );
+					return $this->modern_label( $field, $key, $json );
+				},
+				20,
+				2
+			);
 		}
 
 		public function modern_label( $field, $key, $data ) {
@@ -282,14 +290,13 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				if ( false !== strpos( $post->post_content, 'wfacp-modern-label' ) ) {
 					$field_label = 'wfacp-modern-label';
 					WFACP_Common_Helper::modern_label_migrate( $post_id );
-				} else if ( false !== strpos( $post->post_content, 'wfacp-top' ) ) {
+				} elseif ( false !== strpos( $post->post_content, 'wfacp-top' ) ) {
 					$field_label = 'wfacp-top';
 				} else {
 					$field_label = 'wfacp-inside';
 				}
 				update_post_meta( $post_id, '_wfacp_field_label_position', $field_label );
 			}
-
 		}
 
 		public function remove_the_content_filter() {
@@ -297,9 +304,8 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				// If Bricks is active, we don`t need to remove the filter that changes the global post variable.
 				return;
 			}
-			remove_filter( 'the_content', [ $this, 'replace_divi_our_page_content' ], 1 );
+			remove_filter( 'the_content', array( $this, 'replace_divi_our_page_content' ), 1 );
 		}
-
 	}
 
 	WFACP_DIVI::get_instance();

@@ -220,44 +220,33 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 
 			// Get the current year
 			$year = $today->format( 'Y' );
-
 			// Create a DateTime object for November 30 at midnight in ET timezone to avoid date shift
-			$dateObj = new DateTime( "{$year}-11-30 00:00:00", $timezone );
+			$lastNovDay = new DateTime( "{$year}-11-30 00:00:00", $timezone );
 
 			// Move to December 1
-			$dateObj->modify( '+1 day' );
-
+			$decFirstDay = $lastNovDay->modify( '+1 day' );
 			// Get the day of the week (0 = Sunday, 1 = Monday, etc.)
-			$dayOfWeek = (int) $dateObj->format( 'w' );
-
+			$dayOfWeek = $decFirstDay->format( 'w' );
 			// Calculate days to add to reach the first Monday of December
-			// Monday is 1, so if Dec 1 is Monday (1), add 0 days
-			// If Dec 1 is Sunday (0), add 1 day
-			// If Dec 1 is any other day, add (8 - dayOfWeek) to reach next Monday
-			$daysToAdd = ( 1 === $dayOfWeek ) ? 0 : ( ( 0 === $dayOfWeek ) ? 1 : ( 8 - $dayOfWeek ) );
-
+			$daysToAdd = ( 0 === (int) $dayOfWeek ) ? 1 : 8 - (int) $dayOfWeek;
 			// Move to the first Monday of December
-			$dateObj->modify( "+{$daysToAdd} days" );
-
+			$firstDecMonday = $decFirstDay->modify( "+{$daysToAdd} days" );
 			// Move to the second Monday of December
-			$dateObj->modify( '+7 days' );
+			$secondDecMonday = $firstDecMonday->modify( '+7 days' );
 
 			if ( $diff ) {
 				// Calculate the difference in minutes between today and the second Monday of December
-				$differenceInMinutes = round( ( $today->getTimestamp() - $dateObj->getTimestamp() ) / 60 );
+				$differenceInMinutes = round( ( $today->getTimestamp() - $secondDecMonday->getTimestamp() ) / 60 );
 
 				return $differenceInMinutes;
+			} elseif ( $return_timestamp ) {
+				// Return timestamp at end of day (23:59:59 ET)
+				$secondDecMonday->setTime( 23, 59, 59 );
+				return $secondDecMonday->getTimestamp();
+			} else {
+				// Return the formatted date of the second Monday of December only
+				return $secondDecMonday->format( 'M d' );
 			}
-			if ( $return_timestamp ) {
-				// Return timestamp at end of day
-				$dateObj->setTime( 00, 00, 00 );
-				$dateObj->modify( '+1 day' );
-
-				return $dateObj->getTimestamp();
-			}
-
-			// Return the formatted date of the second Monday of December only
-			return $dateObj->format( 'M d' );
 		}
 
 		private function get_notification_buttons( $campaign ) {
@@ -1233,3 +1222,4 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 if ( class_exists( 'WFFN_Core' ) ) {
 	WFFN_Core::register( 'admin_notifications', 'WFFN_Admin_Notifications' );
 }
+
