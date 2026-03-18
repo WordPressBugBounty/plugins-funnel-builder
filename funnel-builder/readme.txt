@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.14.0
+Stable tag: 3.14.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,9 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.14.0 =
+* Fixed: Checkout: Compatibility with Astra and Avada themes updated for css rendering issue.(#8617)
 
 = 3.14.0 =
 * Added: Checkout: Added compatibility with DPD France shipping plugin. (#8297)

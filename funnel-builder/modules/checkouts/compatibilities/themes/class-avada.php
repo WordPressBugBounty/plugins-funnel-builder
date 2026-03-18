@@ -142,7 +142,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Active_Avada' ) ) {
 			$cssHtml .= 'body .shop_table  tr{     border: none;}';
 			$cssHtml .= '</style>';
 
-			echo wp_kses_post( $cssHtml );
+			echo $cssHtml; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		public function do_not_execute_shortcode( $status ) {

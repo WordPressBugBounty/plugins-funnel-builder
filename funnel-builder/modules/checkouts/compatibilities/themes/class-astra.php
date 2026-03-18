@@ -121,7 +121,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Astra' ) ) {
 			$cssHtml .= 'body:not(.cartflows-canvas):not(.cartflows-default) .woocommerce form .form-row label:not(.checkbox):not(.woocommerce-form__label-for-checkbox){opacity: inherit;max-width: 100%;position: relative;margin: 0;padding: 0;white-space: inherit;line-height: 1.5;}';
 			$cssHtml .= 'body:not(.cartflows-canvas):not(.cartflows-default) .woocommerce form .form-row .select2-container--default .select2-selection--single .select2-selection__arrow b{display:initial;}';
 			$cssHtml .= '</style>';
-			echo wp_kses_post( $cssHtml );
+			echo $cssHtml; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		public function remove_script() {
