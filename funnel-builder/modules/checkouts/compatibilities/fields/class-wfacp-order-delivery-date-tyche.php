@@ -364,7 +364,7 @@ if ( ! class_exists( 'WFACP_Compatibility_Order_Delivery_Date_Tyche_Pro' ) ) {
 
 			<?php
 
-			echo wp_kses_post( $cssHtml );
+			echo $cssHtml;
 		}
 	}
 

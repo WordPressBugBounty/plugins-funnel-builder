@@ -172,7 +172,8 @@ if ( ! class_exists( 'WFACP_MailPoet' ) ) {
 			$cssHtml .= 'body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_mail_poet  > label {padding-left: 0 !important;font-weight: normal;}';
 			$cssHtml .= 'body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_mail_poet  > label span {font-weight: normal;    margin-left: 8px;}';
 			$cssHtml .= '</style>';
-			echo wp_kses_post( $cssHtml );
+			
+			echo $cssHtml;
 		}
 	}
 
