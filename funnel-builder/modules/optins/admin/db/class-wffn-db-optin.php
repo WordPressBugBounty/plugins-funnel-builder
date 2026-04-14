@@ -76,7 +76,7 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 			global $wpdb;
 			$table = $wpdb->prefix . $this->optin_tbl;
 
-			return $wpdb->get_row( "SELECT * FROM `$table` WHERE `opid` = '$opid' " );//phpcs:ignore
+			return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `$table` WHERE `opid` = %s", $opid ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
 		/**
@@ -86,7 +86,7 @@ if ( ! class_exists( 'WFFN_DB_Optin' ) ) {
 			global $wpdb;
 			$table = $wpdb->prefix . $this->optin_tbl;
 
-			return $wpdb->get_row( "SELECT * FROM `$table` WHERE `id` = '$id' " ); //phpcs:ignore
+			return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `$table` WHERE `id` = %d", $id ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 	}
 

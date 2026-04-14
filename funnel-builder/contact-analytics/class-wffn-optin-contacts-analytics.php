@@ -63,9 +63,9 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 
 			$funnel_id = ! empty( $funnel_id ) ? absint( $funnel_id ) : $funnel_id;
 			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query     = "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%dT%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.funnel_id=$funnel_id AND optin.cid= $cid  order by optin.date asc";
+			$query     = $wpdb->prepare( "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%%Y-%%m-%%dT%%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . ' as p ON optin.step_id  = p.id WHERE optin.funnel_id=%d AND optin.cid=%d order by optin.date asc', $funnel_id, $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -76,11 +76,18 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 
 		public function get_contacts_optin_records( $cid, $entry_ids ) {
 			global $wpdb;
-			$entry_ids = ! empty( $entry_ids ) ? esc_sql( $entry_ids ) : $entry_ids;
-			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query     = "SELECT optin.id, optin.funnel_id as fid, optin.email as email, optin.step_id as 'object_id', optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%d %T') as 'date', COALESCE( p.post_title, '' ) as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.id IN ( $entry_ids ) AND optin.cid= $cid  order by optin.date asc";
+			$cid             = ! empty( $cid ) ? absint( $cid ) : $cid;
+			$entry_ids_array = is_string( $entry_ids ) ? array_map( 'absint', array_filter( explode( ',', $entry_ids ) ) ) : array_map( 'absint', (array) $entry_ids );
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( empty( $entry_ids_array ) ) {
+				return array();
+			}
+
+			$placeholders = implode( ',', array_fill( 0, count( $entry_ids_array ), '%d' ) );
+			$query_args   = array_merge( $entry_ids_array, array( $cid ) );
+			$query        = $wpdb->prepare( "SELECT optin.id, optin.funnel_id as fid, optin.email as email, optin.step_id as 'object_id', optin.data as 'data',DATE_FORMAT(optin.date, '%%Y-%%m-%%d %%T') as 'date', COALESCE( p.post_title, '' ) as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.id IN ( $placeholders ) AND optin.cid=%d order by optin.date asc", ...$query_args ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -97,9 +104,9 @@ if ( ! class_exists( 'WFFN_Optin_Contacts_Analytics' ) ) {
 		public function get_all_contact_record_by_cid( $cid ) {
 			global $wpdb;
 			$cid   = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query = "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%Y-%m-%dT%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON optin.step_id  = p.id WHERE optin.cid= $cid  order by optin.date asc";
+			$query = $wpdb->prepare( "SELECT optin.step_id as 'object_id',optin.data as 'data',DATE_FORMAT(optin.date, '%%Y-%%m-%%dT%%TZ') as 'date',p.post_title as 'object_name', 'optin' as 'type' FROM " . $wpdb->prefix . 'bwf_optin_entries' . ' as optin LEFT JOIN ' . $wpdb->prefix . 'posts' . ' as p ON optin.step_id  = p.id WHERE optin.cid=%d order by optin.date asc', $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;

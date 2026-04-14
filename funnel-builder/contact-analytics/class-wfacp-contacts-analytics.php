@@ -62,9 +62,9 @@ if ( ! class_exists( 'WFACP_Contacts_Analytics' ) ) {
 			$item_data = array();
 			$funnel_id = ! empty( $funnel_id ) ? absint( $funnel_id ) : $funnel_id;
 			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query     = "SELECT aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%Y-%m-%dT%TZ') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON aero.wfacp_id  = p.id WHERE aero.fid=$funnel_id AND aero.cid=$cid order by aero.date asc";
+			$query      = $wpdb->prepare( "SELECT aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%%Y-%%m-%%dT%%TZ') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . ' as p ON aero.wfacp_id  = p.id WHERE aero.fid=%d AND aero.cid=%d order by aero.date asc', $funnel_id, $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$order_data = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$order_data = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error   = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -150,11 +150,18 @@ if ( ! class_exists( 'WFACP_Contacts_Analytics' ) ) {
 
 		public function get_contacts_revenue_records( $cid, $order_ids ) {
 			global $wpdb;
-			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$order_ids = ! empty( $order_ids ) ? esc_sql( $order_ids ) : $order_ids;
-			$query     = "SELECT aero.fid as fid, aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%Y-%m-%d %T') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON aero.wfacp_id  = p.id WHERE aero.order_id IN ( $order_ids ) AND aero.cid=$cid order by aero.date asc";
+			$cid             = ! empty( $cid ) ? absint( $cid ) : $cid;
+			$order_ids_array = is_string( $order_ids ) ? array_map( 'absint', array_filter( explode( ',', $order_ids ) ) ) : array_map( 'absint', (array) $order_ids );
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( empty( $order_ids_array ) ) {
+				return array();
+			}
+
+			$placeholders = implode( ',', array_fill( 0, count( $order_ids_array ), '%d' ) );
+			$query_args   = array_merge( $order_ids_array, array( $cid ) );
+			$query        = $wpdb->prepare( "SELECT aero.fid as fid, aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%%Y-%%m-%%d %%T') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON aero.wfacp_id  = p.id WHERE aero.order_id IN ( $placeholders ) AND aero.cid=%d order by aero.date asc", ...$query_args ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -171,9 +178,9 @@ if ( ! class_exists( 'WFACP_Contacts_Analytics' ) ) {
 		public function get_all_contact_record_by_cid( $cid ) {
 			global $wpdb;
 			$cid   = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query = "SELECT aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%Y-%m-%dT%TZ') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON aero.wfacp_id  = p.id WHERE aero.cid=$cid order by aero.date asc";
+			$query = $wpdb->prepare( "SELECT aero.order_id as 'order_id', aero.wfacp_id as 'object_id', p.post_title as 'object_name',aero.total_revenue as 'total_revenue',DATE_FORMAT(aero.date, '%%Y-%%m-%%dT%%TZ') as 'date', 'checkout' as 'type' FROM " . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . ' as p ON aero.wfacp_id  = p.id WHERE aero.cid=%d order by aero.date asc', $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$data     = $wpdb->get_results( $query );//phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -203,8 +210,8 @@ if ( ! class_exists( 'WFACP_Contacts_Analytics' ) ) {
 
 			$order_id = ! empty( $order_id ) ? absint( $order_id ) : $order_id;
 			$filter   = "aero.wfacp_id as 'id', p.post_title as 'checkout_name', '' as 'checkout_products', '' as 'checkout_coupon', aero.order_id as 'checkout_order_id', aero.total_revenue as 'checkout_total'";
-			$query    = 'SELECT ' . $filter . ' FROM ' . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON aero.wfacp_id  = p.id WHERE  aero.order_id={$order_id} order by aero.id asc";
-			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$query    = $wpdb->prepare( 'SELECT ' . $filter . ' FROM ' . $wpdb->prefix . 'wfacp_stats' . ' AS aero LEFT JOIN ' . $wpdb->prefix . 'posts' . ' as p ON aero.wfacp_id  = p.id WHERE  aero.order_id=%d order by aero.id asc', $order_id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return false;

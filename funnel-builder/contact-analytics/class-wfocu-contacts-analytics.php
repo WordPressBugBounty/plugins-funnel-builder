@@ -90,13 +90,13 @@ if ( ! class_exists( 'WFOCU_Contacts_Analytics' ) ) {
 			$funnel_id = ! empty( $funnel_id ) ? absint( $funnel_id ) : $funnel_id;
 			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
 
-			$query = "SELECT session.order_id as order_id, event.object_id, event.action_type_id, event.value as 'total_revenue', event_meta.meta_value as 'item_ids', DATE_FORMAT(event.timestamp, '%Y-%m-%dT%TZ') as 'date', p.post_title as 'object_name', 'upsell'as 'type' FROM " . $wpdb->prefix . 'wfocu_event as event 
-			LEFT JOIN ' . $wpdb->prefix . 'wfocu_session as session ON event.sess_id=session.id 
-			LEFT JOIN ' . $wpdb->prefix . 'posts as p ON event.object_id=p.id 
-			LEFT JOIN ' . $wpdb->prefix . 'wfocu_event_meta as event_meta ON event.id=event_meta.event_id 
-			WHERE(event.action_type_id=4 OR event.action_type_id=6 OR event.action_type_id=7 OR event.action_type_id=9) AND session.fid=' . $funnel_id . ' AND session.cid=' . $cid . " AND event_meta.meta_key = '_items_added' order by session.timestamp asc";
+			$query = $wpdb->prepare( "SELECT session.order_id as order_id, event.object_id, event.action_type_id, event.value as 'total_revenue', event_meta.meta_value as 'item_ids', DATE_FORMAT(event.timestamp, '%%Y-%%m-%%dT%%TZ') as 'date', p.post_title as 'object_name', 'upsell'as 'type' FROM " . $wpdb->prefix . 'wfocu_event as event
+			LEFT JOIN ' . $wpdb->prefix . 'wfocu_session as session ON event.sess_id=session.id
+			LEFT JOIN ' . $wpdb->prefix . 'posts as p ON event.object_id=p.id
+			LEFT JOIN ' . $wpdb->prefix . "wfocu_event_meta as event_meta ON event.id=event_meta.event_id
+			WHERE(event.action_type_id=4 OR event.action_type_id=6 OR event.action_type_id=7 OR event.action_type_id=9) AND session.fid=%d AND session.cid=%d AND event_meta.meta_key = '_items_added' order by session.timestamp asc", $funnel_id, $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$order_data = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$order_data = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error   = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -152,11 +152,18 @@ if ( ! class_exists( 'WFOCU_Contacts_Analytics' ) ) {
 
 		public function get_contacts_revenue_records( $cid, $order_ids ) {
 			global $wpdb;
-			$order_ids = ! empty( $order_ids ) ? esc_sql( $order_ids ) : $order_ids;
-			$cid       = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query     = "SELECT session.fid as fid, session.order_id as order_id, event.object_id,event.action_type_id,event.value,DATE_FORMAT(event.timestamp, '%Y-%m-%d %T') as 'date',p.post_title as 'object_name','upsell' as 'type' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.order_id IN ( $order_ids ) AND session.cid=$cid order by session.timestamp asc";
+			$cid             = ! empty( $cid ) ? absint( $cid ) : $cid;
+			$order_ids_array = is_string( $order_ids ) ? array_map( 'absint', array_filter( explode( ',', $order_ids ) ) ) : array_map( 'absint', (array) $order_ids );
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( empty( $order_ids_array ) ) {
+				return array();
+			}
+
+			$placeholders = implode( ',', array_fill( 0, count( $order_ids_array ), '%d' ) );
+			$query_args   = array_merge( $order_ids_array, array( $cid ) );
+			$query        = $wpdb->prepare( "SELECT session.fid as fid, session.order_id as order_id, event.object_id,event.action_type_id,event.value,DATE_FORMAT(event.timestamp, '%%Y-%%m-%%d %%T') as 'date',p.post_title as 'object_name','upsell' as 'type' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.order_id IN ( $placeholders ) AND session.cid=%d order by session.timestamp asc", ...$query_args ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -173,9 +180,9 @@ if ( ! class_exists( 'WFOCU_Contacts_Analytics' ) ) {
 		public function get_all_contact_record_by_cid( $cid ) {
 			global $wpdb;
 			$cid   = ! empty( $cid ) ? absint( $cid ) : $cid;
-			$query = "SELECT session.order_id as order_id, event.object_id,event.action_type_id,event.value,DATE_FORMAT(event.timestamp, '%Y-%m-%dT%TZ') as 'date',p.post_title as 'object_name','upsell' as 'type' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.cid=$cid order by session.timestamp asc";
+			$query = $wpdb->prepare( "SELECT session.order_id as order_id, event.object_id,event.action_type_id,event.value,DATE_FORMAT(event.timestamp, '%%Y-%%m-%%dT%%TZ') as 'date',p.post_title as 'object_name','upsell' as 'type' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.cid=%d order by session.timestamp asc", $cid ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return $db_error;
@@ -203,9 +210,9 @@ if ( ! class_exists( 'WFOCU_Contacts_Analytics' ) ) {
 		public function export_upsell_offer_by_order_id( $order_id ) {
 			global $wpdb;
 			$order_id = ! empty( $order_id ) ? absint( $order_id ) : $order_id;
-			$query    = "SELECT event.object_id as 'id', session.order_id as 'order_id', p.post_title as 'offer_name', (CASE WHEN action_type_id = 4 THEN 'Yes' WHEN action_type_id = 6 THEN 'No' ELSE '' END) AS `offer_converted`, event.value as 'offer_total' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.order_id='{$order_id}'  order by session.timestamp asc";
+			$query    = $wpdb->prepare( "SELECT event.object_id as 'id', session.order_id as 'order_id', p.post_title as 'offer_name', (CASE WHEN action_type_id = 4 THEN 'Yes' WHEN action_type_id = 6 THEN 'No' ELSE '' END) AS `offer_converted`, event.value as 'offer_total' FROM " . $wpdb->prefix . 'wfocu_event' . ' as event LEFT JOIN ' . $wpdb->prefix . 'wfocu_session' . ' as session ON event.sess_id = session.id LEFT JOIN ' . $wpdb->prefix . 'posts' . " as p ON event.object_id  = p.id WHERE (event.action_type_id = 4 OR event.action_type_id = 6 OR event.action_type_id = 7 OR event.action_type_id = 9) AND session.order_id=%d order by session.timestamp asc", $order_id ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$data     = $wpdb->get_results( $query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 			if ( true === $db_error['db_error'] ) {
 				return false;

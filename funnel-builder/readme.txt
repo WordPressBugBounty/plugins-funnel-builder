@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 3.14.0.2
+Stable tag: 3.14.0.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,9 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.14.0.3 =
+* Improved: Funnel: Enhanced plugin security for optin related SQL queries. (#8759)
 
 = 3.14.0.2 =
 * Fixed: Checkout: Compatibility with MailPoet And Order Delivery Date by Tyche plugins updated for css rendering issue.(#8640)

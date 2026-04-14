@@ -106,7 +106,7 @@ if ( ! class_exists( 'BWF_Contact_Tags' ) ) {
 
 		public function maybe_set_contact() {
 
-			$content = filter_input( INPUT_GET, 'opid', FILTER_UNSAFE_RAW );
+			$content = sanitize_text_field( filter_input( INPUT_GET, 'opid', FILTER_UNSAFE_RAW ) );
 
 			if ( empty( $content ) ) {
 				return;
