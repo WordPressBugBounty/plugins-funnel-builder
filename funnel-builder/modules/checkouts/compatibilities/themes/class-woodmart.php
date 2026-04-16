@@ -169,7 +169,7 @@ if ( ! class_exists( 'WFACP_Compatibility_WoodMart_Theme' ) ) {
 					color: #000;
 				}
 
-				body #wfacp-sec-wrapper .wfacp-success, body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg>.wfacp_single_coupon_msg, body #wfacp-sec-wrapper .wfacp_main_form.woocommerce .woocommerce-message, body #wfacp-sec-wrapper .wfacp_success, body #wfacp-sec-wrapper .wfacp_sucuss, body #wfacp-sec-wrapper .woocommerce-message, body .wfacp-coupon-page .wfacp_coupon_remove_msg {
+				body #wfacp-sec-wrapper .wfacp-success, body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg>.wfacp_single_coupon_msg, body #wfacp-sec-wrapper .wfacp_main_form.woocommerce .woocommerce-message, body #wfacp-sec-wrapper .wfacp_success, body #wfacp-sec-wrapper .wfacp_success, body #wfacp-sec-wrapper .woocommerce-message, body .wfacp-coupon-page .wfacp_coupon_remove_msg {
 
 					padding: 5px 10px 5px 24px !important;
 

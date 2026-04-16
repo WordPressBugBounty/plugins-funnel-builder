@@ -420,7 +420,7 @@ if ( ! class_exists( 'WFFN_Tracking_SiteWide' ) ) {
 				array( 'jquery' ),
 				WFFN_VERSION_DEV,
 				array(
-					'is_footer' => false,
+					'in_footer' => false,
 					'strategy'  => 'defer',
 				)
 			);

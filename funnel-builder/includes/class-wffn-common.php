@@ -110,19 +110,6 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		}
 
 
-		public static function get_font_weights() {
-			return array(
-				array(
-					'id'   => '400',
-					'name' => __( 'Normal 400', 'funnel-builder' ),
-				),
-				array(
-					'id'   => '700',
-					'name' => __( 'Bold 700', 'funnel-builder' ),
-				),
-			);
-		}
-
 		public static function search_page( $term, $post_types_override = array() ) {
 			global $wpdb;
 			$like_term     = '%' . $wpdb->esc_like( $term ) . '%';
@@ -618,15 +605,100 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 			return $string;
 		}
 
-		public static function is_array_assoc( $arr ) {
-			if ( array() === $arr ) {
-				return false;
+
+
+		/**
+		 * Check if Divi 5 Visual Builder is active.
+		 *
+		 * Checks the official API first, then falls back to structural indicators
+		 * for environments where et_builder_d5_enabled() is not yet available.
+		 *
+		 * @return bool
+		 */
+		public static function is_divi5_active() {
+			if ( function_exists( 'et_builder_d5_enabled' ) ) {
+				return et_builder_d5_enabled();
 			}
 
-			return array_keys( $arr ) !== range( 0, count( $arr ) - 1 );
+			if ( interface_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
+				return true;
+			}
+
+			if ( defined( 'ET_BUILDER_5_DIR' ) ) {
+				return true;
+			}
+
+			$theme_dir = get_template_directory();
+			if ( file_exists( $theme_dir . '/et-pagebuilder/builder-5.php' ) ) {
+				return true;
+			}
+
+			$theme = wp_get_theme();
+			if ( $theme instanceof WP_Theme ) {
+				$theme_name = $theme->get( 'Name' );
+				$parent     = $theme->parent();
+				if ( $parent instanceof WP_Theme ) {
+					$theme_name = $parent->get( 'Name' );
+				}
+
+				if ( 'Divi' === $theme_name || 'Divi' === $theme->get_template() ) {
+					if ( file_exists( $theme_dir . '/et-pagebuilder/builder-5.php' ) ) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Get the effective Divi builder key for template lookups.
+		 *
+		 * - Divi 5 enabled → 'divi5'
+		 * - Divi installed, D5 not enabled → 'divi'
+		 * - Divi not installed → 'divi5' (future-facing default)
+		 *
+		 * @return string 'divi' or 'divi5'
+		 */
+		public static function get_effective_divi_builder_key() {
+			if ( self::is_divi5_active() ) {
+				return 'divi5';
+			}
+			$status = self::check_builder_status( 'divi' );
+			if ( ! empty( $status['found'] ) ) {
+				return 'divi';
+			}
+
+			return 'divi5';
+		}
+
+		/**
+		 * Translate a builder key to its remote server equivalent.
+		 *
+		 * The remote template server does not know about 'divi5'. This method
+		 * maps 'divi5' → 'divi' so all remote API calls use the correct key.
+		 *
+		 * Use this single method everywhere a builder key is sent to the
+		 * remote server (template fetch, builder version, file paths, etc.).
+		 *
+		 * @param string $builder The builder key (e.g. 'divi5', 'elementor').
+		 *
+		 * @return string The remote-safe builder key.
+		 */
+		public static function get_remote_builder_key( $builder ) {
+			if ( 'divi5' === $builder ) {
+				return 'divi';
+			}
+
+			return $builder;
 		}
 
 		public static function check_builder_status( $builder = '' ) {
+			// divi5 uses the same builder dependency as divi
+			if ( 'divi5' === $builder ) {
+				return self::check_builder_status( 'divi' );
+			}
+
 			// Divi Builder Plugin Exists
 			$response = array(
 				'found'          => false,
@@ -1353,6 +1425,20 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 			return true;
 		}
 
+		/**
+		 * Check if subscriptions page should be skipped (dismissed by user).
+		 *
+		 * @return bool
+		 */
+		public static function skip_subscriptions_page() {
+			$fb_site_options = get_option( 'fb_site_options', array() );
+			if ( ! isset( $fb_site_options['skip_subscriptions_page'] ) || 1 !== intval( $fb_site_options['skip_subscriptions_page'] ) ) {
+				return false;
+			}
+
+			return true;
+		}
+
 		public static function wffn_round( $value, $precision = 2 ) {
 			if ( ! is_numeric( $value ) ) {
 				$value = floatval( $value );
@@ -1770,6 +1856,12 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		 * @return array
 		 */
 		public static function stripe_state() {
+			if ( self::is_wc_square_active() ) {
+				return array(
+					'status'     => 'connected',
+					'show_pitch' => false,
+				);
+			}
 
 			$all_plugins = get_plugins();
 
@@ -1802,6 +1894,59 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 					'other_exists' => $other_stripe_exists,
 				);
 			}
+		}
+
+		/**
+		 * Check if WooCommerce Square is active.
+		 *
+		 * @return bool
+		 */
+		public static function is_wc_square_active(): bool {
+			return wffn_is_plugin_active( 'woocommerce-square/woocommerce-square.php' ) || class_exists( 'WooCommerce_Square_Loader' );
+		}
+
+		/**
+		 * get Square State
+		 *
+		 * @return array
+		 */
+		public static function square_state() {
+			if ( ! self::is_wc_square_active() ) {
+				return array(
+					'status'     => 'gate_not_met',
+					'show_pitch' => false,
+				);
+			}
+
+			$all_plugins = get_plugins();
+
+			if ( isset( $all_plugins['funnelkit-payment-gateway-square-for-woocommerce/funnelkit-square.php'] ) ) {
+				if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && is_plugin_active( 'funnelkit-payment-gateway-square-for-woocommerce/funnelkit-square.php' ) ) {
+					if ( class_exists( '\FKWCSQ\Square' ) && \FKWCSQ\Square::is_configured() ) {
+						return array( 'status' => 'connected' );
+					}
+
+					$link = admin_url( 'admin.php?page=bwf&path=/square-connect' );
+					if ( class_exists( '\FKWCSQ\Includes\Modules\Connection\MiddleWare' ) ) {
+						$middleware = \FKWCSQ\Includes\Modules\Connection\MiddleWare::get_instance();
+						if ( method_exists( $middleware, 'get_connection_url' ) ) {
+							$middleware_link = $middleware->get_connection_url();
+							if ( ! empty( $middleware_link ) ) {
+								$link = $middleware_link;
+							}
+						}
+					}
+
+					return array(
+						'status' => 'not_connected',
+						'link'   => $link,
+					);
+				}
+
+				return array( 'status' => 'not_activated' );
+			}
+
+			return array( 'status' => 'not_installed' );
 		}
 
 		/**
@@ -1844,8 +1989,8 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 					return ELEMENTOR_VERSION;
 				}
 
-				if ( $builder === 'divi' ) {
-					return ET_BUILDER_PRODUCT_VERSION;
+				if ( $builder === 'divi' || $builder === 'divi5' ) {
+					return defined( 'ET_BUILDER_PRODUCT_VERSION' ) ? ET_BUILDER_PRODUCT_VERSION : '';
 				}
 
 				if ( $builder === 'oxy' ) {

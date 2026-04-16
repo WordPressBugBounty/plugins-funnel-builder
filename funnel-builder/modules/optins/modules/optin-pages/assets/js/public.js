@@ -173,6 +173,7 @@
                     jQuery(this).attr('disabled', 'disabled');
                     let submitting_text = jQuery(this).attr('data-subitting-text');
                     jQuery(FormElem).find("button.wfop_submit_btn .bwf_heading").html(submitting_text);
+                    jQuery(FormElem).find("button.wfop_submit_btn .bwf_subheading").hide();
 
 
                     if ("undefined" !== typeof window.intlTelInputGlobals && undefined !== jQuery(FormElem).find('input[name="wfop_optin_phone"]').get(0)) {

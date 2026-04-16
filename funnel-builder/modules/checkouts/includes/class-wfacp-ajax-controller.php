@@ -143,6 +143,7 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 					$data['cart_contains_subscription'] = WC_Subscriptions_Cart::cart_contains_subscription();
 				}
 				$data['cart_is_virtual'] = WFACP_Common::is_cart_is_virtual();
+				$data['is_logged_in']    = is_user_logged_in();
 			}
 			wp_send_json( $data );
 		}

@@ -99,6 +99,15 @@ body .wfacp-right-panel .wfacp_cart_empty {
     margin-right: -10px;
 }
 
+body .wfacp_cart_empty .wfacp_continue_shopping,
+body #wfacp-e-form .wfacp_cart_empty .wfacp_continue_shopping {
+    display: inline;
+    margin-left: 4px;
+    font-size: 12px;
+    color: #e15334;
+    text-decoration: underline;
+}
+
 /*--------------------------------------------------Cross Button---------------------------------*/
 
 body .wfacp_delete_item_wrap {
@@ -4506,7 +4515,7 @@ body #wfacp-sec-wrapper .wfacp_main_form.woocommerce .woocommerce-message,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg,
 body .wfacp-coupon-page .wfacp_coupon_remove_msg,
 body #wfacp-sec-wrapper .wfacp-success,
-body #wfacp-sec-wrapper .wfacp_sucuss,
+body #wfacp-sec-wrapper .wfacp_success,
 body #wfacp-sec-wrapper .wfacp_success,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg {
     border-color: #24ae4e !important;
@@ -4528,7 +4537,7 @@ body #wfacp-sec-wrapper .wfacp_main_form.woocommerce .woocommerce-message *,
 body #wfacp-sec-wrapper #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg *,
 body .wfacp-coupon-page .wfacp_coupon_remove_msg *,
 body #wfacp-sec-wrapper .wfacp-success *,
-body #wfacp-sec-wrapper .wfacp_sucuss *,
+body #wfacp-sec-wrapper .wfacp_success *,
 body #wfacp-sec-wrapper .wfacp_success *,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg * {
 
@@ -4542,7 +4551,7 @@ body #wfacp-sec-wrapper .wfacp_main_form.woocommerce .woocommerce-message *:not(
 body #wfacp-sec-wrapper #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg *:not(a),
 body .wfacp-coupon-page .wfacp_coupon_remove_msg *:not(a),
 body #wfacp-sec-wrapper .wfacp-success *:not(a),
-body #wfacp-sec-wrapper .wfacp_sucuss *:not(a),
+body #wfacp-sec-wrapper .wfacp_success *:not(a),
 body #wfacp-sec-wrapper .wfacp_success *:not(a),
 body .success-color,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg *:not(a) {
@@ -4572,10 +4581,10 @@ body .wfacp_coupon_remove_msg:empty {
 }
 
 body .wfacp_woocommerce_form_coupon .wfacp-coupon-page .wfacp_coupon_error_msg .woocommerce_single_error_message,
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content div.woocommerce-error,
 body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content ul.woocommerce-error,
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper #order_coupon_field div.woocommerce-error,
 body #wfacp-sec-wrapper #order_coupon_field ul.woocommerce-error,
 body .wfacp_product_restore_wrap,
@@ -4593,12 +4602,12 @@ body #wfacp-sec-wrapper .wfacp_woocommerce_form_coupon .wfacp-coupon-page .wfacp
 
 body .wfacp-coupon-page .wfacp_coupon_remove_msg,
 body .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg,
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper #order_coupon_field .wfacp_coupon_remove_msg,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg {
     padding: 0 0 0 20px;
@@ -4614,7 +4623,7 @@ body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp
 }
 
 
-body #wfacp-sec-wrapper .woocommerce-message:not(.wfacp_sucuss) * {
+body #wfacp-sec-wrapper .woocommerce-message:not(.wfacp_success) * {
     color: #24ae4e !important;
 }
 
@@ -5949,7 +5958,7 @@ body #wfacp-sec-wrapper .wfacp_product_switcher_error {
     margin-bottom: 4px;
 }
 
-body #wfacp-sec-wrapper table.shop_table {
+body #wfacp-sec-wrapper table.shop_table:not(#product_switching_field) {
     border-radius: 0;
     padding: 0;
     border: none;

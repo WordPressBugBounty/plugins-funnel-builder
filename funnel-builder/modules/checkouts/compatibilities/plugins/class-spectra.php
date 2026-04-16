@@ -31,6 +31,10 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Spectra' ) ) {
 		 * @since 3.22.1
 		 */
 		public function return_funnelkit_checkout_id() {
+			if ( ! is_checkout() ) {
+				return false;
+			}
+
 			return WFACP_Common::get_id();
 		}
 	}

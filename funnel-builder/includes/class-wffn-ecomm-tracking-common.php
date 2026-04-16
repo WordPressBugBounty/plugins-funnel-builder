@@ -941,9 +941,6 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 			return false;
 		}
 
-		public function do_track_cp_tiktok() {
-			return false;
-		}
 
 		public function maybe_print_tiktok_ecomm( $id, $purchase = false ) {  //phpcs:ignore
 			echo '';
@@ -1525,8 +1522,8 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking_Common' ) ) {
 
 					// WFFN Consent management with enhanced error handling (jQuery only for Complianz compatibility)
 					try {
-						if (typeof $ !== 'undefined' && $.fn && $.fn.on) {
-							$(document).on("cmplz_enable_category", function(event) {
+						if (typeof jQuery !== 'undefined' && jQuery.fn && jQuery.fn.on) {
+							jQuery(document).on("cmplz_enable_category", function(event) {
 								try {
 									// Defensive checks for consent data
 									if (!event || !event.originalEvent || !event.originalEvent.detail) {

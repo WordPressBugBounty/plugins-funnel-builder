@@ -248,6 +248,7 @@ if ( ! class_exists( 'WFACP_Core' ) ) :
 			$response = WFACP_Common::check_builder_status( 'divi' );
 			if ( true === $response['found'] && empty( $response['error'] ) ) {
 				require WFACP_PLUGIN_DIR . '/importer/class-wfacp-divi-importer.php';
+				require WFACP_PLUGIN_DIR . '/importer/class-wfacp-divi5-importer.php';
 			}
 
 			$response = WFACP_Common::check_builder_status( 'oxy' );

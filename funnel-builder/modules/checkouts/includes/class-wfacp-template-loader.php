@@ -152,8 +152,9 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 				return false;
 			}
 			do_action( 'wfacp_start_page_detection' );
-			// Do not aero order pay page if is_order_pay function return false
-			if ( is_checkout_pay_page() && false == WFACP_Core()->pay->is_order_pay() ) {
+			// Do not aero order pay page if is_order_pay function return false.
+			// Allow change-payment-method pages through for WC Subscriptions support.
+			if ( is_checkout_pay_page() && false == WFACP_Core()->pay->is_order_pay() && false == WFACP_Core()->pay->is_change_payment() ) {
 				return false;
 			}
 
@@ -161,10 +162,9 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 				return false;
 			}
 
-			/* remove divi theme customizer setting */
-			remove_action( 'wp', 'et_divi_add_customizer_css' );
-
 			if ( self::$is_checkout ) {
+				/* remove divi theme customizer setting */
+				remove_action( 'wp', 'et_divi_add_customizer_css' );
 
 				return true;
 			}
@@ -180,6 +180,8 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 			$is_located = $this->page_located( $post );
 
 			if ( true == $is_located ) {
+				/* remove divi theme customizer setting */
+				remove_action( 'wp', 'et_divi_add_customizer_css' );
 				return true;
 			}
 
@@ -233,6 +235,8 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 						add_filter( 'woocommerce_is_checkout', '__return_true' );
 
 						do_action( 'wfacp_checkout_page_found', $this->override_checkout_page_id );
+						/* remove divi theme customizer setting */
+						remove_action( 'wp', 'et_divi_add_customizer_css' );
 
 						return true;
 					}
@@ -463,7 +467,7 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 					'path' => WFACP_BUILDER_DIR . '/elementor/template/template.php',
 					'slug' => $slug,
 				);
-			} elseif ( $template_type === 'divi' ) {
+			} elseif ( $template_type === 'divi' || $template_type === 'divi5' ) {
 				$template_data = array(
 					'path' => WFACP_BUILDER_DIR . '/divi/template/template.php',
 					'slug' => $slug,

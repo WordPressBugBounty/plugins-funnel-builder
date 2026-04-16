@@ -1287,7 +1287,7 @@ if ( ! class_exists( 'WFACP_Public' ) ) {
 				/*
 				 * Run add to cart on checkout page when add to cart run for custom ajax by theme
 				*/
-				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 					$events = WC()->session->get( 'wffn_pending_data' );
 					if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
 						$data['settings']['add_to_cart'] = 'true';

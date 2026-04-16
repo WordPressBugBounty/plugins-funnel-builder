@@ -231,7 +231,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 						array( 'jquery' ),
 						WFFN_VERSION,
 						array(
-							'is_footer' => false,
+							'in_footer' => false,
 							'strategy'  => 'defer',
 						)
 					);
@@ -249,7 +249,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 				),
 				WFFN_VERSION,
 				array(
-					'is_footer' => true,
+					'in_footer' => true,
 					'strategy'  => 'defer',
 				)
 			);
@@ -855,7 +855,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 
 			$events = WFFN_Tracking_SiteWide::get_instance()->get_pending_events();
 			if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
-				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 					$final_events = array();
 					if ( ! empty( WC()->session->get( 'wffn_pending_data' ) ) ) {
 						$final_events = array_merge( WC()->session->get( 'wffn_pending_data' ), array( $events ) );
@@ -910,7 +910,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 		 * @return void
 		 */
 		public static function send_pending_events_on_footer() {
-			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 				$events = WC()->session->get( 'wffn_pending_data' );
 				if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
 					echo "<div id='wffn_late_event' style='display:none' dir='" . json_encode( $events ) . "'></div>"; //phpcs:ignore WordPress.WP.AlternativeFunctions.json_encode_json_encode
@@ -920,7 +920,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 		}
 
 		public function clear_pending_events_data_from_session() {
-			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 
 				if ( function_exists( 'is_checkout' ) && is_checkout() ) {
 					return;

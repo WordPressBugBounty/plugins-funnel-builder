@@ -45,8 +45,14 @@ if ( ! class_exists( 'WFACP_Template_Importer' ) ) {
 		 * @return bool
 		 */
 		public function import( $aero_id, $builder, $slug, $is_multi = 'no' ) {
-			if ( isset( self::$importer[ $builder ] ) ) {
-				$importer = self::$importer[ $builder ];
+			// divi5 falls back to divi importer if no dedicated divi5 importer is registered
+			$importer_key = $builder;
+			if ( 'divi5' === $builder && ! isset( self::$importer['divi5'] ) && isset( self::$importer['divi'] ) ) {
+				$importer_key = 'divi';
+			}
+
+			if ( isset( self::$importer[ $importer_key ] ) ) {
+				$importer = self::$importer[ $importer_key ];
 				if ( method_exists( $importer, 'import_child' ) ) {
 
 					$status = $importer->import_child( $aero_id, $slug, $is_multi );
@@ -60,12 +66,12 @@ if ( ! class_exists( 'WFACP_Template_Importer' ) ) {
 
 			if ( $builder === 'elementor' ) {
 				if ( ( ! version_compare( get_bloginfo( 'version' ), '5.0', '>=' ) && ( version_compare( ELEMENTOR_VERSION, '2.8.0', '>=' ) ) ) ) {
-					$message = sprintf( esc_html__( 'Elementor requires WordPress version %s+. please update the WordPress version to import the template.', 'woofunnels-aero-checkout' ), '5.0' );
+					$message = sprintf( esc_html__( 'Elementor requires WordPress version %s+. please update the WordPress version to import the template.', 'funnel-builder' ), '5.0' );
 
 					return array( 'error' => $message );
 				}
 			}
-			if ( $builder === 'divi' ) {
+			if ( $builder === 'divi' || $builder === 'divi5' ) {
 				$response = WFACP_Common::check_builder_status( 'divi' );
 				if ( ! empty( $response['error'] ) ) {
 					$message = $response['error'];

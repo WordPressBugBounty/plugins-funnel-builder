@@ -40,6 +40,7 @@ if ( ! class_exists( 'WFTY_Gutenberg' ) ) {
 			add_filter( 'admin_body_class', array( $this, 'bwf_blocks_admin_body_class' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_block_front_assets' ) );
 			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 30 );
+			add_action( 'enqueue_block_assets', array( $this, 'enqueue_block_editor_styles' ) );
 
 			$this->load_require_files();
 		}
@@ -268,19 +269,53 @@ if ( ! class_exists( 'WFTY_Gutenberg' ) ) {
 						'wp_version'       => $GLOBALS['wp_version'],
 					)
 				);
-				// Enqueue our plugin Css.
-				wp_enqueue_style( 'wfty-block-editor', $frontend_dir . $style_path, array(), $version );
-
 				if ( function_exists( 'wp_set_script_translations' ) ) {
 					wp_set_script_translations( 'wfty-block-editor', BWF_I18N );
-				}
-
-				if ( defined( 'WFTY_PLUGIN_FILE' ) ) {
-					wp_enqueue_style( 'wffn_frontend_tp_css', plugin_dir_url( WFTY_PLUGIN_FILE ) . '/assets/css/style.css', array(), time() );
 				}
 			}
 		}
 
+
+		/**
+		 * Enqueue block editor styles via enqueue_block_assets so they load inside the iframe editor.
+		 */
+		public function enqueue_block_editor_styles() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
+			global $pagenow, $post;
+
+			if ( class_exists( 'WFFN_Thank_You_WC_Pages' ) && ! is_null( $post ) && WFFN_Thank_You_WC_Pages::get_post_type_slug() === $post->post_type && 'post.php' === $pagenow && isset( $_GET['post'] ) && intval( $_GET['post'] ) > 0 ) { //phpcs:ignore
+				$frontend_dir = defined( 'WFTY_REACT_ENVIRONMENT' ) ? WFTY_REACT_ENVIRONMENT : $this->url . 'dist';
+				$style_path   = '/wfty-block-editor.css';
+				wp_enqueue_style( 'wfty-block-editor', $frontend_dir . $style_path, array(), time() );
+
+				if ( defined( 'WFTY_PLUGIN_FILE' ) ) {
+					wp_enqueue_style( 'wffn_frontend_tp_css', plugin_dir_url( WFTY_PLUGIN_FILE ) . '/assets/css/style.css', array(), time() );
+				}
+
+				// Enqueue saved default font so it's baked into the iframe editor
+				$default_font = get_post_meta( $post->ID, 'bwfblock_default_font', true );
+				if ( ! empty( $default_font ) ) {
+					$is_system      = false;
+					$standard_fonts = file_exists( __DIR__ . '/font/standard-fonts.php' ) ? include __DIR__ . '/font/standard-fonts.php' : array();
+					if ( is_array( $standard_fonts ) ) {
+						foreach ( $standard_fonts as $sf ) {
+							if ( isset( $sf['value'] ) && strtolower( $default_font ) === strtolower( $sf['value'] ) ) {
+								$is_system = true;
+								break;
+							}
+						}
+					}
+					if ( ! $is_system ) {
+						$font_url = 'https://fonts.googleapis.com/css?family=' . rawurlencode( $default_font ) . ':100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic';
+						wp_enqueue_style( 'bwfblock-editor-default-google-font', $font_url, array(), null );
+					}
+					wp_add_inline_style( 'wfty-block-editor', '#editor .editor-styles-wrapper { font-family: ' . esc_attr( $default_font ) . '; }' );
+				}
+			}
+		}
 
 		/**
 		 * Enqueue Front Style.

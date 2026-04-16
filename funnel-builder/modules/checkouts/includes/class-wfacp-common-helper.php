@@ -54,7 +54,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		}
 
 		public static function is_disabled() {
-			if ( isset( $_REQUEST['wfacp_disabled'] ) ) {
+			if ( isset( $_REQUEST['wfacp_disabled'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Read-only URL flag, no nonce required
 				return true;
 			}
 
@@ -63,19 +63,19 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 
 		public static function pr( $arr ) {
 			echo '<br /><pre>';
-			print_r( $arr );
+			print_r( $arr ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Intentional debug helper
 			echo '</pre><br />';
 		}
 
 		public static function dump( $arr ) {
 			echo '<pre>';
-			var_dump( $arr );
+			var_dump( $arr ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_dump -- Intentional debug helper
 			echo '</pre>';
 		}
 
 		public static function export( $arr ) {
 			echo '<pre>';
-			var_export( $arr );
+			var_export( $arr ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_var_export -- Intentional debug helper
 			echo '</pre>';
 		}
 
@@ -85,7 +85,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		 * @return bool
 		 */
 		public static function is_customizer() {
-			if ( isset( $_REQUEST['wfacp_customize'] ) && $_REQUEST['wfacp_customize'] == 'loaded' && isset( $_REQUEST['wfacp_id'] ) && $_REQUEST['wfacp_id'] > 0 ) {
+			if ( isset( $_REQUEST['wfacp_customize'] ) && $_REQUEST['wfacp_customize'] == 'loaded' && isset( $_REQUEST['wfacp_id'] ) && $_REQUEST['wfacp_id'] > 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Read-only URL parameter check for customizer detection
 				return true;
 			}
 
@@ -171,7 +171,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			}
 			global $wpdb;
 			$slug                  = WFACP_Common::get_post_type_slug();
-			self::$get_saved_pages = $wpdb->get_results( "SELECT `ID`, `post_title`, `post_type` FROM `{$wpdb->prefix}posts` WHERE `post_type` = '{$slug}' AND `post_title` != '' AND `post_status` = 'publish' ORDER BY `post_title` ASC", ARRAY_A );
+			self::$get_saved_pages = $wpdb->get_results( $wpdb->prepare( "SELECT `ID`, `post_title`, `post_type` FROM `{$wpdb->prefix}posts` WHERE `post_type` = %s AND `post_title` != '' AND `post_status` = 'publish' ORDER BY `post_title` ASC", $slug ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 			return self::$get_saved_pages;
 		}
@@ -197,7 +197,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		 * @return bool
 		 */
 		public static function is_builder() {
-			if ( is_admin() && isset( $_GET['page'] ) && 'wfacp' == $_GET['page'] ) {
+			if ( is_admin() && isset( $_GET['page'] ) && 'wfacp' == $_GET['page'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Admin page URL parameter, no nonce required
 				return true;
 			}
 
@@ -212,7 +212,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 
 		public static function is_edit_screen_open() {
 			$status = false;
-			if ( isset( $_REQUEST['wfacp_customize'] ) || isset( $_REQUEST['wfacp_id'] ) ) {
+			if ( isset( $_REQUEST['wfacp_customize'] ) || isset( $_REQUEST['wfacp_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Read-only URL parameter check for edit screen detection
 				$status = true;
 			}
 
@@ -234,7 +234,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		 * @return bool
 		 */
 		public static function is_checkout_process() {
-			if ( isset( $_REQUEST['_wfacp_post_id'] ) && $_REQUEST['_wfacp_post_id'] > 0 ) {
+			if ( isset( $_REQUEST['_wfacp_post_id'] ) && $_REQUEST['_wfacp_post_id'] > 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Read-only URL parameter check for checkout process detection
 				return true;
 			}
 
@@ -329,8 +329,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			if ( isset( $post_data['ship_to_different_address'] ) && isset( $post_data['wfacp_billing_same_as_shipping'] ) && $post_data['wfacp_billing_same_as_shipping'] == 0 ) {
 				$address_fields = array( 'address_1', 'address_2', 'city', 'postcode', 'country', 'state' );
 				foreach ( $address_fields as $key => $val ) {
-					if ( isset( $_POST[ 's_' . $val ] ) ) {
-						$_POST[ $val ] = filter_input( INPUT_POST, 's_' . $val, FILTER_UNSAFE_RAW );
+					if ( isset( $_POST[ 's_' . $val ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
+						$_POST[ $val ] = filter_input( INPUT_POST, 's_' . $val, FILTER_UNSAFE_RAW ); // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 					}
 				}
 			}
@@ -499,7 +499,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		 * @return string
 		 */
 		public static function wc_cart_totals_shipping_method_cost( $method ) {
-			$output    = __( 'Free', 'woocommerce' );
+			$output    = __( 'Free', 'funnel-builder' );
 			$has_cost  = 0 < $method->cost;
 			$hide_cost = ! $has_cost && in_array( $method->get_method_id(), array( 'free_shipping', 'local_pickup' ), true );
 
@@ -577,7 +577,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 						'show_package_details'     => count( $packages ) > 1,
 						'show_shipping_calculator' => is_cart() && $first,
 						'package_details'          => implode( ', ', $product_names ),
-						'package_name'             => apply_filters( 'woocommerce_shipping_package_name', ( ( $i + 1 ) > 1 ) ? sprintf( __( 'Shipping %d', 'woocommerce' ), ( $i + 1 ) ) : __( 'Shipping', 'woocommerce' ), $i, $package ),
+						/* translators: %d: Shipping package number */
+						'package_name'             => apply_filters( 'woocommerce_shipping_package_name', ( ( $i + 1 ) > 1 ) ? sprintf( __( 'Shipping %d', 'funnel-builder' ), ( $i + 1 ) ) : __( 'Shipping', 'funnel-builder' ), $i, $package ),
 						'index'                    => $i,
 						'chosen_method'            => $chosen_method,
 						'formatted_destination'    => WC()->countries->get_formatted_address( $package['destination'], ', ' ),
@@ -735,7 +736,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					'checkout_url_slug' => __( 'URL Slug', 'funnel-builder' ),
 				),
 				'confirm_button_text'                     => __( 'Remove', 'funnel-builder' ),
-				'confirm_button_text_ok'                  => __( 'OK', 'funnel-buildert' ) . '&nbsp;<i class="dashicons dashicons-arrow-right-alt"></i>',
+				'confirm_button_text_ok'                  => __( 'OK', 'funnel-builder' ) . '&nbsp;<i class="dashicons dashicons-arrow-right-alt"></i>',
 				'upgrade_button_text'                     => __( 'Upgrade to PRO Now', 'funnel-builder' ),
 				'billing_email_present_only_first_step'   => __( 'Billing Email field must be on step 1 for the form', 'funnel-builder' ),
 				'cancel_button_text'                      => __( 'Cancel', 'funnel-builder' ),
@@ -1005,17 +1006,17 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			$data['settings']['coupons']                = array(
 				'heading'                 => '<span class="wfacp_pro_feature_span" data-item="optimization">' . $lock_img . '</span>' . __( 'Auto Apply Coupons', 'funnel-builder' ),
 				'sub_heading'             => $couponText,
-				'auto_add_coupon_heading' => __( 'Auto Apply Coupon', 'woofunnels-aero-checkout' ),
-				'coupon_heading'          => __( 'Coupon code', 'woocommerce' ),
-				'search_placeholder'      => __( 'Enter coupon code here', 'woofunnels-aero-checkout' ),
-				'select_coupon'           => __( 'Choose Coupon', 'woofunnels-aero-checkout' ),
-				'disable_coupon'          => __( 'Disable Coupon Field', 'woofunnels-aero-checkout' ),
-				'active'                  => __( 'Active', 'woofunnels-aero-checkout' ),
-				'inactive'                => __( 'Inactive', 'woofunnels-aero-checkout' ),
+				'auto_add_coupon_heading' => __( 'Auto Apply Coupon', 'funnel-builder' ),
+				'coupon_heading'          => __( 'Coupon code', 'funnel-builder' ),
+				'search_placeholder'      => __( 'Enter coupon code here', 'funnel-builder' ),
+				'select_coupon'           => __( 'Choose Coupon', 'funnel-builder' ),
+				'disable_coupon'          => __( 'Disable Coupon Field', 'funnel-builder' ),
+				'active'                  => __( 'Active', 'funnel-builder' ),
+				'inactive'                => __( 'Inactive', 'funnel-builder' ),
 			);
 			$data['optimizations']['google']            = array(
 				'heading'             => '<span class="wfacp_pro_feature_span" data-item="optimization">' . $lock_img . '</span>' . __( 'Google Autocomplete', 'funnel-builder' ),
-				'sub_heading'         => __( '', 'funnel-builder' ),
+				'sub_heading'         => '',
 				'enable'              => __( 'Enable google autocomplete', 'funnel-builder' ),
 				'api_key'             => __( 'Enter Api Key', 'funnel-builder' ),
 				'api_key_placeholder' => 'AIzaSyCJZg_lvlTS7-2BXb5fZPEAekBs3bjOW-o',
@@ -1030,47 +1031,48 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			);
 
 			$data['optimizations']['smart_buttons']   = array(
-				'heading'          => __( 'Express Checkout Buttons', 'woofunnels-aero-checkout' ),
-				'sub_heading'      => __( "Enable this to show smart buttons for $stripe_link and $amazonelink for express checkout. For Stripe, Payment Request Buttons should be enabled and configured.", 'woofunnels-aero-checkout' ),
-				'position_heading' => __( 'Choose Position', 'woofunnels-aero-checkout' ),
+				'heading'          => __( 'Express Checkout Buttons', 'funnel-builder' ),
+				/* translators: 1: Stripe link HTML, 2: Amazon Pay link HTML */
+				'sub_heading'      => sprintf( __( 'Enable this to show smart buttons for %1$s and %2$s for express checkout. For Stripe, Payment Request Buttons should be enabled and configured.', 'funnel-builder' ), $stripe_link, $amazonelink ),
+				'position_heading' => __( 'Choose Position', 'funnel-builder' ),
 				'positions'        => self::smart_buttons_positions(),
 			);
 			$data['optimizations']['live_validation'] = array(
-				'heading'                => __( 'Inline Field Validation', 'woofunnels-aero-checkout' ),
-				'sub_heading'            => __( 'Enable this to show the real time validation errors below the fields', 'woofunnels-aero-checkout' ),
-				'enable_live_validation' => __( 'Enable', 'woofunnels-aero-checkout' ),
+				'heading'                => __( 'Inline Field Validation', 'funnel-builder' ),
+				'sub_heading'            => __( 'Enable this to show the real time validation errors below the fields', 'funnel-builder' ),
+				'enable_live_validation' => __( 'Enable', 'funnel-builder' ),
 
 			);
 			$data['optimizations']['collapsible_optional_field'] = array(
-				'heading'                              => __( 'Collapsible Optional Field', 'woofunnels-aero-checkout' ),
-				'sub_heading'                          => __( 'Enable this to replace optional fields with a link and decrease form length ', 'woofunnels-aero-checkout' ),
-				'collapsable_link_text'                => __( 'Collapsable Prefix Label', 'woofunnels-aero-checkout' ),
-				'collapsible_optional_link_text'       => __( 'Add', 'woocommerce' ),
-				'collapsible_optional_field_text_hint' => __( 'Please enable this field in your checkout form to make it collapsable', 'woofunnels-aero-checkout' ),
-				'collapsable_hint_text'                => __( 'This text will appear as a prefix to the field label', 'woofunnels-aero-checkout' ),
+				'heading'                              => __( 'Collapsible Optional Field', 'funnel-builder' ),
+				'sub_heading'                          => __( 'Enable this to replace optional fields with a link and decrease form length ', 'funnel-builder' ),
+				'collapsable_link_text'                => __( 'Collapsable Prefix Label', 'funnel-builder' ),
+				'collapsible_optional_link_text'       => __( 'Add', 'funnel-builder' ),
+				'collapsible_optional_field_text_hint' => __( 'Please enable this field in your checkout form to make it collapsable', 'funnel-builder' ),
+				'collapsable_hint_text'                => __( 'This text will appear as a prefix to the field label', 'funnel-builder' ),
 			);
 
 			$data['settings']['coupon']   = array(
-				'success_message_heading'      => __( 'Success message', 'woofunnels-aero-checkout' ),
-				'success_message_heading_hint' => __( 'Use merge tags to display Coupon Code: {{coupon_code}} & Coupon Value: {{coupon_value}} in success message', 'woofunnels-aero-checkout' ),
-				'remove_message_heading'       => __( 'Failure message', 'woofunnels-aero-checkout' ),
-				'style_heading'                => __( 'Collapsible', 'woofunnels-aero-checkout' ),
+				'success_message_heading'      => __( 'Success message', 'funnel-builder' ),
+				'success_message_heading_hint' => __( 'Use merge tags to display Coupon Code: {{coupon_code}} & Coupon Value: {{coupon_value}} in success message', 'funnel-builder' ),
+				'remove_message_heading'       => __( 'Failure message', 'funnel-builder' ),
+				'style_heading'                => __( 'Collapsible', 'funnel-builder' ),
 				'style_options'                => array(
 					array(
 						'value' => 'true',
-						'name'  => __( 'yes', 'woofunnels-aero-checkout' ),
+						'name'  => __( 'yes', 'funnel-builder' ),
 					),
 					array(
 						'value' => 'false',
-						'name'  => __( 'no', 'woofunnels-aero-checkout' ),
+						'name'  => __( 'no', 'funnel-builder' ),
 					),
 				),
-				'sub_heading'                  => __( 'You can manage the quantity increment, quick view provision from here', 'woofunnels-aero-checkout' ),
+				'sub_heading'                  => __( 'You can manage the quantity increment, quick view provision from here', 'funnel-builder' ),
 			);
-			$timezone_heading             = __( 'Enable this to set expiry of checkout page after certain sales or at a particular date. Used for generating scarcity during time sensitive campaigns.', 'woofunnels-aero-checkout' );
-			$timezone_text                = __( '<p>Note: The settings are only applicable for product specific checkout pages or order forms</p>', 'woofunnels-aero-checkout' );
+			$timezone_heading             = __( 'Enable this to set expiry of checkout page after certain sales or at a particular date. Used for generating scarcity during time sensitive campaigns.', 'funnel-builder' );
+			$timezone_text                = '<p>' . __( 'Note: The settings are only applicable for product specific checkout pages or order forms', 'funnel-builder' ) . '</p>';
 			$data['settings']['advanced'] = array(
-				'heading'                           => '<span class="wfacp_pro_feature_span" data-item="optimization">' . $lock_img . '</span>' . __( 'Time Checkout Expiry', 'woofunnels-aero-checkout' ),
+				'heading'                           => '<span class="wfacp_pro_feature_span" data-item="optimization">' . $lock_img . '</span>' . __( 'Time Checkout Expiry', 'funnel-builder' ),
 				'sub_heading'                       => $timezone_heading . $timezone_text,
 				'close_after'                       => __( 'Close This checkout Page After # of Orders', 'funnel-builder' ),
 				'close_checkout_after_date'         => __( 'Close Checkout After Date', 'funnel-builder' ),
@@ -1113,15 +1115,15 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'fields_options'         => array(
 					array(
 						'value' => 'billing_email',
-						'name'  => __( 'Email', 'woocommerce' ),
+						'name'  => __( 'Email', 'funnel-builder' ),
 					),
 					array(
 						'value' => 'billing_first_name',
-						'name'  => __( 'First Name', 'woocommerce' ),
+						'name'  => __( 'First Name', 'funnel-builder' ),
 					),
 					array(
 						'value' => 'billing_last_name',
-						'name'  => __( 'Last name', 'woocommerce' ),
+						'name'  => __( 'Last name', 'funnel-builder' ),
 					),
 				),
 				'auto_responder_label'   => __( 'Email Service', 'funnel-builder' ),
@@ -1165,7 +1167,6 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'enable_phone_placeholder'     => __( 'placeholder', 'funnel-builder' ),
 				'phone_helping_text'           => __( 'Phone Help Text', 'funnel-builder' ),
 				'phone_helping_text_hint'      => __( 'keep Blank to hide the Tool Tip', 'funnel-builder' ),
-				'phone_helping_text'           => __( 'Phone Help Text', 'woofunnels-aero-checkout' ),
 				'saving_options'               => array(
 					array(
 						'value' => 'true',
@@ -1712,7 +1713,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					'sub_heading' => '',
 					'fields'      => array(
 						array(
-							'label'        => __( 'Email', 'woocommerce' ),
+							'label'        => __( 'Email', 'funnel-builder' ),
 							'required'     => 'true',
 							'type'         => 'email',
 							'class'        => array(
@@ -1725,10 +1726,10 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 							'priority'     => '110',
 							'id'           => 'billing_email',
 							'field_type'   => 'billing',
-							'placeholder'  => __( '', 'funnel-builder' ),
+							'placeholder'  => '',
 						),
 						array(
-							'label'        => __( 'First name', 'woocommerce' ),
+							'label'        => __( 'First name', 'funnel-builder' ),
 							'required'     => 'true',
 							'class'        => array(
 								0 => 'form-row-first',
@@ -1738,11 +1739,11 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 							'type'         => 'text',
 							'id'           => 'billing_first_name',
 							'field_type'   => 'billing',
-							'placeholder'  => __( '', 'funnel-builder' ),
+							'placeholder'  => '',
 
 						),
 						array(
-							'label'        => __( 'Last name', 'woocommerce' ),
+							'label'        => __( 'Last name', 'funnel-builder' ),
 							'required'     => 'true',
 							'class'        => array(
 								0 => 'form-row-last',
@@ -1752,12 +1753,12 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 							'type'         => 'text',
 							'id'           => 'billing_last_name',
 							'field_type'   => 'billing',
-							'placeholder'  => __( '', 'funnel-builder' ),
+							'placeholder'  => '',
 						),
 						self::get_single_address_fields( 'shipping' ),
 						self::get_single_address_fields(),
 						array(
-							'label'        => __( 'Phone', 'woocommerce' ),
+							'label'        => __( 'Phone', 'funnel-builder' ),
 							'type'         => 'tel',
 							'class'        => array( 'form-row-wide' ),
 							'id'           => 'billing_phone',
@@ -1785,7 +1786,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				);
 
 				$data['fieldsets']['single_step'][] = array(
-					'name'        => WFACP_Common::translation_string_to_check( __( 'Order Summary', 'woocommerce' ) ),
+					'name'        => WFACP_Common::translation_string_to_check( __( 'Order Summary', 'funnel-builder' ) ),
 					'class'       => '',
 					'sub_heading' => '',
 					'html_fields' => array(
@@ -1824,9 +1825,9 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			}
 
 			if ( 'billing' == $type ) {
-				$address_field['label'] = WFACP_Common::translation_string_to_check( __( 'Billing Address', 'woocommerce' ) );
+				$address_field['label'] = WFACP_Common::translation_string_to_check( __( 'Billing Address', 'funnel-builder' ) );
 			} else {
-				$address_field['label'] = WFACP_Common::translation_string_to_check( __( 'Shipping Address', 'woocommerce' ) );
+				$address_field['label'] = WFACP_Common::translation_string_to_check( __( 'Shipping Address', 'funnel-builder' ) );
 				unset( $address_field['required'] );
 			}
 
@@ -1848,7 +1849,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 
 			$address_field['fields_options']['first_name'] = array(
 				'first_name'             => 'false',
-				'first_name_label'       => __( 'First name', 'woocommerce' ),
+				'first_name_label'       => __( 'First name', 'funnel-builder' ),
 				'first_name_placeholder' => '',
 				'hint'                   => __( 'Field ID: ', 'funnel-builder' ) . $type . '_first_name',
 				'required'               => true,
@@ -1856,7 +1857,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			);
 			$address_field['fields_options']['last_name']  = array(
 				'last_name'             => 'false',
-				'last_name_label'       => __( 'Last name', 'woocommerce' ),
+				'last_name_label'       => __( 'Last name', 'funnel-builder' ),
 				'last_name_placeholder' => '',
 				'hint'                  => __( 'Field ID: ', 'funnel-builder' ) . $type . '_last_name',
 				'required'              => true,
@@ -1872,49 +1873,49 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			);
 			$address_field['fields_options']['address_1'] = array(
 				'street_address1'              => 'true',
-				'street_address_1_label'       => __( 'Street address', 'woocommerce' ),
+				'street_address_1_label'       => __( 'Street address', 'funnel-builder' ),
 				'street_address_1_placeholder' => '',
-				'hint'                         => __( 'Field ID: ', 'woofunnels-aero-checkout' ) . $type . '_address_1',
+				'hint'                         => __( 'Field ID: ', 'funnel-builder' ) . $type . '_address_1',
 				'required'                     => true,
 			);
 			$address_field['fields_options']['address_2'] = array(
 				'street_address2'              => $fields_visibility,
-				'street_address_2_label'       => __( 'Apartment, suite, unit, etc.', 'woocommerce' ),
+				'street_address_2_label'       => __( 'Apartment, suite, unit, etc.', 'funnel-builder' ),
 				'street_address_2_placeholder' => '',
-				'hint'                         => __( 'Field ID: ', 'woofunnels-aero-checkout' ) . $type . '_address_2',
+				'hint'                         => __( 'Field ID: ', 'funnel-builder' ) . $type . '_address_2',
 				'required'                     => false,
 			);
 			$address_field['fields_options']['city']      = array(
 				'address_city'             => 'true',
-				'address_city_label'       => __( 'Town / City', 'woocommerce' ),
+				'address_city_label'       => __( 'Town / City', 'funnel-builder' ),
 				'address_city_placeholder' => '',
 				'hint'                     => __( 'Field ID: ', 'funnel-builder' ) . $type . '_city',
 				'required'                 => true,
 			);
 			$address_field['fields_options']['postcode']  = array(
 				'address_postcode'             => 'true',
-				'address_postcode_label'       => __( 'Postcode', 'woocommerce' ),
+				'address_postcode_label'       => __( 'Postcode', 'funnel-builder' ),
 				'address_postcode_placeholder' => '',
 				'hint'                         => __( 'Field ID: ', 'funnel-builder' ) . $type . '_postcode',
 				'required'                     => true,
 			);
 			$address_field['fields_options']['country']   = array(
 				'address_country'             => 'true',
-				'address_country_label'       => __( 'Country', 'woocommerce' ),
+				'address_country_label'       => __( 'Country', 'funnel-builder' ),
 				'address_country_placeholder' => '',
 				'hint'                        => __( 'Field ID: ', 'funnel-builder' ) . $type . '_country',
 				'required'                    => true,
 			);
 			$address_field['fields_options']['state']     = array(
 				'address_state'             => 'true',
-				'address_state_label'       => __( 'State', 'woocommerce' ),
+				'address_state_label'       => __( 'State', 'funnel-builder' ),
 				'address_state_placeholder' => '',
 				'hint'                      => __( 'Field ID: ', 'funnel-builder' ) . $type . '_state',
 				'required'                  => false,
 			);
 			$address_field['fields_options']['phone']     = array(
 				'address_phone'             => 'false',
-				'address_phone_label'       => __( 'Phone', 'woocommerce' ),
+				'address_phone_label'       => __( 'Phone', 'funnel-builder' ),
 				'address_phone_placeholder' => '',
 				'hint'                      => __( 'Field ID: ', 'funnel-builder' ) . $type . '_phone',
 				'required'                  => false,
@@ -1959,8 +1960,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					'type'        => 'textarea',
 					'class'       => array( 'notes' ),
 					'id'          => 'order_comments',
-					'label'       => __( 'Order notes', 'woocommerce' ),
-					'placeholder' => __( 'Order notes', 'woocommerce' ),
+					'label'       => __( 'Order notes', 'funnel-builder' ),
+					'placeholder' => __( 'Order notes', 'funnel-builder' ),
 				),
 			);
 
@@ -1970,8 +1971,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'id'         => 'shipping_calculator',
 				'default'    => self::default_shipping_placeholder_text(),
 				'class'      => array( 'wfacp_shipping_calculator' ),
-				'label'      => __( 'Shipping method', 'woocommerce' ),
-				'data_label' => __( 'Shipping method', 'woocommerce' ),
+				'label'      => __( 'Shipping method', 'funnel-builder' ),
+				'data_label' => __( 'Shipping method', 'funnel-builder' ),
 			);
 
 			$field['order_summary'] = array(
@@ -1979,7 +1980,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'field_type' => 'advanced',
 				'class'      => array( 'wfacp_order_summary' ),
 				'id'         => 'order_summary',
-				'label'      => WFACP_Common::translation_string_to_check( __( 'Order Summary', 'woocommerce' ) ),
+				'label'      => WFACP_Common::translation_string_to_check( __( 'Order Summary', 'funnel-builder' ) ),
 			);
 
 			$field['order_total']             = array(
@@ -1992,7 +1993,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'label'      => __( 'Order Total', 'funnel-builder' ),
 				'is_pro'     => true,
 			);
-			$success_message                  = sprintf( __( 'Coupon code applied successfully.', 'woocommerce' ) );
+			$success_message                  = sprintf( __( 'Coupon code applied successfully.', 'funnel-builder' ) );
 			$field['order_coupon']            = array(
 				'type'                           => 'wfacp_html',
 				'field_type'                     => 'advanced',
@@ -2001,14 +2002,14 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'coupon_style'                   => 'true',
 				'coupon_success_message_heading' => $success_message,
 				'coupon_remove_message_heading'  => __( 'Coupon code removed successfully.', 'funnel-builder' ),
-				'label'                          => __( 'Coupon code', 'woocommerce' ),
+				'label'                          => __( 'Coupon code', 'funnel-builder' ),
 			);
 			$field['wc_advanced_order_field'] = array(
 				'id'             => 'wc_advanced_order_field',
 				'type'           => 'wfacp_html',
-				'label'          => __( 'Extra Advanced Fields', 'woofunnels-aero-checkout' ),
+				'label'          => __( 'Extra Advanced Fields', 'funnel-builder' ),
 				'placeholder'    => '',
-				'data_label'     => __( 'Extra Advanced Fields', 'woofunnels-aero-checkout' ),
+				'data_label'     => __( 'Extra Advanced Fields', 'funnel-builder' ),
 				'required'       => false,
 				'default'        => '',
 				'field_type'     => 'advanced',
@@ -2021,9 +2022,9 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'default'                       => '',
 				'id'                            => '_bwf_dob',
 				'type'                          => 'wfacp_html',
-				'label'                         => __( 'Date of Birth', 'woofunnels-aero-checkout' ),
+				'label'                         => __( 'Date of Birth', 'funnel-builder' ),
 				'placeholder'                   => '',
-				'data_label'                    => __( 'Date of Birth', 'woofunnels-aero-checkout' ),
+				'data_label'                    => __( 'Date of Birth', 'funnel-builder' ),
 				'field_type'                    => 'advanced',
 				'is_locked'                     => 'yes',
 				'is_pro'                        => true,
@@ -2043,8 +2044,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 				'class'       => array( 'wfacp_product_switcher' ),
 				'id'          => 'product_switching',
 				'is_locked'   => 'yes',
-				'label'       => __( 'Products', 'woocommerce' ),
-				'data_label'  => __( 'Products', 'woocommerce' ),
+				'label'       => __( 'Products', 'funnel-builder' ),
+				'data_label'  => __( 'Products', 'funnel-builder' ),
 				'field_type'  => 'product',
 				'placeholder' => '',
 				'is_pro'      => true,
@@ -2153,7 +2154,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		}
 
 		public static function do_not_show_session_expired_message( $status ) {
-			if ( isset( $_REQUEST['wfacp_id'] ) && wp_doing_ajax() ) {
+			if ( isset( $_REQUEST['wfacp_id'] ) && wp_doing_ajax() ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- AJAX identification parameter, no nonce required
 				$status = false;
 			}
 
@@ -2165,7 +2166,15 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 
 			echo '<div class="wfacp_cart_empty">';
 			do_action( 'wfacp_cart_empty_before_message' );
-			echo apply_filters( 'wfacp_cart_empty_message', __( 'Your cart is currently empty.', 'funnel-builder' ) );
+			echo wp_kses_post( apply_filters( 'wfacp_cart_empty_message', __( 'Your cart is currently empty.', 'funnel-builder' ) ) );
+
+			$shop_url  = apply_filters( 'wfacp_continue_shopping_url', wc_get_page_permalink( 'shop' ) );
+			$shop_text = apply_filters( 'wfacp_continue_shopping_text', __( 'Continue shopping', 'funnel-builder' ) );
+
+			if ( $shop_url ) {
+				echo '<a class="wfacp_continue_shopping" href="' . esc_url( $shop_url ) . '">' . esc_html( $shop_text ) . '</a>';
+			}
+
 			do_action( 'wfacp_cart_empty_after_message' );
 			echo '</div>';
 		}
@@ -2293,7 +2302,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					/* Translators: %s Product title. */
 					$removed_notice = sprintf( __( '%s removed.', 'funnel-builder' ), $item_title );
 				}
-				echo "<div class='wfacp_product_restore_wrap'>" . $removed_notice . '</div>';
+				echo '<div class="wfacp_product_restore_wrap">' . wp_kses_post( $removed_notice ) . '</div>';
 			}
 		}
 
@@ -2307,7 +2316,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 
 				?>
 				<div class="wfacp_order_summary_item_delete wfacp_delete_item_wrap">
-					<a href="javascript:void(0)" class="wfacp_remove_item_from_order_summary" data-cart_key="<?php echo $cart_item_key; ?>"><?php echo $item_icon; ?></a>
+					<a href="javascript:void(0)" class="wfacp_remove_item_from_order_summary" data-cart_key="<?php echo esc_attr( $cart_item_key ); ?>"><?php echo $item_icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></a>
 				</div>
 				<?php
 			}
@@ -2367,6 +2376,11 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 		}
 
 		public static function check_builder_status( $builder = '' ) {
+			// divi5 uses the same builder dependency as divi
+			if ( 'divi5' === $builder ) {
+				return self::check_builder_status( 'divi' );
+			}
+
 			// Divi Builder Plugin Exists
 			$response = array(
 				'found'          => false,
@@ -2392,7 +2406,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					if ( ! version_compare( $oxy_builder_version, $supported_version, '>=' ) ) {
 						$response['is_old_version'] = 'yes';
 						$response['version']        = $oxy_builder_version;
-						$response['error']          = sprintf( __( 'Site has an older version of Oxygen Classic Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
+						/* translators: %s: Minimum required version number */
+						$response['error'] = sprintf( __( 'Site has an older version of Oxygen Classic Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
 					}
 				}
 			} elseif ( 'divi' === $builder ) {
@@ -2429,7 +2444,8 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					$response['version'] = $divi_builder_version;
 					if ( ! version_compare( $divi_builder_version, $supported_version, '>=' ) ) {
 						$response['is_old_version'] = 'yes';
-						$response['error']          = sprintf( __( 'Site has an older version of Divi Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
+						/* translators: %s: Minimum required version number */
+						$response['error'] = sprintf( __( 'Site has an older version of Divi Builder. Templates are supported for v%s or greater.<br /> Please update.', 'funnel-builder' ), $supported_version );
 					}
 				}
 			}
@@ -2548,7 +2564,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			 */
 			$content = apply_filters( 'the_content', $content );
 			$content = str_replace( ']]>', ']]&gt;', $content );
-			echo $content;
+			echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 
 		/* Modern Label*/
@@ -2685,7 +2701,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			} elseif ( isset( $posted_data['_wfacp_post_id'] ) ) {
 				$wfacp_id = $posted_data['_wfacp_post_id'];
 			} elseif ( isset( $_GET['wfacp_id'] ) && absint( wp_unslash( $_GET['wfacp_id'] ) ) > 0 ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading URL parameter for checkout page identification, nonce verification not required
-				$wfacp_id = isset( $posted_data['wfacp_id'] ) ? $posted_data['wfacp_id'] : absint( wp_unslash( $_GET['wfacp_id'] ) );
+				$wfacp_id = isset( $posted_data['wfacp_id'] ) ? $posted_data['wfacp_id'] : absint( wp_unslash( $_GET['wfacp_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- URL parameter fallback, covered by parent condition
 			}
 			$is_numeric = false;
 			if ( is_numeric( $order ) ) {
@@ -2703,7 +2719,7 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 			$order->update_meta_data( '_wfacp_post_id', $wfacp_id );
 			$order->update_meta_data( '_wfacp_source', $posted_data['wfacp_source'] );
 
-			$timezone = $posted_data['wfacp_timezone'] ?? ( isset( $_POST['wfacp_timezone'] ) ? sanitize_text_field( wp_unslash( $_POST['wfacp_timezone'] ) ) : null ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout handles nonce verification
+			$timezone = $posted_data['wfacp_timezone'] ?? ( isset( $_POST['wfacp_timezone'] ) ? sanitize_text_field( wp_unslash( $_POST['wfacp_timezone'] ) ) : null ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
 			if ( ! is_null( $timezone ) ) {
 				$order->update_meta_data( '_wfacp_timezone', wc_clean( $timezone ) );
 			}
@@ -2717,16 +2733,16 @@ if ( ! class_exists( 'WFACP_Common_Helper' ) ) {
 					if ( isset( $field['type'] ) && ( 'wfacp_html' === $field['type'] || 'wfacp_wysiwyg' === $field['type'] ) ) {
 						continue;
 					}
-					$field_value = $posted_data[ $field_key ] ?? ( isset( $_REQUEST[ $field_key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $field_key ] ) ) : null ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout handles nonce verification
+					$field_value = $posted_data[ $field_key ] ?? ( isset( $_REQUEST[ $field_key ] ) ? sanitize_text_field( wp_unslash( $_REQUEST[ $field_key ] ) ) : null ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
 					if ( is_null( $field_value ) ) {
 						continue;
 					}
 					if ( ! empty( $field_value ) && $field['type'] == 'date' ) {
-						$field_value = date( 'Y-m-d', strtotime( $field_value ) );
+						$field_value = gmdate( 'Y-m-d', strtotime( $field_value ) );
 					} elseif ( ! empty( $field_value ) && $field['type'] == 'wfacp_dob' ) {
-						$year        = $posted_data[ $field_key ]['year'] ?? ( isset( $_REQUEST[ $field_key ]['year'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['year'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout handles nonce verification
-						$month       = $posted_data[ $field_key ]['month'] ?? ( isset( $_REQUEST[ $field_key ]['month'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['month'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout handles nonce verification
-						$day         = $posted_data[ $field_key ]['day'] ?? ( isset( $_REQUEST[ $field_key ]['day'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['day'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce checkout handles nonce verification
+						$year        = $posted_data[ $field_key ]['year'] ?? ( isset( $_REQUEST[ $field_key ]['year'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['year'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
+						$month       = $posted_data[ $field_key ]['month'] ?? ( isset( $_REQUEST[ $field_key ]['month'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['month'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
+						$day         = $posted_data[ $field_key ]['day'] ?? ( isset( $_REQUEST[ $field_key ]['day'] ) ? absint( wp_unslash( $_REQUEST[ $field_key ]['day'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- WooCommerce checkout handles nonce verification
 						$field_value = $year . '-' . $month . '-' . $day;
 					}
 					if ( $field['type'] != 'multiselect' ) {

@@ -663,37 +663,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		}
 
 
-		/**
-		 * Save selected design template against checkout page
-		 */
-		public function save_design() {
-			$resp = array(
-				'msg'    => '',
-				'status' => false,
-			);
 
-			check_ajax_referer( 'wffn_tp_save_design', '_nonce' );
-			$wftp_id = isset( $_POST['wftp_id'] ) ? absint( wffn_clean( wp_unslash( $_POST['wftp_id'] ) ) ) : 0; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-			if ( $wftp_id > 0 ) {
-				$selected_type = isset( $_POST['selected_type'] ) ? wffn_clean( wp_unslash( $_POST['selected_type'] ) ) : ''; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-				$selected      = isset( $_POST['selected'] ) ? wffn_clean( wp_unslash( $_POST['selected'] ) ) : ''; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-				$data          = array(
-					'selected'        => $selected,
-					'selected_type'   => $selected_type,
-					'template_active' => isset( $_POST['template_active'] ) ? wffn_clean( wp_unslash( $_POST['template_active'] ) ) : '', // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-				);
-				do_action( 'wffn_design_saved', $wftp_id, $selected_type, 'wc_thankyou' );
-
-				$this->update_page_design( $wftp_id, $data );
-				do_action( 'wfty_page_design_updated', $wftp_id, $data );
-
-				$resp = array(
-					'msg'    => __( 'Design Saved Successfully', 'funnel-builder' ),
-					'status' => true,
-				);
-			}
-			self::send_resp( $resp );
-		}
 
 		public function update_page_design( $page_id, $data ) {
 			if ( $page_id < 1 ) {
@@ -711,33 +681,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			}
 		}
 
-		public function remove_design() {
-			$resp = array(
-				'msg'    => '',
-				'status' => false,
-			);
-			check_ajax_referer( 'wffn_tp_remove_design', '_nonce' );
-			if ( isset( $_POST['wftp_id'] ) && $_POST['wftp_id'] > 0 ) { // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-				$wftp_id                     = absint( wp_unslash( $_POST['wftp_id'] ) ); // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-				$template                    = $this->default_design_data();
-				$template['template_active'] = 'no';
-				$this->update_page_design( $wftp_id, $template );
-				do_action( 'wftp_template_removed', $wftp_id );
-				do_action( 'woofunnels_module_template_removed', $wftp_id );
 
-				$args = array(
-					'ID'           => $wftp_id,
-					'post_content' => '',
-				);
-				wp_update_post( $args );
-
-				$resp = array(
-					'msg'    => __( 'Design Saved Successfully', 'funnel-builder' ),
-					'status' => true,
-				);
-			}
-			self::send_resp( $resp );
-		}
 
 		public function import_template() {
 			check_ajax_referer( 'wffn_tp_import_design', '_nonce' );
@@ -913,23 +857,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 		}
 
 
-		public function update_edit_url() {
-			check_admin_referer( 'wffn_tp_update_edit_url', '_nonce' );
-
-			$id  = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-			$url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : ''; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-
-			if ( absint( $id ) > 0 && ( $url !== '' ) ) {
-				$url .= $this->check_oxy_inner_content( $id );
-			}
-
-			$resp = array(
-				'status' => true,
-				'url'    => $url,
-			);
-			wp_send_json( $resp );
-		}
-
 
 		/**
 		 * Hooked over `wp_footer`
@@ -963,31 +890,6 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 				<?php do_action( 'woocommerce_thankyou', $order->get_id() ); ?>
 			</div>
 			<?php
-		}
-
-		public function toggle_state() {
-			check_ajax_referer( 'wffn_tp_toggle_state', '_nonce' );
-			$resp = array(
-				'status' => false,
-				'msg'    => __( 'Unable to change state', 'funnel-builder' ),
-			);
-
-			$state   = isset( $_POST['toggle_state'] ) ? sanitize_text_field( wp_unslash( $_POST['toggle_state'] ) ) : ''; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-			$wftp_id = isset( $_POST['wftp_id'] ) ? sanitize_text_field( wp_unslash( $_POST['wftp_id'] ) ) : ''; // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Admin-only AJAX endpoint with nonce verification
-
-			$status = ( 'true' === $state ) ? 'publish' : 'draft';
-
-			wp_update_post(
-				array(
-					'ID'          => $wftp_id,
-					'post_status' => $status,
-				)
-			);
-
-			$resp['status'] = true;
-			$resp['msg']    = __( 'Status changed successfully.', 'funnel-builder' );
-
-			self::send_resp( $resp );
 		}
 
 		public function get_status() {

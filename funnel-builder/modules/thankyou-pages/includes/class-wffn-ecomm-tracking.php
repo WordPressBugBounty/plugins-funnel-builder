@@ -410,7 +410,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 		public function maybe_print_tiktok_ecomm( $id, $purchase = false ) {  //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 			$data = $this->data;
 			if ( true === $this->do_track_tiktok() && is_array( $data ) ) {
-				include_once WFFN_Core()->thank_you_pages->get_module_path() . 'js-blocks/analytics-tiktok.phtml'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingNonPHPFile.IncludingNonPHPFile,WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
+				include WFFN_Core()->thank_you_pages->get_module_path() . 'js-blocks/analytics-tiktok.phtml'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingNonPHPFile.IncludingNonPHPFile,WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
 			}
 		}
 
@@ -433,7 +433,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 		public function maybe_print_pint_ecomm() { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter
 			$data = $this->data;
 			if ( true === $this->do_track_pint() && is_array( $data ) ) {
-				include_once WFFN_Core()->thank_you_pages->get_module_path() . 'js-blocks/analytics-pint.phtml'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingNonPHPFile.IncludingNonPHPFile,WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
+				include WFFN_Core()->thank_you_pages->get_module_path() . 'js-blocks/analytics-pint.phtml'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingNonPHPFile.IncludingNonPHPFile,WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction
 			}
 		}
 
@@ -1251,7 +1251,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 			$purchase_params       = array(
 				'value'            => $get_data_from_session['fb']['total'],
 				'currency'         => $get_data_from_session['fb']['currency'],
-				'content_name'     => ! empty( $get_data_from_session['fb']['content_name'] ) ? join( ',', $get_data_from_session['fb']['content_name'] ) : __( 'FunnelKit', 'woofunnels-upstroke-one-click-upsells' ),
+				'content_name'     => ! empty( $get_data_from_session['fb']['content_name'] ) ? join( ',', $get_data_from_session['fb']['content_name'] ) : __( 'FunnelKit', 'funnel-builder' ),
 				'content_category' => ! empty( $get_data_from_session['fb']['category_name'] ) ? join( ',', $get_data_from_session['fb']['category_name'] ) : '',
 				'content_ids'      => $get_data_from_session['fb']['content_ids'],
 				'content_type'     => 'product',

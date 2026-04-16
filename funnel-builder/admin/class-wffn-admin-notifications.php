@@ -848,26 +848,7 @@ if ( ! class_exists( 'WFFN_Admin_Notifications' ) ) {
 					<p class="bwf-notifications-content">' . __( 'We’ve detected that your store is running WooCommerce 10.3 or above. To ensure seamless performance, please update FunnelKit WooCommerce Stripe gateway to the latest version (v1.14.0).', 'funnel-builder' ) . '</p>
 				</div>';
 		}
-		public function brandchange() {
-			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title">' . __( 'Alert! WooFunnels is now FunnelKit', 'funnel-builder' ) . '</h3>
-					<p class="bwf-notifications-content">' . __( 'We are proud to announce that WooFunnels is now called FunnelKit. Only the name changes, everything else remains the same.', 'funnel-builder' ) . '</p>
-				</div>';
-		}
 
-		public function store_checkout_migrated() {
-			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title">' . __( 'Global Checkout has been migrated to Store Checkout!', 'funnel-builder' ) . '</h3>
-					<p class="bwf-notifications-content">' . __( "To make your storefront's more accessible, we have migrated Global Checkout. All the steps of the checkout are available under Store Checkout.", 'funnel-builder' ) . '</p>
-				</div>';
-		}
-
-		public function pro_update_3_0() {
-			return '<div class="bwf-notifications-message current">
-					<h3 class="bwf-notifications-title">' . __( 'Update Funnel Builder Pro to version 3.0', 'funnel-builder' ) . '</h3>
-					<p class="bwf-notifications-content">' . __( 'It seems that you are running an older version of Funnel Builder Pro. For a smoother experience, update Funnel Builder Pro to version 3.0.', 'funnel-builder' ) . '</p>
-				</div>';
-		}
 
 
 		public function promo_pre_bfcm( $html = true ) {

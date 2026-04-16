@@ -64,6 +64,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'plugins/class-ecomus-addons.php'          => class_exists( 'Ecomus\Addons' ),
 				'plugins/class-germanized.php'             => class_exists( 'WooCommerce_Germanized' ),
 				'plugins/class-happy-elementor.php'        => function_exists( 'ha_let_the_journey_begin' ),
+				'plugins/class-hcaptcha.php'               => defined( 'HCAPTCHA_VERSION' ),
 				'plugins/class-indeed-ultimate-affiliate-pro.php' => class_exists( 'UAP_Main' ),
 				'plugins/class-lubenda-cookie-solution.php' => class_exists( 'iubenda' ),
 				'plugins/class-optimizepress.php'          => ( isset( $_REQUEST['page'] ) && is_string( $_REQUEST['page'] ) && false !== strpos( sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ), 'optimizepress' ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended, FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Checking for OptimizePress page parameter
@@ -130,6 +131,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'gateways/class-authorize-net-cim.php'     => class_exists( 'WC_Authorize_Net_CIM_Loader' ),
 				'gateways/class-borica-payments.php'       => defined( 'BORICA_PLUGIN_DIR' ),
 				'gateways/class-publicsquare-payments.php' => defined( 'PUBLICSQUARE_VERSION' ),
+				'plugins/class-cookie-law-info.php'        => defined( 'CLI_VERSION' ),
 			);
 			self::add_files( $files );
 		}
@@ -173,6 +175,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'themes/class-buddyboss.php'               => function_exists( 'buddyboss_theme' ),
 				'themes/class-buzzstore.php'               => function_exists( 'buzzstorepro_setup' ),
 				'themes/class-divi.php'                    => function_exists( 'et_setup_theme' ),
+				'themes/class-divi-ecommerce-pro.php'      => function_exists( 'divi_ecommerce_pro_setup' ),
 				'themes/class-edumy.php'                   => class_exists( 'Edumy_Elementor_Extensions' ) && class_exists( 'Elementor\Plugin' ),
 				'themes/class-electro-extension.php'       => class_exists( 'Electro_Elementor_Extensions' ) && class_exists( 'Elementor\Plugin' ),
 				'themes/class-electro.php'                 => class_exists( 'TGM_Plugin_Activation' ),
@@ -215,6 +218,7 @@ if ( ! class_exists( 'WFACP_Plugin_Compatibilities' ) ) {
 				'themes/class-unero.php'                   => function_exists( 'unero_setup' ),
 				'themes/class-us-theme.php'                => function_exists( 'us_woocomerce_dequeue_checkout_styles' ),
 				'themes/class-woodmart.php'                => function_exists( 'woodmart_load_classes' ),
+				'themes/class-woostify.php'                => defined( 'WOOSTIFY_VERSION' ),
 				'themes/class-boxcar.php'                  => defined( 'BOXCAR_THEME_VERSION' ),
 				'themes/class-x-store.php'                 => function_exists( 'etheme_theme_setup' ),
 				'themes/class-xpro.php'                    => function_exists( 'x_bootstrap' ),

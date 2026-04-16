@@ -1114,8 +1114,6 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 			$fields[] = $this->add_color( $tab_id, 'default_link_hover_color', $default_link_hover_color_option, __( 'Link Hover Color', 'woofunnels-aero-checkout' ) );
 			$this->add_controls_tab( $control_id, 'Hover', $fields );
 
-			$this->end_tab();
-
 			$spacing_tab_id = $this->add_tab( __( 'Spacing', 'woofunnel-aero-checkout' ), 2 );
 			$this->add_margin( $tab_id, 'form_margin', '%%order_class%% #wfacp-e-form .wfacp-form' );
 			$this->add_padding( $tab_id, 'form_padding', '%%order_class%% #wfacp-e-form .wfacp-form' );
@@ -1140,8 +1138,6 @@ if ( ! class_exists( 'WFACP_Divi_Form' ) ) {
 				'border_color'         => '#dddddd',
 			);
 			$this->add_border( $tab_id, 'form_border', '%%order_class%% .wfacp_form_divi_container', array(), $default, array(), $default_args );
-
-			$this->end_tab();
 		}
 
 

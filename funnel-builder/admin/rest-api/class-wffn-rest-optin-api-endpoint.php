@@ -420,8 +420,8 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 
 					$options['optin_service_form'] = $optin_data;
 
-					if ( ! empty( $posted_data['lead_notification_body'] ) ) {
-						$options['lead_notification_body'] = preg_replace( '/(\v|\s)+/', ' ', $posted_data['lead_notification_body'] );
+					if ( ! empty( $options['lead_notification_body'] ) ) {
+						$options['lead_notification_body'] = $this->normalize_notification_body( $options['lead_notification_body'] );
 					}
 
 					if ( ! empty( $options['assign_ld_course'] ) ) {
@@ -678,6 +678,22 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 			return $fields;
 		}
 
+		/**
+		 * Strips invalid UTF-8 bytes and collapses whitespace/vertical-space sequences to a single space.
+		 *
+		 * @param string $text Raw notification body text.
+		 * @return string Cleaned text, or original if preg_replace fails.
+		 */
+		protected function normalize_notification_body( $text ) {
+			if ( empty( $text ) ) {
+				return '';
+			}
+			$text    = wp_check_invalid_utf8( $text, true );
+			$cleaned = preg_replace( '/(\v|\s)+/u', ' ', $text );
+
+			return ( null !== $cleaned ) ? $cleaned : $text;
+		}
+
 		public function sanitize_custom( $data, $skip_clean = 0 ) {
 			$data = json_decode( $data, true );
 
@@ -719,10 +735,12 @@ if ( ! class_exists( 'WFFN_REST_OPTIN_API_EndPoint' ) ) {
 				}
 			}
 
+			$notification_body = ! empty( $values['lead_notification_body'] ) ? $this->normalize_notification_body( $values['lead_notification_body'] ) : '';
+
 			$notify_fields = array(
 				'lead_enable_notify'        => ! empty( $values['lead_enable_notify'] ) ? wffn_clean( $values['lead_enable_notify'] ) : 'false',
 				'lead_notification_subject' => ! empty( $values['lead_notification_subject'] ) ? wffn_clean( $values['lead_notification_subject'] ) : '',
-				'lead_notification_body'    => ! empty( $values['lead_notification_body'] ) ? preg_replace( '/(\v|\s)+/', ' ', $values['lead_notification_body'] ) : '',
+				'lead_notification_body'    => $notification_body,
 				'test_email'                => ! empty( $values['test_email'] ) ? wffn_clean( $values['test_email'] ) : '',
 				'admin_email_notify'        => ! empty( $values['admin_email_notify'] ) ? wffn_clean( $values['admin_email_notify'] ) : 'false',
 				'op_admin_email'            => ! empty( $values['op_admin_email'] ) ? wffn_clean( $values['op_admin_email'] ) : '',

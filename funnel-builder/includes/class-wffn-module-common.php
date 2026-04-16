@@ -18,6 +18,9 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 		}
 
 		public function remove_conflicted_themes_styles() {
+			if ( ! empty( $_GET['et_fb'] ) ) {
+				return;
+			}
 			// globally registered styles and scripts
 			global $wp_styles;
 			global $wp_scripts;

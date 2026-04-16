@@ -33,6 +33,7 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 				'class-wffn-wpml-plugin-compatibility.php' => class_exists( 'SitePress' ) && defined( 'ICL_SITEPRESS_VERSION' ),
 				'class-wffn-polylang-plugin-compatibility.php' => function_exists( 'pll_default_language' ) && function_exists( 'pll_home_url' ),
 				'class-wffn-greenshift-compatibility.php'  => function_exists( 'gspb_get_final_css' ),
+				'class-wffn-complianz-compatibility.php'   => class_exists( 'COMPLIANZ' ),
 			);
 
 			add_action( 'after_setup_theme', array( __CLASS__, 'themes' ) );
@@ -61,6 +62,7 @@ if ( ! class_exists( 'WFFN_Plugin_Compatibilities' ) ) {
 				'class-wffn-woodmart-theme-compatibilty.php' => defined( 'WOODMART_THEME_DIR' ),
 				'class-wffn-thrive-theme-compatibility.php' => defined( 'THRIVE_TEMPLATE' ),
 				'class-wffn-ux-builder-compatibility.php'  => function_exists( 'add_ux_builder_post_type' ),
+				'class-wffn-etch-compatibility.php'        => defined( 'ETCH_PLUGIN_FILE' ),
 				'class-wffn-avada-theme-compatibility.php' => class_exists( 'FusionBuilder' ),
 			);
 			self::add_files( $themes_compatibilities );

@@ -84,6 +84,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'add_menu_in_admin_bar' ), 99 );
 
 			add_action( 'wffn_rest_plugin_activate_response', array( $this, 'maybe_add_auth_link_stripe' ), 10, 2 );
+			add_action( 'wffn_rest_plugin_activate_response', array( $this, 'maybe_add_auth_link_square' ), 10, 2 );
 
 			add_filter( 'woofunnels_global_settings', array( $this, 'add_global_setting_tabs' ), 5 );
 
@@ -502,14 +503,35 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		}
 
 		public function add_automations_menu() {
+
+			if ( class_exists( 'BWFAN_Core' ) ) {
+				return;
+			}
 			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
 			if ( $user ) {
 				add_submenu_page(
 					'woofunnels',
 					__( 'Automations', 'funnel-builder' ),
-					__( 'Automations', 'funnel-builder' ) . '<span style="padding-left: 2px;color: #f18200; vertical-align: super; font-size: 9px;"> NEW!</span>',
+					__( 'Automations', 'funnel-builder' ),
 					$user,
 					'bwf&path=/automations',
+					array(
+						$this,
+						'bwf_funnel_pages',
+					)
+				);
+			}
+		}
+
+		public function add_subscriptions_menu() {
+			$user = WFFN_Role_Capability::get_instance()->user_access( 'menu', 'read' );
+			if ( $user ) {
+				add_submenu_page(
+					'woofunnels',
+					__( 'Subscriptions', 'funnel-builder' ),
+					__( 'Subscriptions', 'funnel-builder' ) . '<span style="padding-left: 2px;color: #f18200; vertical-align: super; font-size: 9px;"> NEW!</span>',
+					$user,
+					'bwf&path=/subscriptions',
 					array(
 						$this,
 						'bwf_funnel_pages',
@@ -800,7 +822,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				wp_enqueue_style( 'wffn-flex-admin', $this->get_admin_url() . '/assets/css/admin.css', array(), WFFN_VERSION_DEV );
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-20260414073657' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-20260416073759' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -879,6 +901,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 			$tz                = sprintf( '%s%02d:%02d', $sign, $absmin / 60, $absmin % 60 );
 			$contact_page_data = array(
 				'is_wc_active'                => false,
+				'is_wc_square_active'         => WFFN_Common::is_wc_square_active(),
 				'date_format'                 => get_option( 'date_format', 'F j, Y' ),
 				'time_format'                 => get_option( 'time_format', 'g:i a' ),
 				'lev'                         => $this->get_license_config(),
@@ -1070,6 +1093,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				$data['automation_plugin_status']           = WFFN_Common::get_plugin_status( 'wp-marketing-automations/wp-marketing-automations.php' );
 				$data['fkcart_img_url']                     = esc_url( plugin_dir_url( WFFN_PLUGIN_FILE ) . 'admin/assets/img/fkcart-img.png' );
 				$data['fkcart_plugin_status']               = WFFN_Common::get_plugin_status( 'cart-for-woocommerce/plugin.php' );
+				$data['sublium_plugin_status']              = WFFN_Common::get_plugin_status( 'sublium-subscriptions-for-woocommerce/sublium-subscriptions-for-woocommerce.php' );
 				$data['fkcart_show_analytics']              = ( defined( 'FKCART_DB_VERSION' ) && version_compare( FKCART_DB_VERSION, '1.7.2', '>=' ) ) ? 'yes' : 'no';
 				$data['ob_arrow_blink_img_url']             = esc_url( plugin_dir_url( WFFN_PLUGIN_FILE ) . 'admin/assets/img/arrow-blink.gif' );
 				$data['pro_modal_img_path']                 = esc_url( plugin_dir_url( WFFN_PLUGIN_FILE ) . 'admin/assets/img/pro_modal/' );
@@ -1087,13 +1111,15 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				$data['bfcm_promo_sticky_banner']           = WFFN_Core()->admin_notifications->get_sticky_banner();
 				$data['bfcm_promo_sticky_secondary_banner'] = WFFN_Core()->admin_notifications->get_sticky_secondary_banner();
 
-				$data['pro_version_number']     = defined( 'WFFN_PRO_VERSION' ) ? WFFN_PRO_VERSION : '0.0.0';
-				$data['cart_analytics_version'] = '3.11.0';
-				$data['site_domain']            = $this->get_site_domain_for_admin();
+				$data['pro_version_number']         = defined( 'WFFN_PRO_VERSION' ) ? WFFN_PRO_VERSION : '0.0.0';
+				$data['cart_analytics_version']     = '3.11.0';
+				$data['conditional_fields_version'] = '3.15.0';
+				$data['site_domain']                = $this->get_site_domain_for_admin();
 
 				$data['review_count']    = WFFN_REVIEW_RATING_COUNT;
 				$data['feature_enabled'] = array(
-					'funnel_categories' => defined( 'WFFN_PRO_VERSION' ) && version_compare( WFFN_PRO_VERSION, '3.11.0', '>=' ),
+					'funnel_categories'  => defined( 'WFFN_PRO_VERSION' ) && version_compare( WFFN_PRO_VERSION, '3.11.0', '>=' ),
+					'conditional_fields' => defined( 'WFFN_PRO_VERSION' ) && version_compare( WFFN_PRO_VERSION, $data['conditional_fields_version'], '>=' ),
 				);
 				$data['fkcart_settings'] = $this->get_fkcart_settings();
 
@@ -1376,7 +1402,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				$cat_conditions = array();
 
 				foreach ( $args['categories'] as $category ) {
-					$clean_category   = wffn_clean( $category );
+					$clean_category   = sanitize_title( $category );
 					$cat_conditions[] = $wpdb->prepare( '(cat_meta.meta_value LIKE %s)', "%$clean_category%" );
 				}
 
@@ -1755,6 +1781,12 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 						'plugin_file'    => 'elementor/elementor.php',
 						'check_function' => function () {
 							return class_exists( '\Elementor\Plugin' );
+						},
+					),
+					'divi5'     => array(
+						'plugin_file'    => '',
+						'check_function' => function () {
+							return WFFN_Core()->page_builders->is_divi_theme_enabled() && function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
 						},
 					),
 					'divi'      => array(
@@ -2577,6 +2609,14 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 		public function maybe_add_auth_link_stripe( $response, $basename ) {
 			if ( 'funnelkit-stripe-woo-payment-gateway/funnelkit-stripe-woo-payment-gateway.php' === $basename ) {
 				$response['next_action'] = 'funnelkit-app/stripe-connect-link';
+			}
+
+			return $response;
+		}
+
+		public function maybe_add_auth_link_square( $response, $basename ) {
+			if ( 'funnelkit-payment-gateway-square-for-woocommerce/funnelkit-square.php' === $basename ) {
+				$response['next_action'] = 'funnelkit-app/square-connect-link';
 			}
 
 			return $response;
@@ -3407,6 +3447,17 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				case 'dashboard':
 				case 'dashboard-network':
 					include_once __DIR__ . '/class-wffn-admin-dashboard-widget.php';
+
+					break;
+
+				case 'product':
+				case 'edit-product_cat':
+					require_once __DIR__ . '/class-fk-checkout-redirect-admin.php';
+					FK_Checkout_Redirect_Admin::get_instance();
+
+					// Load product tab addon only on product edit screen
+					include_once __DIR__ . '/includes/class-wffn-product-tab-addon.php';
+					WFFN_Product_Tab_Addon::get_instance();
 
 					break;
 

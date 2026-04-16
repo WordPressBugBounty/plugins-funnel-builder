@@ -477,17 +477,17 @@ body .wfacp_mini_cart_start_h .wfacp_delete_item_wrap a:before {
 
 .wfacp_mini_cart_start_h ul.woocommerce-error,
 .wfacp_mini_cart_start_h div.woocommerce-error,
-.wfacp_mini_cart_start_h .woocommerce-message:not(.wfacp_sucuss) {
+.wfacp_mini_cart_start_h .woocommerce-message:not(.wfacp_success) {
     border-left: none !important;
     border-right: 2px solid #f97272 !important;
 }
 
-.wfacp_mini_cart_start_h .woocommerce-message.wfacp_sucuss {
+.wfacp_mini_cart_start_h .woocommerce-message.wfacp_success {
     border-left: none !important;
     border-right: 2px solid #24ae4e !important;
 }
 
-.wfacp_mini_cart_start_h .woocommerce-message.wfacp_sucuss .woocommerce-message1 {
+.wfacp_mini_cart_start_h .woocommerce-message.wfacp_success .woocommerce-message1 {
     border-left: none !important;
     border-right: 2px solid #24ae4e !important;
 }

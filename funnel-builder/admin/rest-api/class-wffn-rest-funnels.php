@@ -774,7 +774,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				return true === $return ? $resp : rest_ensure_response( $resp );
 			}
 
-			$title_postfix = ( false === $is_clone ) ? ' - ' . __( 'Copy' ) : '';
+			$title_postfix = ( false === $is_clone ) ? ' - ' . __( 'Copy', 'funnel-builder' ) : '';
 			$new_funnel_id = $new_funnel->add_funnel(
 				array(
 					'title'  => $funnel->get_title() . $title_postfix,
@@ -959,7 +959,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 
 			$resp = array();
 
-			$builder_status = wffn_rest_api_helpers()->check_builder_status( $builder, $template );
+			$builder_status = wffn_rest_api_helpers()->check_builder_status( WFFN_Common::get_remote_builder_key( $builder ), $template );
 			if ( false === $builder_status['status'] ) {
 				return rest_ensure_response( $builder_status['data'] );
 			}
@@ -1115,11 +1115,14 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 		}
 
 		public function get_all_builders() {
+			$is_divi5 = function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
+			$divi_key = $is_divi5 ? 'divi5' : 'divi';
+
 			return array(
 				'funnel'      => array(
 					'elementor' => 'Elementor',
 					'gutenberg' => 'Block Editor',
-					'divi'      => 'Divi',
+					$divi_key   => 'Divi',
 					'oxy'       => 'Oxygen (Classic)',
 					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other', 'funnel-builder' ),
@@ -1127,7 +1130,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'landing'     => array(
 					'elementor' => 'Elementor',
 					'gutenberg' => 'Block Editor',
-					'divi'      => 'Divi',
+					$divi_key   => 'Divi',
 					'oxy'       => 'Oxygen (Classic)',
 					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other', 'funnel-builder' ),
@@ -1135,7 +1138,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'optin'       => array(
 					'elementor' => 'Elementor',
 					'gutenberg' => 'Block Editor',
-					'divi'      => 'Divi',
+					$divi_key   => 'Divi',
 					'oxy'       => 'Oxygen (Classic)',
 					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
@@ -1143,7 +1146,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'optin_ty'    => array(
 					'elementor' => 'Elementor',
 					'gutenberg' => 'Block Editor',
-					'divi'      => 'Divi',
+					$divi_key   => 'Divi',
 					'oxy'       => 'Oxygen (Classic)',
 					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
@@ -1151,7 +1154,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'wc_thankyou' => array(
 					'elementor' => 'Elementor',
 					'gutenberg' => 'Block Editor',
-					'divi'      => 'Divi',
+					$divi_key   => 'Divi',
 					'oxy'       => 'Oxygen (Classic)',
 					'bricks'    => __( 'Bricks', 'funnel-builder' ),
 					'wp_editor' => __( 'Other (Using Shortcodes)', 'funnel-builder' ),
@@ -1159,7 +1162,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'wfob'        => array(
 					'elementor'  => 'Elementor',
 					'gutenberg'  => 'Block Editor',
-					'divi'       => 'Divi',
+					$divi_key    => 'Divi',
 					'oxy'        => 'Oxygen (Classic)',
 					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer', // pre_built
@@ -1168,7 +1171,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'wc_checkout' => array(
 					'elementor'  => 'Elementor',
 					'gutenberg'  => 'Block Editor',
-					'divi'       => 'Divi',
+					$divi_key    => 'Divi',
 					'oxy'        => 'Oxygen (Classic)',
 					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer', // pre_built
@@ -1177,7 +1180,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				'upsell'      => array(
 					'elementor'  => 'Elementor',
 					'gutenberg'  => 'Block Editor',
-					'divi'       => 'Divi',
+					$divi_key    => 'Divi',
 					'oxy'        => 'Oxygen (Classic)',
 					'bricks'     => __( 'Bricks', 'funnel-builder' ),
 					'customizer' => 'Customizer',
@@ -1190,6 +1193,14 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 			$resp = array();
 
 			$resp['all_builder'] = $this->get_all_builders();
+
+			// Add divi5 as a hidden builder key (same label as "Divi") for internal template switching
+			foreach ( $resp['all_builder'] as $type => &$builders ) {
+				if ( isset( $builders['divi'] ) ) {
+					$builders['divi5'] = $builders['divi'];
+				}
+			}
+			unset( $builders );
 
 			$resp['sub_filter_group'] = array(
 				'funnel'      => array(
@@ -1226,6 +1237,11 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 				empty( $default_builder ) || in_array( $default_builder, array( 'elementor', 'divi', 'oxy', 'bricks' ), true )
 			) {
 				$default_builder = WFFN_Core()->admin->get_detected_page_builder();
+			}
+
+			// Translate 'divi' to effective key (divi5 when D5 active or Divi not installed)
+			if ( 'divi' === $default_builder ) {
+				$default_builder = WFFN_Common::get_effective_divi_builder_key();
 			}
 
 			$resp['default_builder'] = $default_builder;
@@ -1304,7 +1320,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 			$params['template_group'] = array(
 				'description'       => __( 'Choose template group.', 'funnel-builder' ),
 				'type'              => 'string',
-				'enum'              => array( 'gutenberg', 'elementor', 'divi', 'custom' ),
+				'enum'              => array( 'gutenberg', 'elementor', 'divi', 'divi5', 'custom' ),
 				'sanitize_callback' => 'sanitize_key',
 				'validate_callback' => 'rest_validate_request_arg',
 
@@ -1563,7 +1579,7 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 		public function get_funnel_list_revenue( $request ) {
 			$response   = array(
 				'status'  => true,
-				'msg'     => __( 'success', 'funnel-builder-powerpack' ),
+				'msg'     => __( 'success', 'funnel-builder' ),
 				'funnels' => array(),
 			);
 			$funnel_ids = isset( $request['funnel_ids'] ) ? $request['funnel_ids'] : '';

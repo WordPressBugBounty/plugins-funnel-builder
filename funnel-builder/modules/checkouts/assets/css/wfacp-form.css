@@ -3190,9 +3190,16 @@ body #wfacp-e-form .wfacp_main_form #wfacp_smart_button_amazon_pay .wc-amazon-ch
     display: inline-block;
 }
 
-body #wfacp-e-form *:not(.wfacp-qty-ball):not(.wfacp-qty-count):not(.wfacp-pro-count) {
+body #wfacp-e-form * {
     line-height: 1.5;
     font-size: 14px;
+}
+
+body #wfacp-e-form .wfacp-qty-ball,
+body #wfacp-e-form .wfacp-qty-count,
+body #wfacp-e-form .wfacp-pro-count {
+    line-height: initial;
+    font-size: initial;
 }
 
 
@@ -5210,10 +5217,10 @@ body:not(.wfacpef_page):not(.wfacp_oxygen_template) #wfacp-e-form .woocommerce .
 
 
 body .wfacp_woocommerce_form_coupon .wfacp-coupon-page .wfacp_coupon_error_msg .woocommerce_single_error_message,
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content div.woocommerce-error,
 body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content ul.woocommerce-error,
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper #order_coupon_field div.woocommerce-error,
 body #wfacp-sec-wrapper #order_coupon_field ul.woocommerce-error,
 body .wfacp_product_restore_wrap,
@@ -5232,12 +5239,12 @@ body #wfacp-sec-wrapper .wfacp_woocommerce_form_coupon .wfacp-coupon-page .wfacp
 body .wfacp-coupon-page .wfacp_coupon_remove_msg,
 body .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg,
 body .wfacp_main_form.woocommerce #wfacp-sec-wrapper .wfacp_coupon_field_msg > .wfacp_single_coupon_msg,
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
-body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_sucuss),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper .wfacp_mb_mini_cart_sec_accordion_content .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
+body #wfacp-sec-wrapper #order_coupon_field .woocommerce-message:not(.wfacp_success),
 body #wfacp-sec-wrapper #order_coupon_field .wfacp_coupon_remove_msg,
 body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp_coupon_field_msg > .wfacp_single_coupon_msg {
     padding: 0 0 0 16px;
@@ -5250,7 +5257,7 @@ body #wfacp-sec-wrapper .wfacp_main_form.woocommerce #wfacp_checkout_form .wfacp
     background-size: 12px;
 }
 
-body #wfacp-sec-wrapper .woocommerce-message:not(.wfacp_sucuss) * {
+body #wfacp-sec-wrapper .woocommerce-message:not(.wfacp_success) * {
     color: #24ae4e !important;
 }
 

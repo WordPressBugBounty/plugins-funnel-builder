@@ -21,12 +21,12 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 	return;
 }
 ?>
-<div class="wfacp_template_9_cart_item_details wfacp_min_cart_widget" data-delete-enabled="<?php echo $enable_delete_item; ?>">
+<div class="wfacp_template_9_cart_item_details wfacp_min_cart_widget" data-delete-enabled="<?php echo $enable_delete_item;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 	<?php
 	do_action( 'wfacp_before_mini_cart_html' );
 	do_action( 'woocommerce_review_order_before_cart_contents' );
 	?>
-	<table class="wfacp_mini_cart_items wfacp_collapsible_summary shop_table woocommerce-checkout-review-order-table_layout_9 wfacp_order_sum <?php echo $instance->get_template_slug(); ?>" <?php echo WFACP_Common::get_fragments_attr(); ?> >
+	<table class="wfacp_mini_cart_items wfacp_collapsible_summary shop_table woocommerce-checkout-review-order-table_layout_9 wfacp_order_sum <?php echo $instance->get_template_slug(); ?>" <?php echo WFACP_Common::get_fragments_attr();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?> >
 		<tbody>
 		<?php
 		$wfacp_cart = WC()->cart->get_cart();
@@ -62,7 +62,7 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 						}
 					}
 					?>
-					<tr class="<?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ) . ' ' . $enabled_delete_class; ?> wfacp_product_row" cart_key="<?php echo $cart_item_key; ?>">
+					<tr class="<?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ) . ' ' . $enabled_delete_class; ?> wfacp_product_row" cart_key="<?php echo $cart_item_key;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 						<td class="product-name-area">
 							<?php
 							if ( apply_filters( $cart_image_filter, $display_img ) ) {
@@ -74,16 +74,16 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 									<div class="wfacp-pro-thumb">
 										<div class="wfacp-qty-ball">
 											<div class="wfacp-qty-count">
-												<span class="wfacp-pro-count"><?php echo $cart_item['quantity']; ?></span>
+												<span class="wfacp-pro-count"><?php echo $cart_item['quantity'];  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 											</div>
 										</div>
-										<?php echo $thumbnail; ?>
+										<?php echo $thumbnail;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 									</div>
 								</div>
 								<?php
 							}
 							?>
-							<div class="wfacp_order_summary_item_name <?php echo $hideImageCls; ?>">
+							<div class="wfacp_order_summary_item_name <?php echo $hideImageCls;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 								<?php
 								/* second string true condition added this condition with specific server */
 								ob_start();
@@ -95,27 +95,27 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
   <path fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z" fill="currentColor"/>
 </svg>';
 
-									printf( '<div class="wfacp_delete_item_wrap"> <a href="javascript:void(0)" class="%s" data-cart_key="%s" data-item-key="%s">%s</a></div>', $item_class, $cart_item_key, $aero_item_key, $item_icon );
+									printf( '<div class="wfacp_delete_item_wrap"> <a href="javascript:void(0)" class="%s" data-cart_key="%s" data-item-key="%s">%s</a></div>', $item_class, $cart_item_key, $aero_item_key, $item_icon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								}
 								$html = ob_get_clean();
 								echo "<div class='wfacp_cart_title_sec'>";
 								echo "<span class='wfacp_mini_cart_item_title'>";
-								echo apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key );
+								echo apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								do_action( 'wfacp_after_mini_cart_title', $cart_item, $cart_item_key );
-								echo apply_filters( 'woocommerce_checkout_cart_item_quantity', '&nbsp;<strong class="product-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key );
+								echo apply_filters( 'woocommerce_checkout_cart_item_quantity', '&nbsp;<strong class="product-quantity">' . sprintf( '&times; %s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								if ( apply_filters( 'wfacp_allow_woocommerce_after_cart_item_name_mini_cart', false, $cart_item, $cart_item_key ) ) {
 									/**
 									 * added in 2.0.0
 									 */
 									do_action( 'woocommerce_after_cart_item_name', $cart_item, $cart_item_key );
 								}
-								echo wc_get_formatted_cart_item_data( $cart_item );
+								echo wc_get_formatted_cart_item_data( $cart_item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								do_action( 'wfacp_after_mini_cart_attributes', $cart_item, $cart_item_key );
 								echo '</span> ';
 								do_action( 'wfacp_after_cart_formatted_item_data', $cart_item, $cart_item_key );
 								echo '</div>';
 								if ( false == $show_subscription_string_old_version && in_array( $_product->get_type(), WFACP_Common::get_subscription_product_type() ) ) {
-									printf( "<div class='wfacp_product_subs_details'>%s</div>", WFACP_Common::subscription_product_string( $_product, $product_data, $cart_item, $cart_item_key ) );
+									printf( "<div class='wfacp_product_subs_details'>%s</div>", WFACP_Common::subscription_product_string( $_product, $product_data, $cart_item, $cart_item_key ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								}
 
 								if ( $show_quantity_switcher ) {
@@ -141,9 +141,9 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 											?>
 											<div class="product-quantity">
 												<div class="wfacp_quantity_selector" style="<?php echo ( true == $hide_quantity_switcher ) ? 'display:none;pointer-events:none;' : ''; ?>">
-													<div class="value-button wfacp_decrease_item" onclick="decreaseItmQty(this,'<?php echo $aero_item_key; ?>')" value="Decrease Value">-</div>
-													<input type="number" step='<?php echo $minMax['step']; ?>' min='<?php echo $minMax['min']; ?>' max='<?php echo $minMax['max']; ?>' value="<?php echo $item_quantity; ?>" data-value="<?php echo $item_quantity; ?>" class="wfacp_mini_cart_update_qty wfacp_product_quantity_number_field" cart_key="<?php echo $cart_item_key; ?>">
-													<div class="value-button wfacp_increase_item" onclick="increaseItmQty(this,'<?php echo $aero_item_key; ?>')" value="Increase Value">+</div>
+													<div class="value-button wfacp_decrease_item" onclick="decreaseItmQty(this,'<?php echo $aero_item_key;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>')" value="Decrease Value">-</div>
+													<input type="number" step='<?php echo $minMax['step']; ?>' min='<?php echo $minMax['min']; ?>' max='<?php echo $minMax['max']; ?>' value="<?php echo $item_quantity; ?>" data-value="<?php echo $item_quantity; ?>" class="wfacp_mini_cart_update_qty wfacp_product_quantity_number_field" cart_key="<?php echo $cart_item_key;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+													<div class="value-button wfacp_increase_item" onclick="increaseItmQty(this,'<?php echo $aero_item_key;  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>')" value="Increase Value">+</div>
 												</div>
 											</div>
 											<?php
@@ -166,19 +166,35 @@ if ( is_null( WC()->cart ) || ! WC()->cart instanceof WC_Cart ) {
 						</td>
 						<td class="product-total">
 							<?php
+							$collapsible_strike = apply_filters( 'wfacp_collapsible_mini_cart_enable_strike_through_price', false );
 							if ( in_array( $_product->get_type(), WFACP_Common::get_subscription_product_type() ) ) {
-								if ( false == $show_subscription_string_old_version ) {
-									echo apply_filters( 'wfacp_subscription_price_display', wc_price( WFACP_Common::get_subscription_cart_item_price( $cart_item ) ), $_product, $cart_item, $cart_item_key );
+								if ( ! $show_subscription_string_old_version ) {
+									if ( $collapsible_strike ) {
+										echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											'woocommerce_cart_item_subtotal',
+											WFACP_Common::get_product_subtotal( $_product, $cart_item, false, true ),
+											$cart_item,
+											$cart_item_key
+										); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									} else {
+										echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+											'wfacp_subscription_price_display',
+											wc_price( WFACP_Common::get_subscription_cart_item_price( $cart_item ) ),
+											$_product,
+											$cart_item,
+											$cart_item_key
+										); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									}
 								} else {
-									echo WFACP_Common::display_subscription_price( $_product, $cart_item, $cart_item_key );
+									echo WFACP_Common::display_subscription_price( $_product, $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								}
-							} elseif ( true == apply_filters( 'wfacp_woocommerce_cart_item_subtotal_except_subscription', true, $_product, $cart_item, $cart_item_key ) ) {
+							} elseif ( apply_filters( 'wfacp_woocommerce_cart_item_subtotal_except_subscription', true, $_product, $cart_item, $cart_item_key ) ) {
 
-									echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item, false, apply_filters( 'wfacp_collapsible_mini_cart_enable_strike_through_price', false ) ), $cart_item, $cart_item_key );
+									echo apply_filters( 'woocommerce_cart_item_subtotal', WFACP_Common::get_product_subtotal( $_product, $cart_item, false, $collapsible_strike ), $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							} else {
 								do_action( 'wfacp_woocommerce_cart_item_subtotal_except_subscription_placeholder', $_product, $cart_item, $cart_item_key );
 							}
-							echo '<span class="wfacp_cart_product_name_h">' . $html . '</span>';
+							echo '<span class="wfacp_cart_product_name_h">' . $html . '</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							?>
 						</td>
 					</tr>

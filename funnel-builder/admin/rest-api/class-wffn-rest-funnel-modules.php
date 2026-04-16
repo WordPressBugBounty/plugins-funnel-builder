@@ -699,7 +699,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				$customer = new WC_Customer( $id );
 				/* translators: 1: user display name 2: user ID 3: user email */
 				$customers['id']   = (string) $id;
-				$customers['name'] = sprintf( /* translators: $1: customer name, $2 customer id, $3: customer email */ esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'woocommerce' ), $customer->get_display_name(), $customer->get_id(), $customer->get_email() );
+				$customers['name'] = sprintf( /* translators: $1: customer name, $2 customer id, $3: customer email */ esc_html__( '%1$s (#%2$s &ndash; %3$s)', 'woocommerce' ), $customer->get_display_name(), $customer->get_id(), $customer->get_email() ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Intentional: reuse WooCommerce's translation for this format string.
 
 				$found_customers[] = $customers;
 			}
@@ -1501,7 +1501,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 
 					if ( ! empty( $design['selected_type'] ) ) {
 
-						if ( ! in_array( $design['selected_type'], array( 'elementor', 'divi', 'oxy', 'bricks', 'gutenberg', 'pre_built', 'embed_forms', 'customizer' ), true ) ) {
+						if ( ! in_array( $design['selected_type'], array( 'elementor', 'divi', 'divi5', 'oxy', 'bricks', 'gutenberg', 'pre_built', 'embed_forms', 'customizer' ), true ) ) {
 							$step['other_builder'] = $this->detectActivePageBuilder( $post_data );
 						}
 
@@ -1886,6 +1886,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 			$builder = ( 'pre_built' === $builder ) ? 'customizer' : $builder;
 			switch ( $builder ) {
 				case 'divi':
+				case 'divi5':
 					$edit_url = add_query_arg(
 						array(
 							'et_fb'     => true,
@@ -1960,7 +1961,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 					admin_url( 'customize.php' )
 				);
 			}
-			if ( 'wc_checkout' === $type && 'divi' === $builder ) {
+			if ( 'wc_checkout' === $type && ( 'divi' === $builder || 'divi5' === $builder ) ) {
 				$edit_url = add_query_arg( array( 'et_wfacp_id' => $page_id ), $edit_url );
 			}
 			if ( 'wc_checkout' === $type && 'oxy' === $builder ) {
@@ -2590,9 +2591,9 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				'wfacp_form_section_embed_forms_2_field_border_color' => '#3d2828',
 				'wfacp_form_section_embed_forms_2_field_focus_color' => '#235c7f',
 				'wfacp_form_section_embed_forms_2_field_input_color' => '#4e0d0d',
-				'wfacp_form_section_payment_methods_heading' => __( 'Payment method', 'woocommerce' ),
+				'wfacp_form_section_payment_methods_heading' => __( 'Payment method', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Intentional: reuse WooCommerce's translation for this WooCommerce core label.
 				'wfacp_form_section_payment_methods_sub_heading' => '',
-				'wfacp_form_section_embed_forms_2_btn_order-place_btn_text' => __( 'Place order', 'woocommerce' ),
+				'wfacp_form_section_embed_forms_2_btn_order-place_btn_text' => __( 'Place order', 'woocommerce' ), // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Intentional: reuse WooCommerce's translation for this WooCommerce core label.
 				'wfacp_form_section_embed_forms_2_btn_order-place_fs' => 26,
 				'wfacp_form_section_embed_forms_2_btn_order-place_top_bottom_padding' => '17',
 				'wfacp_form_section_embed_forms_2_btn_order-place_left_right_padding' => '25',
@@ -2959,7 +2960,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 						),
 						array(
 							'type'    => 'color',
-							'label'   => __( 'Color', 'woofunnels-aero-checkout ' ),
+							'label'   => __( 'Color', 'funnel-builder' ),
 							'class'   => 'bwf-field-one-third  bwf-field-one-third-last',
 							'default' => '#e61e1e',
 							'key'     => 'wfacp_form_section_embed_forms_2_' . 'rbox_border_color',
@@ -3563,7 +3564,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 							$additional_tabs[] = array(
 								'mainHeading' => __( 'Upsell Page Settings', 'funnel-builder' ),
 								'heading'     => __( 'Personalization Shortcodes', 'funnel-builder' ),
-								'title'       => sprintf( __( 'Using page builders to build custom upsell pages? <a href=%1$s target="_blank">Read this guide to learn more</a> about using Button widgets of your page builder <a href=%2$s target="_blank">Personalization shortcodes</a>', 'woofunnels-upstroke-one-click-upsell' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designed-one-click-upsell-pages/' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designs/#order-personalization-shortcodes' ) ),
+								'title'       => sprintf( __( 'Using page builders to build custom upsell pages? <a href=%1$s target="_blank">Read this guide to learn more</a> about using Button widgets of your page builder <a href=%2$s target="_blank">Personalization shortcodes</a>', 'funnel-builder' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designed-one-click-upsell-pages/' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designs/#order-personalization-shortcodes' ) ),
 								'fields'      => $shortcode,
 							);
 						} elseif ( isset( $design['selected_type'] ) && in_array( $design['selected_type'], array( 'beaver', 'custom', 'custom_page' ), true ) ) {
@@ -3604,7 +3605,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 												$additional_tabs[] = array(
 													'mainHeading' => __( 'Upsell Page Settings', 'funnel-builder' ),
 													'heading'     => __( 'Shortcodes', 'funnel-builder' ),
-													'title'       => sprintf( __( 'Using page builders to build custom upsell pages? <a href=%1$s target="_blank">Read this guide to learn more</a> about using Button widgets of your page builder <a href=%2$s target="_blank">Personalization shortcodes</a>', 'woofunnels-upstroke-one-click-upsell' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designed-one-click-upsell-pages/' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designs/#order-personalization-shortcodes' ) ),
+													'title'       => sprintf( __( 'Using page builders to build custom upsell pages? <a href=%1$s target="_blank">Read this guide to learn more</a> about using Button widgets of your page builder <a href=%2$s target="_blank">Personalization shortcodes</a>', 'funnel-builder' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designed-one-click-upsell-pages/' ), esc_url( 'https://funnelkit.com/docs/one-click-upsell/design/custom-designs/#order-personalization-shortcodes' ) ),
 													'fields'      => $shortcode,
 												);
 											} else {
@@ -3637,7 +3638,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 									'label' => __( 'Form Shortcode', 'funnel-builder' ),
 									'value' => '[wfacp_forms]',
 									'id'    => 'wfacp_forms',
-									'hint'  => sprintf( __( 'Use this shortcode to embed the checkout form on this page. Switch to %s.', 'woofunnels-aero-checkout' ), $link ),
+									'hint'  => sprintf( __( 'Use this shortcode to embed the checkout form on this page. Switch to %s.', 'funnel-builder' ), $link ),
 								),
 							),
 						);
@@ -3647,7 +3648,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 								'label' => __( 'Mini Cart Shortcode', 'funnel-builder' ),
 								'value' => '[wfacp_mini_cart]',
 								'id'    => 'wfacp_mini_cart',
-								'hint'  => __( 'Use this shortcode to display mini cart your pages.', 'woofunnels-aero-checkout' ),
+								'hint'  => __( 'Use this shortcode to display mini cart your pages.', 'funnel-builder' ),
 							);
 							$additional_tabs[]            = $custom_shortcode;
 						} else {

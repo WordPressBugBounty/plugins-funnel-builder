@@ -846,6 +846,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 		public static function woocommerce_form_field_wfacp_radio( $field, $key, $args, $value ) {
 
 			$label_id        = $args['id'];
+			$args['class']   = (array) ( $args['class'] ?? array() );
 			$args['class'][] = 'wfacp_custom_field_radio_wrap';
 			if ( $args['required'] ) {
 				$args['class'][] = 'validate-required';
@@ -1250,6 +1251,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 											$val['id'] = $temp_key;
 											if ( 'shipping' == $hide_apply_cls_type && 'shipping' == $field_type && 'shipping_same_as_billing' != $temp_key ) {
 												if ( wc_string_to_bool( $fields_options['same_as_billing']['same_as_billing'] ) === true ) {
+													$val['class']   = (array) ( $val['class'] ?? array() );
 													$val['class'][] = 'wfacp_' . $field_type . '_fields';
 													$val['class'][] = 'wfacp_' . $field_type . '_field_hide';
 
@@ -1257,6 +1259,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 											}
 											if ( 'billing' == $hide_apply_cls_type && 'billing' == $field_type && 'billing_same_as_shipping' != $temp_key ) {
 												if ( wc_string_to_bool( $fields_options['same_as_shipping']['same_as_shipping'] ) === true ) {
+													$val['class']   = (array) ( $val['class'] ?? array() );
 													$val['class'][] = 'wfacp_' . $field_type . '_fields';
 													$val['class'][] = 'wfacp_' . $field_type . '_field_hide';
 												}
@@ -1289,6 +1292,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 										} elseif ( $val['type'] == 'country' ) {
 
 												$val['id']            = $temp_key;
+												$val['class']         = (array) ( $val['class'] ?? array() );
 												$val['class'][]       = 'wfacp_country_field_hide';
 												$default_customer_add = get_option( 'woocommerce_default_customer_address', '' );
 
@@ -2623,6 +2627,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			$data['cart_is_empty']   = WC()->cart->is_empty();
 			$data['cart_total']      = WC()->cart->get_total( 'edit' );
 			$data['cart_is_virtual'] = self::is_cart_is_virtual();
+			$data['is_logged_in']    = is_user_logged_in();
 			if ( class_exists( 'WC_Subscriptions_Cart' ) && method_exists( 'WC_Subscriptions_Cart', 'cart_contains_subscription' ) ) {
 				$data['cart_contains_subscription'] = WC_Subscriptions_Cart::cart_contains_subscription();
 			}
@@ -3141,7 +3146,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			$oxy_count = 0;
 			$oxy_json  = get_post_meta( $step_id, self::oxy_get_meta_prefix( 'ct_builder_json' ), true );
 			if ( is_string( $oxy_json ) && '' !== $oxy_json ) {
-				$oxy_count = substr_count( $oxy_json, 'wfacp_checkout_form' );
+				$oxy_count = substr_count( $oxy_json, '"oxy-wfacp_checkout_form"' );
 			}
 
 			$bricks_count = 0;
@@ -3260,7 +3265,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 		 */
 		public static function clear_pending_events_data_from_session() {
 			try {
-				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 					$events = WC()->session->get( 'wffn_pending_data' );
 					if ( ! is_null( $events ) && is_array( $events ) && count( $events ) > 0 ) {
 						WC()->session->set( 'wffn_pending_data', '' );

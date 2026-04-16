@@ -190,6 +190,14 @@ if ( ! class_exists( 'WFFN_Optin_TY_Pages' ) ) {
 
 			$this->wffn_is_oty = true;
 
+			/**
+			 * Fires after opt-in thank you page context is recognized on the front end (singular OTY CPT).
+			 * Used e.g. to invalidate Elementor document cache so dynamic widgets render fresh.
+			 *
+			 * @param int $post_id Opt-in thank you page post ID.
+			 */
+			do_action( 'wffn_optin_ty_page_setup_completed', (int) $post->ID );
+
 			$data = get_post_meta( $post->ID, 'wffn_step_custom_settings', true );
 
 			if ( WFFN_Common::is_page_builder_preview() || ! isset( $data['custom_redirect'] ) || ( 'true' !== $data['custom_redirect'] ) ) {

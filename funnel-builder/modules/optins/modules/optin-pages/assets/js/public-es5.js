@@ -156,6 +156,7 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
           jQuery(this).attr('disabled', 'disabled');
           var submitting_text = jQuery(this).attr('data-subitting-text');
           jQuery(FormElem).find("button.wfop_submit_btn .bwf_heading").html(submitting_text);
+          jQuery(FormElem).find("button.wfop_submit_btn .bwf_subheading").hide();
           if ("undefined" !== typeof window.intlTelInputGlobals && undefined !== jQuery(FormElem).find('input[name="wfop_optin_phone"]').get(0)) {
             var iti = window.intlTelInputGlobals.getInstance(jQuery(FormElem).find('input[name="wfop_optin_phone"]').get(0));
             var getCountryData = iti.getSelectedCountryData();

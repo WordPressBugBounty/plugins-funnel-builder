@@ -530,55 +530,8 @@ if ( ! class_exists( 'WFFN_Landing_Pages' ) ) {
 
 
 
-		public function update_edit_url() {
-			check_admin_referer( 'wffn_lp_update_edit_url', '_nonce' );
-
-			$id  = isset( $_POST['id'] ) ? absint( wp_unslash( $_POST['id'] ) ) : 0;
-			$url = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
-
-			if ( absint( $id ) > 0 && ( $url !== '' ) ) {
-				$url .= $this->check_oxy_inner_content( $id );
-			}
-
-			$resp = array(
-				'status' => true,
-				'url'    => $url,
-			);
-			wp_send_json( $resp );
-		}
-
 		public function update_options( $options ) {
 			update_option( 'wffn_lp_settings', $options, true );
-		}
-
-		/**
-		 * Save selected design template against checkout page
-		 */
-		public function save_design() {
-			$resp = array(
-				'msg'    => '',
-				'status' => false,
-			);
-			check_ajax_referer( 'wffn_lp_save_design', '_nonce' );
-			$wflp_id = isset( $_POST['wflp_id'] ) ? absint( wp_unslash( $_POST['wflp_id'] ) ) : 0;
-
-			if ( $wflp_id > 0 ) {
-				$selected_type = isset( $_POST['selected_type'] ) ? sanitize_text_field( wp_unslash( $_POST['selected_type'] ) ) : '';
-				$this->update_page_design(
-					$wflp_id,
-					array(
-						'selected'      => isset( $_POST['selected'] ) ? sanitize_text_field( wp_unslash( $_POST['selected'] ) ) : '',
-						'selected_type' => $selected_type,
-					)
-				);
-				do_action( 'wffn_design_saved', $wflp_id, $selected_type, 'landing' );
-				do_action( 'wflp_page_design_updated', $wflp_id, $selected_type );
-				$resp = array(
-					'msg'    => __( 'Design Saved Successfully', 'funnel-builder' ),
-					'status' => true,
-				);
-			}
-			self::send_resp( $resp );
 		}
 
 		public function update_page_design( $page_id, $data ) {
@@ -597,89 +550,6 @@ if ( ! class_exists( 'WFFN_Landing_Pages' ) ) {
 			}
 
 			return $data;
-		}
-
-		public static function send_resp( $data = array() ) {
-			if ( ! is_array( $data ) ) {
-				$data = array();
-			}
-			$data['nonce'] = wp_create_nonce( 'wflp_secure_key' );
-			wp_send_json( $data );
-		}
-
-		public function remove_design() {
-			$resp = array(
-				'msg'    => '',
-				'status' => false,
-			);
-			check_ajax_referer( 'wffn_lp_remove_design', '_nonce' );
-			if ( isset( $_POST['wflp_id'] ) && $_POST['wflp_id'] > 0 ) { // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Nonce verified
-				$wflp_id                     = absint( wp_unslash( $_POST['wflp_id'] ) ); // phpcs:ignore FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Nonce verified
-				$template                    = $this->default_design_data();
-				$template['template_active'] = 'no';
-				$this->update_page_design( $wflp_id, $template );
-				do_action( 'wflp_template_removed', $wflp_id );
-				do_action( 'woofunnels_module_template_removed', $wflp_id );
-
-				$args = array(
-					'ID'           => $wflp_id,
-					'post_content' => '',
-				);
-				wp_update_post( $args );
-
-				$resp = array(
-					'msg'    => __( 'Design Saved Successfully', 'funnel-builder' ),
-					'status' => true,
-				);
-			}
-			self::send_resp( $resp );
-		}
-
-		public function import_template() {
-			$resp = array(
-				'status' => false,
-				'msg'    => __( 'Importing of template failed', 'funnel-builder' ),
-			);
-			check_ajax_referer( 'wffn_lp_import_design', '_nonce' );
-			$builder  = isset( $_POST['builder'] ) ? sanitize_text_field( wp_unslash( $_POST['builder'] ) ) : '';
-			$template = isset( $_POST['template'] ) ? sanitize_text_field( wp_unslash( $_POST['template'] ) ) : '';
-			$wflp_id  = isset( $_POST['wflp_id'] ) ? absint( wp_unslash( $_POST['wflp_id'] ) ) : 0;
-
-			$result = WFFN_Core()->importer->import_remote( $wflp_id, $builder, $template, $this->get_cloud_template_step_slug() );
-
-			if ( true === $result['success'] ) {
-				$resp['status'] = true;
-				$resp['msg']    = __( 'Importing of template finished', 'funnel-builder' );
-			} else {
-				$resp['error'] = $result['error'];
-			}
-
-			self::send_resp( $resp );
-		}
-
-		public function toggle_state() {
-			check_ajax_referer( 'wffn_lp_toggle_state', '_nonce' );
-			$resp = array(
-				'status' => false,
-				'msg'    => __( 'Unable to change state', 'funnel-builder' ),
-			);
-
-			$state   = isset( $_POST['toggle_state'] ) ? sanitize_text_field( wp_unslash( $_POST['toggle_state'] ) ) : '';
-			$wflp_id = isset( $_POST['wflp_id'] ) ? absint( wp_unslash( $_POST['wflp_id'] ) ) : 0;
-
-			$status = ( 'true' === $state ) ? 'publish' : 'draft';
-
-			wp_update_post(
-				array(
-					'ID'          => $wflp_id,
-					'post_status' => $status,
-				)
-			);
-
-			$resp['status'] = true;
-			$resp['msg']    = __( 'Status changed successfully', 'funnel-builder' );
-
-			self::send_resp( $resp );
 		}
 
 		public function get_cloud_template_step_slug() {

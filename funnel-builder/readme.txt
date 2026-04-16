@@ -2,9 +2,9 @@
 Contributors: amans2k, xlplugins, teamwoofunnels
 Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.14.0.3
+Stable tag: 3.15.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,40 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.15.0 =
+* Added: Funnel: Deep compatibility with Divi5 theme with New & improved templates. (#8310)
+* Added: Funnel: Added per Product Checkout Redirect feature to allow dedicated checkout pages to open in regular store flow. (#8612)
+* Added: Funnel: Added product stock status as a display condition for order bump rules. (#8628)
+* Added: Funnel: Added compatibility with Etch theme for landing pages, thank you pages, and opt-in pages. (#8682)
+* Improved: Checkout: Improved compatibility with WordPress 7.0 for Gutenberg blocks. (#8545)
+* Improved: Checkout: Improved compatibility with PS Delivery Module. (#8576)
+* Improved: Checkout: Improved compatibility with CookieYes. (#8643)
+* Improved: Checkout: Improved compatibility with WooPayments. (#8650)
+* Improved: Checkout: Improved compatibility with Oxygen Builder. (#8664)
+* Improved: Checkout: Improved compatibility with Germanized for WooCommerce. (#8667)
+* Improved: Checkout: Improved compatibility with hCaptcha. (#8685)
+* Improved: Checkout: Improved compatibility with WooCommerce Subscriptions. (#8689, #8692)
+* Improved: Checkout: Improved compatibility with Enfold theme. (#8696)
+* Improved: Checkout: Improved compatibility with Spectra. (#8706)
+* Improved: Checkout: Improved compatibility with Woostify theme. (#8709)
+* Improved: Checkout: Optimized checkout module initialisation by consolidating redundant database queries. (#8728)
+* Improved: Funnel: Improved compatibility with Complianz. (#8540, #8712)
+* Improved: Funnel: Improved sticky header behaviour on the funnel listing screen. (#8670)
+* Improved: Funnel: Improved compatibility with Elementor. (#8622)
+* Added: Checkout: Added a ‘Continue Shopping’ link when the cart is empty on checkout pages. (#8632)
+* Fixed: Checkout: Fixed missing CSS for the address field search icon on RTL checkout pages. (#8589)
+* Fixed: Checkout: Fixed mini cart accordion becoming un-clickable due to nested element structure. (#8614)
+* Fixed: Checkout: Fixed Bulgarian phone number validation accepting incomplete mobile numbers. (#8634)
+* Fixed: Checkout: Resolved script dependency notice in the checkout Editor caused by a missing checkout script. (#8659)
+* Fixed: Checkout: Resolved fatal error caused by WooCommerce Store API SessionHandler incompatibility. (#8680)
+* Fixed: Checkout: Fixed radio button alignment in the product switcher when product images are visible. (#8701)
+* Fixed: Funnel: Fixed character encoding corruption for non-Latin characters in opt-in email form submissions. (#8606)
+* Fixed: Funnel: Restored missing strike-through price and total savings message controls in the checkout builder for subscription products. (#8626)
+* Fixed: Funnel: Fixed sales page URL not updating correctly when the page name contains quote characters. (#8655)
+* Fixed: Funnel: Fixed billing email field unable to be repositioned in the multi-step checkout builder. (#8657)
+* Fixed: Thank you Page: Resolved unintended HTML stripping in order total labels on thank you pages. (#8596)
+* Fixed: Funnel - Admin Pages to handle Funnel titles in non-English character languages. (#8736)
 
 = 3.14.0.3 =
 * Improved: Funnel: Enhanced plugin security for optin related SQL queries. (#8759)

@@ -174,7 +174,7 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 
 		public function get_ajax_exchange_keys() {
 			$keys = WFACP_Common::$exchange_keys;
-			if ( ! empty( is_array( $keys ) ) && isset( $keys['divi'] ) ) {
+			if ( ! empty( is_array( $keys ) ) && isset( $keys['divi'] ) && isset( $keys['divi']['wfacp_form'] ) ) {
 				$form_id         = $keys['divi']['wfacp_form'];
 				$this->form_data = WFACP_Common::get_session( $form_id );
 				if ( isset( $keys['divi']['order_summary'] ) ) {
@@ -199,8 +199,9 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 			$field_key_index    = 'wfacp_' . $template_slug . '_' . $field_index . '_field';
 			$field_custom_class = 'wfacp_' . $template_slug . '_' . $field_index . '_field_class';
 			if ( isset( $this->form_data[ $field_key_index ] ) ) {
+				$custom_class = isset( $this->form_data[ $field_custom_class ] ) ? $this->form_data[ $field_custom_class ] : '';
 
-				return $this->form_data[ $field_key_index ] . ' ' . $this->form_data[ $field_custom_class ];
+				return $this->form_data[ $field_key_index ] . ' ' . $custom_class;
 			}
 
 			return '';
@@ -266,6 +267,9 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 			}
 			if ( isset( $this->form_data['wfacp_payment_place_order_text'] ) && '' != trim( $this->form_data['wfacp_payment_place_order_text'] ) ) {
 				$text = trim( $this->form_data['wfacp_payment_place_order_text'] ) . $order_total;
+			} elseif ( '' !== $order_total ) {
+				// No custom button text set (D5 default) — use WC default + price.
+				$text = __( 'Place order', 'woocommerce' ) . $order_total;
 			}
 			$this->place_order_btn_text = $text;
 
@@ -705,12 +709,12 @@ if ( ! class_exists( 'WFACP_Divi_Template' ) ) {
 				$deviceClass = 'wfacp_not_active';
 			}
 
-			$select_type = $this->form_data['select_type'];
+			$select_type = isset( $this->form_data['select_type'] ) ? $this->form_data['select_type'] : '';
 
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSS class names, sanitized from form data
 			echo "<div class='" . esc_attr( $deviceClass . ' ' . $select_type ) . "' >";
 
-			if ( isset( $this->form_data['select_type'] ) && 'bredcrumb' == $this->form_data['select_type'] ) {
+			if ( '' !== $select_type && 'bredcrumb' == $select_type ) {
 
 				if ( isset( $this->set_bredcrumb_data['progress_data'] ) && is_array( $this->set_bredcrumb_data['progress_data'] ) ) {
 					$progress_form_data = $this->set_bredcrumb_data['progress_data'];

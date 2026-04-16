@@ -132,6 +132,7 @@ if ( ! function_exists( 'wfacp_form_field' ) ) {
 		$key  = apply_filters( 'wfacp_form_field_key', $key, $args, $value );
 		$args = apply_filters( 'woocommerce_form_field_args', $args, $key, $value );
 
+		$args['class'] = (array) ( $args['class'] ?? array() );
 		if ( $args['required'] ) {
 			$args['class'][] = 'validate-required';
 			$required        = '&nbsp;<abbr class="required" title="' . esc_attr__( 'required', 'woocommerce' ) . '">*</abbr>';

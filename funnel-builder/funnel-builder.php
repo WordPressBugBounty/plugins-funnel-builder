@@ -3,7 +3,7 @@
  * Plugin Name: FunnelKit Funnel Builder
  * Plugin URI: https://funnelkit.com/wordpress-funnel-builder/
  * Description: Create high-converting sales funnels on WordPress that look professional by following a well-guided step-by-step process.
- * Version: 3.14.0.3
+ * Version: 3.15.0
  * Author: FunnelKit
  * Author URI: https://funnelkit.com
  * License: GPLv3 or later
@@ -11,7 +11,7 @@
  * Text Domain: funnel-builder
  *
  * Requires at least: 5.4.0
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  * WooFunnels: true
  *
@@ -150,8 +150,8 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 		 */
 		public function define_plugin_properties() {
 
-			define( 'WFFN_VERSION', '3.14.0.3' );
-			define( 'WFFN_BWF_VERSION', '1.10.12.74' );
+			define( 'WFFN_VERSION', '3.15.0' );
+			define( 'WFFN_BWF_VERSION', '1.10.12.77' );
 
 			define( 'WFFN_MIN_WC_VERSION', '3.5.0' );
 			define( 'WFFN_MIN_WP_VERSION', '5.4.0' );
@@ -332,6 +332,7 @@ if ( ! class_exists( 'WFFN_Core' ) ) {
 				$response = WFFN_Common::check_builder_status( 'divi' );
 				if ( true === $response['found'] && empty( $response['error'] ) ) {
 					require __DIR__ . '/importer/class-wffn-divi-importer.php';
+					require __DIR__ . '/importer/class-wffn-divi5-importer.php';
 				}
 				$response = WFFN_Common::check_builder_status( 'oxy' );
 				if ( true === $response['found'] && empty( $response['error'] ) ) {

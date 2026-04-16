@@ -94,6 +94,19 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 					),
 				)
 			);
+
+			register_rest_route(
+				$this->namespace,
+				'/square-connect-link',
+				array(
+					array(
+						'methods'             => WP_REST_Server::READABLE,
+						'callback'            => array( $this, 'square_link' ),
+						'permission_callback' => array( $this, 'get_read_api_permission_check' ),
+
+					),
+				)
+			);
 		}
 
 		public function get_read_api_permission_check() {
@@ -215,6 +228,30 @@ if ( ! class_exists( 'WFFN_REST_Global_Settings' ) ) {
 				array(
 					'success' => true,
 					'link'    => ( \FKWCS\Gateway\Stripe\Admin::get_instance()->is_stripe_connected() ) ? false : \FKWCS\Gateway\Stripe\Admin::get_instance()->get_connect_url(),
+				)
+			);
+		}
+
+		public function square_link() {
+			$link = admin_url( 'admin.php?page=bwf&path=/square-connect' );
+			if ( WFFN_Common::is_wc_square_active() ) {
+				if ( class_exists( '\FKWCSQ\Square' ) && \FKWCSQ\Square::is_configured() ) {
+					$link = false;
+				} elseif ( class_exists( '\FKWCSQ\Includes\Modules\Connection\MiddleWare' ) ) {
+					$middleware = \FKWCSQ\Includes\Modules\Connection\MiddleWare::get_instance();
+					if ( method_exists( $middleware, 'get_connection_url' ) ) {
+						$middleware_link = $middleware->get_connection_url();
+						if ( ! empty( $middleware_link ) ) {
+							$link = $middleware_link;
+						}
+					}
+				}
+			}
+
+			return rest_ensure_response(
+				array(
+					'success' => true,
+					'link'    => $link,
 				)
 			);
 		}

@@ -86,6 +86,13 @@ if ( ! class_exists( 'WFFN_Header' ) ) {
 				);
 			}
 
+			if ( ! WFFN_Common::skip_subscriptions_page() && 'activated' !== WFFN_Common::get_plugin_status( 'sublium-subscriptions-for-woocommerce/sublium-subscriptions-for-woocommerce.php' ) ) {
+				$header_menu['subscriptions'] = array(
+					'name' => __( 'Subscriptions', 'funnel-builder' ),
+					'link' => admin_url( 'admin.php?page=bwf&path=/subscriptions' ),
+				);
+			}
+
 			return apply_filters( 'wffn_header_menu', $header_menu );
 		}
 
@@ -220,14 +227,14 @@ if ( ! class_exists( 'WFFN_Header' ) ) {
 						esc_html_e( 'Funnels', 'funnel-builder' );
 					}
 					if ( isset( $_GET['bwf_exp_ref'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-						$experiment     = new BWFABT_Experiment( wffn_clean( $_GET['bwf_exp_ref'] ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						$experiment     = new BWFABT_Experiment( wffn_clean( wp_unslash( $_GET['bwf_exp_ref'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						$get_control_id = $experiment->get_control();
 
 						$is_control = ( intval( $get_control_id ) === intval( $this->edit_id() ) ) ? 'clr-green' : 'clr-sky-blue';
 
 						?>
 						<span>
-						<span class="bwfan-tag-rounded bwfan_ml_12 <?php echo esc_attr( $is_control ); ?>"><?php echo ( 'clr-green' === $is_control ) ? __( 'Original', 'woofunnels-funnel-builder' ) : __( 'Variant', 'woofunnels-funnel-builder' ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+						<span class="bwfan-tag-rounded bwfan_ml_12 <?php echo esc_attr( $is_control ); ?>"><?php echo ( 'clr-green' === $is_control ) ? __( 'Original', 'funnel-builder' ) : __( 'Variant', 'funnel-builder' ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 						</span>
 						<?php
 					}

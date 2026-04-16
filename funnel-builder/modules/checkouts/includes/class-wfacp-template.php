@@ -470,6 +470,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 				'is_global'                       => WFACP_Core()->public->is_checkout_override(),
 				'wc_customizer_validation_status' => $wc_validation_fields,
 				'cart_is_virtual'                 => WFACP_Common::is_cart_is_virtual(),
+				'is_logged_in'                    => is_user_logged_in(),
 				'track_facebook'                  => $track_facebook,
 				'wfacp_is_checkout_override'      => ( WFACP_Core()->public->is_checkout_override() ) ? 'yes' : 'no',
 				'cancel_page_url'                 => $this->get_cancel_page_link(),
@@ -564,11 +565,15 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			if ( WFACP_Common::is_theme_builder() ) {
 				global $wp_scripts;
 
+				$is_vb = function_exists( 'et_core_is_fb_enabled' ) && et_core_is_fb_enabled();
+
 				$registered_script = $wp_scripts->registered;
 				if ( ! empty( $registered_script ) ) {
 					foreach ( $registered_script as $handle => $data ) {
 						if ( false !== strpos( $data->src, '/plugins/woocommerce/' ) ) {
-							unset( $wp_scripts->registered[ $handle ] );
+							if ( ! $is_vb ) {
+								unset( $wp_scripts->registered[ $handle ] );
+							}
 							wp_dequeue_script( $handle );
 						}
 					}
@@ -1889,6 +1894,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 				$billing_allowed_countries  = WC()->countries->get_allowed_countries();
 				$shipping_allowed_countries = WC()->countries->get_shipping_countries();
 				if ( count( $billing_allowed_countries ) == 1 || count( $shipping_allowed_countries ) == 1 ) {
+					$field['class']   = (array) ( $field['class'] ?? array() );
 					$field['class'][] = 'wfacp_allowed_countries';
 					$field['class'][] = 'wfacp-anim-wrap';
 				}
@@ -2005,6 +2011,7 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 				if ( ! isset( $field['label_class'] ) || ! is_array( $field['label_class'] ) ) {
 					$field['label_class'] = array();
 				}
+				$field['class']         = (array) ( $field['class'] ?? array() );
 				$field['class'][]       = $wrapper_class;
 				$field['input_class'][] = $input_class;
 				$field['label_class'][] = $label_class;
@@ -2541,19 +2548,21 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 						}
 
 						$default_class = array();
-
 						if ( isset( $field['class'] ) ) {
 							$default_class = $field['class'];
-
 						}
 
-						if ( is_array( $default_class ) && ! in_array( 'form-row', $default_class ) ) {
-							$default_class[] = 'form-row';
-							$default_class[] = 'wfacp_collapsible_field_wrap';
+						if ( isset( $field['class'] ) ) {
+							$default_class = (array) $default_class;
+							if ( ! in_array( 'form-row', $default_class ) ) {
+								$default_class[] = 'form-row';
+								$default_class[] = 'wfacp_collapsible_field_wrap';
+							}
+							$default_class = implode( ' ', $default_class );
+						} else {
+							$default_class = 'form-row wfacp-form-control-wrapper wfacp-col-full';
 						}
 						$id = $field_key . '_collapse_label';
-
-						$default_class = isset( $field['class'] ) ? implode( ' ', $default_class ) : 'form-row wfacp-form-control-wrapper wfacp-col-full';
 
 						$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
 <path d="M9.16665 4.16665H5.83335V0.833345C5.83335 0.373344 5.46084 -1.90735e-06 5 -1.90735e-06C4.53916 -1.90735e-06 4.16665 0.373344 4.16665 0.833345V4.16665H0.833348C0.372506 4.16665 0 4.54 0 5C0 5.46 0.372506 5.83335 0.833348 5.83335H4.16665V9.16665C4.16665 9.62665 4.53916 10 5 10C5.46084 10 5.83335 9.62665 5.83335 9.16665V5.83335H9.16665C9.6275 5.83335 10 5.46 10 5C10 4.54 9.6275 4.16665 9.16665 4.16665Z" fill="currentColor"/>
@@ -2608,7 +2617,8 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 			}
 
 			if ( isset( $collapsible_optional_fields[ $key ] ) && wc_string_to_bool( $collapsible_optional_fields[ $key ] ) ) {
-				$args['class'] = array_merge( array( 'wfacp_collapsible_enable', 'wfacp_hidden_class' ), $args['class'] );
+				$class         = is_array( $args['class'] ) ? $args['class'] : ( is_string( $args['class'] ?? '' ) ? array( $args['class'] ) : array() );
+				$args['class'] = array_merge( array( 'wfacp_collapsible_enable', 'wfacp_hidden_class' ), $class );
 			}
 
 			return $args;

@@ -210,6 +210,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 					WFACP_Common::set_id( $post_id );
 					WFACP_Core()->template_loader->load_template( $post_id );
 					add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+					add_action( 'enqueue_block_assets', array( $this, 'enqueue_block_editor_styles' ) );
 
 					return;
 				}
@@ -323,8 +324,6 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 						return false === strpos( $dep, 'css' );
 					}
 				);
-				wp_enqueue_style( 'wfacp-gutenberg-style', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/wfacp_combined.min.css', false, WFACP_VERSION_DEV );
-				wp_enqueue_style( 'gotenberg-style', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/wfacp-form.min.css', array(), WFACP_VERSION, false );
 				wp_enqueue_script( 'jquery' );
 
 				if ( defined( 'BWF_DEV' ) ) {
@@ -336,7 +335,6 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 				$page_settings = WFACP_Common::get_page_settings( WFACP_Common::get_id() );
 
 				if ( isset( $page_settings['enable_phone_flag'] ) && wc_string_to_bool( $page_settings['enable_phone_flag'] ) ) {
-					wp_enqueue_style( 'wfacp-intl-css', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/intlTelInput.css', false, WFACP_VERSION_DEV );
 					wp_enqueue_script( 'wfacp-intlTelInput-js', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/js/intlTelInput.min.js', array(), WFACP_VERSION_DEV ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter -- Script needs to load in header for phone flag functionality
 				}
 
@@ -390,11 +388,54 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 					)
 				);
 
-				// Enqueue Block Editor Stylesheet
-				wp_enqueue_style( 'wfacp-block-editor', $frontend_dir . $style_path, array(), $version );
-
 				if ( function_exists( 'wp_set_script_translations' ) ) {
 					wp_set_script_translations( 'wfacp-block-editor', 'funnel-builder' );
+				}
+			}
+		}
+
+		/**
+		 * Enqueue block editor styles via enqueue_block_assets so they load inside the iframe editor.
+		 */
+		public function enqueue_block_editor_styles() {
+			if ( ! is_admin() ) {
+				return;
+			}
+
+			global $pagenow, $post;
+
+			if ( ( $post instanceof WP_Post ) && WFACP_Common::get_post_type_slug() === $post->post_type && 'post.php' === $pagenow && isset( $_GET['post'] ) && intval( $_GET['post'] ) > 0 ) { //phpcs:ignore
+				$app_name     = 'wfacp-block-editor';
+				$frontend_dir = defined( 'BWF_AERO_REACT_ENVIRONMENT' ) ? BWF_AERO_REACT_ENVIRONMENT : WFACP_PLUGIN_URL . '/builder/gutenberg/dist';
+				$style_path   = "/$app_name.css";
+
+				wp_enqueue_style( 'wfacp-gutenberg-style', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/wfacp_combined.min.css', false, WFACP_VERSION_DEV );
+				wp_enqueue_style( 'gotenberg-style', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/wfacp-form.min.css', array(), WFACP_VERSION, false );
+				wp_enqueue_style( 'wfacp-block-editor', $frontend_dir . $style_path, array(), time() );
+
+				$page_settings = WFACP_Common::get_page_settings( WFACP_Common::get_id() );
+				if ( isset( $page_settings['enable_phone_flag'] ) && wc_string_to_bool( $page_settings['enable_phone_flag'] ) ) {
+					wp_enqueue_style( 'wfacp-intl-css', plugin_dir_url( WFACP_PLUGIN_FILE ) . 'assets/css/intlTelInput.css', false, WFACP_VERSION_DEV );
+				}
+
+				// Enqueue saved default font so it's baked into the iframe editor
+				$default_font = get_post_meta( $post->ID, 'bwfblock_default_font', true );
+				if ( ! empty( $default_font ) ) {
+					$is_system      = false;
+					$standard_fonts = file_exists( __DIR__ . '/font/standard-fonts.php' ) ? include __DIR__ . '/font/standard-fonts.php' : array();
+					if ( is_array( $standard_fonts ) ) {
+						foreach ( $standard_fonts as $sf ) {
+							if ( isset( $sf['value'] ) && strtolower( $default_font ) === strtolower( $sf['value'] ) ) {
+								$is_system = true;
+								break;
+							}
+						}
+					}
+					if ( ! $is_system ) {
+						$font_url = 'https://fonts.googleapis.com/css?family=' . rawurlencode( $default_font ) . ':100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic';
+						wp_enqueue_style( 'bwfblock-editor-default-google-font', $font_url, array(), null );
+					}
+					wp_add_inline_style( 'wfacp-block-editor', '#editor .editor-styles-wrapper { font-family: ' . esc_attr( $default_font ) . '; }' );
 				}
 			}
 		}
@@ -638,7 +679,7 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 				if ( isset( $field['type'] ) && 'wfacp_html' === $field['type'] ) {
 					$options           = array(
 						array(
-							'label' => __( 'Full' ),
+							'label' => __( 'Full', 'funnel-builder' ),
 							'value' => 'wfacp-col-full',
 						),
 					);
@@ -661,19 +702,19 @@ if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
 		public static function get_class_options() {
 			return array(
 				array(
-					'label' => __( 'Full' ),
+					'label' => __( 'Full', 'funnel-builder' ),
 					'value' => 'wfacp-col-full',
 				),
 				array(
-					'label' => __( 'One Half' ),
+					'label' => __( 'One Half', 'funnel-builder' ),
 					'value' => 'wfacp-col-left-half',
 				),
 				array(
-					'label' => __( 'One Third' ),
+					'label' => __( 'One Third', 'funnel-builder' ),
 					'value' => 'wfacp-col-left-third',
 				),
 				array(
-					'label' => __( 'Two Third' ),
+					'label' => __( 'Two Third', 'funnel-builder' ),
 					'value' => 'wfacp-col-two-third',
 				),
 			);

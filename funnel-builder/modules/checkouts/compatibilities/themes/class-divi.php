@@ -40,6 +40,12 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Divi' ) ) {
 			add_filter( 'et_theme_builder_template_layouts', array( $this, 'disable_header_footer' ), 99 );
 
 			add_action( 'template_redirect', array( $this, 'change_template_include_hook' ) );
+
+			/*
+			Swap global $post to FunnelKit checkout post before Divi 5's DynamicAssets::pre_initial_setup()
+			 * which captures $post->ID at wp:0. This ensures Divi generates dynamic CSS for the
+			 * FunnelKit checkout post instead of the WC checkout page. */
+			add_action( 'wp', array( $this, 'maybe_early_post_swap_for_divi5' ), -1 );
 		}
 
 
@@ -193,11 +199,60 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Divi' ) ) {
 			}
 			$design = WFACP_Common::get_page_design( WFACP_Common::get_id() );
 
-			if ( 'divi' == $design['selected_type'] ) {
+			if ( in_array( $design['selected_type'], array( 'divi', 'divi5' ), true ) ) {
 				$instance = WFACP_Template_loader::get_instance();
 
 				remove_action( 'template_include', array( $instance, 'assign_template' ), 95 );
 				add_action( 'template_include', array( $instance, 'assign_template' ), 99 );
+			}
+		}
+
+		public function maybe_early_post_swap_for_divi5() {
+			try {
+				if ( ! function_exists( 'et_builder_d5_enabled' ) || ! et_builder_d5_enabled() ) {
+					return;
+				}
+
+				if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || is_order_received_page() ) {
+					return;
+				}
+
+				// Only run on store checkout (WC checkout page overridden by FunnelKit),
+				// not on direct FunnelKit checkout pages which already have the correct post.
+				global $post;
+				if ( $post instanceof WP_Post && WFACP_Common::get_post_type_slug() === $post->post_type ) {
+					return;
+				}
+
+				$checkout_page_id = WFACP_Common::get_checkout_page_id();
+				if ( absint( $checkout_page_id ) <= 0 ) {
+					return;
+				}
+
+				$checkout_post = get_post( $checkout_page_id );
+				if ( ! $checkout_post || 'publish' !== $checkout_post->post_status ) {
+					return;
+				}
+
+				$design = WFACP_Common::get_page_design( $checkout_page_id );
+				if ( ! isset( $design['selected_type'] ) || ! in_array( $design['selected_type'], array( 'divi', 'divi5' ), true ) ) {
+					return;
+				}
+
+				global $post, $wp_query;
+				$post = $checkout_post;
+				setup_postdata( $post );
+
+				// Also update the main query so Divi's get_the_ID(), is_singular(),
+				// and et_builder_should_wrap_styles() detect the correct CPT post type.
+				if ( $wp_query instanceof WP_Query ) {
+					$wp_query->queried_object    = $checkout_post;
+					$wp_query->queried_object_id = $checkout_post->ID;
+					$wp_query->post              = $checkout_post;
+					$wp_query->posts             = array( $checkout_post );
+				}
+			} catch ( \Error $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
+			} catch ( \Exception $e ) { // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch
 			}
 		}
 

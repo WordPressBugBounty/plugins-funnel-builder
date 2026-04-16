@@ -30,6 +30,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_WC_Germanized' ) ) {
 
 			/* Fix Terms and Conditions compatibility - only adjust the filter, don't move hooks */
 			add_action( 'wfacp_after_checkout_page_found', [ $this, 'fix_terms_filter' ], 12 );
+			add_action( 'woocommerce_checkout_update_order_review', array( $this, 'wfacp_germanized_terms_on_ajax' ), 0 );
 
 			/*--------------------------Add Internal Css----------------------------------------*/
 			add_action( 'wfacp_internal_css', array( $this, 'internal_css' ) );
@@ -73,6 +74,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_WC_Germanized' ) ) {
 			// Keep legal checkboxes in submit section and before Place Order button.
 			// Use FunnelKit submit hook because Germanized rewires callbacks on
 			// woocommerce_review_order_before_submit at runtime.
+			
 			remove_action( 'woocommerce_review_order_after_payment', 'woocommerce_gzd_template_render_checkout_checkboxes', 10 );
 			remove_action( 'woocommerce_review_order_after_payment', 'woocommerce_gzd_template_render_checkout_checkboxes', 99 );
 			remove_action( 'woocommerce_review_order_before_submit', 'woocommerce_gzd_template_render_checkout_checkboxes', 9 );
@@ -317,8 +319,25 @@ if ( ! class_exists( 'WFACP_Compatibility_With_WC_Germanized' ) ) {
 			// Remove Germanized's blanket filter
 			remove_filter( 'woocommerce_checkout_show_terms', 'woocommerce_gzd_template_set_wc_terms_hide', 100 );
 
-			// Add our smart conditional filter instead
-			add_filter( 'woocommerce_checkout_show_terms', [ $this, 'conditional_terms_display' ], 100 );
+			if ( false === has_filter( 'woocommerce_checkout_show_terms', array( $this, 'conditional_terms_display' ) ) ) {
+				add_filter( 'woocommerce_checkout_show_terms', [ $this, 'conditional_terms_display' ], 100 );
+			}
+		}
+
+		/**
+		 * @param string $posted_data Posted checkout fields.
+		 */
+		public function wfacp_germanized_terms_on_ajax( $posted_data ) {
+			if ( 0 !== did_action( 'wfacp_after_checkout_page_found' ) ) {
+				return;
+			}
+			$post_data = array();
+			parse_str( (string) $posted_data, $post_data );
+			if ( empty( $post_data['_wfacp_post_id'] ) ) {
+				return;
+			}
+			$this->germanized_terms();
+			$this->fix_terms_filter();
 		}
 
 		/**
@@ -333,12 +352,14 @@ if ( ! class_exists( 'WFACP_Compatibility_With_WC_Germanized' ) ) {
 				return $show;
 			}
 
-			// If Germanized is rendering its checkboxes, hide WC/FunnelKit terms to avoid duplication.
-			if ( has_action( 'woocommerce_review_order_after_payment', 'woocommerce_gzd_template_render_checkout_checkboxes' ) || has_action( 'wfacp_woocommerce_review_order_before_submit', 'woocommerce_gzd_template_render_checkout_checkboxes' ) ) {
+			if ( has_action( 'woocommerce_review_order_after_payment', 'woocommerce_gzd_template_render_checkout_checkboxes' ) ) {
+				return false;
+			}
+			$gzd_terms = function_exists( 'wc_gzd_get_legal_checkbox' ) ? wc_gzd_get_legal_checkbox( 'terms' ) : false;
+			if ( $gzd_terms && $gzd_terms->is_enabled() && in_array( 'checkout', (array) $gzd_terms->get_locations(), true ) ) {
 				return false;
 			}
 
-			// Germanized not managing checkboxes, show FunnelKit terms
 			return $show;
 		}
 	}

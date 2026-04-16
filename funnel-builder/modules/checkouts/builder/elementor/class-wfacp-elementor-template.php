@@ -120,7 +120,7 @@ if ( ! class_exists( 'WFACP_Elementor_Template' ) ) {
 				$messages   .= sprintf( '<div class="woocommerce-message1 wfacp_coupon_success">%s %s</div>', $parse_message, $remove_link );
 
 			}
-			$fragments['.wfacp_coupon_msg .woocommerce-message'] = '<div class="woocommerce-message wfacp_sucuss">' . $messages . '</div>';
+			$fragments['.wfacp_coupon_msg .woocommerce-message'] = '<div class="woocommerce-message wfacp_success">' . $messages . '</div>';
 
 			return $fragments;
 		}

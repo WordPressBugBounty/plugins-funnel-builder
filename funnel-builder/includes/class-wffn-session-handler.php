@@ -80,7 +80,7 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 				 * Serve the transient from the wc_session if exists
 				 */
 
-				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+				if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 					WC()->session->set( '_wffn_session_id', $get_hash );
 				}
 			}
@@ -161,7 +161,7 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 
 			$this->transient_key = null;
 
-			if ( wffn_is_wc_active() && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+			if ( wffn_is_wc_active() && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 				WC()->session->set( '_wffn_session_id', '' );
 			}
 
@@ -279,7 +279,7 @@ if ( ! class_exists( 'WFFN_Session_Handler' ) ) {
 			/**
 			 * Serve the transient from the wc_session if exists
 			 */
-			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && WC()->session->has_session() ) {
+			if ( function_exists( 'WC' ) && ! is_null( WC()->session ) && method_exists( WC()->session, 'has_session' ) && WC()->session->has_session() ) {
 
 				$cookie_value = WC()->session->get( '_wffn_session_id', '' );
 			}

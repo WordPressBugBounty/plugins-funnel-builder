@@ -183,15 +183,17 @@ class WFACP_Compatibility_Subscription {
 				$price_html = WFACP_Common::get_subscription_price( $pro, $price_data );
 			}
 
-			if ( $main_product_price == $price_html || $price_html > $main_product_price ) {
-				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo wc_price( $price_html );
-				// phpcs:enable
+			$regular_org = isset( $price_data['regular_org'] ) ? floatval( $price_data['regular_org'] ) : 0;
+			$price       = isset( $price_data['price'] ) ? floatval( $price_data['price'] ) : 0;
+
+			if ( $regular_org > 0 && round( $price, 2 ) !== round( $regular_org, 2 ) && $price < $regular_org ) {
+				$price_output = wc_format_sale_price( $main_product_price, $price_html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			} else {
-				// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo wc_format_sale_price( $main_product_price, $price_html );
-				// phpcs:enable
+				$price_output = wc_price( $price_html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
+
+			// Product-switcher context only; cart lines use wfacp_subscription_price_display with ( $html, $_product, $cart_item, $cart_item_key ).
+			echo apply_filters( 'wfacp_subscription_price_display_switcher', $price_output, $pro, $price_data, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 

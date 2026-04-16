@@ -1555,6 +1555,13 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					),
 				);
 				$resp['data']['fields_types'] = apply_filters( 'wfacp_register_advanced_field_types', $fields_types );
+
+				$field_conditions                 = apply_filters( 'wfacp_field_conditions', array(), $step_id );
+				$resp['data']['field_conditions'] = ! empty( $field_conditions ) ? $field_conditions : new stdClass();
+
+				// WooCommerce shipping status for conditional fields UI notice.
+				$ship_to                             = get_option( 'woocommerce_ship_to_countries', '' );
+				$resp['data']['is_shipping_enabled'] = ! empty( $ship_to ) && 'disabled' !== $ship_to;
 			}
 
 			return rest_ensure_response( $resp );
@@ -1623,12 +1630,14 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 						foreach ( $steps as &$step ) {
 							foreach ( $step['fields'] as &$field ) {
 								if ( isset( $field['options'] ) ) {
-									$options             = explode( '|', trim( $field['options'] ) );
+									$opts_val            = is_array( $field['options'] ) ? implode( '|', $field['options'] ) : $field['options'];
+									$options             = explode( '|', trim( (string) $opts_val ) );
 									$new_sanitize_option = array();
 									if ( is_array( $options ) && count( $options ) > 0 ) {
 										foreach ( $options as $option ) {
-											$key                                  = sanitize_title( trim( $option ) );
-											$new_sanitize_option[ (string) $key ] = trim( $option );
+											$opt_str                              = is_array( $option ) ? '' : (string) $option;
+											$key                                  = sanitize_title( trim( $opt_str ) );
+											$new_sanitize_option[ (string) $key ] = trim( $opt_str );
 										}
 									}
 									$field['options'] = $new_sanitize_option;
@@ -1696,6 +1705,10 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					$resp['success']        = true;
 					$resp['msg']            = __( 'Fields Updated', 'funnel-builder' );
 					$resp['data']['fields'] = $data;
+
+					// Return updated field_conditions after cleanup_removed_fields may have pruned stale rules.
+					$field_conditions                 = apply_filters( 'wfacp_field_conditions', array(), $wfacp_id );
+					$resp['data']['field_conditions'] = ! empty( $field_conditions ) ? $field_conditions : new stdClass();
 				}
 			}
 
@@ -1980,17 +1993,19 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 			if ( absint( $step_id ) > 0 && ! empty( $fields ) && class_exists( 'WFACP_Common' ) ) {
 				$wfacp_id                      = absint( $step_id );
 				$posted_data                   = $this->sanitize_custom( $fields, 1 );
-				$name                          = trim( $posted_data['name'] );
+				$name                          = trim( is_array( $posted_data['name'] ?? null ) ? '' : (string) ( $posted_data['name'] ?? '' ) );
 				$name                          = sanitize_title( $name );
-				$label                         = wp_kses_post( stripslashes( trim( $posted_data['label'] ) ) );
-				$placeholder                   = trim( $posted_data['placeholder'] );
-				$cssready                      = $posted_data['cssready'] !== '' ? explode( ',', trim( $posted_data['cssready'] ) ) : array();
-				$field_type                    = trim( $posted_data['field_type'] );
-				$section_type                  = trim( $posted_data['section_type'] );
+				$label                         = wp_kses_post( stripslashes( trim( is_array( $posted_data['label'] ?? null ) ? '' : (string) ( $posted_data['label'] ?? '' ) ) ) );
+				$placeholder                   = trim( is_array( $posted_data['placeholder'] ?? null ) ? '' : (string) ( $posted_data['placeholder'] ?? '' ) );
+				$cssready_val                  = $posted_data['cssready'] ?? '';
+				$cssready                      = ( $cssready_val !== '' && ! is_array( $cssready_val ) ) ? explode( ',', trim( (string) $cssready_val ) ) : array();
+				$field_type                    = trim( is_array( $posted_data['field_type'] ?? null ) ? '' : (string) ( $posted_data['field_type'] ?? '' ) );
+				$section_type                  = trim( is_array( $posted_data['section_type'] ?? null ) ? '' : (string) ( $posted_data['section_type'] ?? '' ) );
 				$show_custom_field_at_thankyou = ! empty( $posted_data['show_custom_field_at_thankyou'] ) ? wffn_string_to_bool( $posted_data['show_custom_field_at_thankyou'] ) : false;
 				$show_custom_field_at_email    = ! empty( $posted_data['show_custom_field_at_email'] ) ? wffn_string_to_bool( $posted_data['show_custom_field_at_email'] ) : false;
-				$default                       = trim( $posted_data['default'] );
-				$options                       = $posted_data['options'] !== '' ? ( explode( '|', trim( $posted_data['options'] ) ) ) : '';
+				$default                       = trim( is_array( $posted_data['default'] ?? null ) ? '' : (string) ( $posted_data['default'] ?? '' ) );
+				$options_val                   = $posted_data['options'] ?? '';
+				$options                       = ( $options_val !== '' && ! is_array( $options_val ) ) ? explode( '|', trim( (string) $options_val ) ) : '';
 
 				if ( method_exists( 'WC_Order', "set_{$name}" ) ) {
 					$resp['msg'] = __( 'The provided field Id is a reserved field Id in WooCommerce.', 'funnel-builder' );
@@ -2013,7 +2028,7 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					return rest_ensure_response( $resp );
 				}
 
-				$required = trim( $posted_data['required'] );
+				$required = trim( is_array( $posted_data['required'] ?? null ) ? '' : (string) ( $posted_data['required'] ?? '' ) );
 				$data     = array(
 					'id'                            => $name,
 					'label'                         => $label,
@@ -2030,8 +2045,8 @@ if ( ! class_exists( 'WFFN_REST_CHECKOUT_API_EndPoint' ) ) {
 					'field_type'                    => 'advanced',
 				);
 				if ( 'multiselect' === $field_type ) {
-					$data['multiselect_maximum']       = trim( $posted_data['multiselect_maximum'] );
-					$data['multiselect_maximum_error'] = trim( $posted_data['multiselect_maximum_error'] );
+					$data['multiselect_maximum']       = trim( is_array( $posted_data['multiselect_maximum'] ?? null ) ? '' : (string) ( $posted_data['multiselect_maximum'] ?? '' ) );
+					$data['multiselect_maximum_error'] = trim( is_array( $posted_data['multiselect_maximum_error'] ?? null ) ? '' : (string) ( $posted_data['multiselect_maximum_error'] ?? '' ) );
 				}
 				if ( 'email' === $field_type ) {
 					$data['validate'][] = 'email';

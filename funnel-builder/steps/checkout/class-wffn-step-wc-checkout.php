@@ -39,6 +39,11 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 			add_filter( 'wfacp_update_report_views', array( $this, 'maybe_already_recoded_views' ), 10, 2 );
 			add_filter( 'wfacp_global_checkout_page_id', array( $this, 'maybe_override_global_checkout_id' ), 8, 1 );
 			add_action( 'woocommerce_checkout_update_order_review', array( $this, 'setup_funnel_on_update_order' ), 99, 1 );
+
+			// Checkout redirect: proxy hooks — class loaded only when these filters actually fire.
+			add_filter( 'wfacp_global_checkout_page_id', array( $this, 'fk_checkout_redirect_resolve' ), 10 );
+			add_filter( 'woocommerce_product_add_to_cart_text', array( $this, 'fk_checkout_redirect_cart_text' ), 10, 2 );
+			add_filter( 'woocommerce_product_single_add_to_cart_text', array( $this, 'fk_checkout_redirect_cart_text' ), 10, 2 );
 		}
 
 		/**
@@ -88,8 +93,20 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 		}
 
 
-		public function get_step_designs( $term, $funnel_id = 0 ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			$active_pages    = $this->get_checkout_pages( $term );
+		public function get_step_designs( $term, $funnel_id = 0, $extra_args = array() ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+			$is_checkout_redirect = ! empty( $extra_args['checkout_redirect'] );
+
+			// When called from the checkout redirect search, resolve the store checkout
+			// funnel ID so we can exclude all of its checkout steps from results.
+			// WFFN_Common::get_store_checkout_id() returns the funnel ID (stored as
+			// _bwf_global_funnel). A store checkout funnel may contain multiple checkout
+			// steps — excluding the whole funnel covers all of them.
+			$exclude_funnel_id = 0;
+			if ( $is_checkout_redirect && class_exists( 'WFFN_Common' ) && method_exists( 'WFFN_Common', 'get_store_checkout_id' ) ) {
+				$exclude_funnel_id = WFFN_Common::get_store_checkout_id();
+			}
+
+			$active_pages    = $this->get_checkout_pages( $term, $extra_args );
 			$inside_funnels  = array();
 			$outside_funnels = array();
 			foreach ( $active_pages as $active_page ) {
@@ -117,6 +134,10 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 
 				$funnel = new WFFN_Funnel( $bwf_funnel_id );
 				if ( absint( $bwf_funnel_id ) > 0 && ! empty( $funnel->get_title() ) ) {
+					// Exclude every step that belongs to the store checkout funnel.
+					if ( $exclude_funnel_id > 0 && (int) $bwf_funnel_id === $exclude_funnel_id ) {
+						continue;
+					}
 					if ( ! isset( $inside_funnels[ $bwf_funnel_id ] ) ) {
 						$inside_funnels[ $bwf_funnel_id ] = array(
 							'name'  => $funnel->get_title(),
@@ -142,9 +163,17 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 			return array_merge( $inside_funnels, $outside_funnels );
 		}
 
-		public function get_checkout_pages( $term ) {
+		public function get_checkout_pages( $term, $extra_args = array() ) {
+			$is_checkout_redirect = ! empty( $extra_args['checkout_redirect'] );
+
+			// For the checkout redirect search we only need wfacp_checkout posts —
+			// pages are irrelevant there and excluding them keeps results clean.
+			$post_types = $is_checkout_redirect
+				? array( WFACP_Common::get_post_type_slug() )
+				: array( WFACP_Common::get_post_type_slug(), 'cartflows_step', 'page' );
+
 			$args = array(
-				'post_type'   => array( WFACP_Common::get_post_type_slug(), 'cartflows_step', 'page' ),
+				'post_type'   => $post_types,
 				'post_status' => 'any',
 			);
 			if ( ! empty( $term ) ) {
@@ -890,7 +919,7 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 				return $is;
 			}
 			$key          = 'wffn_ay_' . WFFN_Core()->data->get_transient_key();
-			$cookie_value = isset( $_COOKIE[ $key ] ) ? wffn_clean( $_COOKIE[ $key ] ) : ''; //phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
+			$cookie_value = isset( $_COOKIE[ $key ] ) ? wffn_clean( wp_unslash( $_COOKIE[ $key ] ) ) : ''; //phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 			$cookie_value = explode( ',', str_replace( array( '[', ']' ), '', $cookie_value ) );
 			if ( is_array( $cookie_value ) && in_array( $aero_id, $cookie_value ) ) { //phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
 				$is = true;
@@ -1015,6 +1044,37 @@ if ( ! class_exists( 'WFFN_Step_WC_Checkout' ) ) {
 			}
 
 			return $meta_value;
+		}
+
+		/**
+		 * Proxy: lazy-load FK_Checkout_Redirect and resolve checkout from cart.
+		 * Runs at priority 10 on wfacp_global_checkout_page_id, after the store
+		 * checkout override at priority 8.
+		 *
+		 * @param int $checkout_page_id
+		 * @return int
+		 */
+		public function fk_checkout_redirect_resolve( $checkout_page_id ) {
+			if ( did_action( 'wp_loaded' ) <= 0 ) {
+				return $checkout_page_id;
+			}
+			require_once WFFN_PLUGIN_DIR . '/includes/class-fk-checkout-redirect.php';
+
+			return FK_Checkout_Redirect::get_instance()->resolve_checkout_from_cart( $checkout_page_id );
+		}
+
+		/**
+		 * Proxy: lazy-load FK_Checkout_Redirect and override add-to-cart button text.
+		 * Handles both archive and single product page text filters.
+		 *
+		 * @param string     $text
+		 * @param WC_Product $product
+		 * @return string
+		 */
+		public function fk_checkout_redirect_cart_text( $text, $product ) {
+			require_once WFFN_PLUGIN_DIR . '/includes/class-fk-checkout-redirect.php';
+
+			return FK_Checkout_Redirect::get_instance()->override_add_to_cart_text( $text, $product );
 		}
 	}
 
