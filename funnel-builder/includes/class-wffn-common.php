@@ -610,45 +610,10 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		/**
 		 * Check if Divi 5 Visual Builder is active.
 		 *
-		 * Checks the official API first, then falls back to structural indicators
-		 * for environments where et_builder_d5_enabled() is not yet available.
-		 *
 		 * @return bool
 		 */
 		public static function is_divi5_active() {
-			if ( function_exists( 'et_builder_d5_enabled' ) ) {
-				return et_builder_d5_enabled();
-			}
-
-			if ( interface_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
-				return true;
-			}
-
-			if ( defined( 'ET_BUILDER_5_DIR' ) ) {
-				return true;
-			}
-
-			$theme_dir = get_template_directory();
-			if ( file_exists( $theme_dir . '/et-pagebuilder/builder-5.php' ) ) {
-				return true;
-			}
-
-			$theme = wp_get_theme();
-			if ( $theme instanceof WP_Theme ) {
-				$theme_name = $theme->get( 'Name' );
-				$parent     = $theme->parent();
-				if ( $parent instanceof WP_Theme ) {
-					$theme_name = $parent->get( 'Name' );
-				}
-
-				if ( 'Divi' === $theme_name || 'Divi' === $theme->get_template() ) {
-					if ( file_exists( $theme_dir . '/et-pagebuilder/builder-5.php' ) ) {
-						return true;
-					}
-				}
-			}
-
-			return false;
+			return function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
 		}
 
 		/**

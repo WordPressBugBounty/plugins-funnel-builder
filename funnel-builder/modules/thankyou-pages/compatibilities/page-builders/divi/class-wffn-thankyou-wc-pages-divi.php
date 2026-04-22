@@ -24,7 +24,6 @@ if ( ! class_exists( 'WFFN_ThankYou_WC_Pages_Divi' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'initialize_deep_integration' ), 2 );
 			add_action( 'init', array( $this, 'initialize_deep_integration' ), 1 );
 			add_action( 'divi_extensions_init', array( $this, 'init_extension' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_divi_css' ), 20 );
 		}
 
 		/**
@@ -464,6 +463,8 @@ if ( ! class_exists( 'WFFN_ThankYou_WC_Pages_Divi' ) ) {
 		}
 
 		public function init_extension() {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_divi_css' ), 20 );
+
 			if ( wp_doing_ajax() ) {
 				$post_type = WFFN_Core()->thank_you_pages->get_post_type_slug();
 				if ( isset( $_REQUEST['action'] ) && 'et_fb_get_saved_templates' === $_REQUEST['action'] && isset( $_REQUEST['et_post_type'] ) && $post_type !== $_REQUEST['et_post_type'] ) {  //phpcs:ignore WordPress.Security.NonceVerification.Recommended, FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck

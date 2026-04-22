@@ -71,6 +71,10 @@ if ( ! defined( 'WFACP_DIVI5_MODULES_LOADED' ) ) {
 	add_action(
 		'rest_api_init',
 		function () {
+			if ( ! interface_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
+				return;
+			}
+
 			$modules_dir = plugin_dir_path( __FILE__ );
 
 			// CheckoutForm REST routes.

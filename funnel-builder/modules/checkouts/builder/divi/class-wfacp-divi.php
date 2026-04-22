@@ -130,16 +130,31 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				remove_filter( 'the_content', 'et_builder_add_builder_content_wrapper' );
 				add_filter( 'wfacp_assign_default_theme_template', '__return_false' );
 				add_filter( 'the_content', array( $this, 'replace_divi_our_page_content' ), 1 );
+				// D5: wrap after do_blocks so the block parser can't drop the freeform wrapper.
+				if ( $this->is_divi5_active() ) {
+					add_filter( 'the_content', array( $this, 'ensure_divi5_builder_wrappers' ), 15 );
+				}
 			}
 		}
 
 		public function replace_divi_our_page_content( $content ) {
 			if ( '' !== $this->set_our_page_content ) {
-				$content = $this->et_builder_add_builder_content_wrapper( $this->set_our_page_content );
+				// D5 wraps later at priority 15; D4 wraps inline here.
+				$content = $this->is_divi5_active()
+					? $this->set_our_page_content
+					: $this->et_builder_add_builder_content_wrapper( $this->set_our_page_content );
 			}
 			do_action( 'wfacp_divi_page_content_replaced', $this, $content );
 
 			return $content;
+		}
+
+		// D5 safety net: re-add #et-boc/.et-l--post wrappers after do_blocks() if the parser dropped them.
+		public function ensure_divi5_builder_wrappers( $content ) {
+			if ( false !== strpos( $content, '<div id="et-boc"' ) ) {
+				return $content;
+			}
+			return $this->et_builder_add_builder_content_wrapper( $content );
 		}
 
 		public function et_builder_add_builder_content_wrapper( $content ) {
@@ -391,7 +406,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 				// Modules.php registers on divi_module_library_modules_dependency_tree (init:0)
 				// but we load at init:10, so that hook is missed. Directly instantiate and
 				// call load() on each module to trigger ModuleRegistration::register_module().
-				if ( did_action( 'init' ) ) {
+				if ( did_action( 'init' ) && interface_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
 					$modules_dir = WFACP_Core()->dir( 'builder/divi-5/modules/' );
 					$module_map  = array(
 						'CheckoutForm' => 'WFACP\\Modules\\CheckoutForm\\CheckoutForm',

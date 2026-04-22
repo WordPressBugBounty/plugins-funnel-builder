@@ -55,22 +55,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Divi' ) ) {
 		 * @return bool
 		 */
 		private function is_divi_5(): bool {
-			// Primary check: Official Divi 5 detection function
-			if ( function_exists( 'et_builder_d5_enabled' ) ) {
-				return et_builder_d5_enabled();
-			}
-
-			// Fallback: Check for Divi 5 classes
-			if ( class_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
-				return true;
-			}
-
-			// Fallback: Check for Divi 5 constant
-			if ( defined( 'ET_BUILDER_5_DIR' ) ) {
-				return true;
-			}
-
-			return false;
+			return function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
 		}
 
 		/**
@@ -519,8 +504,6 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Divi' ) ) {
 		 * All code loaded from divi/ folder
 		 */
 		private function initialize_divi4_integration() {
-			// Enqueue divi.css on optin pages for Divi 4 (extension may not enqueue in all contexts).
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_divi_optin_styles' ), 99 );
 			// Divi 4 extension loads via divi_extensions_init hook in init_extension()
 		}
 
@@ -611,6 +594,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Divi' ) ) {
 		 * initialize_divi5_integration() when Divi 5 is active).
 		 */
 		public function init_extension() {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_divi_optin_styles' ), 99 );
 
 			if ( wp_doing_ajax() ) {
 				$post_type = WFOPP_Core()->optin_pages->get_post_type_slug();
