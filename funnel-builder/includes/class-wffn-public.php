@@ -280,6 +280,11 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 
 					$get_data = json_decode( stripslashes( $get_data ), true );
 					if ( is_array( $get_data ) ) {
+						$validation = $this->validate_funnel_setup_data( $get_data );
+						if ( is_wp_error( $validation ) ) {
+							wp_send_json( $result );
+							return;
+						}
 						$result = $this->maybe_record_data_with_funnel_setup( array( 'data' => $get_data ) );
 					}
 				} catch ( Exception | Error $e ) {
@@ -974,7 +979,7 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 						WFFN_Core()->data->set(
 							'current_step',
 							array(
-								'id'   => $data['current_step']['id'],
+								'id'   => absint( $data['current_step']['id'] ),
 								'type' => ( $data['current_step']['post_type'] === 'wffn_oty' ) ? 'optin_ty' : 'wc_thankyou',
 							)
 						);
@@ -1022,6 +1027,30 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 			}
 		}
 
+		public function validate_funnel_setup_data( $data, $request = null, $param = null ) {
+			if ( ! is_array( $data ) ) {
+				return true;
+			}
+			$allowed_post_types = array( 'wffn_ty', 'wffn_landing', 'wffn_optin', 'wffn_oty' );
+			$track_data         = isset( $data['track_data'] ) ? $data['track_data'] : array();
+			if ( ! is_array( $track_data ) ) {
+				return new WP_Error( 'invalid_track_data', 'track_data must be an array.' );
+			}
+			foreach ( $track_data as $item ) {
+				if ( ! is_array( $item ) || ! isset( $item['current_step'] ) || ! is_array( $item['current_step'] ) ) {
+					continue;
+				}
+				$step = $item['current_step'];
+				if ( isset( $step['id'] ) && ! is_numeric( $step['id'] ) ) {
+					return new WP_Error( 'invalid_step_id', 'current_step.id must be numeric.' );
+				}
+				if ( isset( $step['post_type'] ) && ! in_array( $step['post_type'], $allowed_post_types, true ) ) {
+					return new WP_Error( 'invalid_post_type', 'current_step.post_type is not allowed.' );
+				}
+			}
+			return true;
+		}
+
 		public function register_routes() {
 			register_rest_route(
 				'wffn',
@@ -1030,6 +1059,16 @@ if ( ! class_exists( 'WFFN_Public' ) ) {
 					'methods'             => WP_REST_Server::EDITABLE,
 					'callback'            => array( $this, 'handle_api_request' ),
 					'permission_callback' => '__return_true',
+					'args'                => array(
+						'action' => array(
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'data'   => array(
+							'type'              => 'object',
+							'validate_callback' => array( $this, 'validate_funnel_setup_data' ),
+						),
+					),
 				)
 			);
 		}

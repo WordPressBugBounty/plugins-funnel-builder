@@ -21,8 +21,7 @@ if ( ! class_exists( 'WFFN_ThankYou_WC_Pages_Divi' ) ) {
 		 */
 		public function __construct() {
 			$this->url = plugin_dir_url( __FILE__ );
-			add_action( 'plugins_loaded', array( $this, 'initialize_deep_integration' ), 2 );
-			add_action( 'init', array( $this, 'initialize_deep_integration' ), 1 );
+			add_action( 'after_setup_theme', array( $this, 'initialize_deep_integration' ), 2 );
 			add_action( 'divi_extensions_init', array( $this, 'init_extension' ) );
 		}
 
@@ -46,9 +45,10 @@ if ( ! class_exists( 'WFFN_ThankYou_WC_Pages_Divi' ) ) {
 		 */
 		private function is_divi_5(): bool {
 			if ( function_exists( 'et_builder_d5_enabled' ) ) {
+
 				return et_builder_d5_enabled();
 			}
-			if ( class_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
+			if ( interface_exists( 'ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface' ) ) {
 				return true;
 			}
 			if ( defined( 'ET_BUILDER_5_DIR' ) ) {

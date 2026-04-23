@@ -613,7 +613,10 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 		 * @return bool
 		 */
 		public static function is_divi5_active() {
-			return function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
+			if ( did_action( 'after_setup_theme' ) ) {
+				return function_exists( 'et_builder_d5_enabled' ) && et_builder_d5_enabled();
+			}
+			return false;
 		}
 
 		/**

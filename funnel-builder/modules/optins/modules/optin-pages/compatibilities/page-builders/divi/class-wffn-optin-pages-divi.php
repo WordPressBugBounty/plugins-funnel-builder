@@ -24,8 +24,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Divi' ) ) {
 
 			// Add Divi 5 detection hook - use priority 2 like upsell sadad
 			// Also add init hook as fallback in case plugins_loaded fires too early
-			add_action( 'plugins_loaded', array( $this, 'initialize_deep_integration' ), 2 );
-			add_action( 'init', array( $this, 'initialize_deep_integration' ), 1 );
+			add_action( 'after_setup_theme', array( $this, 'initialize_deep_integration' ), 2 );
 
 			// Keep Divi 4 hook for backward compatibility
 			add_action( 'divi_extensions_init', array( $this, 'init_extension' ) );

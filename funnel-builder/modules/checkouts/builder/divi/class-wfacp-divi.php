@@ -8,15 +8,6 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 		private function __construct() {
 			add_action( 'after_setup_theme', array( $this, 'init' ), 5 );
 
-			// Register global D5 hooks (conversion outlines, legacy hiding) early.
-			// Post-type-specific D5 module loading is deferred to init:10 via
-			// maybe_load_d5_modules() where url_to_postid() can resolve the page.
-			if ( did_action( 'plugins_loaded' ) ) {
-				$this->load_divi5_modules();
-			} else {
-				add_action( 'plugins_loaded', array( $this, 'load_divi5_modules' ), 2 );
-			}
-
 			add_action( 'wfacp_register_template_types', array( $this, 'register_template_type' ), 12 );
 			add_filter( 'wfacp_register_templates', array( $this, 'register_templates' ) );
 			add_filter( 'wfacp_template_edit_link', array( $this, 'add_template_edit_link' ), 10, 2 );
@@ -30,6 +21,7 @@ if ( ! class_exists( 'WFACP_DIVI' ) ) {
 			if ( ! ( class_exists( 'ET_Builder_Plugin' ) || function_exists( 'et_setup_theme' ) ) ) {
 				return;
 			}
+			$this->load_divi5_modules();
 			add_filter( 'wfacp_is_theme_builder', array( $this, 'is_divi_page' ) );
 			add_action( 'wfacp_template_removed', array( $this, 'delete_divi_data' ) );
 			add_action( 'wfacp_duplicate_pages', array( $this, 'duplicate_template' ), 10, 3 );
