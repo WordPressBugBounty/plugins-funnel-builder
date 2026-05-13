@@ -48,10 +48,6 @@ if ( ! class_exists( 'WFACP_OXY' ) ) {
 			add_action( 'oxygen_enqueue_frontend_scripts', array( $this, 'enable_self_page_css' ) );
 		}
 
-		private function importer() {
-			add_action( 'wp_loaded', array( $this, 'load_oxy_importer' ), 150 );
-		}
-
 		public function load_oxy_importer() {
 			require __DIR__ . '/class-wfacp-oxy-importer.php';
 		}

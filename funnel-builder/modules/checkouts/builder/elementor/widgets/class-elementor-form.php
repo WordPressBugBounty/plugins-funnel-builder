@@ -1221,38 +1221,6 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			$this->end_tab();
 		}
 
-		private function set_typo_default_value( $fontFamily = '' ) {
-
-			$fields_options = array(
-				'font_size'       => array(
-					'default' => array(
-						'unit' => 'px',
-						'size' => 14,
-					),
-				),
-				'font_weight'     => array(
-					'default' => '500',
-				),
-				'font_style'      => array(
-					'default' => 'normal',
-				),
-				'text_decoration' => array(
-					'default' => 'none',
-				),
-				'text_transform'  => array(
-					'default' => 'none',
-				),
-
-			);
-			if ( ! empty( $fontFamily ) ) {
-				$fields_options['font_family'] = array( 'default' => $fontFamily );
-			}
-
-			$this->typo_default_value = $fields_options;
-
-			return $this->typo_default_value;
-		}
-
 		private function global_typography() {
 			$this->add_tab( __( 'Checkout Form', 'funnel-builder' ), 2 );
 

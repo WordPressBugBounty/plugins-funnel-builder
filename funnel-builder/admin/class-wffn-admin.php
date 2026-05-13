@@ -822,7 +822,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 				wp_enqueue_style( 'wffn-flex-admin', $this->get_admin_url() . '/assets/css/admin.css', array(), WFFN_VERSION_DEV );
 
 				if ( WFFN_Core()->admin->is_wffn_flex_page() ) {
-					$this->load_react_app( 'main-20260423144444' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
+					$this->load_react_app( 'main-20260513095732' ); //phpcs:ignore WordPressVIPMinimum.Security.Mustache.OutputNotation
 					if ( isset( $_GET['page'] ) && $_GET['page'] === 'bwf' && method_exists( 'BWF_Admin_General_Settings', 'get_localized_bwf_data' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 						wp_localize_script( 'wffn-contact-admin', 'bwfAdminGen', BWF_Admin_General_Settings::get_instance()->get_localized_bwf_data() );
 
@@ -1923,7 +1923,7 @@ if ( ! class_exists( 'WFFN_Admin' ) ) {
 
 				if ( empty( $post_type ) && ! empty( $page_id ) ) {
 					$t_post = get_post( $page_id );
-					if ( in_array( $t_post->post_type, array( WFFN_Core()->landing_pages->get_post_type_slug(), WFOPP_Core()->optin_pages->get_post_type_slug() ), true ) ) {
+					if ( $t_post instanceof \WP_Post && in_array( $t_post->post_type, array( WFFN_Core()->landing_pages->get_post_type_slug(), WFOPP_Core()->optin_pages->get_post_type_slug() ), true ) ) {
 						$query->set( 'post_type', get_post_type( $page_id ) );
 					}
 				}

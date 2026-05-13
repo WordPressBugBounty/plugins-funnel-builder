@@ -85,16 +85,19 @@ if (typeof wfacp_frontend === 'undefined') {
             window.addEventListener('unload', (e) => {
                 this.showShimmer()
             });
-            $(document.body).on('updated_checkout', this.handleCheckout.bind(this));
-            $(document.body).on('fkwcs_generate_smart_buttons', this.fkwcs_smart_buttons_shown.bind(this));
+            $(document.body).on('updated_checkout', () => {
+                this.handleCheckout();
+            });
+            $(document.body).on('fkwcs_generate_smart_buttons', (e, ...args) => {
+                this.fkwcs_smart_buttons_shown();
+            });
 			// For old stripe express checkout
-			$(document.body).on('fkwcs_smart_buttons_showed', this.fkwcs_smart_buttons_shown.bind(this));
-			$(document.body).on('fkwcs_google_ready_pay',this.fkwcs_smart_buttons_shown.bind(this));
-
-
-            $(document.body).on('fkwcs_new_express_no_smart_buttons_generated', this.fkwcs_smart_buttons_shown.bind(this, true));
-            $(document.body).on('fkwcs_new_express_smart_buttons_showed', this.fkwcs_smart_buttons_shown.bind(this, true));
-            $(document.body).on('fkwcs_new_express_smart_buttons_catch', this.fkwcs_smart_buttons_shown.bind(this, true));
+			$(document.body).on('fkwcs_smart_buttons_showed', (e, ...args) => {
+                this.fkwcs_smart_buttons_shown();
+            });
+			$(document.body).on('fkwcs_google_ready_pay', (e, ...args) => {
+                this.fkwcs_smart_buttons_shown();
+            });
 			this.checkButtons();
 			$(document.body).trigger('wfacp_smart_buttons_dom_loaded');
         }
@@ -104,10 +107,6 @@ if (typeof wfacp_frontend === 'undefined') {
         }
 
         updateWrapperClass(update_count = false) {
-            if (false === this.fkwcs_smart_buttons_ready()) {
-                console.log('Funnel Kit Smart Buttons not ready updateWrapperClass');
-                // return;
-            }
 
 
             let btn_counts = Object.keys(this.available_buttons).length;
@@ -218,8 +217,10 @@ if (typeof wfacp_frontend === 'undefined') {
                 const observer = new MutationObserver((mutationsList) => {
                     for (let mutation of mutationsList) {
                         if (mutation.type === 'childList') {
+                            observer.disconnect();
                             this.showButton(parent);
                             this.showButtonOnMobile();
+                            return;
                         }
                     }
                 });

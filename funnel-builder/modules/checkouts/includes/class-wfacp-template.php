@@ -966,32 +966,38 @@ if ( ! class_exists( 'WFACP_Template_Common' ) ) {
 					}
 				}
 
-				if ( ! isset( $template_fields['shipping']['shipping_first_name'] ) && true == $billing_first_name ) {
+				if ( ! isset( $template_fields['shipping']['shipping_first_name'] ) && true == $billing_first_name && isset( $template_fields['billing']['billing_first_name'] ) ) {
 					$template_fields['shipping']['shipping_first_name']       = $template_fields['billing']['billing_first_name'];
 					$template_fields['shipping']['shipping_first_name']['id'] = 'shipping_first_name';
 					if ( isset( $template_fields['shipping']['shipping_first_name']['required'] ) ) {
 						unset( $template_fields['shipping']['shipping_first_name']['required'] );
 					}
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Public checkout form processing
-					$billing_first_name_value = bwf_clean( wp_unslash( $_POST['billing_first_name'] ) );
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
-					$_POST['shipping_first_name'] = $billing_first_name_value;
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
-					$_REQUEST['shipping_first_name'] = $billing_first_name_value;
+					if ( isset( $_POST['billing_first_name'] ) ) {
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Public checkout form processing
+						$billing_first_name_value = bwf_clean( wp_unslash( $_POST['billing_first_name'] ) );
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
+						$_POST['shipping_first_name'] = $billing_first_name_value;
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
+						$_REQUEST['shipping_first_name'] = $billing_first_name_value;
+					}
 				}
 
-				if ( ! isset( $template_fields['shipping']['shipping_last_name'] ) && true == $billing_last_name ) {
+				if ( ! isset( $template_fields['shipping']['shipping_last_name'] ) && true == $billing_last_name && isset( $template_fields['billing']['billing_last_name'] ) ) {
 					$template_fields['shipping']['shipping_last_name'] = $template_fields['billing']['billing_last_name'];
 					if ( isset( $template_fields['shipping']['shipping_last_name']['required'] ) ) {
 						unset( $template_fields['shipping']['shipping_last_name']['required'] );
 					}
 					$template_fields['shipping']['shipping_last_name']['id'] = 'shipping_last_name';
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Public checkout form processing
-					$billing_last_name_value = bwf_clean( wp_unslash( $_POST['billing_last_name'] ) );
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
-					$_POST['shipping_last_name'] = $billing_last_name_value;
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
-					$_REQUEST['shipping_last_name'] = $billing_last_name_value;
+					if ( isset( $_POST['billing_last_name'] ) ) {
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck,WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Public checkout form processing
+						$billing_last_name_value = bwf_clean( wp_unslash( $_POST['billing_last_name'] ) );
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
+						$_POST['shipping_last_name'] = $billing_last_name_value;
+						// phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Public checkout form processing
+						$_REQUEST['shipping_last_name'] = $billing_last_name_value;
+					}
 				}
 			}
 

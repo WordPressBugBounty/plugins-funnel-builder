@@ -150,47 +150,6 @@ if ( ! class_exists( 'WFFN_Feature' ) ) {
 			);
 		}
 
-		/**
-		 * Get published post IDs from a list of post IDs using a single SQL query
-		 * OPTIMIZATION: Avoids individual get_post() calls that trigger full post object loading
-		 * NOTE: This method is kept for backward compatibility but get_post_type_data() is preferred
-		 *
-		 * @param array  $post_ids Array of post IDs
-		 * @param string $post_type Post type (for validation)
-		 *
-		 * @return array Array of published post IDs
-		 */
-		private function get_published_post_ids( $post_ids, $post_type = '' ) {
-			if ( empty( $post_ids ) ) {
-				return array();
-			}
-
-			global $wpdb;
-
-			$post_ids        = array_map( 'intval', $post_ids );
-			$post_ids        = array_unique( $post_ids );
-			$ids_placeholder = implode( ',', array_fill( 0, count( $post_ids ), '%d' ) );
-
-			$where_clause = "ID IN ($ids_placeholder) AND post_status = 'publish'";
-			$prepare_args = $post_ids;
-
-			if ( ! empty( $post_type ) ) {
-				$where_clause  .= ' AND post_type = %s';
-				$prepare_args[] = $post_type;
-			}
-
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
-			// $where_clause contains properly sanitized placeholders built with array_fill()
-			$query = $wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE $where_clause",
-				$prepare_args
-			);
-			// phpcs:enable
-
-			$results = $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
-
-			return array_map( 'intval', $results );
-		}
 
 		/**
 		 * Collect feature adoption data

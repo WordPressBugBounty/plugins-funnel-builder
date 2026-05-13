@@ -7,7 +7,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-23T14:45:19+00:00\n"
+"POT-Creation-Date: 2026-05-13T09:57:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: funnel-builder\n"
@@ -49,7 +49,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Stripe"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Square"
 msgstr ""
 
@@ -138,7 +138,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Settings"
 msgstr ""
 
@@ -261,7 +261,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/30.d6cfde3f96b5c66851f9.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Total Revenue"
 msgstr ""
 
@@ -306,7 +306,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/index.js:138
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Get FunnelKit Stripe"
 msgstr ""
 
@@ -317,7 +317,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/square-connect/index.js:135
 #: admin/views/contact/src/client/components/stripe-connect/index.js:144
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Installs from WordPress.org"
 msgstr ""
 
@@ -355,8 +355,8 @@ msgstr ""
 #: admin/views/contact/src/onboarding/components/stripe-action-button/index.js:98
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Install"
 msgstr ""
 
@@ -366,7 +366,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/index.js:132
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Get FunnelKit Square"
 msgstr ""
 
@@ -437,8 +437,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Upgrade to PRO"
 msgstr ""
 
@@ -511,8 +511,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate"
 msgstr ""
 
@@ -532,8 +532,8 @@ msgstr ""
 #: admin/views/contact/src/onboarding/components/stripe-action-button/index.js:128
 #: admin/views/contact/src/onboarding/components/stripe-action-button/index.js:137
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Connect"
 msgstr ""
 
@@ -768,7 +768,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin-notifications.php:1148
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/quickSetup.js:15
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnel Builder Quick Setup"
 msgstr ""
 
@@ -776,7 +776,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin-notifications.php:1150
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/quickSetup.js:21
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Thank you for activating Funnel Builder by FunnelKit. Go through a quick setup to ensure most optimal experience."
 msgstr ""
 
@@ -784,7 +784,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin-notifications.php:1152
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/quickSetup.js:31
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Start Wizard"
 msgstr ""
 
@@ -801,7 +801,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:34
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Pixel Tracking"
 msgstr ""
 
@@ -812,15 +812,15 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:219
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:340
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:82
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:103
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:155
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:99
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:145
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:85
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:154
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:219
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:340
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:82
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:103
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:155
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:99
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:145
 #: admin/views/contact/dist/49.210d8e273f36d74689b6.js:2
 #: admin/views/contact/dist/49.210d8e273f36d74689b6.js:5
 #: admin/views/contact/dist/50.dabfec77424c7bfdeb08.js:2
@@ -953,7 +953,7 @@ msgstr ""
 #: funnel-builder/admin/includes/class-wffn-header.php:54
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-page-heading/index.js:26
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Dashboard"
 msgstr ""
 
@@ -989,7 +989,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:1
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:2
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnels"
 msgstr ""
 
@@ -1031,7 +1031,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:1
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:2
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Analytics"
 msgstr ""
 
@@ -1055,7 +1055,7 @@ msgstr ""
 #: admin/views/contact/src/templates/templates.js:592
 #: funnel-builder/admin/views/contact/dist/8.3592d77534d71ded35e0.js:2
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Store Checkout"
 msgstr ""
 
@@ -1101,7 +1101,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:791
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Lite"
 msgstr ""
 
@@ -1109,7 +1109,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin.php:1066
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/index.js:146
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "PRO"
 msgstr ""
 
@@ -1139,8 +1139,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/22.d5575f47ed672449f68d.js:3
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "One Click Upsells"
 msgstr ""
 
@@ -1188,7 +1188,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:5
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Upgrade to PRO Now"
 msgstr ""
 
@@ -1264,7 +1264,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Sales"
 msgstr ""
 
@@ -1325,7 +1325,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/src/blocks/optin-form/index.js:16
@@ -1398,7 +1398,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin.php:2441
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/global/funnel-edit-modal.js:91
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Edit Store Checkout"
 msgstr ""
 
@@ -1406,7 +1406,7 @@ msgstr ""
 #: funnel-builder/admin/class-wffn-admin.php:2467
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/global/funnel-edit-modal.js:92
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Edit Funnel"
 msgstr ""
 
@@ -1636,8 +1636,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:2
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Cancel"
 msgstr ""
 
@@ -1781,7 +1781,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:3
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Back"
 msgstr ""
 
@@ -1826,7 +1826,7 @@ msgstr ""
 #: admin/views/contact/src/client/pages/analytics/funnel-analytics/steps-table.js:206
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #: funnel-builder/modules/checkouts/builder/gutenberg/dist/wfacp-block-editor.js:1
 #: modules/checkouts/builder/gutenberg/dist/wfacp-block-editor.js:1
 #: modules/checkouts/builder/gutenberg/src/blocks/checkout-form/inspector-control/general.js:151
@@ -2914,7 +2914,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnel"
 msgstr ""
 
@@ -3059,7 +3059,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Order Bump"
 msgstr ""
 
@@ -3371,7 +3371,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "One Click Upsell"
 msgstr ""
 
@@ -3469,11 +3469,11 @@ msgstr ""
 
 #: admin/rest-api/class-wffn-rest-checkout-api-endpoint.php:375
 #: funnel-builder/admin/rest-api/class-wffn-rest-checkout-api-endpoint.php:375
-#: funnel-builder/modules/checkouts/includes/class-wfacp-ajax-controller.php:157
+#: funnel-builder/modules/checkouts/includes/class-wfacp-ajax-controller.php:164
 #: funnel-builder/modules/checkouts/includes/class-wfacp-common-helper.php:759
 #: funnel-builder/modules/landing-pages/class-wflp-admin.php:207
 #: funnel-builder/modules/optins/modules/optin-pages/class-wffn-optin-pages.php:572
-#: modules/checkouts/includes/class-wfacp-ajax-controller.php:157
+#: modules/checkouts/includes/class-wfacp-ajax-controller.php:164
 #: modules/checkouts/includes/class-wfacp-common-helper.php:759
 #: modules/landing-pages/class-wflp-admin.php:207
 #: modules/optins/modules/optin-pages/class-wffn-optin-pages.php:572
@@ -4704,7 +4704,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Preview"
 msgstr ""
 
@@ -5355,10 +5355,10 @@ msgstr ""
 #: funnel-builder/admin/rest-api/class-wffn-rest-funnel-modules.php:3259
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:321
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:74
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:95
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:117
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:139
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:147
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:113
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:132
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:138
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:52
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:61
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:67
@@ -5373,10 +5373,10 @@ msgstr ""
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/elementor/widget/class-elementor-wfty-customer-details-widget.php:215
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:321
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:74
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:95
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:117
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:139
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:147
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:113
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:132
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:138
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:52
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:61
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:67
@@ -5509,12 +5509,12 @@ msgstr ""
 
 #: admin/rest-api/class-wffn-rest-funnel-modules.php:2468
 #: funnel-builder/admin/rest-api/class-wffn-rest-funnel-modules.php:2468
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:61
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:59
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:21
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/elementor/widget/class-elementor-wfty-customer-details-widget.php:94
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-customer-details-widget.php:46
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-customer-details-widget.php:47
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:61
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:59
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/customer-details.php:21
 #: modules/thankyou-pages/compatibilities/page-builders/elementor/widget/class-elementor-wfty-customer-details-widget.php:94
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-customer-details-widget.php:46
@@ -5692,11 +5692,11 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:125
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:319
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:86
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:107
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:103
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:125
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:319
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:86
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:107
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:103
 msgid "Text Alignment"
 msgstr ""
 
@@ -5714,7 +5714,7 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:130
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:136
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:200
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:148
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:139
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:104
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:112
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:133
@@ -5727,7 +5727,7 @@ msgstr ""
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:130
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:136
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:200
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:148
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:139
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:104
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:112
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:133
@@ -5761,9 +5761,9 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:173
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:60
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:76
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:85
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:97
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:119
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:82
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:93
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:115
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:139
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:175
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:67
@@ -5772,9 +5772,9 @@ msgstr ""
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:173
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:60
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:76
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:85
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:97
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:119
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:82
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:93
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:115
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:139
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:175
 #: admin/views/contact/dist/49.210d8e273f36d74689b6.js:5
@@ -5936,11 +5936,11 @@ msgstr ""
 #: admin/rest-api/class-wffn-rest-funnel-modules.php:3140
 #: funnel-builder/admin/rest-api/class-wffn-rest-funnel-modules.php:3140
 #: funnel-builder/includes/class-abstract-wffn-oxygen-fields.php:641
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1606
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1574
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:550
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/class-abstract-wfty-divi-fields.php:530
 #: includes/class-abstract-wffn-oxygen-fields.php:641
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1606
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1574
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:550
 #: modules/thankyou-pages/compatibilities/page-builders/divi/class-abstract-wfty-divi-fields.php:530
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
@@ -5957,12 +5957,12 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:124
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:318
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:85
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:106
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:102
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/elementor/widget/class-elementor-wfty-customer-details-widget.php:149
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:124
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:318
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:85
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:106
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:102
 #: modules/thankyou-pages/compatibilities/page-builders/elementor/widget/class-elementor-wfty-customer-details-widget.php:149
 #: admin/views/contact/dist/49.210d8e273f36d74689b6.js:5
 #: admin/views/contact/dist/50.dabfec77424c7bfdeb08.js:5
@@ -6005,7 +6005,7 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:104
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:135
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:281
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:131
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:126
 #: funnel-builder/modules/optins/modules/optin-pages/includes/class-wffn-optin-form-field.php:136
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:102
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:110
@@ -6021,7 +6021,7 @@ msgstr ""
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:104
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:135
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:281
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:131
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:126
 #: modules/optins/modules/optin-pages/includes/class-wffn-optin-form-field.php:136
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:102
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:110
@@ -6084,13 +6084,13 @@ msgstr ""
 #: admin/rest-api/class-wffn-rest-funnel-modules.php:3241
 #: funnel-builder/admin/rest-api/class-wffn-rest-funnel-modules.php:3241
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:79
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:101
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:122
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:97
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:118
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:143
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:179
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:79
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:101
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:122
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:97
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:118
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:143
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:179
 #: admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
@@ -6421,12 +6421,12 @@ msgstr ""
 #: funnel-builder/modules/checkouts/builder/divi/class-wfacp-html-block-divi.php:43
 #: funnel-builder/modules/checkouts/builder/divi/modules/class-divi-form.php:11
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:28
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1257
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1225
 #: modules/checkouts/builder/divi/class-wfacp-divi-extension.php:82
 #: modules/checkouts/builder/divi/class-wfacp-html-block-divi.php:43
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:11
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:28
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1257
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1225
 msgid "Checkout Form"
 msgstr ""
 
@@ -7089,7 +7089,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Offer"
 msgstr ""
 
@@ -7165,7 +7165,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/22.d5575f47ed672449f68d.js:3
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Order Bumps"
 msgstr ""
 
@@ -7715,7 +7715,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/10.476ab6dc769f2ab70de9.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Start"
 msgstr ""
 
@@ -8080,7 +8080,7 @@ msgstr ""
 #: funnel-builder/includes/class-abstract-wffn-oxygen-fields.php:813
 #: funnel-builder/modules/checkouts/builder/divi/modules/class-divi-form.php:124
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:199
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1653
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1621
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:682
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:705
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1032
@@ -8090,7 +8090,7 @@ msgstr ""
 #: includes/class-abstract-wffn-oxygen-fields.php:813
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:124
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:199
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1653
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1621
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:682
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:705
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1032
@@ -8104,14 +8104,14 @@ msgid "Full"
 msgstr ""
 
 #: funnel-builder/includes/class-abstract-wffn-oxygen-fields.php:814
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1654
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1622
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:709
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1033
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:25
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:92
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/class-abstract-wfty-divi-fields.php:971
 #: includes/class-abstract-wffn-oxygen-fields.php:814
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1654
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1622
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:709
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1033
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:25
@@ -8124,14 +8124,14 @@ msgid "One Half"
 msgstr ""
 
 #: funnel-builder/includes/class-abstract-wffn-oxygen-fields.php:815
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1655
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1623
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:713
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1034
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:26
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:93
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/class-abstract-wfty-divi-fields.php:972
 #: includes/class-abstract-wffn-oxygen-fields.php:815
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1655
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1623
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:713
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1034
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:26
@@ -8144,14 +8144,14 @@ msgid "One Third"
 msgstr ""
 
 #: funnel-builder/includes/class-abstract-wffn-oxygen-fields.php:816
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1656
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1624
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:717
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1035
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:27
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:94
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/class-abstract-wfty-divi-fields.php:973
 #: includes/class-abstract-wffn-oxygen-fields.php:816
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1656
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1624
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:717
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/class-abstract-wfop-divi-fields.php:1035
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:27
@@ -8476,7 +8476,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:5
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:5
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Add New Step"
 msgstr ""
 
@@ -8674,7 +8674,7 @@ msgstr ""
 #: admin/views/contact/src/components/rules-engine/filters-modal/audiences.js:114
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/src/components/link/index.js:176
 #: modules/thankyou-pages/compatibilities/page-builders/gutenberg/src/components/link/index.js:177
 msgid "Apply"
@@ -8717,10 +8717,10 @@ msgid "Enable Image"
 msgstr ""
 
 #: funnel-builder/modules/checkouts/builder/divi/modules/class-divi-form.php:41
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1618
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1586
 #: funnel-builder/modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:731
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:41
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1618
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1586
 #: modules/checkouts/builder/gutenberg/class-wfacp-gutenberg.php:731
 msgid "Field Classes"
 msgstr ""
@@ -8809,7 +8809,7 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:45
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:194
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:226
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:531
@@ -8817,7 +8817,7 @@ msgstr ""
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:45
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 #: admin/views/contact/dist/10.476ab6dc769f2ab70de9.js:1
 #: admin/views/contact/dist/22.d5575f47ed672449f68d.js:3
 #: admin/views/contact/dist/32.96bb699d70271a37697e.js:1
@@ -8967,10 +8967,10 @@ msgstr ""
 
 #: funnel-builder/modules/checkouts/builder/divi/modules/class-divi-form.php:293
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:301
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1575
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1543
 #: modules/checkouts/builder/divi/modules/class-divi-form.php:293
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:301
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1575
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1543
 #: funnel-builder/modules/checkouts/builder/gutenberg/dist/wfacp-block-editor.js:1
 #: modules/checkouts/builder/gutenberg/dist/wfacp-block-editor.js:1
 #: modules/checkouts/builder/gutenberg/src/blocks/checkout-form/inspector-control/general.js:34
@@ -9270,14 +9270,14 @@ msgstr ""
 
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:396
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:54
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:80
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:77
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:96
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:125
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:138
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:174
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:396
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:54
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:80
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:77
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:96
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:125
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:138
@@ -9405,12 +9405,12 @@ msgstr ""
 
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:677
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1207
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1589
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1557
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:94
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:123
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:677
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1207
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1589
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1557
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:94
 #: modules/thankyou-pages/compatibilities/page-builders/divi/modules/order-details.php:123
 #: admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
@@ -9450,10 +9450,10 @@ msgstr ""
 
 #: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:836
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:168
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:144
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:136
 #: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:836
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:168
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:144
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:136
 msgid "Input"
 msgstr ""
 
@@ -9534,13 +9534,13 @@ msgstr ""
 msgid "Information Background Color"
 msgstr ""
 
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1708
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1708
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1676
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1676
 msgid "Privacy Policy"
 msgstr ""
 
-#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1734
-#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1734
+#: funnel-builder/modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1702
+#: modules/checkouts/builder/elementor/widgets/class-elementor-form.php:1702
 msgid "Terms & Conditions"
 msgstr ""
 
@@ -9922,7 +9922,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:2
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Description"
 msgstr ""
 
@@ -9951,7 +9951,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "OK"
 msgstr ""
 
@@ -10055,7 +10055,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Update"
 msgstr ""
 
@@ -10137,7 +10137,7 @@ msgstr ""
 #: modules/checkouts/includes/class-wfacp-common-helper.php:756
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/get-pro-modal/index.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Unlock this Pro feature now and experience the fully-loaded version."
 msgstr ""
 
@@ -10233,8 +10233,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:5
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Delete"
 msgstr ""
 
@@ -10408,7 +10408,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Close"
 msgstr ""
 
@@ -10944,7 +10944,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Required"
 msgstr ""
 
@@ -11781,7 +11781,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Checkout"
 msgstr ""
 
@@ -12015,7 +12015,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Sales Page"
 msgstr ""
 
@@ -12156,8 +12156,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Name"
 msgstr ""
 
@@ -12240,13 +12240,13 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:45
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 #: modules/optins/modules/optin-pages/class-wffn-form-builder.php:53
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi-5/modules/OptinForm/OptinFormTrait/RenderCallbackTrait.php:143
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:45
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 msgid "Send Me My Free Guide"
 msgstr ""
 
@@ -12255,13 +12255,13 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:47
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:117
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:63
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:85
 #: modules/optins/modules/optin-pages/class-wffn-form-builder.php:54
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi-5/modules/OptinForm/OptinFormTrait/RenderCallbackTrait.php:149
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:47
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:117
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:63
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:85
 msgid "Submitting..."
 msgstr ""
 
@@ -13313,11 +13313,11 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:46
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:116
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:62
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:87
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:84
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:46
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:116
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:62
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:87
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:84
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/src/blocks/optin-form/edit.js:362
@@ -13355,10 +13355,10 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:83
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:209
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:157
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:147
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:83
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:209
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:157
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:147
 #: admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
 #: admin/views/contact/src/steps/modules/tabs/customize/fields.js:134
 #: funnel-builder/admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
@@ -13369,16 +13369,16 @@ msgstr ""
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:178
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:244
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:88
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:109
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:135
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:151
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:105
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:129
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:141
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:101
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:178
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:244
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:88
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:109
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:135
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:151
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:105
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:129
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:141
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:10
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/gutenberg/dist/wfty-block-editor.js:1
@@ -13396,20 +13396,20 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:115
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:246
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:153
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:143
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:115
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:246
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:153
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:143
 #: admin/views/contact/src/client/components/contact-export/index.js:275
 msgid "Columns"
 msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:118
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:264
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:152
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:142
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:118
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:264
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:152
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:142
 msgid "Rows"
 msgstr ""
 
@@ -13454,11 +13454,11 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:187
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:372
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:172
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:160
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:22
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:187
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:372
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:172
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:160
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:22
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
@@ -13468,11 +13468,11 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:188
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:373
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:173
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:161
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:23
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:188
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:373
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:173
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:161
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:23
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
@@ -13482,11 +13482,11 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:189
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:374
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:174
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:162
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:24
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:189
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:374
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:174
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:162
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:24
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
@@ -13496,11 +13496,11 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:190
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:375
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:175
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:163
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:25
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/divi/modules/optin-form.php:190
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:375
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:175
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:163
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/class-wffn-thankyou-wc-html-block-oxy.php:25
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/gutenberg/dist/optin-form-block.js:1
@@ -13525,10 +13525,10 @@ msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/elementor/widgets/class-elementor-wffn-optin-form-widget.php:115
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:61
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:86
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:83
 msgid "Enter the Button Text"
 msgstr ""
 
@@ -13552,16 +13552,16 @@ msgid "Center"
 msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:66
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:66
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
 msgid "Text After Button"
 msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:66
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:66
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:91
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:88
 msgid "Your Information is 100% Secure"
 msgstr ""
 
@@ -13571,13 +13571,13 @@ msgid "Title Typography"
 msgstr ""
 
 #: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:78
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:100
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:121
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:96
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:117
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:142
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:178
 #: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-oxygen-wffn-optin-form-widget.php:78
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:100
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:121
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:96
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:117
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:142
 #: modules/thankyou-pages/compatibilities/page-builders/oxygen/modules/class-oxygen-wfty-order-details-widget.php:178
 #: admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
@@ -13589,13 +13589,13 @@ msgstr ""
 msgid "Text Hover"
 msgstr ""
 
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:132
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:132
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:127
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:127
 msgid "Show Label"
 msgstr ""
 
-#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:140
-#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:140
+#: funnel-builder/modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:133
+#: modules/optins/modules/optin-pages/compatibilities/page-builders/oxygen/class-wffn-optin-html-block-oxy.php:133
 msgid "Asterisk Color"
 msgstr ""
 
@@ -13697,7 +13697,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Optin Confirmation"
 msgstr ""
 
@@ -13781,7 +13781,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Thank You"
 msgstr ""
 
@@ -13913,7 +13913,7 @@ msgstr ""
 #: admin/views/contact/src/product-pitching/automations/carts-table.js:117
 #: funnel-builder/admin/views/contact/dist/17.8d33897858b0bdb526eb.js:1
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/gutenberg/dist/wfty-block-editor.js:1
 #: modules/thankyou-pages/compatibilities/page-builders/gutenberg/dist/wfty-block-editor.js:1
 #: modules/thankyou-pages/compatibilities/page-builders/gutenberg/src/blocks/customer-details/inspector-control/style.js:121
@@ -15027,8 +15027,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create Store Checkout"
 msgstr ""
 
@@ -15052,7 +15052,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create Funnel"
 msgstr ""
 
@@ -15230,8 +15230,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:2
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Search…"
 msgstr ""
 
@@ -15608,7 +15608,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Please wait…"
 msgstr ""
 
@@ -15824,8 +15824,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:2
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Save"
 msgstr ""
 
@@ -16115,7 +16115,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "This action is irreversible"
 msgstr ""
 
@@ -16214,7 +16214,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Type here…"
 msgstr ""
 
@@ -16577,7 +16577,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:1
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:1
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "One Click Upsell Offer"
 msgstr ""
 
@@ -17272,7 +17272,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Publish"
 msgstr ""
 
@@ -17347,7 +17347,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Draft"
 msgstr ""
 
@@ -17418,7 +17418,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Orders"
 msgstr ""
 
@@ -17499,7 +17499,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:2
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Conversions"
 msgstr ""
 
@@ -17760,7 +17760,7 @@ msgstr ""
 #: admin/views/contact/src/storeCheckout/components/store-checkout-header.js:290
 #: funnel-builder/admin/views/contact/dist/10.476ab6dc769f2ab70de9.js:1
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Confirm"
 msgstr ""
 
@@ -17853,7 +17853,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:2
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Changes Saved"
 msgstr ""
 
@@ -17883,7 +17883,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Title is required"
 msgstr ""
 
@@ -17971,7 +17971,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Test"
 msgstr ""
 
@@ -17999,8 +17999,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Test Running"
 msgstr ""
 
@@ -18028,8 +18028,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Test Paused"
 msgstr ""
 
@@ -18104,7 +18104,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "You are about to delete "
 msgstr ""
 
@@ -18171,7 +18171,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:2
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Go to Settings"
 msgstr ""
 
@@ -18194,7 +18194,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:2
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:2
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "View Docs"
 msgstr ""
 
@@ -18552,7 +18552,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Track sources of the order from platforms like Google Ads, Facebook, Google, Instagram, Pinterest, TikTok, Snapchat, and others."
 msgstr ""
 
@@ -18861,7 +18861,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:2
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Referrers"
 msgstr ""
 
@@ -18966,7 +18966,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/funnelSidebar/index.js:47
 #: admin/views/contact/src/client/pages/funnel-languages/index.js:246
 #: funnel-builder/admin/views/contact/dist/15.db6d0886946c68260a94.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Languages"
 msgstr ""
 
@@ -19244,7 +19244,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/19.2e51f4d1e026c3c32ef8.js:1
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
 #: funnel-builder/admin/views/contact/dist/29.e80fde6c18ee1de7a14f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Failed to activate plugin"
 msgstr ""
 
@@ -19398,7 +19398,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:29
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Single & Multi Step Checkout"
 msgstr ""
 
@@ -19408,7 +19408,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:30
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Flexible Field Editor"
 msgstr ""
 
@@ -19418,7 +19418,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:31
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Pro Template Library"
 msgstr ""
 
@@ -19428,7 +19428,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:35
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Cart upsells"
 msgstr ""
 
@@ -19442,7 +19442,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Canvas Mode"
 msgstr ""
 
@@ -19452,7 +19452,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:37
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "AB Testing"
 msgstr ""
 
@@ -19462,7 +19462,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:38
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "UTM and Referrer tracking"
 msgstr ""
 
@@ -19472,7 +19472,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:165
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "FunnelKit has generated revenue worth"
 msgstr ""
 
@@ -19482,7 +19482,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:92
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate your license to continue using premium features without interruption."
 msgstr ""
 
@@ -19492,7 +19492,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-overlay/index.js:96
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "This feature is locked. To get full access of funnelkit upgrade to PRO"
 msgstr ""
 
@@ -19502,7 +19502,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-chosen-select/index.js:388
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Fetching details…"
 msgstr ""
 
@@ -19512,7 +19512,7 @@ msgstr ""
 #: admin/views/contact/src/components/tag/index.js:132
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #, js-format
 msgid "Remove %s"
 msgstr ""
@@ -19523,7 +19523,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-search/index.js:87
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "result found"
 msgstr ""
 
@@ -19533,7 +19533,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-search/index.js:88
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "results found"
 msgstr ""
 
@@ -19543,7 +19543,7 @@ msgstr ""
 #: admin/views/contact/src/components/error-404-component/index.js:114
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "PAGE NOT FOUND"
 msgstr ""
 
@@ -19553,7 +19553,7 @@ msgstr ""
 #: admin/views/contact/src/components/error-404-component/index.js:117
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "The page you are looking for doesn’t exist"
 msgstr ""
 
@@ -19563,7 +19563,7 @@ msgstr ""
 #: admin/views/contact/src/components/error-404-component/index.js:129
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "GO TO DASHBOARD"
 msgstr ""
 
@@ -19573,7 +19573,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-delta/index.js:29
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "0%"
 msgstr ""
 
@@ -19583,7 +19583,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-delta/index.js:28
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #, js-format
 msgid "%f%%"
 msgstr ""
@@ -19594,7 +19594,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-actions.js:85
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Categories is a pro feature. Please activate your license."
 msgstr ""
 
@@ -19612,7 +19612,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Rename"
 msgstr ""
 
@@ -19622,7 +19622,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-actions.js:70
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Delete Category"
 msgstr ""
 
@@ -19632,7 +19632,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-actions.js:71
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "You are about to remove this category. Any changes made to the funnel category will be cleared and will not be assigned to any category."
 msgstr ""
 
@@ -19642,7 +19642,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-selector.js:71
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Create a category & assign to Funnels"
 msgstr ""
 
@@ -19653,7 +19653,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-selector.js:339
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Create Category"
 msgstr ""
 
@@ -19668,8 +19668,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create"
 msgstr ""
 
@@ -19679,7 +19679,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-selector.js:428
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "All Categories"
 msgstr ""
 
@@ -19690,7 +19690,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/category-selector.js:431
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Categories"
 msgstr ""
 
@@ -19709,7 +19709,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Create New"
 msgstr ""
 
@@ -19719,7 +19719,7 @@ msgstr ""
 #: admin/views/contact/src/components/category-controls/assign-category-modal.js:117
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Category"
 msgstr ""
 
@@ -19729,7 +19729,7 @@ msgstr ""
 #: admin/views/contact/src/hooks/useCategories.js:209
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Categories:"
 msgstr ""
 
@@ -19739,7 +19739,7 @@ msgstr ""
 #: admin/views/contact/src/hooks/useCategories.js:213
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "more"
 msgstr ""
 
@@ -19749,7 +19749,7 @@ msgstr ""
 #: admin/views/contact/src/hooks/useCategories.js:221
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Category:"
 msgstr ""
 
@@ -19761,7 +19761,7 @@ msgstr ""
 #: admin/views/contact/src/hooks/useCategories.js:310
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Funnel Categories"
 msgstr ""
 
@@ -19786,8 +19786,8 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Test Draft"
 msgstr ""
 
@@ -19811,7 +19811,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "View Details"
 msgstr ""
 
@@ -19988,7 +19988,7 @@ msgstr ""
 #: admin/views/contact/src/utils/date.js:125
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "All Time"
 msgstr ""
 
@@ -20017,7 +20017,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Today"
 msgstr ""
 
@@ -20034,7 +20034,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Yesterday"
 msgstr ""
 
@@ -20050,7 +20050,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Week to Date"
 msgstr ""
 
@@ -20079,7 +20079,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last Week"
 msgstr ""
 
@@ -20089,7 +20089,7 @@ msgstr ""
 #: admin/views/contact/src/utils/date.js:91
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last 7 Days"
 msgstr ""
 
@@ -20099,7 +20099,7 @@ msgstr ""
 #: admin/views/contact/src/utils/date.js:92
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last 30 Days"
 msgstr ""
 
@@ -20115,7 +20115,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Month to Date"
 msgstr ""
 
@@ -20144,7 +20144,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last Month"
 msgstr ""
 
@@ -20173,7 +20173,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Quarter to Date"
 msgstr ""
 
@@ -20202,7 +20202,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last Quarter"
 msgstr ""
 
@@ -20231,7 +20231,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Year to Date"
 msgstr ""
 
@@ -20260,7 +20260,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Last Year"
 msgstr ""
 
@@ -20283,7 +20283,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "On Specific Date"
 msgstr ""
 
@@ -20306,7 +20306,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/37.f475c58e94d7ac6c3f60.js:1
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Custom Date Range"
 msgstr ""
 
@@ -20325,7 +20325,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Previous Period"
 msgstr ""
 
@@ -20344,7 +20344,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Previous Year"
 msgstr ""
 
@@ -20354,7 +20354,7 @@ msgstr ""
 #: admin/views/contact/src/utils/date.js:106
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "No Compare"
 msgstr ""
 
@@ -20364,7 +20364,7 @@ msgstr ""
 #: admin/views/contact/src/utils/date.js:153
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Till"
 msgstr ""
 
@@ -20374,7 +20374,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:518
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Following pages will require to create store checkout"
 msgstr ""
 
@@ -20384,7 +20384,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:524
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "1. Checkout page"
 msgstr ""
 
@@ -20394,7 +20394,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:526
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "2. Thank You page"
 msgstr ""
 
@@ -20404,7 +20404,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:529
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Note: You have to custom build and design your pages. We will auto add the checkout and thankyou step"
 msgstr ""
 
@@ -20415,7 +20415,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:695
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 #: funnel-builder/modules/thankyou-pages/compatibilities/page-builders/gutenberg/dist/wfty-block-editor.js:1
 #: modules/thankyou-pages/compatibilities/page-builders/gutenberg/dist/wfty-block-editor.js:1
 #: modules/thankyou-pages/compatibilities/page-builders/gutenberg/src/blocks/order-details/index.js:22
@@ -20434,7 +20434,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/29.e80fde6c18ee1de7a14f.js:1
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Cart Upsells"
 msgstr ""
 
@@ -20447,7 +20447,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Optin Thankyou"
 msgstr ""
 
@@ -20465,7 +20465,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Thankyou"
 msgstr ""
 
@@ -20475,7 +20475,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:785
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 #, js-format
 msgid "You're using FunnelKit %s. Sorry, to get full access to Template Library "
 msgstr ""
@@ -20500,7 +20500,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:5
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:5
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:5
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Basic"
 msgstr ""
 
@@ -20510,7 +20510,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:793
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "You're using FunnelKit Lite. To unlock more features consider "
 msgstr ""
 
@@ -20521,7 +20521,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:805
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Upgrade to Plus Plan"
 msgstr ""
 
@@ -20531,7 +20531,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:801
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Upgrading to PRO"
 msgstr ""
 
@@ -20541,7 +20541,7 @@ msgstr ""
 #: admin/views/contact/src/utils/index.js:807
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/20.75ba6eb2413b8125510b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Don't miss out on atleast 10-15% additional revenue"
 msgstr ""
 
@@ -21510,7 +21510,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgradeProModal/index.js:35
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "FunnelKit PRO"
 msgstr ""
 
@@ -21520,7 +21520,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgradeProModal/index.js:40
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "We're sorry, this feature is not available on your plan. Please upgrade to the premium plan to unlock all these awesome features."
 msgstr ""
 
@@ -21530,7 +21530,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgradeProModal/index.js:44
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "{{ Feature Name }}"
 msgstr ""
 
@@ -21662,7 +21662,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create Order Bump"
 msgstr ""
 
@@ -21680,7 +21680,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-notice-bar/index.js:87
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:2
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
 msgid "Attention:"
 msgstr ""
 
@@ -21691,7 +21691,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-notice-bar/index.js:91
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:3
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #, js-format
 msgid " Update FunnelKit Funnel Builder %s "
 msgstr ""
@@ -21702,7 +21702,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-notice-bar/index.js:97
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:3
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "to version 3.0 for smoother functioning of features."
 msgstr ""
 
@@ -21712,7 +21712,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-notice-bar/index.js:107
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:3
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Go to plugin updates"
 msgstr ""
 
@@ -21722,7 +21722,7 @@ msgstr ""
 #: admin/views/contact/src/components/upgrade-pro-cta/index.js:114
 #: funnel-builder/admin/views/contact/dist/18.3e9b368b31e0cce41869.js:3
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:2
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Top Checkout & Funnel Builder:"
 msgstr ""
 
@@ -22001,7 +22001,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Download this complete funnel before deletion."
 msgstr ""
 
@@ -22032,7 +22032,7 @@ msgstr[1] ""
 #: funnel-builder/admin/views/contact/dist/22.d5575f47ed672449f68d.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid ". This action cannot be undone. Cancel to stop, Delete to proceed."
 msgstr ""
 
@@ -22126,7 +22126,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "We're downloading funnel before deletion"
 msgstr ""
 
@@ -22407,7 +22407,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Learn More"
 msgstr ""
 
@@ -22482,7 +22482,7 @@ msgstr ""
 #: admin/views/contact/src/components/dashboard-banner/utils.js:100
 #: admin/views/contact/src/onboarding/components/onboarding.js:130
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Enable Pixel Tracking"
 msgstr ""
 
@@ -22567,7 +22567,7 @@ msgstr ""
 #: admin/views/contact/src/onboarding/components/onboarding.js:341
 #: funnel-builder/admin/views/contact/dist/23.4c2d721ff8e3912b6901.js:1
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Recommended"
 msgstr ""
 
@@ -22721,7 +22721,7 @@ msgstr ""
 #: admin/views/contact/src/components/sublium-popup/index.js:33
 #: admin/views/contact/src/product-pitching/sublium/utils.js:71
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Subscriber Profiles"
 msgstr ""
 
@@ -22762,7 +22762,7 @@ msgstr ""
 #: admin/views/contact/src/components/sublium-popup/index.js:27
 #: admin/views/contact/src/product-pitching/sublium/index.js:190
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Subscribe & Save"
 msgstr ""
 
@@ -22773,7 +22773,7 @@ msgstr ""
 #: admin/views/contact/src/components/sublium-popup/index.js:28
 #: admin/views/contact/src/product-pitching/sublium/index.js:196
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Recurring Payments"
 msgstr ""
 
@@ -22784,7 +22784,7 @@ msgstr ""
 #: admin/views/contact/src/components/sublium-popup/index.js:29
 #: admin/views/contact/src/product-pitching/sublium/index.js:202
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Installment Plans"
 msgstr ""
 
@@ -22811,7 +22811,7 @@ msgstr ""
 #: admin/views/contact/src/components/notification/sublium-install.js:68
 #: admin/views/contact/src/product-pitching/sublium/index.js:258
 #: funnel-builder/admin/views/contact/dist/24.300a8b016d4ae9adde2f.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "And More…"
 msgstr ""
 
@@ -23513,7 +23513,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/35.2503048895ce50e45591.js:2
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/46.0ccd1edd5a2444e9197c.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "UTM Campaigns"
 msgstr ""
 
@@ -23717,7 +23717,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Error: "
 msgstr ""
 
@@ -23790,7 +23790,7 @@ msgstr ""
 #: admin/views/contact/src/components/analytics-filter/funnel-list-filter.js:111
 #: admin/views/contact/src/store/reducers/analytics.js:94
 #: funnel-builder/admin/views/contact/dist/28.de1776a7172eb2a03b91.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "All Funnels"
 msgstr ""
 
@@ -24053,7 +24053,7 @@ msgstr ""
 #: admin/views/contact/src/client/pages/analytics/cart-upsell/conversions/delete-modal.js:102
 #: funnel-builder/admin/views/contact/dist/29.e80fde6c18ee1de7a14f.js:1
 #: funnel-builder/admin/views/contact/dist/33.0647660064364796d41b.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "There are some technical difficulties while deleting step. Please contact support"
 msgstr ""
 
@@ -24163,7 +24163,7 @@ msgstr ""
 #: admin/views/contact/src/components/bwf-page-heading/index.js:56
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnel Templates"
 msgstr ""
 
@@ -24194,7 +24194,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/global/funnel-edit-modal.js:56
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "There are some technical difficulties while duplicating step. Contact Support"
 msgstr ""
 
@@ -24260,7 +24260,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Testing"
 msgstr ""
 
@@ -24284,7 +24284,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Increased Conversion Rates"
 msgstr ""
 
@@ -24308,7 +24308,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Greater Return on Ad Spend"
 msgstr ""
 
@@ -24332,7 +24332,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:9
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:9
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Reduced Bounce Rates"
 msgstr ""
 
@@ -24361,7 +24361,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid " A/B Test"
 msgstr ""
 
@@ -24374,7 +24374,7 @@ msgstr ""
 #: admin/views/contact/src/steps/Header/StepHeader.js:222
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Status Updation Failed"
 msgstr ""
 
@@ -24386,7 +24386,7 @@ msgstr ""
 #: admin/views/contact/src/steps/Header/StepHeader.js:276
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Title Updation Failed"
 msgstr ""
 
@@ -24429,7 +24429,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Failed Experiment Creation: "
 msgstr ""
 
@@ -24441,7 +24441,7 @@ msgstr ""
 #: admin/views/contact/src/steps/Header/StepHeader.js:886
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Oops it seems old version of Experiments is activated."
 msgstr ""
 
@@ -24453,7 +24453,7 @@ msgstr ""
 #: admin/views/contact/src/steps/Header/StepHeader.js:893
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Please deactivate, You won't loose existing experiments for the funnel."
 msgstr ""
 
@@ -24770,7 +24770,7 @@ msgstr ""
 #: admin/views/contact/src/client/pages/funnel/index.js:494
 #: funnel-builder/admin/views/contact/dist/32.96bb699d70271a37697e.js:1
 #: funnel-builder/admin/views/contact/dist/42.7f137ea2f8b3a63a1894.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Unable to load Funnel Steps"
 msgstr ""
 
@@ -25302,7 +25302,7 @@ msgstr ""
 #: admin/views/contact/src/storeCheckout/components/store-checkout-header.js:340
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
 #: funnel-builder/admin/views/contact/dist/51.4737c4634ff16e445ef9.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Actions"
 msgstr ""
 
@@ -25335,7 +25335,7 @@ msgstr ""
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:298
 #: admin/views/contact/src/client/hooks/use-storeCheckout-nav.js:236
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "List Mode"
 msgstr ""
 
@@ -25344,7 +25344,7 @@ msgstr ""
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:393
 #: admin/views/contact/src/client/hooks/use-storeCheckout-nav.js:297
 #: funnel-builder/admin/views/contact/dist/39.593faae0a445bb8ca19d.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid " - A/B Test"
 msgstr ""
 
@@ -25417,7 +25417,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/funnel/steps-list/delete-step-modal.js:264
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "You are about to delete step. This action cannot be undone. Cancel to stop, Delete to proceed."
 msgstr ""
 
@@ -25624,7 +25624,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/funnel/steps-list/delete-step-modal.js:173
 #: funnel-builder/admin/views/contact/dist/43.0e92eaf9901ee30833a2.js:1
 #: funnel-builder/admin/views/contact/dist/48.a84ba0263cf77eee8fe1.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Step deleted successfully"
 msgstr ""
 
@@ -26042,7 +26042,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Better Express Payment with Apple & Google Pay"
 msgstr ""
 
@@ -26129,7 +26129,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "How to setup Stripe with FunnelKit"
 msgstr ""
 
@@ -26214,7 +26214,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:1
 #: funnel-builder/admin/views/contact/dist/56.09c14dfa59774090fb55.js:1
 #: funnel-builder/admin/views/contact/dist/57.dc2c86d3e9d7f0535a56.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "How to setup Square with FunnelKit"
 msgstr ""
 
@@ -27709,7 +27709,7 @@ msgstr ""
 #: funnel-builder/admin/views/contact/dist/53.9e4a78482597c26bc24f.js:3
 #: funnel-builder/admin/views/contact/dist/54.7aadbcfaa5d0086687a9.js:3
 #: funnel-builder/admin/views/contact/dist/55.16ca54563a4c04d83855.js:3
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Alert!"
 msgstr ""
 
@@ -30015,8 +30015,8 @@ msgstr ""
 #: admin/views/contact/src/onboarding/components/square-action-button/index.js:76
 #: admin/views/contact/src/onboarding/components/stripe-action-button/index.js:90
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:1
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Connected"
 msgstr ""
 
@@ -30025,7 +30025,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/square-connect/utils.js:6
 #: admin/views/contact/src/client/components/stripe-connect/utils.js:5
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Express Payment with Apple & Google Pay"
 msgstr ""
 
@@ -30033,7 +30033,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/utils.js:124
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Supports Affirm, Klarna and AfterPay Buy Now Pay Later Services."
 msgstr ""
 
@@ -30041,7 +30041,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/utils.js:268
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Cart and One Click Upsells with Express Pay"
 msgstr ""
 
@@ -30050,7 +30050,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/square-connect/utils.js:383
 #: admin/views/contact/src/client/components/stripe-connect/utils.js:288
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Personalised Support for payments"
 msgstr ""
 
@@ -30058,7 +30058,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/index.js:41
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Stripe Connect"
 msgstr ""
 
@@ -30068,7 +30068,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/stripe-connect/index.js:55
 #: admin/views/contact/src/components/support-box/index.js:57
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Need help?"
 msgstr ""
 
@@ -30077,7 +30077,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/square-connect/index.js:57
 #: admin/views/contact/src/client/components/stripe-connect/index.js:60
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Watch Video, "
 msgstr ""
 
@@ -30086,7 +30086,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/square-connect/index.js:65
 #: admin/views/contact/src/client/components/stripe-connect/index.js:68
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Read Docs,"
 msgstr ""
 
@@ -30096,7 +30096,7 @@ msgstr ""
 #: admin/views/contact/src/client/components/stripe-connect/index.js:77
 #: admin/views/contact/src/components/bwf-tech-error/index.js:104
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Contact Support"
 msgstr ""
 
@@ -30104,7 +30104,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/index.js:93
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate Stripe"
 msgstr ""
 
@@ -30112,7 +30112,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/stripe-connect/index.js:154
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Thousands of businesses use FunnelKit Stripe to receive their payments"
 msgstr ""
 
@@ -30120,7 +30120,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:142
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Keep one click upsells working with Square orders"
 msgstr ""
 
@@ -30128,7 +30128,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:162
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Let your customers pay by ACH bank transfer"
 msgstr ""
 
@@ -30136,7 +30136,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:197
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Accepting gift cards by offering a convenient payment option."
 msgstr ""
 
@@ -30144,7 +30144,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:272
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "BNPL - while sellers get paid the full amount immediately."
 msgstr ""
 
@@ -30152,7 +30152,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:327
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Allow sellers to accept Cash App payments"
 msgstr ""
 
@@ -30160,7 +30160,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/utils.js:358
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Real time bi-directional sync"
 msgstr ""
 
@@ -30168,7 +30168,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/index.js:38
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Square Connect"
 msgstr ""
 
@@ -30176,7 +30176,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/index.js:91
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate Square"
 msgstr ""
 
@@ -30184,7 +30184,7 @@ msgstr ""
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/square-connect/index.js:142
 #: funnel-builder/admin/views/contact/dist/52.ae3a9845ae09d9a7109e.js:1
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Connect Square to accept all major Square payment methods"
 msgstr ""
 
@@ -30406,115 +30406,115 @@ msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:60
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Oops! Something went wrong. Try Refreshing."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:77
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Refresh Page"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:82
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Still facing issues?"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:89
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Press F12 "
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:91
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "for console details. "
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-tech-error/index.js:94
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Send screenshot to our support team for help "
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/edit-page-modal.js:64
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Sales Page URL Slug"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/StepHeader.js:137
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "A/B Test Completed"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/StepHeader.js:471
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create New A/B Test"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/StepHeader.js:498
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Edit 2.0"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/StepHeader.js:723
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "This step is in Draft. Click Publish to make it accessible to everyone."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/warning-modal.js:19
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Draft Step"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/warning-modal.js:30
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "You are about to draft this Step. It will be no longer available to visitors when drafted. Cancel to stop, Confirm to proceed."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/draft-modal.js:29
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "The A/B test is already running at this step. A/B test will be paused in Draft mode."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/steps/Header/draft-modal.js:48
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Make Draft"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/get-pro-modal/index.js:8
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "This is a PRO feature"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:549
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Result"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:550
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Results"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:322
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnel templates"
 msgstr ""
 
@@ -30522,80 +30522,80 @@ msgstr ""
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:486
 #: admin/views/contact/src/client/hooks/use-funnel-nav.js:500
 #: admin/views/contact/src/components/bwf-page-heading/index.js:38
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create New Funnel"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/funnel/steps-list/delete-step-modal.js:182
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "There are some technical difficulties while deleting step. Contact Support"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/support-box/index.js:71
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Contact Now"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/navigation-guard.js:187
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Unsaved Changes"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/navigation-guard.js:191
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Looks like you have made changes. Do you want to save these changes before you leave?"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/navigation-guard.js:199
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Discard Changes"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/store/reducers/contacts-side-panel.js:17
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Unable to load contact data"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:98
 #: admin/views/contact/src/components/notification/stripe-install.js:116
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Start Onboarding"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/stripe-install.js:126
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Supports One Click Upsells with Express Pay Options"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/stripe-install.js:130
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Personalised Support for any payments related issues"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/stripe-install.js:143
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Switch to"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/stripe-install.js:144
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Use"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/stripe-install.js:145
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid " FunnelKit's Stripe for Maximum Compatibility & Trustworthy Support"
 msgstr ""
 
@@ -30603,14 +30603,14 @@ msgstr ""
 #: admin/views/contact/src/components/notification/sublium-install.js:18
 #: admin/views/contact/src/components/sublium-dashboard-banner/index.js:28
 #: admin/views/contact/src/components/sublium-popup/index.js:31
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Recurring Discounts"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/sublium-install.js:19
 #: admin/views/contact/src/components/sublium-dashboard-banner/index.js:29
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Free Trial"
 msgstr ""
 
@@ -30618,199 +30618,199 @@ msgstr ""
 #: admin/views/contact/src/components/notification/sublium-install.js:20
 #: admin/views/contact/src/components/sublium-dashboard-banner/index.js:30
 #: admin/views/contact/src/components/sublium-popup/index.js:32
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Sign-up Fees"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/sublium-install.js:55
 #: admin/views/contact/src/components/sublium-popup/index.js:105
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Turn One-Time Sales Into Recurring Revenue"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/sublium-install.js:58
 #: admin/views/contact/src/components/sublium-popup/index.js:111
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Your funnels bring in buyers. Sublium turns them into subscribers with predictable, recurring revenue. Works with your checkouts, upsells, and automations out of the box."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/sublium-install.js:78
 #: admin/views/contact/src/components/sublium-popup/index.js:150
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate Sublium"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:104
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Accept Credit Cards, Apple Pay, and Google Pay"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:105
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Accept ACH, Gift Cards, Afterpay, and Cash App"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:106
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Supports one-click upsells with Square orders"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:107
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Get personalized support for Square payment setup"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/notification/square-install.js:116
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Use FunnelKit's Square for Maximum Compatibility & Trustworthy Support"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/utils.js:62
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Setup Wizard"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/utils.js:89
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Create One Click Upsell Offer"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/utils.js:134
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 #, js-format
 msgid "%d/%d Completed"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/setup-list.js:93
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Activate License"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:26
 #: admin/views/contact/src/components/dashboard-banner/modal.js:24
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Welcome to Funnel Builder"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/modal.js:41
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Quick Setup"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/modal.js:53
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Dismiss the incomplete setup?"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/modal.js:59
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Complete the setup to get maximum out of FunnelKit."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/modal.js:69
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "I’ll do it later"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:41
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Dismiss Setup"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:49
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Increase Revenue by 15-20%"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:55
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Set up optimised checkouts, order bumps, one click upsells & let your buyer go through easy checkout process while accepting more offers."
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:61
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Set up store checkout for your storefront"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:67
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Sell specific products with funnels"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:73
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Increase average order value with order bump and upsells"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:90
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "View Documentation"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:111
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Get Support"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/dashboard-banner/index.js:132
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "To do list"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-header-menu/useStoreCheckoutMenu.js:16
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Setup"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/bwf-header-menu/useStoreCheckoutMenu.js:26
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Disabled"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/global/funnel-edit-modal.js:137
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Optional"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/client/components/global/funnel-edit-modal.js:231
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Funnel Updated"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/templates/index.js:101
 #: admin/views/contact/src/templates/index.js:151
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "The Store Checkout is already setup. To change the template, delete the current steps and re-import new template again."
 msgstr ""
 
@@ -30818,26 +30818,26 @@ msgstr ""
 #: admin/views/contact/src/templates/index.js:111
 #: admin/views/contact/src/templates/index.js:157
 #: admin/views/contact/src/user-setup/steps/storeCheckoutCreated.js:29
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Go to Store Checkout"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/sublium-popup/index.js:30
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Free Trials"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/sublium-dashboard-banner/index.js:78
 #: admin/views/contact/src/components/sublium-popup/index.js:73
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Sublium Subscriptions activated successfully"
 msgstr ""
 
 #: admin/views/contact/dist/main.js:2
 #: admin/views/contact/src/components/sublium-popup/index.js:100
-#: funnel-builder/admin/views/contact/dist/main-20260423144444.js:2
+#: funnel-builder/admin/views/contact/dist/main-20260513095732.js:2
 msgid "Introducing Sublium"
 msgstr ""
 

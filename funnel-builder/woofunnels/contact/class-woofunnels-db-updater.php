@@ -1457,17 +1457,6 @@ if ( ! class_exists( 'WooFunnels_DB_Updater' ) ) {
 			$this->schedule_order_reindex_action( $order_id );
 		}
 
-		/**
-		 * Truncate the contact meta table
-		 * Run when BWF_DB_VERSION is 1.0.3
-		 */
-		protected function empty_contact_meta_table() {
-			global $wpdb;
-			$result = $wpdb->get_results( "SHOW TABLES LIKE '{$wpdb->prefix}bwf_contact_meta'", ARRAY_A ); //phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-			if ( is_array( $result ) && count( $result ) > 0 ) {
-				$wpdb->query( "TRUNCATE TABLE `{$wpdb->prefix}bwf_contact_meta`" );
-			}
-		}
 	}
 }
 
