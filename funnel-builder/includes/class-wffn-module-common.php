@@ -18,7 +18,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 		}
 
 		public function remove_conflicted_themes_styles() {
-			if ( ! empty( $_GET['et_fb'] ) ) {
+			if ( ! empty( $_GET['et_fb'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				return;
 			}
 			// globally registered styles and scripts
@@ -137,13 +137,17 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				$this->setup_custom_options( $post->ID );
 				$style_custom_css = $this->get_custom_option( 'custom_css' );
 				if ( ! empty( $style_custom_css ) ) {
-					$custom_css = '<style>' . $style_custom_css . '</style>';
-					echo $custom_css;//phpcs:ignore
+					$sanitized_custom_css = WFFN_Common::sanitize_global_css( $style_custom_css );
+					if ( $sanitized_custom_css === $style_custom_css ) {
+						echo '<style>' . $style_custom_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
 				}
 				$global_css = $this->get_option( 'css' );
 				if ( ! empty( $global_css ) ) {
-					$global_css = '<style>' . $global_css . '</style>';
-					echo $global_css;//phpcs:ignore
+					$sanitized_css = WFFN_Common::sanitize_global_css( $global_css );
+					if ( $sanitized_css === $global_css ) {
+						echo '<style>' . $global_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
 				}
 			}
 		}
@@ -153,8 +157,20 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			if ( ( ! empty( $post ) && $post->post_type === $this->get_post_type_slug() ) ) {
 				$this->setup_custom_options( $post->ID );
-				echo html_entity_decode( $this->get_custom_option( 'custom_js' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo html_entity_decode( $this->get_option( 'script' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				$custom_js = html_entity_decode( $this->get_custom_option( 'custom_js' ) );
+				if ( ! empty( $custom_js ) ) {
+					$sanitized_custom_js = WFFN_Common::sanitize_global_script( $custom_js );
+					if ( $sanitized_custom_js === $custom_js ) {
+						echo $custom_js; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+				}
+				$global_script = $this->get_option( 'script' );
+				if ( ! empty( $global_script ) ) {
+					$sanitized_script = WFFN_Common::sanitize_global_script( $global_script );
+					if ( $sanitized_script === $global_script ) {
+						echo html_entity_decode( $global_script ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+				}
 			}
 		}
 

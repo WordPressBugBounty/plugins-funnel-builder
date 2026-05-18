@@ -1989,6 +1989,41 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 				return false;
 			}
 		}
+
+		public static function sanitize_global_css( $css ) {
+			$css = wp_strip_all_tags( $css );
+			$css = preg_replace( '/expression\s*\(/i', '', $css );
+			$css = preg_replace( '/javascript\s*:/i', '', $css );
+			$css = preg_replace( '/behavior\s*:/i', '', $css );
+			$css = preg_replace( '/vbscript\s*:/i', '', $css );
+			$css = preg_replace( '/-moz-binding\s*:/i', '', $css );
+			return $css;
+		}
+
+		public static function sanitize_global_script( $script ) {
+			$script = preg_replace( '#\b(?:eval|Function)\s*\(\s*atob\s*\(#i', '', $script );
+			$script = preg_replace( '#data:\s*(?:text|application)/(?:javascript|ecmascript|x-javascript)[^,]*;\s*base64\s*,[A-Za-z0-9+/=]*#i', '', $script );
+			$script = preg_replace( '#(?:\\\\x[0-9a-f]{2}){20,}#i', '', $script );
+			$script = preg_replace( '#String\.fromCharCode\s*\((?:\s*\d{1,3}\s*,\s*){16,}[^)]*\)#i', '', $script );
+			$script = preg_replace( '#\b(?:window|top|self|globalThis)\s*\[\s*[\'"][a-z]{1,4}[\'"]\s*\+\s*[\'"][a-z]{1,4}[\'"]#i', '', $script );
+			$script = preg_replace_callback(
+				'#<script[^>]*>(.*?)</script>#is',
+				static function ( $m ) {
+					$b = $m[1];
+					if (
+						preg_match( '#\batob\s*\(#i', $b ) &&
+						preg_match( '#\bcreateElement\s*\(#i', $b ) &&
+						preg_match( '#\.\s*src\s*=#i', $b ) &&
+						preg_match( '#\.\s*(?:appendChild|append|insertBefore)\s*\(#i', $b )
+					) {
+						return '';
+					}
+					return $m[0];
+				},
+				$script
+			);
+			return $script;
+		}
 	}
 
 }

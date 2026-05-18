@@ -925,8 +925,8 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 				return $resp;
 			}
 
-			$options['css']    = isset( $options['css'] ) ? htmlentities( $options['css'] ) : '';
-			$options['script'] = isset( $options['script'] ) ? htmlentities( $options['script'] ) : '';
+			$options['css']    = isset( $options['css'] ) ? WFFN_Common::sanitize_global_css( $options['css'] ) : '';
+			$options['script'] = isset( $options['script'] ) ? WFFN_Common::sanitize_global_script( $options['script'] ) : '';
 			update_option( 'wffn_op_settings', $options, true );
 			$resp['status'] = true;
 

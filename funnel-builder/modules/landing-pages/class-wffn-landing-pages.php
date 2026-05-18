@@ -520,8 +520,8 @@ if ( ! class_exists( 'WFFN_Landing_Pages' ) ) {
 				return $resp;
 			}
 
-			$options['css']    = isset( $options['css'] ) ? htmlentities( $options['css'] ) : '';
-			$options['script'] = isset( $options['script'] ) ? htmlentities( $options['script'] ) : '';
+			$options['css']    = isset( $options['css'] ) ? WFFN_Common::sanitize_global_css( $options['css'] ) : '';
+			$options['script'] = isset( $options['script'] ) ? WFFN_Common::sanitize_global_script( $options['script'] ) : '';
 			$this->update_options( $options );
 			$resp['status'] = true;
 
