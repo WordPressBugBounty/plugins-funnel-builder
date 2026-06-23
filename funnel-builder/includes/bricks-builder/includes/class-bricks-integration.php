@@ -6,6 +6,7 @@ use WFACP_Common;
 use WFFN_Thank_You_WC_Pages;
 
 if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
+	#[\AllowDynamicProperties]
 	final class Bricks_Integration {
 		/**
 		 * Indicates whether the integration is registered or not.

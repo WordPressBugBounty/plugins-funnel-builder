@@ -1,6 +1,7 @@
 <?php
 
 if ( ! class_exists( 'WFACP_GutenBerg' ) ) {
+	#[\AllowDynamicProperties]
 	class WFACP_GutenBerg {
 		private static $ins           = null;
 		private static $front_locals  = array();

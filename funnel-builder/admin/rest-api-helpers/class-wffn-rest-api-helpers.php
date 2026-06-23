@@ -1,5 +1,6 @@
 <?php
 if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
+	#[\AllowDynamicProperties]
 	class WFFN_REST_API_Helpers extends WFFN_REST_Controller {
 
 		private static $ins = null;
@@ -419,7 +420,7 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 				$prices = $product->get_variation_prices( true );
 
 				if ( empty( $prices['price'] ) ) {
-					$price = html_entity_decode( wp_strip_all_tags( apply_filters( 'woocommerce_variable_empty_price_html', '', $product ) ) );
+					$price = html_entity_decode( wp_strip_all_tags( apply_filters( 'woocommerce_variable_empty_price_html', '', $product ) ), ENT_QUOTES | ENT_HTML401 );
 				} else {
 
 					$price         = array();
@@ -461,7 +462,7 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 				if ( '' === $price ) {
 					$price = $product->get_regular_price();
 				}
-				$price = html_entity_decode( wp_strip_all_tags( wc_price( $price ) ) );
+				$price = html_entity_decode( wp_strip_all_tags( wc_price( $price ) ), ENT_QUOTES | ENT_HTML401 );
 			}
 
 			return $price;

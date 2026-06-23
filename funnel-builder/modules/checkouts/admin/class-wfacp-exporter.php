@@ -5,6 +5,7 @@ if ( ! class_exists( 'WFACP_Exporter' ) ) {
 	 * Class WFACP_Exporter
 	 * Handles Exporting of Aero Checkout Pages into JSON Downloadable File
 	 */
+	#[\AllowDynamicProperties]
 	class WFACP_Exporter {
 
 		private static $ins = null;

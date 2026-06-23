@@ -8,6 +8,7 @@
 
 
 if ( ! class_exists( 'WFFN_Divi_Importer' ) ) {
+	#[\AllowDynamicProperties]
 	class WFFN_Divi_Importer implements WFFN_Import_Export {
 
 		public function __construct() {
@@ -85,7 +86,13 @@ if ( ! class_exists( 'WFFN_Divi_Importer' ) ) {
 			$data = $content['data'];
 			// Pass the post content and let js save the post.
 
-			$data    = reset( $data );
+			$data = reset( $data );
+
+			require_once WFFN_PLUGIN_DIR . '/includes/class-wffn-content-validator.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+			if ( WFFN_Content_Validator::contains_php_code( $data ) || WFFN_Content_Validator::contains_dangerous_tags( $data ) ) {
+				return false;
+			}
+
 			$success = true;
 			$result  = wp_update_post(
 				array(

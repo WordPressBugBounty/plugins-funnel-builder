@@ -12,223 +12,227 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 	#[AllowDynamicProperties]
-	class WFFN_REST_Funnel_Canvas extends WFFN_REST_Controller {
+class WFFN_REST_Funnel_Canvas extends WFFN_REST_Controller {
 
-		public static $_instance = null;
+	public static $_instance = null;
 
-		/**
-		 * Route base.
-		 *
-		 * @var string
-		 */
+	/**
+	 * Route base.
+	 *
+	 * @var string
+	 */
 
-		protected $namespace = 'funnelkit-app';
-		protected $rest_base = 'canvas/(?P<funnel_id>[\d]+)/nodes';
+	protected $namespace = 'funnelkit-app';
+	protected $rest_base = 'canvas/(?P<funnel_id>[\d]+)/nodes';
 
-		public function __construct() {
-			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	public function __construct() {
+		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	}
+
+	public static function get_instance() {
+		if ( null === self::$_instance ) {
+			self::$_instance = new self();
 		}
 
-		public static function get_instance() {
-			if ( null === self::$_instance ) {
-				self::$_instance = new self();
-			}
+		return self::$_instance;
+	}
 
-			return self::$_instance;
-		}
-
-		/**
-		 * Register the routes for taxes.
-		 */
-		public function register_routes() {
-			register_rest_route(
-				$this->namespace,
-				'/' . $this->rest_base,
-				array(
-					'args' => array(
-						'funnel_id' => array(
-							'description' => __( 'Unique funnel id.', 'funnel-builder' ),
-							'type'        => 'integer',
-						),
+	/**
+	 * Register the routes for taxes.
+	 */
+	public function register_routes() {
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base,
+			array(
+				'args' => array(
+					'funnel_id' => array(
+						'description' => __( 'Unique funnel id.', 'funnel-builder' ),
+						'type'        => 'integer',
 					),
-					array(
-						'methods'             => WP_REST_Server::READABLE,
-						'callback'            => array( $this, 'get_nodes' ),
-						'permission_callback' => array( $this, 'get_read_api_permission_check' ),
-						'args'                => array(),
-					),
-				)
-			);
-
-			register_rest_route(
-				$this->namespace,
-				'/' . $this->rest_base . '/analytics',
+				),
 				array(
-					'args' => array(
-						'funnel_id' => array(
-							'description' => __( 'Unique funnel id.', 'funnel-builder' ),
-							'type'        => 'integer',
-						),
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_nodes' ),
+					'permission_callback' => array( $this, 'get_read_api_permission_check' ),
+					'args'                => array(),
+				),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/analytics',
+			array(
+				'args' => array(
+					'funnel_id' => array(
+						'description' => __( 'Unique funnel id.', 'funnel-builder' ),
+						'type'        => 'integer',
 					),
-					array(
-						'methods'             => WP_REST_Server::EDITABLE,
-						'callback'            => array( $this, 'get_analytics' ),
-						'permission_callback' => array( $this, 'get_write_api_permission_check' ),
-						'args'                => array(),
-					),
-				)
-			);
-		}
-
-		public function get_read_api_permission_check() {
-			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'read' );
-		}
-
-		public function get_write_api_permission_check() {
-			return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' );
-		}
-
-		/**
-		 * @param WP_REST_Request $request
-		 *
-		 * @return WP_Error|WP_REST_Response
-		 */
-		public function get_nodes( $request ) {
-			$funnel_id = $request->get_param( 'funnel_id' );
-
-			$funnel = new WFFN_Funnel( $funnel_id );
-
-			if ( ! $funnel instanceof WFFN_Funnel ) {
-				return new WP_Error( 'woofunnels_rest_funnel_not_exists', __( 'Invalid funnel ID.', 'funnel-builder' ), array( 'status' => 404 ) );
-			}
-			$nodes_data  = $funnel->get_group_steps();
-			$funnel_data = WFFN_REST_Funnels::get_instance()->get_funnel_data( $funnel_id );
-
-			$nodes_data['steps_list'] = wffn_rest_api_helpers()->add_step_edit_details( $nodes_data['steps_list'] );
-			$nodes_data['steps_list'] = apply_filters( 'wffn_rest_get_funnel_steps', $nodes_data['steps_list'], $funnel );
-
-			return rest_ensure_response(
+				),
 				array(
-					'status'      => true,
-					'data'        => $nodes_data,
-					'funnel_data' => $funnel_data,
-				)
-			);
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'get_analytics' ),
+					'permission_callback' => array( $this, 'get_write_api_permission_check' ),
+					'args'                => array(),
+				),
+			)
+		);
+	}
+
+	public function get_read_api_permission_check() {
+		return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'read' );
+	}
+
+	public function get_write_api_permission_check() {
+		return wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' );
+	}
+
+	/**
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public function get_nodes( $request ) {
+		$funnel_id = $request->get_param( 'funnel_id' );
+
+		$funnel = new WFFN_Funnel( $funnel_id );
+
+		if ( ! $funnel instanceof WFFN_Funnel ) {
+			return new WP_Error( 'woofunnels_rest_funnel_not_exists', __( 'Invalid funnel ID.', 'funnel-builder' ), array( 'status' => 404 ) );
+		}
+		$nodes_data  = $funnel->get_group_steps();
+		$funnel_data = WFFN_REST_Funnels::get_instance()->get_funnel_data( $funnel_id );
+
+		$nodes_data['steps_list'] = wffn_rest_api_helpers()->add_step_edit_details( $nodes_data['steps_list'] );
+		$nodes_data['steps_list'] = apply_filters( 'wffn_rest_get_funnel_steps', $nodes_data['steps_list'], $funnel );
+
+		return rest_ensure_response(
+			array(
+				'status'      => true,
+				'data'        => $nodes_data,
+				'funnel_data' => $funnel_data,
+			)
+		);
+	}
+
+
+	/**
+	 * Callback for analytics endpoint
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
+	 */
+	public function get_analytics( $request ) {
+		$funnel_id = $request->get_param( 'funnel_id' );
+
+		$funnel = new WFFN_Funnel( $funnel_id );
+
+		if ( $funnel->get_id() === 0 ) {
+			return new WP_Error( 'woofunnels_rest_funnel_not_exists', __( 'Invalid funnel ID.', 'funnel-builder' ), array( 'status' => 404 ) );
+		}
+		$data                     = $this->sanitize_custom( $request->get_body() );
+		$nodes_data               = array();
+		$nodes_data['steps_list'] = $this->prepare_analytics( $data['steps_list'] );
+
+		return rest_ensure_response(
+			array(
+				'status' => true,
+				'data'   => $nodes_data,
+			)
+		);
+	}
+
+	/**
+	 * @param $type
+	 * @param $step
+	 *
+	 * @return array|false|false[]
+	 */
+	public function get_node_analytics_data( $type, $step ) {
+		if ( $type === 'optin' ) {
+			return $this->get_optin_stats( $step );
+		}
+		if ( $type === 'optin_ty' ) {
+			return $this->get_optin_ty_stats( $step );
+		}
+		if ( $type === 'landing' ) {
+			return $this->get_landing_stats( $step );
+		}
+		if ( $type === 'wc_checkout' ) {
+			return $this->get_checkout_stats( $step );
+		}
+		if ( $type === 'offer' ) {
+			return $this->get_offer_stats( $step );
+		}
+		if ( $type === 'wc_thankyou' ) {
+			return $this->get_ty_stats( $step );
+		}
+		if ( $type === 'bump' || 'wc_order_bump' === $type ) {
+			return $this->get_bump_stats( $step );
 		}
 
+		return array();
+	}
 
-		/**
-		 * Callback for analytics endpoint
-		 *
-		 * @param WP_REST_Request $request
-		 *
-		 * @return WP_Error|WP_HTTP_Response|WP_REST_Response
-		 */
-		public function get_analytics( $request ) {
-			$funnel_id = $request->get_param( 'funnel_id' );
+	/**
+	 * @param $step_id
+	 *
+	 * @return int[]|void
+	 */
+	public function prepare_analytics( $steps ) {
 
-			$funnel = new WFFN_Funnel( $funnel_id );
-
-			if ( $funnel->get_id() === 0 ) {
-				return new WP_Error( 'woofunnels_rest_funnel_not_exists', __( 'Invalid funnel ID.', 'funnel-builder' ), array( 'status' => 404 ) );
-			}
-			$data                     = $this->sanitize_custom( $request->get_body() );
-			$nodes_data               = array();
-			$nodes_data['steps_list'] = $this->prepare_analytics( $data['steps_list'] );
-
-			return rest_ensure_response(
-				array(
-					'status' => true,
-					'data'   => $nodes_data,
-				)
-			);
+		if ( ! is_array( $steps ) || 0 === count( $steps ) ) {
+			return $steps;
 		}
 
-		/**
-		 * @param $type
-		 * @param $step
-		 *
-		 * @return array|false|false[]
-		 */
-		public function get_node_analytics_data( $type, $step ) {
-			if ( $type === 'optin' ) {
-				return $this->get_optin_stats( $step );
-			}
-			if ( $type === 'optin_ty' ) {
-				return $this->get_optin_ty_stats( $step );
-			}
-			if ( $type === 'landing' ) {
-				return $this->get_landing_stats( $step );
-			}
-			if ( $type === 'wc_checkout' ) {
-				return $this->get_checkout_stats( $step );
-			}
-			if ( $type === 'offer' ) {
-				return $this->get_offer_stats( $step );
-			}
-			if ( $type === 'wc_thankyou' ) {
-				return $this->get_ty_stats( $step );
-			}
-			if ( $type === 'bump' || 'wc_order_bump' === $type ) {
-				return $this->get_bump_stats( $step );
-			}
+		global $wpdb;
+		$data = array();
 
-			return array();
+		/**
+		 * Few third party plugins come in a way & customize our meta-query to get the variant IDs so we need to remove all filters associated to avoid these scenarios
+		 */
+		remove_all_filters( 'pre_get_posts' );
+
+		$defult_args = array(
+			'views'           => 0,
+			'conversions'     => 0,
+			'conversion_rate' => 0,
+			'revenue'         => 0,
+		);
+
+		$get_all_data = $this->maybe_get_variants_ids( $steps );
+
+		$steps = $get_all_data['steps'];
+
+		foreach ( $steps as $step_id => $step ) {
+			$data[ $step_id ] = $defult_args;
 		}
 
-		/**
-		 * @param $step_id
+		$ids = array_map( 'absint', array_keys( $steps ) );
+
+		/*
+		 * Get view and conversion data based on type
 		 *
-		 * @return int[]|void
+		 * 2 - Landing visited
+		 * 3 - Landing converted
+		 * 4 - Aero visited
+		 * 5- Thank you visited
+		 * 7 - Funnel session
+		 * 8 - Optin visited
+		 * 10 - Optin thank you visited
+		 * 11 - Optin thank you converted
 		 */
-		public function prepare_analytics( $steps ) {
-
-			if ( ! is_array( $steps ) || 0 === count( $steps ) ) {
-				return $steps;
-			}
-
-			global $wpdb;
-			$data = array();
-
-			/**
-			 * Few third party plugins come in a way & customize our meta-query to get the variant IDs so we need to remove all filters associated to avoid these scenarios
-			 */
-			remove_all_filters( 'pre_get_posts' );
-
-			$defult_args = array(
-				'views'           => 0,
-				'conversions'     => 0,
-				'conversion_rate' => 0,
-				'revenue'         => 0,
+		$get_views = array();
+		if ( count( $ids ) > 0 ) {
+			$get_views = $wpdb->get_results(
+				$wpdb->prepare(
+					'SELECT object_id, SUM(CASE WHEN type = 2 OR type = 4 OR type = 5 OR type = 8 OR type = 10 THEN `no_of_sessions` END) AS `views` ,SUM(CASE WHEN type = 3 OR type = 11 THEN `no_of_sessions` END) AS `converted` FROM ' . $wpdb->prefix . 'wfco_report_views WHERE object_id IN ( ' . implode( ', ', array_fill( 0, count( $ids ), '%d' ) ) . ' ) GROUP BY object_id ORDER BY object_id ASC',
+					$ids
+				),
+				ARRAY_A
 			);
-
-			$get_all_data = $this->maybe_get_variants_ids( $steps );
-
-			$steps = $get_all_data['steps'];
-
-			foreach ( $steps as $step_id => $step ) {
-				$data[ $step_id ] = $defult_args;
-			}
-
-			$ids      = array_keys( $steps );
-			$step_ids = implode( ',', $ids );
-
-			/*
-			 * Get view and conversion data based on type
-			 *
-			 * 2 - Landing visited
-			 * 3 - Landing converted
-			 * 4 - Aero visited
-			 * 5- Thank you visited
-			 * 7 - Funnel session
-			 * 8 - Optin visited
-			 * 10 - Optin thank you visited
-			 * 11 - Optin thank you converted
-			 */
-			$view_type    = 'type = 2 OR type = 4 OR type = 5 OR type = 8 OR type = 10';
-			$convert_type = 'type = 3 OR type = 11';
-			$view_query   = 'SELECT object_id, SUM(CASE WHEN ' . $view_type . ' THEN `no_of_sessions` END) AS `views` ,SUM(CASE WHEN ' . $convert_type . ' THEN `no_of_sessions` END) AS `converted` FROM  ' . $wpdb->prefix . 'wfco_report_views' . '  WHERE object_id IN(' . esc_sql( $step_ids ) . ') GROUP BY object_id ORDER BY object_id ASC';
-			$get_views    = $wpdb->get_results( $view_query, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 			if ( method_exists( 'WFFN_Common', 'maybe_wpdb_error' ) ) {
 				$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 				if ( true === $db_error['db_error'] ) {
@@ -272,6 +276,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 
 			return $data;
 		}
+	}
 
 		/**
 		 * get all variants ids for prepare analytics data
@@ -403,10 +408,15 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 			 */
 			$optin_ids = array_keys( $steps, 'optin', true );
 			if ( count( $optin_ids ) > 0 ) {
-				$optin_ids = implode( ',', $optin_ids );
+				$optin_ids = array_map( 'absint', $optin_ids );
 
-				$optin_sql        = "SELECT step_id as 'object_id', COUNT(id) as 'converted', 0 as 'revenue' FROM " . $wpdb->prefix . 'bwf_optin_entries' . '  WHERE step_id IN(' . esc_sql( $optin_ids ) . ') GROUP BY step_id';
-				$get_optin_record = $wpdb->get_results( $optin_sql, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$get_optin_record = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT step_id as 'object_id', COUNT(id) as 'converted', 0 as 'revenue' FROM " . $wpdb->prefix . 'bwf_optin_entries WHERE step_id IN ( ' . implode( ', ', array_fill( 0, count( $optin_ids ), '%d' ) ) . ' ) GROUP BY step_id',
+						$optin_ids
+					),
+					ARRAY_A
+				);
 
 				$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 				if ( true === $db_error['db_error'] ) {
@@ -421,10 +431,15 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 			 */
 			$checkout_ids = array_keys( $steps, 'wc_checkout', true );
 			if ( count( $checkout_ids ) > 0 ) {
-				$checkout_ids = implode( ',', $checkout_ids );
-				$aero_sql     = "SELECT conv.step_id AS 'object_id', conv.source_id AS 'source_id', COUNT( conv.step_id ) AS 'converted', SUM(conv.checkout_total) AS 'revenue' FROM " . $wpdb->prefix . 'bwf_conversion_tracking' . '  AS conv WHERE type=2 AND conv.step_id IN(' . esc_sql( $checkout_ids ) . ') GROUP BY conv.step_id, conv.source_id';
+				$checkout_ids = array_map( 'absint', $checkout_ids );
 
-				$get_checkout_record = $wpdb->get_results( $aero_sql, ARRAY_A );//phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$get_checkout_record = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT conv.step_id AS 'object_id', conv.source_id AS 'source_id', COUNT( conv.step_id ) AS 'converted', SUM(conv.checkout_total) AS 'revenue' FROM " . $wpdb->prefix . 'bwf_conversion_tracking AS conv WHERE type=2 AND conv.step_id IN ( ' . implode( ', ', array_fill( 0, count( $checkout_ids ), '%d' ) ) . ' ) GROUP BY conv.step_id, conv.source_id',
+						$checkout_ids
+					),
+					ARRAY_A
+				);
 
 				$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 				if ( true === $db_error['db_error'] ) {
@@ -439,10 +454,15 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 			 */
 			$offer_ids = array_keys( $steps, 'offer', true );
 			if ( count( $offer_ids ) > 0 ) {
-				$offer_ids = implode( ',', $offer_ids );
+				$offer_ids = array_map( 'absint', $offer_ids );
 
-				$offer_sql        = 'SELECT object_id, COUNT(CASE WHEN action_type_id = 4 THEN 1 END) AS `converted`, COUNT(CASE WHEN action_type_id = 2 THEN 1 END) AS `views`, SUM(value) as revenue FROM ' . $wpdb->prefix . 'wfocu_event' . ' WHERE object_id IN ( ' . $offer_ids . " ) AND (action_type_id = '2' OR action_type_id = '4' ) GROUP BY object_id";
-				$get_offer_record = $wpdb->get_results( $offer_sql, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$get_offer_record = $wpdb->get_results(
+					$wpdb->prepare(
+						'SELECT object_id, COUNT(CASE WHEN action_type_id = 4 THEN 1 END) AS `converted`, COUNT(CASE WHEN action_type_id = 2 THEN 1 END) AS `views`, SUM(value) as revenue FROM ' . $wpdb->prefix . 'wfocu_event WHERE object_id IN ( ' . implode( ', ', array_fill( 0, count( $offer_ids ), '%d' ) ) . " ) AND (action_type_id = '2' OR action_type_id = '4' ) GROUP BY object_id",
+						$offer_ids
+					),
+					ARRAY_A
+				);
 
 				$db_error = WFFN_Common::maybe_wpdb_error( $wpdb );
 				if ( true === $db_error['db_error'] ) {
@@ -461,18 +481,19 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 
 				// Query each bump ID separately using wfob_stats table
 				foreach ( $bump_ids as $bump_id ) {
-					$bump_sql = $wpdb->prepare(
-						"SELECT %d as 'object_id',
-						COUNT(CASE WHEN bump.converted = 1 THEN 1 END) AS `converted`,
-						COUNT(bump.ID) as views,
-						SUM(CASE WHEN bump.converted = 1 THEN CAST(bump.total AS DECIMAL(10,2)) ELSE 0 END) as 'revenue'
-						FROM " . $wpdb->prefix . 'wfob_stats' . ' AS bump
-						WHERE bump.bid = %d',
-						$bump_id,
-						$bump_id
+					$bump_result = $wpdb->get_results(
+						$wpdb->prepare(
+							"SELECT %d as 'object_id',
+							COUNT(CASE WHEN bump.converted = 1 THEN 1 END) AS `converted`,
+							COUNT(bump.ID) as views,
+							SUM(CASE WHEN bump.converted = 1 THEN CAST(bump.total AS DECIMAL(10,2)) ELSE 0 END) as 'revenue'
+							FROM {$wpdb->prefix}wfob_stats AS bump
+							WHERE bump.bid = %d",
+							$bump_id,
+							$bump_id
+						),
+						ARRAY_A
 					);
-
-					$bump_result = $wpdb->get_results( $bump_sql, ARRAY_A ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 					if ( ! empty( $bump_result ) ) {
 						$get_bump_record[] = $bump_result[0];
 					}
@@ -503,7 +524,6 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 
 			return $data;
 		}
-
 
 		/**
 		 * @param $control_id
@@ -1009,7 +1029,5 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Canvas' ) ) {
 	}
 
 
-	return WFFN_REST_Funnel_Canvas::get_instance();
-
-
+	return self::get_instance();
 }

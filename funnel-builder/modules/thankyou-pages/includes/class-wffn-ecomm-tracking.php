@@ -641,7 +641,11 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 						'advanced'       => $advanced,
 						'content_ids'    => $content_ids,
 						'content_name'   => $content_name,
-						'category_name'  => array_map( 'html_entity_decode', $category_names ),
+						'category_name'  => array_map(
+							static function ( $v ) {
+								return html_entity_decode( $v, ENT_QUOTES | ENT_HTML401 ); },
+							$category_names
+						),
 						'num_qty'        => $num_qty,
 						'additional'     => $this->purchase_custom_aud_params( $order ),
 						'transaction_id' => $get_order_id,
@@ -703,7 +707,14 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 						'currency'         => BWF_WC_Compatibility::get_order_currency( $order ),
 						'value'            => $this->get_total_order_value( $order, 'order' ),
 						'content_name'     => implode( ', ', $content_name ),
-						'content_category' => implode( ', ', array_map( 'html_entity_decode', $category_names ) ),
+						'content_category' => implode(
+							', ',
+							array_map(
+								static function ( $v ) {
+									return html_entity_decode( $v, ENT_QUOTES | ENT_HTML401 ); },
+								$category_names
+							)
+						),
 						'advanced'         => $tiktok_advanced,
 					)
 				);
@@ -916,7 +927,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 			foreach (
 				$terms as $term
 			) {
-				$results[] = html_entity_decode( $term->name );
+				$results[] = html_entity_decode( $term->name, ENT_QUOTES | ENT_HTML401 );
 			}
 
 			if ( $implode ) {
@@ -1097,7 +1108,11 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 					'advanced'         => $advanced,
 					'content_ids'      => $content_ids,
 					'content_name'     => $content_name,
-					'category_name'    => array_map( 'html_entity_decode', $category_names ),
+					'category_name'    => array_map(
+						static function ( $v ) {
+							return html_entity_decode( $v, ENT_QUOTES | ENT_HTML401 ); },
+						$category_names
+					),
 					'num_qty'          => $num_qty,
 					'additional'       => $this->purchase_custom_aud_params( $order ),
 					'transaction_id'   => $order_id,

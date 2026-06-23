@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'WFFN_Security_Audit' ) ) {
 
+	#[\AllowDynamicProperties]
 	class WFFN_Security_Audit {
 
 		const VERSION_OPTION = 'wffn_security_audit_version';

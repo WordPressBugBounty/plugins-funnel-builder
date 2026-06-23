@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.15.0.5
+Stable tag: 3.15.0.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,12 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.15.0.6 =
+* Improved: Compatibility with PHP version 8.4.x. (#9140)
+* Improved: Funnel: Conversion analytics to handle edge cases of retrying orders with no funnel ID multiple times. (#9044)
+* Improved: Funnel: Hardened the security of the plugin. (#9036)
+* Fixed: Checkout: PHP warnings when store checkout template is used as subscription change-payment method page. (#8854)
 
 = 3.15.0.5 =
 * Improved: Checkout: Compatibility with MercadoPago Gateway improved. (#8783)

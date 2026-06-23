@@ -803,7 +803,7 @@ if ( ! class_exists( 'WFACP_Template_loader' ) ) {
 		private function get_last_revision_page_template( $id ) {
 
 			global $wpdb;
-			$data     = $wpdb->get_results( $wpdb->prepare( "select ID from {$wpdb->posts} where post_parent=%d ORDER BY ID DESC LIMIT 1", $id ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Using $wpdb->prepare with direct string query
+			$data     = $wpdb->get_results( $wpdb->prepare( "select ID from {$wpdb->posts} where post_parent=%d ORDER BY ID DESC LIMIT 1", $id ), ARRAY_A );
 			$template = '';
 			if ( ! empty( $data ) ) {
 				$revision_id = $data[0]['ID'];

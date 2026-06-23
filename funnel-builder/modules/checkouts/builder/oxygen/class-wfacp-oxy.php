@@ -1,5 +1,6 @@
 <?php
 if ( ! class_exists( 'WFACP_OXY' ) ) {
+	#[\AllowDynamicProperties]
 	class WFACP_OXY {
 		private static $ins          = null;
 		private $is_oxy              = false;

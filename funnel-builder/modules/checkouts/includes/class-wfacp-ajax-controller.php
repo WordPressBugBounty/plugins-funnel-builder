@@ -573,8 +573,16 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 
 		public static function get_divi_form_data() {
 
-			if ( isset( $_REQUEST['wfacp_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- WooCommerce AJAX handles nonce verification
-				$post_id = absint( wp_unslash( $_REQUEST['wfacp_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- WooCommerce AJAX handles nonce verification
+			if ( ! check_ajax_referer( 'wfacp_secure_key', 'wfacp_nonce', false ) ) {
+				wp_send_json_error( array( 'message' => __( 'Invalid security token.', 'funnel-builder' ) ), 403 );
+			}
+
+			if ( ! WFACP_Core()->role->user_access( 'checkout', 'read' ) ) {
+				wp_send_json_error( array( 'message' => __( 'You do not have permission to access this resource.', 'funnel-builder' ) ), 403 );
+			}
+
+			if ( isset( $_REQUEST['wfacp_id'] ) ) {
+				$post_id = absint( wp_unslash( $_REQUEST['wfacp_id'] ) );
 				$post    = get_post( $post_id );
 				if ( ! is_null( $post ) && $post->post_type == WFACP_Common::get_post_type_slug() ) {
 
@@ -603,7 +611,9 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 			if ( isset( $_COOKIE['wfacp_divi_open_page'] ) && wp_doing_ajax() ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading cookie data for builder state, nonce verification not required
 				$cookie = sanitize_text_field( wp_unslash( $_COOKIE['wfacp_divi_open_page'] ) );
 				$parts  = explode( '@', $cookie );
-				$template->set_current_open_step( $parts[1] );
+				if ( isset( $parts[1] ) ) {
+					$template->set_current_open_step( sanitize_html_class( $parts[1] ) );
+				}
 			}
 			include $template->wfacp_get_form();
 
@@ -612,10 +622,13 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 
 		public static function analytics() {
 			self::check_nonce();
-			$resp       = array( 'status' => false );
-			$data       = isset( $_POST['data'] ) ? map_deep( wp_unslash( $_POST['data'] ), 'sanitize_text_field' ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce already verified in check_nonce()
-			$event_data = isset( $data['event_data'] ) ? $data['event_data'] : array();
-			$source     = isset( $data['source'] ) ? $data['source'] : '';
+			$resp           = array( 'status' => false );
+			$data           = isset( $_POST['data'] ) ? map_deep( wp_unslash( $_POST['data'] ), 'sanitize_text_field' ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce already verified in check_nonce()
+			$allowed_events = array( 'InitiateCheckout', 'AddPaymentInfo', 'AddToCart' );
+			$event_data     = isset( $data['event_data'] ) && is_array( $data['event_data'] )
+								? array_slice( $data['event_data'], 0, 5 )
+								: array();
+			$source         = isset( $data['source'] ) ? $data['source'] : '';
 
 			if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
 				$source = esc_url_raw( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- HTTP_REFERER is URL, slashes are intentional; sanitized with esc_url_raw()
@@ -668,6 +681,12 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 
 				if ( is_array( $event_data ) && count( $event_data ) > 0 ) {
 					foreach ( $event_data as $single_item ) {
+						if ( ! isset( $single_item['event'] ) || ! in_array( $single_item['event'], $allowed_events, true ) ) {
+							continue;
+						}
+						if ( empty( $single_item['event_id'] ) || ! is_scalar( $single_item['event_id'] ) ) {
+							continue;
+						}
 						$instance->set_event_id( $single_item['event_id'] );
 						$instance->set_user_data( $user_data );
 						$instance->set_event_source_url( $source );

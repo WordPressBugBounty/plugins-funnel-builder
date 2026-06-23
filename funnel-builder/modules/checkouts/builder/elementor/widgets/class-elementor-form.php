@@ -4,6 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
+	#[\AllowDynamicProperties]
 	class El_WFACP_Form_Widget extends WFACP_Elementor_HTML_BLOCK {
 
 		private $html_fields       = array();
@@ -1647,7 +1648,7 @@ if ( ! class_exists( 'El_WFACP_Form_Widget' ) ) {
 			if ( isset( $_COOKIE['wfacp_elementor_open_page'] ) && wp_doing_ajax() ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Cookie value is sanitized below
 				$cookie             = sanitize_text_field( wp_unslash( $_COOKIE['wfacp_elementor_open_page'] ) );
 				$parts              = explode( '@', $cookie );
-				$this->current_step = isset( $parts[1] ) ? sanitize_text_field( $parts[1] ) : '';
+				$this->current_step = isset( $parts[1] ) ? sanitize_html_class( $parts[1] ) : '';
 				if ( ! empty( $this->current_step ) && 'single_step' !== $this->current_step ) {
 					$template->set_current_open_step( $this->current_step );
 					add_filter( 'wfacp_el_bread_crumb_active_class_key', array( $this, 'set_breadcrumb' ), 10, 2 );

@@ -4,6 +4,7 @@
  * Class WFFN_Module_Common
  */
 if ( ! class_exists( 'WFFN_Module_Common' ) ) {
+	#[\AllowDynamicProperties]
 	class WFFN_Module_Common {
 		public $edit_id = 0;
 
@@ -120,7 +121,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			$db_options = ( ! empty( $db_options ) && is_array( $db_options ) ) ? array_map(
 				function ( $val ) {
-					return is_scalar( $val ) ? html_entity_decode( $val ) : $val;
+					return is_scalar( $val ) ? html_entity_decode( $val, ENT_QUOTES | ENT_HTML401 ) : $val;
 				},
 				$db_options
 			) : array();
@@ -157,7 +158,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 
 			if ( ( ! empty( $post ) && $post->post_type === $this->get_post_type_slug() ) ) {
 				$this->setup_custom_options( $post->ID );
-				$custom_js = html_entity_decode( $this->get_custom_option( 'custom_js' ) );
+				$custom_js = html_entity_decode( $this->get_custom_option( 'custom_js' ), ENT_QUOTES | ENT_HTML401 );
 				if ( ! empty( $custom_js ) ) {
 					$sanitized_custom_js = WFFN_Common::sanitize_global_script( $custom_js );
 					if ( $sanitized_custom_js === $custom_js ) {
@@ -168,7 +169,7 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				if ( ! empty( $global_script ) ) {
 					$sanitized_script = WFFN_Common::sanitize_global_script( $global_script );
 					if ( $sanitized_script === $global_script ) {
-						echo html_entity_decode( $global_script ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo html_entity_decode( $global_script, ENT_QUOTES | ENT_HTML401 ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					}
 				}
 			}

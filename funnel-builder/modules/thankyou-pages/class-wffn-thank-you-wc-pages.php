@@ -221,7 +221,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			$db_options    = get_option( 'wffn_tp_settings', array() );
 			$db_options    = ( ! empty( $db_options ) && is_array( $db_options ) ) ? array_map(
 				function ( $val ) {
-					return is_scalar( $val ) ? html_entity_decode( $val ) : $val;
+					return is_scalar( $val ) ? html_entity_decode( $val, ENT_QUOTES | ENT_HTML401 ) : $val;
 				},
 				$db_options
 			) : array();
@@ -471,7 +471,7 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 
 						global $wpdb;
 
-						$post_meta_all = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$ty_page_id" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,
+						$post_meta_all = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", $ty_page_id ) );
 
 						if ( ! empty( $post_meta_all ) ) {
 							$sql_query_selects = array();
@@ -1333,11 +1333,11 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 
 			if ( ! empty( $values ) ) {
 				if ( ! empty( $values['custom_css'] ) ) {
-					$tabs['custom_css']['values']['custom_css'] = html_entity_decode( $values['custom_css'] );
+					$tabs['custom_css']['values']['custom_css'] = html_entity_decode( $values['custom_css'], ENT_QUOTES | ENT_HTML401 );
 				}
 
 				if ( ! empty( $values['custom_js'] ) ) {
-					$tabs['custom_js']['values']['custom_js'] = html_entity_decode( $values['custom_js'] );
+					$tabs['custom_js']['values']['custom_js'] = html_entity_decode( $values['custom_js'], ENT_QUOTES | ENT_HTML401 );
 				}
 
 				if ( isset( $values['custom_redirect'] ) ) {

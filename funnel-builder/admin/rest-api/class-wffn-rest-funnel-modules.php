@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * * @extends WP_REST_Controller
  */
 if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
+	#[\AllowDynamicProperties]
 	class WFFN_REST_Funnel_Modules extends WFFN_REST_Controller {
 
 		public static $_instance = null;
@@ -1371,7 +1372,7 @@ if ( ! class_exists( 'WFFN_REST_Funnel_Modules' ) ) {
 				if ( $page_data instanceof WP_Post ) {
 					$pages[] = array(
 						'id'   => $id,
-						'name' => html_entity_decode( get_the_title( $id ) ),
+						'name' => html_entity_decode( get_the_title( $id ), ENT_QUOTES | ENT_HTML401 ),
 					);
 				}
 			}

@@ -2671,7 +2671,7 @@ if ( ! class_exists( 'WFACP_Common' ) ) {
 			$exclude_meta_keys_to_copy = apply_filters( 'wfacp_do_not_duplicate_meta', $exclude_data );
 
 			global $wpdb;
-			$post_meta_all = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id=$old_post_id" ); //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$post_meta_all = $wpdb->get_results( $wpdb->prepare( "SELECT meta_key, meta_value FROM $wpdb->postmeta WHERE post_id = %d", absint( $old_post_id ) ) );
 
 			if ( ! empty( $post_meta_all ) ) {
 				$sql_query_selects = array();

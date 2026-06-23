@@ -1,19 +1,24 @@
 <?php
 
 if ( ! class_exists( 'WFFN_Gutenberg_Importer' ) ) {
+	#[\AllowDynamicProperties]
 	class WFFN_Gutenberg_Importer implements WFFN_Import_Export {
 
 		public function __construct() {
-			add_action( 'woofunnels_module_template_removed', [ $this, 'delete_oxy_data' ] );
+			add_action( 'woofunnels_module_template_removed', array( $this, 'delete_oxy_data' ) );
 		}
 
 		public function import( $module_id, $content = '' ) {
 			if ( ! empty( $content ) ) {
 				$data = json_decode( $content, true );
 
+				if ( ! is_array( $data ) || ! isset( $data['post_content'], $data['meta_data'] ) ) {
+					return array( 'success' => false );
+				}
 
 				$post_content = $data['post_content'];
-				$meta_data    = $data['meta_data'];
+				require_once WFFN_PLUGIN_DIR . '/includes/class-wffn-content-validator.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+				$meta_data = WFFN_Content_Validator::sanitize_meta_keys( $data['meta_data'] );
 
 				$content = $post_content;
 				foreach ( $meta_data as $meta_key => $meta_value ) {
@@ -24,33 +29,24 @@ if ( ! class_exists( 'WFFN_Gutenberg_Importer' ) ) {
 			$post->post_content = $content;
 			wp_update_post( $post );
 
-			return [ 'success' => true ];
+			return array( 'success' => true );
 		}
 
 		public function import_template_single( $module_id, $content ) {//phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter,VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-
 		}
 
 		public function export( $module_id, $slug ) { //phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedParameter,VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-			return get_post_meta( $module_id, WFFN_Common::oxy_get_meta_prefix('ct_builder_shortcodes'), true );
+			return get_post_meta( $module_id, WFFN_Common::oxy_get_meta_prefix( 'ct_builder_shortcodes' ), true );
 		}
 
 		public function delete_oxy_data( $post_id ) {
-			wp_update_post( [ 'ID' => $post_id, 'post_content' => '' ] );
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_content' => '',
+				)
+			);
 		}
-
-
-
-		public function download_image( $url ) {
-			// Extract the file name and extension from the url.
-			require_once WFFN_PLUGIN_DIR . '/importer/class-wffn-image-importer.php';
-			$importer       = new WFFN_Image_Importer();
-			$new_attachment = $importer->import( [ 'url' => $url ] );
-
-			return $new_attachment['url'];
-		}
-
-
 	}
 
 	if ( class_exists( 'WFFN_Gutenberg_Importer' ) ) {

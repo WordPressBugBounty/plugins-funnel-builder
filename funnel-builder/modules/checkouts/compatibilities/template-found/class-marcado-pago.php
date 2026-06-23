@@ -9,6 +9,7 @@ if ( ! class_exists( 'WFACP_Compatibility_With_Brazillian_Gateway' ) ) {
 	 * PropulsePay payment gateway for WooCommerce
 	 * https://skillsup.in/
 	 */
+	#[\AllowDynamicProperties]
 	class WFACP_Compatibility_With_Brazillian_Gateway {
 
 

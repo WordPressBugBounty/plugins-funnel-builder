@@ -209,7 +209,7 @@ if ( ! class_exists( 'WFCO_Admin' ) ) {
 
 		public function tooltip( $text ) {
 			?>
-			<span class="wfco-help"><i class="icon"></i><div class="helpText"><?php echo $text; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div></span>
+			<span class="wfco-help"><i class="icon"></i><div class="helpText"><?php echo wp_kses_post( $text ); ?></div></span>
 			<?php
 		}
 
