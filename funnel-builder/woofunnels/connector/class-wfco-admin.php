@@ -65,9 +65,14 @@ if ( ! class_exists( 'WFCO_Admin' ) ) {
 					continue;
 				}
 				foreach ( $addons as $addons_slug => $addon ) {
-					if ( $addon->is_activated() ) {
+					/**
+					 * $addons_slug originates from the remote connector catalog and is used as a class name.
+					 * Guard the dynamic dispatch so a malformed/compromised catalog entry cannot reference an
+					 * unexpected class; only resolve real connector classes that expose the expected API.
+					 */
+					if ( $addon->is_activated() && is_string( $addons_slug ) && class_exists( $addons_slug, false ) && is_subclass_of( $addons_slug, 'BWF_CO' ) && method_exists( $addons_slug, 'get_instance' ) ) {
 						$instance = $addons_slug::get_instance();
-						if ( $instance->is_oauth() ) {
+						if ( $instance instanceof BWF_CO && $instance->is_oauth() ) {
 							$oauth_connectors[] = $addons_slug;
 						}
 					}

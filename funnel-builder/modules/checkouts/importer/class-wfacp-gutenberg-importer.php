@@ -61,6 +61,12 @@ if ( ! class_exists( 'WFACP_Gutenberg_Importer' ) ) {
 				}
 				$post_content = $contents['post_content'];
 				require_once WFFN_PLUGIN_DIR . '/includes/class-wffn-content-validator.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+
+				// Remote template content must pass the same dangerous-content checks the other importers use.
+				if ( WFFN_Content_Validator::contains_php_code( $post_content ) || WFFN_Content_Validator::contains_dangerous_tags( $post_content ) ) {
+					return array( 'status' => false );
+				}
+
 				$meta_data = WFFN_Content_Validator::sanitize_meta_keys( $contents['meta_data'] );
 
 				$this->save_data( $this->post_id, $post_content );

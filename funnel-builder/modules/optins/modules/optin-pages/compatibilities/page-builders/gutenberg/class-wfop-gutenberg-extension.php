@@ -199,15 +199,7 @@ if ( ! class_exists( 'WFOP_Gutenberg' ) ) {
 				wp_enqueue_script( 'wfoptin-script', $frontend_dir . $js_path, $script_deps, $version, true );
 
 				$system_font_path = __DIR__ . '/font/standard-fonts.php';
-				wp_enqueue_script( 'wfoptin-font', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js', array(), WFFN_VERSION_DEV, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
-
-				wp_enqueue_script(
-					'wfoptin-font-awesome-kit',
-					'https://kit.fontawesome.com/f4306c3ab0.js', // Our free kit https://fontawesome.com/kits/f4306c3ab0/settings
-					null,
-					null, // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
-					true
-				);
+				WFFN_Common::enqueue_block_editor_remote_assets( 'wfoptin-font-awesome-kit', 'wfoptin-font' );
 
 					$get_fields = WFOPP_Core()->optin_pages->form_builder->get_form_fields( $post->ID );
 				wp_localize_script( 'wfoptin-script', 'bwf_funnels_widgets', $this->widgets_json );

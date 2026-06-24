@@ -199,7 +199,8 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 					array(
 						'methods'             => WP_REST_Server::READABLE,
 						'callback'            => array( $this, 'duplicate_funnel' ),
-						'permission_callback' => array( $this, 'get_read_api_permission_check' ),
+						// Duplicating a funnel creates funnels/steps — a write operation, not a read.
+						'permission_callback' => array( $this, 'get_write_api_permission_check' ),
 						'args'                => array(),
 					),
 				)
@@ -1374,6 +1375,17 @@ if ( ! class_exists( 'WFFN_REST_Funnels' ) ) {
 			$plugin_init   = isset( $plugin_init ) ? $plugin_init : '';
 			$plugin_slug   = isset( $plugin_slug ) ? $plugin_slug : '';
 			$plugin_status = isset( $plugin_status ) ? $plugin_status : '';
+
+			/**
+			 * Installing/activating plugins are privileged WordPress core operations.
+			 * Enforce the core capabilities explicitly, independent of the funnel write permission.
+			 */
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return new WP_Error( 'rest_forbidden', __( 'You are not allowed to manage plugins.', 'funnel-builder' ), array( 'status' => rest_authorization_required_code() ) );
+			}
+			if ( 'install' === $plugin_status && ! current_user_can( 'install_plugins' ) ) {
+				return new WP_Error( 'rest_forbidden', __( 'You are not allowed to install plugins.', 'funnel-builder' ), array( 'status' => rest_authorization_required_code() ) );
+			}
 
 			if ( $plugin_init === '' ) {
 				return rest_ensure_response( $resp );

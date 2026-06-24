@@ -2106,6 +2106,50 @@ if ( ! class_exists( 'WFFN_Common' ) ) {
 
 			return $script;
 		}
+
+		/**
+		 * Enqueue the version-pinned FontAwesome and WebFont loader scripts used by the block editors.
+		 *
+		 * Both are remote, version-pinned CDN files locked with Subresource Integrity so a compromised
+		 * CDN response cannot execute in the privileged wp-admin editor origin.
+		 *
+		 * @param string $fa_handle      Handle to register/enqueue the FontAwesome script under.
+		 * @param string $webfont_handle Handle to register/enqueue the WebFont loader script under.
+		 */
+		public static function enqueue_block_editor_remote_assets( $fa_handle = 'bwf-font-awesome-kit', $webfont_handle = 'bwf-web-font' ) {
+			$assets = array(
+				$fa_handle      => array(
+					'src'       => 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js',
+					'version'   => '6.7.2',
+					'integrity' => 'sha384-DsXFqEUf3HnCU8om0zbXN58DxV7Bo8/z7AbHBGd2XxkeNpdLrygNiGFr/03W0Xmt',
+				),
+				$webfont_handle => array(
+					'src'       => 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js',
+					'version'   => '1.6.26',
+					'integrity' => 'sha384-pvXSwSU09c+q9mPyY++ygUHWIYRoaxgnJ/JC5wcOzMb/NVVu+IDniiB9qWp3ZNWM',
+				),
+			);
+
+			$integrity_map = array();
+			foreach ( $assets as $handle => $asset ) {
+				wp_register_script( $handle, $asset['src'], array(), $asset['version'], true );
+				wp_enqueue_script( $handle );
+				$integrity_map[ $handle ] = $asset['integrity'];
+			}
+
+			add_filter(
+				'script_loader_tag',
+				function ( $tag, $handle, $src ) use ( $integrity_map ) {
+					if ( isset( $integrity_map[ $handle ] ) && false === strpos( $tag, 'integrity=' ) ) {
+						$tag = str_replace( ' src=', ' integrity="' . esc_attr( $integrity_map[ $handle ] ) . '" crossorigin="anonymous" src=', $tag );
+					}
+
+					return $tag;
+				},
+				10,
+				3
+			);
+		}
 	}
 
 }

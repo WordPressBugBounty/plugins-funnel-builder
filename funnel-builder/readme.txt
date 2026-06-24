@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 5.4.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.15.0.7
+Stable tag: 3.15.0.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -378,6 +378,9 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+= 3.15.0.8 =
+* Improved: Enhanced overall stability and reliability across the plugin.
+* Improved: Funnel: Compatibility with divi5 related to Thankyou page CSS. (#9161)
 
 = 3.15.0.7 =
 * Fixed: Funnel: Admin UI canvas mode was not showing funnel steps.

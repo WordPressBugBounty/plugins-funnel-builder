@@ -18,6 +18,12 @@ if ( ! class_exists( 'WFFN_Gutenberg_Importer' ) ) {
 
 				$post_content = $data['post_content'];
 				require_once WFFN_PLUGIN_DIR . '/includes/class-wffn-content-validator.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
+
+				// Remote template content must pass the same dangerous-content checks the Divi/Oxygen importers use.
+				if ( WFFN_Content_Validator::contains_php_code( $post_content ) || WFFN_Content_Validator::contains_dangerous_tags( $post_content ) ) {
+					return array( 'success' => false );
+				}
+
 				$meta_data = WFFN_Content_Validator::sanitize_meta_keys( $data['meta_data'] );
 
 				$content = $post_content;

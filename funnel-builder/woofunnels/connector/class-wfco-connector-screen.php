@@ -89,7 +89,7 @@ if ( ! class_exists( 'WFCO_Connector_Screen' ) ) {
 		}
 
 		public function is_activated() {
-			if ( class_exists( $this->connector_class ) ) {
+			if ( class_exists( $this->connector_class, false ) ) {
 				return true;
 			}
 

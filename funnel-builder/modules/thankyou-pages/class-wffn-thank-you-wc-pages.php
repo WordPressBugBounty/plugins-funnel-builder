@@ -1068,6 +1068,16 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 			$order = wc_get_order( $order_id );
 			if ( $order instanceof WC_Order ) {
 
+				/**
+				 * Only proceed when the request carries the correct order key.
+				 * get_checkout_order_received_url() embeds the secret order key, so redirecting
+				 * without verifying the key would leak it for any enumerated order id.
+				 */
+				$request_key = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public order-received page, key acts as the authorization token.
+				if ( empty( $request_key ) || ! hash_equals( (string) $order->get_order_key(), $request_key ) ) {
+					return;
+				}
+
 				$url = $order->get_checkout_order_received_url();
 				if ( empty( $url ) ) {
 					return;

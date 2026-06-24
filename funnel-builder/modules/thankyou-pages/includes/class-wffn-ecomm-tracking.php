@@ -1394,6 +1394,17 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 				if ( isset( $wp->query_vars['order-received'] ) ) {
 					$order_id  = absint( $wp->query_vars['order-received'] );
 					$get_order = wc_get_order( $order_id );
+
+					/**
+					 * is_order_received_page() does NOT validate the order key, so on the native
+					 * WooCommerce order-received page we resolve the order straight from the URL.
+					 * Mirror WooCommerce's own key check before exposing the order (and its billing
+					 * PII via advanced matching) so order ids can't be enumerated to leak customer data.
+					 */
+					$request_key = isset( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : ''; //phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public order-received page, key acts as the authorization token.
+					if ( $get_order instanceof WC_Order && ( empty( $request_key ) || ! hash_equals( (string) $get_order->get_order_key(), $request_key ) ) ) {
+						return false;
+					}
 				}
 			}
 

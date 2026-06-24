@@ -153,7 +153,8 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 				'page_no'     => isset( $request['page_no'] ) ? $request['page_no'] : 1,
 				'orderby'     => isset( $request['orderby'] ) ? $request['orderby'] : 'last_modified',
 				'order'       => ( isset( $request['order'] ) && 'DESC' === $request['order'] ) ? $request['order'] : 'ASC',
-				'delete_cid'  => isset( $request['delete_cid'] ) ? $request['delete_cid'] : false,
+				// Deleting contacts is a write operation; only honor delete_cid for callers with write access.
+				'delete_cid'  => ( isset( $request['delete_cid'] ) && wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' ) ) ? $request['delete_cid'] : false,
 				'filters'     => isset( $request['filters'] ) ? $request['filters'] : false,
 				'total_count' => isset( $request['total_count'] ) ? $request['total_count'] : false,
 			);
@@ -544,7 +545,8 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 				'page_no'     => isset( $request['page_no'] ) ? $request['page_no'] : 1,
 				'orderby'     => isset( $request['orderby'] ) ? $request['orderby'] : 'creation_date',
 				'order'       => ( isset( $request['order'] ) && 'DESC' === $request['order'] ) ? $request['order'] : 'ASC',
-				'delete_cid'  => isset( $request['delete_cid'] ) ? $request['delete_cid'] : false,
+				// Deleting contacts is a write operation; only honor delete_cid for callers with write access.
+				'delete_cid'  => ( isset( $request['delete_cid'] ) && wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' ) ) ? $request['delete_cid'] : false,
 				'total_count' => isset( $request['total_count'] ) ? $request['total_count'] : false,
 				'filters'     => isset( $request['filters'] ) ? $request['filters'] : array(),
 			);

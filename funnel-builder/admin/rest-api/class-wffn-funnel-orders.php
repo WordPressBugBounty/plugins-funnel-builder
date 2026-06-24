@@ -702,7 +702,8 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 				'page_no'     => $request['page_no'] ?? 1,
 				'total_count' => $request['total_count'] ?? false,
 				'only_count'  => $request['only_count'] ?? false,
-				'delete_ids'  => isset( $request['delete_ids'] ) ? $request['delete_ids'] : false,
+				// Deleting order entries is a write operation; only honor delete_ids for callers with write access.
+				'delete_ids'  => ( isset( $request['delete_ids'] ) && wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' ) ) ? $request['delete_ids'] : false,
 				'offset'      => isset( $request['offset'] ) ? $request['offset'] : '',
 			);
 
@@ -892,7 +893,8 @@ if ( ! class_exists( 'WFFN_Funnel_Orders' ) ) {
 				'page_no'     => $request['page_no'] ?? 1,
 				'total_count' => $request['total_count'] ?? false,
 				'only_count'  => $request['only_count'] ?? false,
-				'delete_ids'  => isset( $request['delete_ids'] ) ? $request['delete_ids'] : false,
+				// Deleting optin entries is a write operation; only honor delete_ids for callers with write access.
+				'delete_ids'  => ( isset( $request['delete_ids'] ) && wffn_rest_api_helpers()->get_api_permission_check( 'funnel', 'write' ) ) ? $request['delete_ids'] : false,
 				'offset'      => isset( $request['offset'] ) ? $request['offset'] : '',
 
 			);
