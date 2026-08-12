@@ -2,6 +2,8 @@
 
 namespace FunnelKit;
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly
+
 use WFACP_Common;
 use WFFN_Thank_You_WC_Pages;
 
@@ -136,9 +138,13 @@ if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
 				return;
 			}
 
+			add_action( 'wp', array( $this, 'early_register_elements' ), PHP_INT_MIN );
+
 			add_action( 'wp', array( $this, 'wp_register_elements' ), 8 );
 
 			add_action( 'wp_ajax_bricks_save_post', array( $this, 'wp_register_elements' ), - 1 );
+			add_action( 'wp_ajax_bricks_regenerate_css_file', array( $this, 'register_elements_for_css_regeneration' ), - 1 );
+			add_action( 'bricks_regenerate_css_files', array( $this, 'register_all_elements' ), - 1 );
 			add_action( 'rest_api_init', array( $this, 'rest_register_elements' ), 9 );
 			add_action( 'wffn_before_import_checkout_template', array( $this, 'rest_register_elements_on_import' ), 10, 2 );
 			add_action( 'wffn_import_template_background', array( $this, 'rest_register_elements' ), 9 );
@@ -221,6 +227,50 @@ if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
 
 
 		/**
+		 * Conditionally registers FunnelKit's Bricks elements as early as possible on `wp`.
+		 *
+		 * Bricks 2.0 builds and statically caches its per-element permission list very early on the
+		 * `wp` hook (Builder_Permissions::$sections is populated from the currently registered
+		 * Bricks\Elements::$elements). If our elements are not registered by then, their
+		 * edit_element_* keys are absent from the cached permission list and administrators get the
+		 * intermittent "your builder capability doesn't allow you to access these settings" error in
+		 * the builder. The original wp@8 pass is too late and gates on Bricks\Database::$page_data,
+		 * which is not populated until wp@10 — so the post-type gate could resolve against post_id 0.
+		 *
+		 * We therefore run on `wp` at PHP_INT_MIN — the first `wp` callback, before the permission
+		 * cache locks — but still GATED on the post type. The queried object is already resolved when
+		 * `wp` fires, and the Bricks builder loads at the funnel post's own permalink, so the queried
+		 * object IS the checkout / thank-you / optin post in the builder (where the permission error
+		 * occurs). Registration is idempotent via self::$load_elements, so the heavier wp@8
+		 * wp_register_elements() pass (which also sets up the checkout template and handles the
+		 * default-checkout override on the front end) still runs unchanged.
+		 *
+		 * @return void
+		 */
+		public function early_register_elements() {
+			if ( ! class_exists( 'Bricks\Element' ) ) {
+				return;
+			}
+
+			$post_type = get_post_type( get_queried_object_id() );
+			if ( empty( $post_type ) ) {
+				return;
+			}
+
+			if ( class_exists( 'WFACP_Common' ) && WFACP_Common::get_post_type_slug() === $post_type ) {
+				$this->register_elements( 'checkout' );
+			}
+
+			if ( ! is_null( WFFN_Core()->thank_you_pages ) && WFFN_Core()->thank_you_pages->get_post_type_slug() === $post_type ) {
+				$this->register_elements( 'thankyou-pages' );
+			}
+
+			if ( WFOPP_Core()->optin_pages->get_post_type_slug() === $post_type ) {
+				$this->register_elements( 'optin-pages' );
+			}
+		}
+
+		/**
 		 * Registers elements based on the post type.
 		 *
 		 * This method is responsible for registering elements based on the post type of the current page.
@@ -253,6 +303,61 @@ if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
 			if ( WFOPP_Core()->optin_pages->get_post_type_slug() === get_post_type( $post_id ) ) {
 				$this->register_elements( 'optin-pages' );
 			}
+		}
+
+		/**
+		 * Register elements during Bricks CSS file regeneration (AJAX).
+		 *
+		 * When "Regenerate CSS files" is clicked in Bricks settings, it processes each post via
+		 * wp_ajax_bricks_regenerate_css_file. The 'wp' hook doesn't fire during AJAX, so our
+		 * elements aren't registered and their control CSS is not generated.
+		 * This method checks the post type being regenerated and registers the appropriate elements.
+		 *
+		 * @return void
+		 */
+		public function register_elements_for_css_regeneration() {
+			$post_id = isset( $_POST['data'] ) ? absint( wp_unslash( $_POST['data'] ) ) : 0; //phpcs:ignore WordPress.Security.NonceVerification.Missing , FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
+
+			if ( empty( $post_id ) ) {
+				return;
+			}
+
+			$post_type = get_post_type( $post_id );
+
+			if ( class_exists( 'WFACP_Common' ) && WFACP_Common::get_post_type_slug() === $post_type ) {
+				if ( 0 === did_action( 'wfacp_template_class_found' ) && ! is_null( WFACP_Core()->template_loader ) ) {
+					WFACP_Core()->template_loader::$is_checkout = true;
+					WFACP_Common::set_id( $post_id );
+					WFACP_Core()->template_loader->maybe_setup_page();
+				}
+				$this->register_elements( 'checkout' );
+			}
+
+			if ( ! is_null( WFFN_Core()->thank_you_pages ) && WFFN_Core()->thank_you_pages->get_post_type_slug() === $post_type ) {
+				$this->register_elements( 'thankyou-pages' );
+			}
+
+			if ( WFOPP_Core()->optin_pages->get_post_type_slug() === $post_type ) {
+				$this->register_elements( 'optin-pages' );
+			}
+		}
+
+		/**
+		 * Register all elements for bulk CSS regeneration (cron/CLI).
+		 *
+		 * When CSS files are regenerated in bulk (theme update cron, WP-CLI), all element types
+		 * need to be registered upfront since multiple post types are processed.
+		 *
+		 * @return void
+		 */
+		public function register_all_elements() {
+			if ( class_exists( 'WFACP_Common' ) ) {
+				$this->register_elements( 'checkout' );
+			}
+			if ( wffn_is_wc_active() ) {
+				$this->register_elements( 'thankyou-pages' );
+			}
+			$this->register_elements( 'optin-pages' );
 		}
 
 		/**
@@ -416,7 +521,7 @@ if ( ! class_exists( '\FunnelKit\Bricks_Integration' ) ) {
 		 * @return array The modified array of internationalization strings.
 		 */
 		public function i18n_strings( $i18n ) {
-			$i18n['funnelkit'] = esc_html__( 'FunnelKit' );
+			$i18n['funnelkit'] = esc_html__( 'FunnelKit', 'funnel-builder' ); //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
 
 			return $i18n;
 		}

@@ -44,11 +44,11 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Elementor' ) ) {
 
 		private function process_url() {
 
-			if ( isset( $_REQUEST['action'] ) && 'elementor' === $_REQUEST['action'] && isset( $_REQUEST['post'] ) && $_REQUEST['post'] > 0 ) {  //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$this->edit_id = absint( $_REQUEST['post'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_REQUEST['action'] ) && 'elementor' === $_REQUEST['action'] && isset( $_REQUEST['post'] ) && $_REQUEST['post'] > 0 ) {  //phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
+				$this->edit_id = absint( $_REQUEST['post'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 			}
-			if ( isset( $_REQUEST['action'] ) && 'elementor_ajax' === $_REQUEST['action'] && isset( $_REQUEST['editor_post_id'] ) && $_REQUEST['editor_post_id'] > 0 ) {  //phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$this->edit_id = absint( $_REQUEST['editor_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_REQUEST['action'] ) && 'elementor_ajax' === $_REQUEST['action'] && isset( $_REQUEST['editor_post_id'] ) && $_REQUEST['editor_post_id'] > 0 ) {  //phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
+				$this->edit_id = absint( $_REQUEST['editor_post_id'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck
 			}
 		}
 
@@ -186,9 +186,7 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Elementor' ) ) {
 			if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->preview instanceof \Elementor\Preview && \Elementor\Plugin::$instance->preview->is_preview_mode() ) {
 				$post_id = get_the_ID();
 				if ( apply_filters( 'wfop_show_flag_in_phone_field', true ) && WFOPP_Core()->optin_pages->get_post_type_slug() === get_post_type( $post_id ) && WFFN_Common::wffn_is_funnel_pro_active() ) {
-					wp_enqueue_script( 'phone_flag_intl', plugin_dir_url( WFOPP_PRO_PLUGIN_FILE ) . 'assets/phone/js/intltelinput.min.js', array(), WFFN_VERSION_DEV );
-					wp_enqueue_style( 'flag_style', plugin_dir_url( WFOPP_PRO_PLUGIN_FILE ) . 'assets/phone/css/phone-flag.css', array(), WFFN_VERSION_DEV );
-
+					WFFN_Optin_Pages::enqueue_phone_flag_editor_assets();
 				}
 			}
 		}
@@ -224,12 +222,28 @@ if ( ! class_exists( 'WFFN_Optin_Pages_Elementor' ) ) {
 			if ( ! is_array( $design ) || empty( $design['selected_type'] ) || 'elementor' !== $design['selected_type'] ) {
 				return;
 			}
-			if ( ! class_exists( '\Elementor\Core\Base\Document' ) ) {
+			if ( ! class_exists( '\Elementor\Core\Base\Document' ) || ! defined( '\Elementor\Core\Base\Document::CACHE_META_KEY' ) ) {
 				return;
 			}
 			$cache_meta_key = \Elementor\Core\Base\Document::CACHE_META_KEY;
 			if ( ! empty( $cache_meta_key ) ) {
-				delete_post_meta( $page_id, $cache_meta_key );
+				/**
+				 * Only bust the Elementor element cache when the optin page design has
+				 * actually changed since we last cleared it.
+				 *
+				 * This runs on every front-end render of the optin page. An unconditional
+				 * delete_post_meta() (DELETE FROM wp_postmeta) on EVERY request forces an
+				 * Elementor cache regeneration each load and causes MySQL deadlocks under
+				 * concurrent traffic. Gating on the post's modified time makes the DELETE run
+				 * at most once per design change; steady-state loads do only cached reads.
+				 */
+				$design_marker = (string) get_post_field( 'post_modified_gmt', $page_id );
+				$last_marker   = (string) get_post_meta( $page_id, '_wffn_optin_elementor_cache_marker', true );
+
+				if ( '' !== $design_marker && $design_marker !== $last_marker ) {
+					delete_post_meta( $page_id, $cache_meta_key );
+					update_post_meta( $page_id, '_wffn_optin_elementor_cache_marker', $design_marker );
+				}
 			}
 		}
 	}

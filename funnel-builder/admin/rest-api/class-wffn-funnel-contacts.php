@@ -409,7 +409,15 @@ if ( ! class_exists( 'WFFN_Funnel_Contacts', false ) ) {
 						$record->link = admin_url( 'admin.php?page=wf-op&edit=' . $record->object_id . '&section=design&funnel_id=' . $funnel_id );
 						break;
 					case 'checkout':
-						$record->link = admin_url( 'admin.php?page=wfacp&wfacp_id=' . $record->object_id . '&funnel_id=' . $funnel_id );
+						// page=wfacp removed; link to the funnel-checkout builder (page=bwf). (#9188)
+						$record->link = add_query_arg(
+							array(
+								'page'      => 'bwf',
+								'path'      => '/funnel-checkout/' . $record->object_id . '/design',
+								'funnel_id' => $funnel_id,
+							),
+							admin_url( 'admin.php' )
+						);
 						break;
 					case 'upsell':
 						$record->link = admin_url( 'admin.php?page=upstroke&section=offers&edit=' . $record->object_id . '&funnel_id=' . $funnel_id );

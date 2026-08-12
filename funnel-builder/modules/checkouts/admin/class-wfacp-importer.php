@@ -23,9 +23,6 @@ if ( ! class_exists( 'WFACP_Importer' ) ) {
 			require_once WFFN_PLUGIN_DIR . '/includes/class-wffn-content-validator.php'; //phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingCustomConstant
 			WFFN_Content_Validator::register_http_guard();
 			add_filter( 'http_request_host_is_external', array( $this, 'allow_known_hosts' ), 10, 2 );
-			if ( isset( $_POST['wfacp-action'] ) && 'import' === $_POST['wfacp-action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,FunnelBuilder.CodeAnalysis.FunnelBuilderSpecific.MissingCapabilityCheck -- Hooking admin action, verification in maybe_import
-				add_action( 'admin_init', array( $this, 'maybe_import' ) );
-			}
 		}
 
 		/**
@@ -37,51 +34,6 @@ if ( ! class_exists( 'WFACP_Importer' ) ) {
 			}
 
 			return self::$ins;
-		}
-
-		/**
-		 * Import our exported file
-		 *
-		 * @since 1.1.4
-		 */
-		function maybe_import() {
-			if ( empty( $_POST['wfacp-action'] ) || 'import' != $_POST['wfacp-action'] ) {
-				return;
-			}
-			$nonce = filter_input( INPUT_POST, 'wfacp-action-nonce', FILTER_UNSAFE_RAW );
-			if ( ! wp_verify_nonce( $nonce, 'wfacp-action-nonce' ) ) {
-				return;
-			}
-
-			$user = WFACP_Core()->role->user_access( 'checkout', 'write' );
-			if ( false === $user ) {
-				return;
-			}
-			if ( ! isset( $_FILES['file']['name'] ) ) {
-				return;
-			}
-			$filename  = bwf_clean( $_FILES['file']['name'] );
-			$file_info = explode( '.', $filename );
-			$extension = end( $file_info );
-
-			if ( 'json' != $extension ) {
-				wp_die( esc_html__( 'Please upload a valid .json file', 'woofunnels-aero-checkout' ) ); //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
-			}
-			if ( ! isset( $_FILES['file']['tmp_name'] ) ) {
-				return;
-			}
-			$file = bwf_clean( $_FILES['file']['tmp_name'] );
-
-			if ( empty( $file ) ) {
-				wp_die( esc_html__( 'Please upload a file to import', 'woofunnels-aero-checkout' ) ); //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch
-			}
-
-			// Retrieve the settings from the file and convert the JSON object to an array.
-			$acps = json_decode( file_get_contents( $file ), true );
-
-			$this->import_from_json_data( $acps );
-
-			$this->is_imported = true;
 		}
 
 		public function import_from_json_data( $acps ) {
@@ -305,7 +257,7 @@ if ( ! class_exists( 'WFACP_Importer' ) ) {
 		public function imported_successfully() {
 			?>
 		<div class="notice notice-success is-dismissible">
-			<p><?php esc_html_e( 'Imported Successfully!', 'woofunnels-order-acp' ); //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></p>
+			<p><?php esc_html_e( 'Imported Successfully!', 'funnel-builder' ); //phpcs:ignore WordPress.WP.I18n.TextDomainMismatch ?></p>
 		</div>
 			<?php
 		}

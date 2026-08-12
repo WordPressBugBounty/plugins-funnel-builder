@@ -96,7 +96,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 				$default = isset( $field['width'] ) ? $field['width'] : 'wffn-sm-100';
 
 
-				$this->add_select( $field['InputName'], esc_html__( $field['label'] ), $options, $default );
+				$this->add_select( $field['InputName'], esc_html( $field['label'] ), $options, $default );
 			}
 
 
@@ -597,7 +597,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 			}
 			$borderdefault = [
 				'name'      => $field_key . '_border',
-				'label'     => __( 'Border', 'woofunnels-aero-checkout' ),
+				'label'     => __( 'Border', 'funnel-builder' ),
 				'selector'  => $selector,
 				'condition' => $condition,
 			];
@@ -647,7 +647,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 			}
 			$borderdefault = [
 				'name'      => $field_key . '_border',
-				'label'     => __( 'Border', 'woofunnels-aero-checkout' ),
+				'label'     => __( 'Border', 'funnel-builder' ),
 				'selector'  => $selector,
 				'condition' => $condition,
 			];
@@ -664,7 +664,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 
 			$field_key = 'wffn_' . $this->add_heading_number . '_heading';
 			$this->add_control( $field_key, [
-				'label'     => __( $heading, 'woofunnels-aero-checkout' ),
+				'label'     => $heading,
 				'type'      => Controls_Manager::HEADING,
 				'separator' => $separator,
 				'condition' => $conditions
@@ -675,7 +675,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 		public function add_typography( $field_key, $selector, $fields_options = [], $conditions = [], $label = '' ) {
 
 			if ( empty( $label ) ) {
-				$label = __( 'Typography', 'woofunnels-aero-checkout' );
+				$label = __( 'Typography', 'funnel-builder' );
 			}
 
 			$args = [
@@ -797,7 +797,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 
 		public function add_hover( $field_key, $selectors = [], $default = '#000000', $label = '', $conditions = [] ) {
 			if ( empty( $label ) ) {
-				$label = esc_attr__( 'Hover Color', 'woofunnels-aero-checkout' );
+				$label = esc_attr__( 'Hover Color', 'funnel-builder' );
 			}
 
 			$color_selectors = [];
@@ -1033,7 +1033,7 @@ if ( ! class_exists( 'Elementor_WFFN_Optin_Form_Widget' ) ) {
 
 		public function add_font_family( $field_key, $selectors, $label = "", $default = '' ) {
 			if ( empty( $label ) ) {
-				$label = __( 'Fonts', 'woofunnels-aero-checkout' );
+				$label = __( 'Fonts', 'funnel-builder' );
 			}
 			if ( empty( $default ) ) {
 				$default = "Open Sans";

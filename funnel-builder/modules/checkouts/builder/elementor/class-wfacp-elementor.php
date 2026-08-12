@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly
 if ( ! class_exists( 'WFACP_Elementor' ) ) {
 	#[\AllowDynamicProperties]
 	class WFACP_Elementor {
@@ -63,7 +64,7 @@ if ( ! class_exists( 'WFACP_Elementor' ) ) {
 				$elements_manager->add_category(
 					'woofunnels-aero-checkout',
 					array(
-						'title' => __( 'FunnelKit', 'woofunnels-aero-checkout' ),
+						'title' => __( 'FunnelKit', 'funnel-builder' ),
 						'icon'  => 'fa fa-plug',
 					)
 				);
@@ -140,7 +141,7 @@ if ( ! class_exists( 'WFACP_Elementor' ) ) {
 		public function register_template_type( $loader ) {
 			$template = array(
 				'slug'    => 'elementor',
-				'title'   => __( 'Elementor', 'woofunnels-aero-checkout' ),
+				'title'   => __( 'Elementor', 'funnel-builder' ),
 				'filters' => WFACP_Common::get_template_filter(),
 			);
 

@@ -12,15 +12,47 @@ if ( ! class_exists( 'WFTY_Shortcodes' ) ) {
   class WFTY_Shortcodes {
 
 		public static function init() {
-			add_shortcode( 'wfty_order_number', array( WFFN_Core()->thank_you_pages->data, 'get_order_id' ) );
-			add_shortcode( 'wfty_customer_first_name', array( WFFN_Core()->thank_you_pages->data, 'get_customer_first_name' ) );
-			add_shortcode( 'wfty_customer_last_name', array( WFFN_Core()->thank_you_pages->data, 'get_customer_last_name' ) );
-			add_shortcode( 'wfty_customer_email', array( WFFN_Core()->thank_you_pages->data, 'get_customer_email' ) );
-			add_shortcode( 'wfty_customer_phone_number', array( WFFN_Core()->thank_you_pages->data, 'get_customer_phone' ) );
-			add_shortcode( 'wfty_customer_details', array( WFFN_Core()->thank_you_pages->data, 'get_customer_info' ) );
-			add_shortcode( 'wfty_order_details', array( WFFN_Core()->thank_you_pages->data, 'get_order_details' ) );
-			add_shortcode( 'wfty_order_total', array( WFFN_Core()->thank_you_pages->data, 'get_order_total' ) );
-			add_shortcode( 'wfty_order_meta', array( WFFN_Core()->thank_you_pages->data, 'wfty_order_meta' ) );
+			$data = WFFN_Core()->thank_you_pages->data;
+
+			/**
+			 * WordPress prints whatever a shortcode returns, so the escaping has to
+			 * happen here. Wrapping at registration keeps the data methods usable
+			 * elsewhere -- templates and the wfty_* helper functions still get the
+			 * raw value.
+			 */
+			$plain_text = array(
+				'wfty_order_number'          => 'get_order_id',
+				'wfty_customer_first_name'   => 'get_customer_first_name',
+				'wfty_customer_last_name'    => 'get_customer_last_name',
+				'wfty_customer_email'        => 'get_customer_email',
+				'wfty_customer_phone_number' => 'get_customer_phone',
+				'wfty_order_meta'            => 'wfty_order_meta',
+			);
+
+			foreach ( $plain_text as $tag => $method ) {
+				add_shortcode(
+					$tag,
+					static function ( $atts = array() ) use ( $data, $method ) {
+						return esc_html( (string) call_user_func( array( $data, $method ), $atts ) );
+					}
+				);
+			}
+
+			/** These build markup -- a details table, an address block, a formatted price. */
+			$markup = array(
+				'wfty_customer_details' => 'get_customer_info',
+				'wfty_order_details'    => 'get_order_details',
+				'wfty_order_total'      => 'get_order_total',
+			);
+
+			foreach ( $markup as $tag => $method ) {
+				add_shortcode(
+					$tag,
+					static function ( $atts = array() ) use ( $data, $method ) {
+						return wp_kses_post( (string) call_user_func( array( $data, $method ), $atts ) );
+					}
+				);
+			}
 		}
 	}
 }

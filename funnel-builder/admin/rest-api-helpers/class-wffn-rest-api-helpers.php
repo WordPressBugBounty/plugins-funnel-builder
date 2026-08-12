@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly
 if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 	#[\AllowDynamicProperties]
 	class WFFN_REST_API_Helpers extends WFFN_REST_Controller {
@@ -53,9 +54,8 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 								if ( $stp['type'] === 'wc_checkout' && isset( $stp['substeps'] ) && isset( $stp['substeps']['wc_order_bump'] ) && ! empty( $stp['substeps']['wc_order_bump'] ) ) {
 									$stp['substeps']['wc_order_bump'] = array_map( 'absint', $stp['substeps']['wc_order_bump'] );
 									if ( in_array( absint( $step_id ), $stp['substeps']['wc_order_bump'], true ) ) {
-										$step_data['view_link']      = get_the_permalink( $stp['id'] );
-										$step_data['edit_link_past'] = admin_url( 'admin.php?page=wfob&section=products&wfob_id=' . $step_id );
-										$step_data['checkout_id']    = $stp['id'];
+										$step_data['view_link']   = get_the_permalink( $stp['id'] );
+										$step_data['checkout_id'] = $stp['id'];
 										break;
 									}
 								}
@@ -86,8 +86,6 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 								$step_data['view_link'] = get_the_permalink( $custom_page );
 							}
 						}
-						$step_data['edit_link_past'] = admin_url( 'admin.php?page=upstroke&section=offers&edit=' . $step_data['upsell_id'] );
-
 					}
 
 					if ( 'wfacp_checkout' === $post_data->post_type && class_exists( 'WFACP_Common' ) ) {
@@ -95,8 +93,6 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 						 * clear wfacp cache data for get updated data
 						 */
 						add_filter( 'wfacp_get_post_meta_data', '__return_true' );
-						$step_data['edit_link_past'] = admin_url( 'admin.php?page=wfacp&section=design&wfacp_id=' . $step_id );
-
 					}
 
 					/**
@@ -514,12 +510,20 @@ if ( ! class_exists( 'WFFN_REST_API_Helpers' ) ) {
 					}
 				}
 
-				$product['product_image']        = $product_image;
-				$product['product_type']         = $product['type'];
-				$product['product_attribute']    = ! empty( $variation_name ) ? $variation_name : '-';
-				$product['regular_price']        = ! empty( $regular_price ) ? $regular_price : 0;
-				$product['sale_price']           = ! empty( $sale_price ) ? $sale_price : 0;
-				$product['is_on_sale']           = $chk_product->is_on_sale();
+				$product['product_image']     = $product_image;
+				$product['product_type']      = $product['type'];
+				$product['product_attribute'] = ! empty( $variation_name ) ? $variation_name : '-';
+				// When a plan_id is present, a Pro add-on (e.g. Sublium plan compatibility) has already
+				// computed the correct regular_price/sale_price/is_on_sale for this plan via the
+				// wffn_rest_api_checkout_add_product / wffn_rest_api_bump_add_product / etc. filters run
+				// just before this call — re-fetching raw WooCommerce product data here would silently
+				// overwrite that with the plan-less price (e.g. showing the full regular price as the
+				// offer price for a product that's actually on a discounted subscription plan).
+				if ( empty( $product['plan_id'] ) ) {
+					$product['regular_price'] = ! empty( $regular_price ) ? $regular_price : 0;
+					$product['sale_price']    = ! empty( $sale_price ) ? $sale_price : 0;
+					$product['is_on_sale']    = $chk_product->is_on_sale();
+				}
 				$product['currency_symbol']      = get_woocommerce_currency_symbol();
 				$product['product_stock_status'] = $stock_status;
 				$product['product_stock']        = $product_stock;

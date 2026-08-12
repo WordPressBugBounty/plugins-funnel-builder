@@ -174,7 +174,7 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 				return $resp;
 			}
 
-			$options['wfacp_checkout_global_css']    = isset( $options['wfacp_checkout_global_css'] ) ? stripslashes_deep( $options['wfacp_checkout_global_css'] ) : '';
+			$options['wfacp_checkout_global_css']    = isset( $options['wfacp_checkout_global_css'] ) ? WFACP_Common::sanitize_global_css( stripslashes_deep( $options['wfacp_checkout_global_css'] ) ) : '';
 			$options['wfacp_global_external_script'] = isset( $options['wfacp_global_external_script'] ) ? stripslashes_deep( $options['wfacp_global_external_script'] ) : '';
 
 			update_option( '_wfacp_global_settings', $options, true );
@@ -192,7 +192,7 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 				'msg'    => '',
 				'status' => false,
 			);
-			$quantity = floatval( $post['quantity'] );
+			$quantity = wc_stock_amount( $post['quantity'] );
 
 			if ( $quantity <= 0 ) {
 				$quantity = 0;
@@ -428,14 +428,12 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 					do_action( 'wfacp_apply_coupon_via_ajax_placeholder', $bump_action_data );
 				}
 
-				WC()->cart->calculate_totals();
-
 				$all_notices  = WC()->session->get( 'wc_notices', array() );
 				$notice_types = apply_filters( 'woocommerce_notice_types', array( 'error', 'success', 'notice' ) );
 				$message      = array();
 
 				foreach ( $notice_types as $notice_type ) {
-					if ( wc_notice_count( $notice_type ) > 0 ) {
+					if ( isset( $all_notices[ $notice_type ] ) && count( $all_notices[ $notice_type ] ) > 0 ) {
 						$message = array(
 							$notice_type => $all_notices[ $notice_type ],
 						);
@@ -443,6 +441,9 @@ if ( ! class_exists( 'WFACP_AJAX_Controller' ) ) {
 				}
 
 				wc_clear_notices();
+
+				WC()->cart->calculate_totals();
+				do_action( 'wfacp_after_coupon_apply', $bump_action_data );
 
 				$resp = array(
 					'status'  => $status,

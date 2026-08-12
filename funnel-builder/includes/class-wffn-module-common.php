@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly
 
 /**
  * Class WFFN_Module_Common
@@ -139,15 +140,15 @@ if ( ! class_exists( 'WFFN_Module_Common' ) ) {
 				$style_custom_css = $this->get_custom_option( 'custom_css' );
 				if ( ! empty( $style_custom_css ) ) {
 					$sanitized_custom_css = WFFN_Common::sanitize_global_css( $style_custom_css );
-					if ( $sanitized_custom_css === $style_custom_css ) {
-						echo '<style>' . $style_custom_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					if ( '' !== $sanitized_custom_css ) {
+						echo '<style>' . $sanitized_custom_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is sanitized via sanitize_global_css()
 					}
 				}
 				$global_css = $this->get_option( 'css' );
 				if ( ! empty( $global_css ) ) {
 					$sanitized_css = WFFN_Common::sanitize_global_css( $global_css );
-					if ( $sanitized_css === $global_css ) {
-						echo '<style>' . $global_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					if ( '' !== $sanitized_css ) {
+						echo '<style>' . $sanitized_css . '</style>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Output is sanitized via sanitize_global_css()
 					}
 				}
 			}
