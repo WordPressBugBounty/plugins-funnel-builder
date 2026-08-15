@@ -1278,30 +1278,40 @@ body.rtl .wfacp-intl-phone-flag-field .wfacp-form-control-label {
 /* ---------------------------------------------------------------------------
  * Divi builder overrides (pattern from PR #9241).
  * Divi resets backgrounds at "#et-boc .et-l div" (1,1,1) specificity, which
- * blanks the flag sprites; "#wfacp-e-form .iti .iti__flag" (1,2,0) outranks it
- * without !important. Per-country offsets are CSS custom properties and
- * survive the resets untouched.
+ * blanks the flag sprites. Selector specificity alone is enough in the plain
+ * frontend, but builder/divi/css/divi-form.css still ships
+ * ".et-db #et-boc .et-l .iti__flag { background-color:#DBDBDB }" at the same
+ * (1,3,0) weight, and Divi's Visual Builder re-applies its own !important
+ * background resets, so the sprite declarations are forced here.
+ * Per-country offsets are CSS custom properties and survive the resets untouched.
+ * background-color is reset explicitly: without it the #DBDBDB plate paints
+ * through the transparent parts of the sprite.
+ * Sprite paths stay relative to this stylesheet — the same file ships from
+ * funnel-builder/modules/checkouts/, woofunnels-aero-checkout/ and
+ * funnel-builder-pro/modules/checkout/, and absolute /wp-content/... URLs
+ * break custom content dirs and subdirectory installs.
  * ------------------------------------------------------------------------- */
 #wfacp-e-form .iti .iti__flag:not(.iti__globe) {
-  height: var(--iti-flag-height);
+  height: var(--iti-flag-height) !important;
   width: var(--iti-flag-width);
-  border-radius: 1px;
-  box-shadow: 0px 0px 1px 0px #888;
-  background-image: url(../img/flags.png);
-  background-image: image-set(var(--iti-path-flags-1x) 1x, var(--iti-path-flags-2x) 2x);
-  background-repeat: no-repeat;
-  background-position: calc(var(--iti-flag-offset, 100) * var(--iti-flag-width)) 0;
-  background-size: calc(var(--iti-flag-count) * var(--iti-flag-width)) var(--iti-flag-height);
+  border-radius: 1px !important;
+  box-shadow: 0 0 1px 0 #888 !important;
+  background-color: transparent !important;
+  background-image: url(../img/flags.png) !important;
+  background-image: image-set(var(--iti-path-flags-1x) 1x, var(--iti-path-flags-2x) 2x) !important;
+  background-repeat: no-repeat !important;
+  background-position: calc(var(--iti-flag-offset, 100) * var(--iti-flag-width)) 0 !important;
+  background-size: calc(var(--iti-flag-count) * var(--iti-flag-width)) var(--iti-flag-height) !important;
 }
 #wfacp-e-form .iti .iti__country .iti__flag {
-  margin-right: 10px;
+  margin-right: 10px !important;
 }
 #wfacp-e-form .iti input,
 #wfacp-e-form .iti input[type=text],
 #wfacp-e-form .iti input[type=tel] {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
-  margin-right: 0;
+  margin-right: 0 !important;
 }
 
 /* RTL: anchor the country picker to the field's right edge. v29 pins the

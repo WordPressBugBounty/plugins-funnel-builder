@@ -63,6 +63,23 @@ class WooFunnel_WFFN {
 
 	public static $version = WFFN_BWF_VERSION;
 
+	/**
+	 * Newest full (UN-dismantled) WooFunnels core that counts as abandoned.
+	 *
+	 * Some plugins bundled a WooFunnels core once and then stopped shipping
+	 * updates for it. CartHopper (woofunnels-carthopper-skip-cart) is the known
+	 * case: its core is frozen at exactly 1.9.90 while every maintained core is on
+	 * the 1.10.x line. Yielding to a core that old would downgrade the whole site,
+	 * so any full core at or below this version is dropped from the loader pool
+	 * and our dismantled core runs instead.
+	 *
+	 * Compared with '<=', not '<' -- 1.9.90 is CartHopper's own version, the one we
+	 * are excluding, not the first version we accept.
+	 *
+	 * @var string
+	 */
+	const MAX_ABANDONED_FULL_CORE_VERSION = '1.10.0';
+
 	public static function register() {
 
 		$configuration = array(
@@ -93,35 +110,45 @@ class WooFunnel_WFFN {
 	 * dismantled (all carry the marker) nobody withdraws and normal newest-wins
 	 * arbitration resumes.
 	 *
-	 * Hooked on plugins_loaded at priority -2, just before include_core (-1). Lives
-	 * here (our registrant), never in the shared WooFunnel_Loader class.
+	 * The yield is version-gated: only full cores newer than
+	 * MAX_ABANDONED_FULL_CORE_VERSION are worth riding. Anything at or below it is
+	 * an abandoned leftover (see the constant) and is evicted from the pool so it
+	 * cannot load at all. So there are three outcomes:
+	 *  - no full core at all  -> stay registered, newest-wins as usual
+	 *  - maintained full core -> withdraw, it loads, we ride it
+	 *  - abandoned full core  -> evict it, stay registered, our core loads
+	 *
+	 * Hooked on plugins_loaded at PHP_INT_MIN, ahead of every include_core() call in
+	 * the request (ours at -1, and siblings that call it themselves -- CartHopper
+	 * does, from WFCH_Common::plugins_loaded, also -1). Lives here (our registrant),
+	 * never in the shared WooFunnel_Loader class.
 	 */
 	public static function maybe_yield_to_full_core() {
 		if ( ! class_exists( 'WooFunnel_Loader' ) || ! is_array( WooFunnel_Loader::$plugins ) || WooFunnel_Loader::$loaded ) {
 			return;
 		}
 
-		$has_full_core = self::full_core_in_pool();
-
 		/**
 		 * Full cores shipped by plugins that register LATE are not in the pool yet.
 		 * FunnelKit Automations, for example, requires its start.php on
-		 * plugins_loaded:1 -- after this hook (-2) and after include_core (-1). If we
+		 * plugins_loaded:1 -- after this hook and after include_core (-1). If we
 		 * only looked at the pool we would not see it, win with our minimal core, and
 		 * it would fail (its connector/ framework, WFCO_Common, only exists in its own
 		 * core). So force those late cores to register NOW by requiring their start.php,
 		 * so include_core (-1) can pick the full core and load it before our own
-		 * load_classes (also plugins_loaded:1) needs it.
+		 * load_classes (also plugins_loaded:1) needs it. Requiring them also puts their
+		 * version on the table, which is what the eviction below needs.
 		 */
-		if ( false === $has_full_core ) {
+		if ( false === self::full_core_in_pool() ) {
 			foreach ( self::undismantled_core_start_files() as $start_file ) {
 				require_once $start_file; // runs the sibling's WooFunnel_*::register()
-				$has_full_core = true;
 			}
 		}
 
-		if ( false === $has_full_core ) {
-			return; // Only dismantled cores present -- compete on version as usual.
+		self::drop_abandoned_full_cores();
+
+		if ( false === self::full_core_in_pool() ) {
+			return; // Nothing left to yield to -- compete on version as usual.
 		}
 
 		foreach ( WooFunnel_Loader::$plugins as $key => $config ) {
@@ -143,6 +170,39 @@ class WooFunnel_WFFN {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Remove every registered full (UN-dismantled) core at or below
+	 * MAX_ABANDONED_FULL_CORE_VERSION from the loader pool.
+	 *
+	 * Dropping the configuration is what stops it: include_core() only ever calls
+	 * load_files() on the winner it picks out of WooFunnel_Loader::$plugins, so a
+	 * core that is not in the pool never boots. Timing works because this runs on
+	 * plugins_loaded at PHP_INT_MIN, ahead of every include_core() call in the
+	 * request -- ours at -1 and the siblings' own (CartHopper calls it directly from
+	 * WFCH_Common::plugins_loaded, also -1). And if the evicted plugin registers
+	 * again afterwards, that registration is inert: include_core has already run and
+	 * flipped WooFunnel_Loader::$loaded.
+	 *
+	 * Configurations with no version string are left alone: we cannot tell how old
+	 * they are, and wrongly evicting a live full core is the more expensive mistake.
+	 */
+	private static function drop_abandoned_full_cores() {
+		$changed = false;
+		foreach ( WooFunnel_Loader::$plugins as $key => $config ) {
+			if ( ! empty( $config['dismantled'] ) || empty( $config['version'] ) ) {
+				continue;
+			}
+			if ( version_compare( $config['version'], self::MAX_ABANDONED_FULL_CORE_VERSION, '<=' ) ) {
+				unset( WooFunnel_Loader::$plugins[ $key ] );
+				$changed = true;
+			}
+		}
+
+		if ( true === $changed ) {
+			WooFunnel_Loader::$plugins = array_values( WooFunnel_Loader::$plugins );
+		}
 	}
 
 	/**

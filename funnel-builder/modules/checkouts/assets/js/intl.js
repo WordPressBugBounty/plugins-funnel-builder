@@ -258,13 +258,19 @@
             input.addEventListener("countrychange", function () {
                 self.field_position(intl);
             });
-            if (intl.promise && typeof intl.promise.then === 'function') {
-                intl.promise.then(function () {
-                    self.fill_valid_number(type);
-                });
-            } else {
-                self.fill_valid_number(type);
-            }
+            self.fill_valid_number(type);
+            // Poll for utils and rewrite the payload once it lands, as before the v29 migration.
+            // A promise chained to the import settles once and only for that one attempt: a
+            // rejected import leaves the payload as it was, and nothing retries. The poll picks
+            // utils up however it arrives, and has no rejection to swallow.
+            (function (type, self) {
+                let timer = setInterval(function () {
+                    if (itiLib.utils) {
+                        self.fill_valid_number(type);
+                        clearInterval(timer);
+                    }
+                }, 500);
+            })(type, self);
             return intl;
         }
 
@@ -448,7 +454,21 @@
             let is_valid = this.isValidNumber(intl);
             this.field_position(intl);
             let hidden_phone_field = $('#wfacp_input_phone_field');
-            if (false === is_valid || null == is_valid) {
+            if (null == is_valid) {
+                // No verdict: utils.js has not loaded, so nothing checked this number. The server
+                // reads an empty number as a definite "invalid", so keep what the customer typed —
+                // a check that never ran must not surface as an error at place order.
+                let selected_data = wfacpGetCountry(intl) || {};
+                let national = ($(`#${type}_phone`).val() || '').replace(/[\s\-().]/g, '');
+                if (selected_data.dialCode && '' !== national) {
+                    this.phone_data[type].code = String(selected_data.dialCode);
+                    this.phone_data[type].number = national.replace('+' + selected_data.dialCode, '').replace(/^0+/, '');
+                } else {
+                    // no country to split on — hand the digits over whole rather than blank them
+                    this.phone_data[type].code = '';
+                    this.phone_data[type].number = national;
+                }
+            } else if (false === is_valid) {
                 this.phone_data[type].number = '';
                 this.phone_data[type].code = '';
                 hidden_phone_field.val('{}');

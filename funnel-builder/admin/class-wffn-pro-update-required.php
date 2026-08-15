@@ -16,11 +16,26 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 		 */
 		private static $ins = null;
 
+
+
+		/**
+		 * Free plugin version the rollback installs. Hardcoded for now; later
+		 * this should resolve to the last version pairing with the installed Pro.
+		 */
+		const ROLLBACK_VERSION = '3.15.0.9';
+
 		public function __construct() {
 			if ( is_admin() ) {
 				add_action( 'admin_enqueue_scripts', array( $this, 'maybe_unload_app' ), 100 );
 				add_action( 'admin_notices', array( $this, 'maybe_render_sitewide_notice' ) );
 				add_action( 'admin_init', array( $this, 'maybe_register_update_row_message' ) );
+
+				global $pagenow;
+				if ( ! empty( $_GET['wffn_rollback'] ) && 'update.php' === $pagenow && ! empty( $_GET['action'] ) && 'upgrade-plugin' === $_GET['action'] && ! empty( $_GET['plugin'] ) && defined( 'WFFN_PLUGIN_BASENAME' ) && WFFN_PLUGIN_BASENAME === wp_unslash( $_GET['plugin'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- core update.php verifies the upgrade-plugin nonce.
+					add_filter( 'site_transient_update_plugins', array( $this, 'maybe_inject_rollback_package' ) );
+				}
+
+				add_action( 'admin_init', array( $this, 'maybe_debug_rollback_url' ) );
 			}
 			add_action( 'admin_bar_menu', array( $this, 'maybe_add_admin_bar_state' ), 100 );
 		}
@@ -53,6 +68,82 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 			}
 
 			return version_compare( WFFN_PRO_VERSION, WFFN_MIN_PRO_VERSION, '<' );
+		}
+
+		/**
+		 * Whether the customer's Pro license has expired.
+		 *
+		 * @return bool
+		 */
+		public function is_license_expired() {
+			return WFFN_Core()->admin->get_license_status() === 'expired';
+		}
+
+		/**
+		 * Debug helper: any wp-admin URL with ?wffn_rollback_url=1 prints the
+		 * generated rollback link.
+		 *
+		 * @return void
+		 */
+		public function maybe_debug_rollback_url() {
+			if ( ! isset( $_GET['wffn_rollback_url'] ) || ! current_user_can( 'update_plugins' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only debug output for admins.
+				return;
+			}
+
+			$url = $this->get_rollback_url();
+			wp_die(
+				'<p><strong>Funnel Builder rollback URL</strong> (version ' . esc_html( self::ROLLBACK_VERSION ) . '):</p><p><a href="' . esc_url( $url ) . '">' . esc_html( $url ) . '</a></p>',
+				'Funnel Builder rollback URL',
+				array( 'response' => 200 )
+			);
+		}
+
+		/**
+		 * Link that runs the core plugin upgrader against the rollback package
+		 * (see maybe_inject_rollback_package). Falls back to the plugins page
+		 * when the user can't update plugins.
+		 *
+		 * @return string
+		 */
+		public function get_rollback_url() {
+			if ( ! defined( 'WFFN_PLUGIN_BASENAME' ) || ! current_user_can( 'update_plugins' ) ) {
+				return self_admin_url( 'plugins.php?s=FunnelKit+Funnel+Builder' );
+			}
+
+			return wp_nonce_url(
+				self_admin_url( 'update.php?action=upgrade-plugin&wffn_rollback=1&plugin=' . rawurlencode( WFFN_PLUGIN_BASENAME ) ),
+				'upgrade-plugin_' . WFFN_PLUGIN_BASENAME
+			);
+		}
+
+		/**
+		 * Feeds the rollback package to the core upgrader. Only kicks in on the
+		 * update.php request started by get_rollback_url (wffn_rollback flag), so
+		 * the plugins/updates screens never see the downgrade as an update.
+		 *
+		 * @param object|false $transient update_plugins transient value.
+		 *
+		 * @return object|false
+		 */
+		public function maybe_inject_rollback_package( $transient ) {
+
+			if ( ! current_user_can( 'update_plugins' ) ) {
+				return $transient;
+			}
+
+			if ( ! is_object( $transient ) ) {
+				$transient = new stdClass();
+			}
+
+			$transient->response[ WFFN_PLUGIN_BASENAME ] = (object) array(
+				'slug'        => 'funnel-builder',
+				'plugin'      => WFFN_PLUGIN_BASENAME,
+				'new_version' => self::ROLLBACK_VERSION,
+				'url'         => 'https://wordpress.org/plugins/funnel-builder/',
+				'package'     => 'https://downloads.wordpress.org/plugin/funnel-builder.' . self::ROLLBACK_VERSION . '.zip',
+			);
+
+			return $transient;
 		}
 
 		/**
@@ -411,8 +502,21 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 		 * @return void
 		 */
 		public function render() {
-			$update_url  = self_admin_url( 'plugins.php?s=FunnelKit+Funnel+Builder' );
-			$support_url = 'https://funnelkit.com/support/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Pro+Update+Required';
+			$this->render_styles();
+
+			if ( $this->is_license_expired() ) {
+				$this->render_license_expired();
+			} else {
+				$this->render_update_prompt();
+			}
+		}
+
+		/**
+		 * Styles shared by both full-page states.
+		 *
+		 * @return void
+		 */
+		private function render_styles() {
 			?>
 			<style>
 				/* Inline on purpose: must render even when an outdated Pro build's app bundle and noconflict pass are active. */
@@ -431,6 +535,10 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 					border: 1px solid #e7e7e7;
 					border-radius: 12px;
 					padding: 32px;
+				}
+
+				.wffn-pro-update-required__card--wide {
+					max-width: 860px;
 				}
 
 				.wffn-pro-update-required__header {
@@ -519,10 +627,15 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 
 				.wffn-pro-update-required__actions {
 					display: flex;
+					flex-wrap: wrap;
 					align-items: center;
 					justify-content: center;
-					gap: 20px;
+					gap: 16px;
 					margin-top: 24px;
+				}
+
+				.wffn-pro-update-required__actions a {
+					white-space: nowrap;
 				}
 
 				.wffn-pro-update-required__button {
@@ -544,6 +657,20 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 					border-radius: 8px;
 				}
 
+				.wffn-pro-update-required__button--secondary {
+					background: #ffffff;
+					border: 1px solid #0073aa;
+					padding: 9px 19px;
+					color: #0073aa;
+				}
+
+				.wffn-pro-update-required__button--secondary:hover,
+				.wffn-pro-update-required__button--secondary:focus {
+					background: #f0f6f9;
+					color: #00618f;
+					border-color: #00618f;
+				}
+
 				.wffn-pro-update-required__support {
 					font-size: 14px;
 					line-height: 20px;
@@ -558,17 +685,40 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 					text-decoration: underline;
 				}
 			</style>
+			<?php
+		}
+
+		/**
+		 * Card icon shared by both full-page states.
+		 *
+		 * @return void
+		 */
+		private function render_title_icon() {
+			?>
+			<span class="wffn-pro-update-required__icon" aria-hidden="true">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M12 4 2.7 20h18.6L12 4Z" stroke="#ecc45c" stroke-width="1.6" stroke-linejoin="round" />
+					<path d="M12 10v4.5" stroke="#ecc45c" stroke-width="1.6" stroke-linecap="round" />
+					<circle cx="12" cy="17.2" r="0.9" fill="#ecc45c" />
+				</svg>
+			</span>
+			<?php
+		}
+
+		/**
+		 * "Update Pro" state: Pro is outdated but a compatible build is available.
+		 *
+		 * @return void
+		 */
+		private function render_update_prompt() {
+			$update_url  = self_admin_url( 'plugins.php?s=FunnelKit+Funnel+Builder' );
+			$support_url = 'https://funnelkit.com/support/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Pro+Update+Required';
+			?>
 			<div class="wffn-pro-update-required">
 				<div class="wffn-pro-update-required__card">
 					<div class="wffn-pro-update-required__header">
 						<h1 class="wffn-pro-update-required__title">
-							<span class="wffn-pro-update-required__icon" aria-hidden="true">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M12 4 2.7 20h18.6L12 4Z" stroke="#ecc45c" stroke-width="1.6" stroke-linejoin="round" />
-									<path d="M12 10v4.5" stroke="#ecc45c" stroke-width="1.6" stroke-linecap="round" />
-									<circle cx="12" cy="17.2" r="0.9" fill="#ecc45c" />
-								</svg>
-							</span>
+							<?php $this->render_title_icon(); ?>
 							<?php
 							printf( /* translators: %s: premium plugin name */
 								esc_html__( 'Update %s', 'funnel-builder' ),
@@ -604,6 +754,50 @@ if ( ! class_exists( 'WFFN_Pro_Update_Required' ) ) {
 					<div class="wffn-pro-update-required__actions">
 						<a class="wffn-pro-update-required__button" href="<?php echo esc_url( $update_url ); ?>"><?php esc_html_e( 'Update Now', 'funnel-builder' ); ?></a>
 						<a class="wffn-pro-update-required__support" href="<?php echo esc_url( $support_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Get Support', 'funnel-builder' ); ?></a>
+					</div>
+				</div>
+			</div>
+			<?php
+		}
+
+		/**
+		 * "License expired" state: Pro can't be updated without renewing.
+		 *
+		 * @return void
+		 */
+		private function render_license_expired() {
+			$rollback_url   = $this->get_rollback_url();
+			$renew_url      = 'https://funnelkit.com/exclusive-offer/?utm_source=WordPress&utm_campaign=FB+Lite+Plugin&utm_medium=Pro+License+Expired';
+			$deactivate_url = '';
+			if ( defined( 'WFFN_PRO_FILE' ) ) {
+				$pro_basename   = plugin_basename( WFFN_PRO_FILE );
+				$deactivate_url = wp_nonce_url( self_admin_url( 'plugins.php?action=deactivate&plugin=' . rawurlencode( $pro_basename ) ), 'deactivate-plugin_' . $pro_basename );
+			}
+			?>
+			<div class="wffn-pro-update-required">
+				<div class="wffn-pro-update-required__card wffn-pro-update-required__card--wide">
+					<div class="wffn-pro-update-required__header">
+						<h1 class="wffn-pro-update-required__title">
+							<?php $this->render_title_icon(); ?>
+							<?php
+							printf( /* translators: 1: installed Funnel Builder version, 2: premium plugin name without brand prefix, 3: installed premium plugin version */
+								esc_html__( 'Oops! Funnel Builder %1$s is not compatible with %2$s %3$s', 'funnel-builder' ),
+								esc_html( WFFN_VERSION ),
+								esc_html( $this->get_companion_short_name() ),
+								esc_html( WFFN_PRO_VERSION )
+							);
+							?>
+						</h1>
+						<p class="wffn-pro-update-required__desc">
+							<?php esc_html_e( 'Due to some technical changes in how admin application is loaded, the free version has fallen out of sync with the premium version. Consider updating the premium version or rolling back the free version.', 'funnel-builder' ); ?>
+						</p>
+					</div>
+					<div class="wffn-pro-update-required__actions">
+						<a class="wffn-pro-update-required__button" href="<?php echo esc_url( $rollback_url ); ?>"><?php esc_html_e( 'Roll Back Funnel Builder', 'funnel-builder' ); ?></a>
+						<a class="wffn-pro-update-required__button wffn-pro-update-required__button--secondary" href="<?php echo esc_url( $renew_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Upgrade Funnel Builder Pro', 'funnel-builder' ); ?></a>
+						<?php if ( '' !== $deactivate_url ) { ?>
+							<a class="wffn-pro-update-required__support" href="<?php echo esc_url( $deactivate_url ); ?>"><?php printf( /* translators: %s: premium plugin name without brand prefix */ esc_html__( 'Deactivate %s', 'funnel-builder' ), esc_html( $this->get_companion_short_name() ) ); ?></a>
+						<?php } ?>
 					</div>
 				</div>
 			</div>

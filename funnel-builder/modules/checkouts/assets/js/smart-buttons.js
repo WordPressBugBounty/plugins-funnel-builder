@@ -148,9 +148,19 @@ if (typeof wfacp_frontend === 'undefined') {
 			// For old stripe express checkout
 			$(document.body).on('fkwcs_smart_buttons_showed', (e, ...args) => {
                 this.promoteFkwcsAppleSlots(args);
+                this.promoteFkwcsExpressSlot();
                 this.fkwcs_smart_buttons_shown();
             });
 			$(document.body).on('fkwcs_google_ready_pay', (e, ...args) => {
+                this.demoteFkwcsExpressSlot();
+                this.fkwcs_smart_buttons_shown();
+            });
+			// The legacy payment-request flow's explicit "no wallet" outcome
+			// (canMakePayment() resolved empty). The gateway keeps its wrapper
+			// hidden and never mutates the container, so this event is the only
+			// negative signal it emits - settle the express slot on it instead
+			// of letting the slot sit undecided.
+			$(document.body).on('fkwcs_smart_buttons_not_available', () => {
                 this.demoteFkwcsExpressSlot();
                 this.fkwcs_smart_buttons_shown();
             });
@@ -225,6 +235,45 @@ if (typeof wfacp_frontend === 'undefined') {
          */
         fkwcsSlotShowsLiveApplePay(el) {
             return null !== el.querySelector('.fkwcs_apple_pay_button[data-fkwcs-available="yes"], .fkwcs_express_apple_pay, [class*="fkwcs_ec_applepay_button"]');
+        }
+
+        /**
+         * Whether a legacy express slot currently hosts a LIVE payment-request
+         * button. The gateway prints its wrapper markup server-side on every
+         * page load (hidden), so children alone prove nothing; makePayment()
+         * flips the wrapper to display:block only after canMakePayment() found
+         * a wallet. Read the wrapper's OWN computed display (display is not
+         * inherited, so the WFACP container being hidden does not mask it).
+         */
+        fkwcsSlotShowsLiveButton(el) {
+            let wrapper = el.querySelector('.fkwcs_stripe_smart_button_wrapper');
+            if (null === wrapper) {
+                return false;
+            }
+            return 'none' !== window.getComputedStyle(wrapper).display;
+        }
+
+        /**
+         * Runs on fkwcs_smart_buttons_showed: the legacy payment-request flow
+         * confirmed a wallet and made its wrapper visible. Settle the express
+         * slot as available - including restoring it if the slot deadline
+         * already settled it as unavailable because canMakePayment() resolved
+         * late (showButton()'s straggler path shows it even post-reveal).
+         */
+        promoteFkwcsExpressSlot() {
+            if (false === this.isLegacyFkwcs()) {
+                return;
+            }
+            let express = '#wfacp_smart_button_fkwcs_gpay_apay';
+            let el = document.querySelector(this.smart_button_id + ' ' + express);
+            if (null === el || false === this.fkwcsSlotShowsLiveButton(el)) {
+                return;
+            }
+            if (true === this._unavailable[express]) {
+                delete this._unavailable[express];
+            }
+            $(express).show();
+            this.showButton(express);
         }
 
         /**
@@ -608,14 +657,21 @@ if (typeof wfacp_frontend === 'undefined') {
 					observer.observe(container, {childList: true, subtree: true});
 					// The legacy FunnelKit Stripe express checkout renders before
 					// DOMContentLoaded and never mutates the container again, so the
-					// observer alone would wait forever - treat pre-existing content
-					// as an insertion. Scoped to fkwcs containers on legacy plugin
-					// versions only; everything else keeps mutation-only detection.
+					// observer alone would wait forever. Settle from OBSERVED state
+					// only: the pre-existing children are static mount markup the
+					// gateway prints wallet-or-not (and it never prints
+					// .wfacp_reject_button), so "has children + no reject marker"
+					// proves nothing - it must not settle the slot as available.
+					// A slot with no live button yet stays undecided here; its
+					// outcome arrives via fkwcs_smart_buttons_showed /
+					// fkwcs_smart_buttons_not_available, or the slot deadline
+					// settles it as unavailable. Scoped to fkwcs containers on
+					// legacy plugin versions only.
 					if (container.children.length > 0 && -1 !== parent.indexOf('fkwcs') && this.isLegacyFkwcs()) {
 						if ($(parent).find('.wfacp_reject_button').length > 0) {
 							this.markUnavailable(parent);
 							resolve({'parent': parent, success: false});
-						} else {
+						} else if (this.fkwcsSlotShowsLiveButton(container)) {
 							resolve({'parent': parent, success: true});
 							this.showButton(parent);
 						}

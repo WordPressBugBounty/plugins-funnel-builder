@@ -2,9 +2,9 @@
 Contributors: teamfunnelkit, xlplugins
 Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 6.2
-Tested up to: 7.0
+Tested up to: 7.0.4
 Requires PHP: 7.4
-Stable tag: 3.16.0.1
+Stable tag: 3.16.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,7 +31,7 @@ FunnelKit provides you with pre-built templates that are 100% mobile-responsive 
 Use FunnelKit's Funnel Builder to create:
 
 - Optimized WooCommerce checkout pages (global & one page checkouts)
-- Beautiful sales/ landing and opt-in pages.
+- Beautiful sales/ landing and opt-in pages
 - Highly targeted order bumps
 - Rule-based one-click upsell offers
 - Custom thank you or order confirmation pages
@@ -209,7 +209,7 @@ These would help you nail the products and sales page copy that resonates the mo
 - **LearnDash:** FunnelKit integrates via WooCommerce with the popular LMS plugin, LearnDash, allowing you to auto-enroll leads into your free course with a single click.
 
 
-== Go beyond funnels with Marketing Automation ==
+== Go Beyond Funnels With Marketing Automations ==
 
 Why stop at the sales funnel when you can go beyond marketing automation? Use email marketing to recover abandoned carts and bring customers back to the funnel.
 
@@ -266,11 +266,7 @@ FunnelKit may connect to the following external services, only when the related 
 
 == Source code ==
 
-Some of the JavaScript and CSS shipped with this plugin is compiled and minified for production. The original, human-readable source for every compiled file, together with the build configuration and the instructions needed to reproduce those files, is publicly available here:
-
-https://drive.google.com/drive/folders/1Z-R0_Nbb0BOCyqauxvCftjhS9Ve--IHH
-
-This covers the React admin application, the block editor scripts for the checkout, opt-in and thank-you page blocks, and the minified front-end scripts and stylesheets.
+Unminified source for the plugin's compiled JavaScript and CSS, along with the build configuration and build steps, is available here: https://drive.google.com/drive/folders/1Z-R0_Nbb0BOCyqauxvCftjhS9Ve--IHH
 
 
 == Frequently Asked Questions ==
@@ -402,6 +398,10 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.16.0.2 =
+* Fixed: Checkout: Advanced phone field styling issues with divi builder. (#9418)
+* Fixed: Checkout: Phone field validation not working correctly in a few edge cases. (#9414)
 
 = 3.16.0.1 =
 * Fixed: Plugin deactivation modal popup was not working. (#9405)
