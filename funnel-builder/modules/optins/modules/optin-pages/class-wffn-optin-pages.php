@@ -957,10 +957,6 @@ if ( ! class_exists( 'WFFN_Optin_Pages' ) ) {
 			include_once $this->get_module_path() . 'compatibilities/page-builders/divi/class-wffn-optin-pages-divi.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			include_once $this->get_module_path() . 'compatibilities/page-builders/oxygen/class-wffn-optin-pages-oxygen.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 
-			if ( function_exists( 'cfturnstile_admin_script_enqueue' ) ) {
-				include_once $this->get_module_path() . 'compatibilities/plugins/class-simple-cloudflare-turnstile.php'; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-				new WFFN_Optin_Simple_Cloudflare_Turnstile();
-			}
 		}
 
 		public function get_edit_id() {
