@@ -3,13 +3,14 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Class WFTY_Shortcodes
+ *
  * @package WFTY
  * @author XlPlugins
  */
 if ( ! class_exists( 'WFTY_Shortcodes' ) ) {
 	#[AllowDynamicProperties]
 
-  class WFTY_Shortcodes {
+	class WFTY_Shortcodes {
 
 		public static function init() {
 			$data = WFFN_Core()->thank_you_pages->data;

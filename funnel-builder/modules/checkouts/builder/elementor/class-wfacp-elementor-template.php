@@ -69,52 +69,15 @@ if ( ! class_exists( 'WFACP_Elementor_Template' ) ) {
 
 			/*--------------------------------Primary Color Handling -------------------------------------------*/
 			add_action( 'wfacp_internal_css', array( $this, 'primary_colors' ), 10 );
-
-			$this->delete_elementor_cache();
 		}
 
 		/**
-		 * Delete Elementor cache
+		 * Add the sidebar coupon markup to the checkout fragments.
 		 *
-		 * @return void
+		 * @param array $fragments
+		 *
+		 * @return array
 		 */
-		private function delete_elementor_cache() {
-			try {
-				$checkout_id = WFACP_Common::get_id();
-				$checkout_id = absint( $checkout_id );
-
-				if ( $checkout_id > 0 && class_exists( '\Elementor\Core\Base\Document' ) && defined( '\Elementor\Core\Base\Document::CACHE_META_KEY' ) ) {
-					$cache_meta_key = \Elementor\Core\Base\Document::CACHE_META_KEY;
-					if ( ! empty( $cache_meta_key ) ) {
-						/**
-						 * Only bust the Elementor element cache when the checkout design has
-						 * actually changed since we last cleared it.
-						 *
-						 * This method runs on every front-end render of the checkout. Previously
-						 * it called delete_post_meta() (DELETE FROM wp_postmeta) unconditionally
-						 * on EVERY request, forcing an Elementor cache regeneration each load and
-						 * causing MySQL deadlocks under concurrent traffic. Gating on the post's
-						 * modified time makes the DELETE run at most once per design change;
-						 * steady-state front-end loads now do only cached reads and no writes.
-						 */
-						$design_marker = (string) get_post_field( 'post_modified_gmt', $checkout_id );
-						$last_marker   = (string) get_post_meta( $checkout_id, '_wfacp_elementor_cache_marker', true );
-
-						if ( '' !== $design_marker && $design_marker !== $last_marker ) {
-							delete_post_meta( $checkout_id, $cache_meta_key );
-							update_post_meta( $checkout_id, '_wfacp_elementor_cache_marker', $design_marker );
-						}
-					}
-				}
-			} catch ( \Throwable $e ) {
-				// Log error silently to avoid breaking the checkout process.
-				// Using \Throwable catches both Exception and Error (PHP 7.0+).
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'WFACP Elementor cache deletion error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-				}
-			}
-		}
-
 		public function add_fragment_coupon_sidebar( $fragments ) {
 
 			$messages        = '';

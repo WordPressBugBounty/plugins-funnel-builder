@@ -399,25 +399,13 @@ if ( ! class_exists( 'WFFN_Thank_You_WC_Pages' ) ) {
 					$document   = Elementor\Plugin::$instance->documents->get( $ty_page_id );
 
 					if ( $document && $document->is_built_with_elementor() ) {
-
 						/**
-						 * Only bust the Elementor element cache when the thank you page design
-						 * has actually changed since we last cleared it.
-						 *
-						 * This runs on every front-end render of the thank you page. An
-						 * unconditional delete_post_meta() (DELETE FROM wp_postmeta) on EVERY
-						 * request forces an Elementor cache regeneration each load and causes
-						 * MySQL deadlocks under concurrent traffic. Gating on the post's modified
-						 * time makes the DELETE run at most once per design change; steady-state
-						 * loads do only cached reads.
+						 * Thank you pages are per-order: the merge tags they carry resolve to the
+						 * current customer. Elementor stores one cached copy per page, shared by
+						 * every visitor, so any value baked into it by the first customer would be
+						 * served to the next one. Drop the cached copy on every render.
 						 */
-						$design_marker = (string) get_post_field( 'post_modified_gmt', $ty_page_id );
-						$last_marker   = (string) get_post_meta( $ty_page_id, '_wffn_ty_elementor_cache_marker', true );
-
-						if ( '' !== $design_marker && $design_marker !== $last_marker ) {
-							delete_post_meta( $ty_page_id, Elementor\Core\Base\Document::CACHE_META_KEY );
-							update_post_meta( $ty_page_id, '_wffn_ty_elementor_cache_marker', $design_marker );
-						}
+						delete_post_meta( $ty_page_id, Elementor\Core\Base\Document::CACHE_META_KEY );
 					}
 				}
 			}

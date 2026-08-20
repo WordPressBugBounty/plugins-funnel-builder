@@ -2,9 +2,9 @@
 Contributors: teamfunnelkit, xlplugins
 Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 6.2
-Tested up to: 7.0.4
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.16.0.3
+Stable tag: 3.16.0.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -398,6 +398,9 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+= 3.16.0.4 =
+* Improved: Funnel: Compatibility with Elementor improved related to widget cache. (#9446)
 
 = 3.16.0.3 =
 * Improved: Thankyou Page: Shortcodes for order details and customer info improved to handle QR codes. (#9436)

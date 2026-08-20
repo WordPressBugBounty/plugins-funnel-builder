@@ -14,6 +14,24 @@ if ( ! class_exists( 'WFACP_EL_Fields' ) ) {
 			parent::__construct( $data, $args );
 		}
 
+		/**
+		 * Our widgets render against live checkout state (cart, session, customer, gateways)
+		 * and must never have their markup baked into Elementor's element cache.
+		 *
+		 * Returning true makes Elementor store a `[elementor-element k=... data=...]` placeholder
+		 * in `_elementor_element_cache` instead of the rendered HTML; the widget is then
+		 * re-rendered on every request via do_shortcode(). This matches how Elementor Pro treats
+		 * its WooCommerce widgets.
+		 *
+		 * Element_Base already defaults to true, but we declare it explicitly so the behaviour is
+		 * intentional and survives any change to that default.
+		 *
+		 * @return bool
+		 */
+		protected function is_dynamic_content(): bool {
+			return true;
+		}
+
 		protected function add_tab( $title = '', $tab_type = 1, $condition = array() ) {
 
 			if ( empty( $title ) ) {
