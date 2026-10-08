@@ -208,7 +208,7 @@ if ( ! class_exists( 'WFFN_Ecomm_Tracking' ) ) {
 				$general_data = $this->general_data;
 				if ( is_array( $general_data ) && count( $general_data ) > 0 ) { ?>
 					<script type="text/javascript">
-						let wffn_tracking_data = JSON.parse('<?php echo wp_json_encode( $general_data ); ?>');
+						let wffn_tracking_data = <?php echo wp_json_encode( $general_data, JSON_HEX_TAG | JSON_HEX_AMP ); ?>;
 					</script>
 					<?php
 					do_action( 'wffn_custom_purchase_tracking', $general_data );
