@@ -4,7 +4,7 @@ Tags: Funnel Builder, WooCommerce Checkout, Sales Funnels, One Click Upsells
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.16.0.6
+Stable tag: 3.17.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -253,7 +253,7 @@ It's the ultimate all-in-one Funnel Builder for WordPress, WooCommerce checkout 
 
 FunnelKit may connect to the following external services, only when the related feature is used:
 
-* **FunnelKit** provides the template library, template images, previews and optional usage tracking. [Terms](https://funnelkit.com/terms-conditions/) and [Privacy Policy](https://funnelkit.com/privacy-policy/)
+* **FunnelKit** provides the template library, template images, previews, announcements and optional usage tracking. [Terms](https://funnelkit.com/terms-conditions/) and [Privacy Policy](https://funnelkit.com/privacy-policy/)
 * **Google Fonts** may load when a Google font is selected. [Terms](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 * **Google reCAPTCHA** may be used for opt-in spam prevention. [Terms](https://policies.google.com/terms) and [Privacy Policy](https://policies.google.com/privacy)
 * **YouTube** may embed tutorial videos on FunnelKit screens. [Terms](https://www.youtube.com/t/terms) and [Privacy Policy](https://policies.google.com/privacy)
@@ -398,6 +398,42 @@ If you face any difficulties with FunnelKit, feel free to contact our [Support T
 4. Start creating Funnels.
 
 == Change log ==
+
+
+= 3.17.0 =
+* Added: Checkout: Added an Email typo suggestion option under Checkout Optimisation to catch common email domain mistakes. (#9605)
+* Added: Funnel: Added Customer Journey to Conversion Tracking with a Conversions column, details modal, Pages Visited filter and export. (#9504)
+* Added: Funnel: Added attributed revenue reporting for landing page steps, including order bump and upsell revenue. (#9536)
+* Added: Funnel: Added a setting to skip Meta Purchase events for subscription renewal orders. (#9336)
+* Added: Checkout: Added new filters for order item thumbnails on checkout and Thank You pages, with cart item context. (#9443)
+* Improved: Checkout: Checkout CSS loading optimised on a per-builder basis. (#9549)
+* Improved: Checkout: Improved checkout accessibility with named mini-cart controls and labelled quantity inputs (WCAG 2.2 AA). (#9608)
+* Improved: Checkout: Phone fields now render as telephone inputs with valid autocomplete for better mobile keypads and autofill. (#9625)
+* Improved: Checkout: Added the Unbounded Google Font to the embed form font selector. (#9638)
+* Improved: Checkout: Improved compatibility with Weight Based Shipping. (#9451)
+* Improved: Checkout: Improved compatibility with WooCommerce EU VAT Number. (#9454)
+* Improved: Checkout: Improved compatibility with Envia Shipping. (#9486)
+* Improved: Checkout: Improved compatibility with Colombian Departments and Cities. (#9538)
+* Improved: Checkout: Improved compatibility with Spectra. (#9540)
+* Improved: Checkout: Improved compatibility with FiboFilters. (#9554)
+* Improved: Checkout: Improved compatibility with MailerLite for WooCommerce. (#9568)
+* Improved: Checkout: Improved compatibility with SDEK and eDostavka. (#9571)
+* Improved: Checkout: Improved compatibility with Germanized for WooCommerce. (#9584)
+* Improved: Checkout: Improved compatibility with WPLoyalty. (#9596)
+* Improved: Funnel: Optimised the dashboard upsell and order bump listing for stores with many offers. (#9420)
+* Improved: Funnel: Updated the Google Fonts list in block editor controls with newer families such as Lexend Deca. (#9602)
+* Improved: Funnel: Improved conversion analytics now cover the UTM content column too. (#8592)
+* Fixed: Checkout: Collapsible order summary now shows coupon success and error messages correctly. (#9345)
+* Fixed: Funnel: Improved deduplication for duplicate Add to Cart tracking events. (#9483)
+* Fixed: Checkout: Resolved unexpected zooming on iPhone Safari for block-supported themes. (#9479)
+* Fixed: Checkout: Order summary now shows the correct line total for subscription products with quantity above one. (#9543)
+* Fixed: Checkout: Checkout discounts now apply to products with a scheduled sale on WooCommerce 11.1.0. (#9544)
+* Fixed: Checkout: The Bricks checkout breadcrumb setting is now honoured. (#9620)
+* Fixed: Funnel: Meta Pixel and Conversions API events now report the actual page URL. (#9268)
+* Fixed: Funnel: Meta ViewContent events now send the standard product content type. (#9576)
+* Fixed: Funnel: View events for variable products now use the URL-selected variation and its price. (#9591)
+* Fixed: Funnel: Child pages now redirect to their canonical URL with the parent slug. (#9603)
+* Fixed: Optin: Opt-in forms now redirect to the next step correctly when the Kit (ConvertKit) integration is enabled. (#9352)
 
 = 3.16.0.6 =
 * Improved: Thank You Page: Hardened output with inline scripts on the order received page. (#9581)
