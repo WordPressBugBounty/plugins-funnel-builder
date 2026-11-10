@@ -199,10 +199,13 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'list-funnels'                  => array(
 				'label'               => __( 'List Funnels', 'funnel-builder' ),
-				'description'         => 'List Funnel Builder Funnels with Step count, how many Steps are drafts (draft_steps; 0 = fully live) and view link. The global Store Checkout is a Funnel too and is flagged is_store_checkout; for whether one is configured and its details call get-store-checkout rather than searching by title. Use `search` for a title fragment; filter on the returned status field client-side. Call get-funnel for one Funnel\'s Steps. Read-only.',
+				'description'         => 'List Funnel Builder Funnels with Step count, how many Steps are drafts (draft_steps; 0 = fully live) and view link. The global Store Checkout is a Funnel too and is flagged is_store_checkout; for whether one is configured and its details call get-store-checkout rather than searching by title. Use `search` for a title fragment; filter on the returned status field client-side. with_steps=true adds each Funnel\'s Steps (id, type, title, status) as step_list: to review or audit several Funnels, use it instead of calling get-funnel once per Funnel. Call get-funnel for one Funnel\'s full Steps (live URLs, page builder, sub-steps). Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array_merge(
-						array( 'search' => WFFN_MCP_Schema::in_search( 'Matches Funnel title or description.' ) ),
+						array(
+							'search'     => WFFN_MCP_Schema::in_search( 'Matches Funnel title or description.' ),
+							'with_steps' => WFFN_MCP_Schema::in_bool( 'true adds step_list, each Funnel\'s Steps in order. Default false.' ),
+						),
 						WFFN_MCP_Schema::in_paging( self::LIST_FUNNELS_MAX, 20, 'Funnels per call, 1-50. Default 20.', 'Funnels to skip; with limit this pages through total.' )
 					)
 				),
@@ -216,6 +219,17 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 							'view_link'         => WFFN_MCP_Schema::url( 'Live URL of the first Step.', true ),
 							'last_update'       => WFFN_MCP_Schema::datetime(),
 							'is_store_checkout' => WFFN_MCP_Schema::bool( 'true for the global Store Checkout Funnel (see get-store-checkout).' ),
+							'step_list'         => WFFN_MCP_Schema::arr(
+								WFFN_MCP_Schema::obj(
+									array(
+										'id'     => WFFN_MCP_Schema::int( 'Step id.' ),
+										'type'   => WFFN_MCP_Schema::str( 'Step type slug, as get-funnel shows it.' ),
+										'title'  => WFFN_MCP_Schema::str(),
+										'status' => WFFN_MCP_Schema::str( 'publish or draft.' ),
+									)
+								),
+								'The Funnel\'s Steps in order; only with with_steps=true.'
+							),
 						)
 					)
 				),
@@ -226,7 +240,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-funnel'                    => array(
 				'label'               => __( 'Get Funnel', 'funnel-builder' ),
-				'description'         => 'Fetch one Funnel by id: title, entry URL and its Steps (type, id, title, status publish/draft, live URL and page builder per Step, including sub-steps like Order Bumps). A Step with builder_inactive was designed with a page builder whose plugin is off: tell the user that first. A draft Step\'s URL may 404 until it is published (publish-funnel-steps publishes them all). For views/conversions/revenue call get-funnel-analytics (Funnel Builder Pro). Read-only.',
+				'description'         => 'Fetch one Funnel by id: title, entry URL and its Steps (type, id, title, status publish/draft, live URL and page builder per Step, including sub-steps like Order Bumps). To review several Funnels, list-funnels with_steps=true gives every Funnel\'s Steps in one call. A Step with builder_inactive was designed with a page builder whose plugin is off: tell the user that first. A draft Step\'s URL may 404 until it is published (publish-funnel-steps publishes them all). For views/conversions/revenue call get-funnel-analytics (Funnel Builder Pro). Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input( array( 'funnel_id' => WFFN_MCP_Schema::in_id() ), array( 'funnel_id' ) ),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
@@ -414,12 +428,12 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-global-settings'           => array(
 				'label'               => __( 'Get Global Settings', 'funnel-builder' ),
-				'description'         => 'Funnel Builder global settings by group (checkout, order bumps, upsells, page types, tracking, notifications, advanced): each setting\'s key, label, control type, current value, hint and allowed options. Pass group_key for one group (pixel tracking alone is ~130 settings). group_key and key are what update-global-settings takes. Groups a module adds (order bumps, upsells) exist only with that module active. Credentials masked. Read-only.',
+				'description'         => 'Funnel Builder global settings by group (checkout, order bumps, upsells, sales, thank you, optin, general, tracking, notifications, advanced): each setting\'s key, label, control type, current value, hint and allowed options. Pass group_key for one group (pixel tracking alone is ~130 settings); a name from that list works too, and one that covers several groups (tracking) returns each. group_key and key are what update-global-settings takes. Groups a module adds (order bumps, upsells) exist only with that module active. Credentials masked. Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'group_key' => WFFN_MCP_Schema::in_str(
-							'Return only this settings group (see groups[].group_key). Omit for all groups.',
-							array( 'pattern' => '^[a-z0-9_-]+$' )
+							'Return only this settings group: its groups[].group_key or its name (upsells, tracking). Omit for all groups.',
+							array( 'pattern' => '^[A-Za-z0-9 _-]*$' )
 						),
 					)
 				),
@@ -1155,7 +1169,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'description'         => 'Change Funnel Builder\'s global settings, one group at a time - group_key, setting keys, types and options come from get-global-settings. Only the keys passed change (PATCH); values are checked against the setting\'s type and options; masked values (***) are never written back. Groups a module adds (order bumps, upsells) exist only with that module active. Write.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
-						'group_key' => WFFN_MCP_Schema::in_str( 'Settings group id from get-global-settings.', array( 'pattern' => '^[a-z0-9_-]+$' ) ),
+						'group_key' => WFFN_MCP_Schema::in_str( 'Settings group id from get-global-settings, or its name (order bumps).', array( 'pattern' => '^[A-Za-z0-9 _-]+$' ) ),
 						'settings'  => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Setting key => new value, typed by the setting\'s control (see get-global-settings): boolean for checkbox/toggle, one of options for radios/select, a list of options for checklist, number or string otherwise.', array( 'minProperties' => 1 ) ),
 					),
 					array( 'group_key', 'settings' )
@@ -1240,7 +1254,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
-						'settings' => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Setting key => new value.', array( 'minProperties' => 1 ) ),
+						'settings' => self::settings_patch_schema( 'Setting key => new value.' ),
 					),
 					array( 'step_id', 'settings' )
 				),
@@ -1265,7 +1279,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
-						'settings' => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Optimization key => new value.', array( 'minProperties' => 1 ) ),
+						'settings' => self::settings_patch_schema( 'Optimization key => new value.' ),
 					),
 					array( 'step_id', 'settings' )
 				),
@@ -1291,7 +1305,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
-						'settings' => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Setting key => new value.', array( 'minProperties' => 1 ) ),
+						'settings' => self::settings_patch_schema( 'Setting key => new value.' ),
 					),
 					array( 'step_id', 'settings' )
 				),
@@ -1316,7 +1330,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
-						'settings' => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Action key => new value.', array( 'minProperties' => 1 ) ),
+						'settings' => self::settings_patch_schema( 'Action key => new value.' ),
 					),
 					array( 'step_id', 'settings' )
 				),
@@ -1341,7 +1355,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
-						'settings' => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array' ) ), 'Setting key => new value.', array( 'minProperties' => 1 ) ),
+						'settings' => self::settings_patch_schema( 'Setting key => new value.' ),
 						'design'   => WFFN_MCP_Schema::in_map( array( 'type' => array( 'string', 'boolean', 'integer', 'number' ) ), 'Order-summary design key => new value.', array( 'minProperties' => 1 ) ),
 					),
 					array( 'step_id' )
@@ -1570,12 +1584,46 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			$args['offset'] = $page['offset'];
 		}
 
-		$result = WFFN_Core()->admin->get_funnels( $args );
-		$items  = array();
-		$store  = class_exists( 'WFFN_Common' ) ? (int) WFFN_Common::get_store_checkout_id() : 0;
+		$result     = WFFN_Core()->admin->get_funnels( $args );
+		$items      = array();
+		$store      = class_exists( 'WFFN_Common' ) ? (int) WFFN_Common::get_store_checkout_id() : 0;
+		$with_steps = ! empty( $input['with_steps'] );
+		$rows       = array();
 
 		foreach ( (array) ( $result['items'] ?? array() ) as $row ) {
-			$row                = (array) $row;
+			$rows[] = (array) $row;
+		}
+
+		$supported = $with_steps ? (array) WFFN_Core()->steps->get_supported_steps() : array();
+
+		if ( $with_steps ) {
+			$step_ids = array();
+
+			foreach ( $rows as $row ) {
+				foreach ( self::raw_steps( $row, $supported ) as $step ) {
+					$step_ids[] = (int) $step['id'];
+				}
+			}
+
+			// One query loads every Step on the page into the post cache, so the titles and statuses below read from it instead of one query per Step.
+			$step_ids = array_values( array_unique( array_filter( $step_ids ) ) );
+
+			if ( ! empty( $step_ids ) ) {
+				get_posts(
+					array(
+						'post__in'               => $step_ids,
+						'post_type'              => array_values( get_post_types() ),
+						'post_status'            => 'any',
+						'posts_per_page'         => count( $step_ids ),
+						'no_found_rows'          => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
+					)
+				);
+			}
+		}
+
+		foreach ( $rows as $row ) {
 			$row['draft_steps'] = isset( $row['draft_count'] ) ? (int) $row['draft_count'] : 0;
 
 			// The admin row counter skips the Store Checkout's Steps; the raw funnel has them.
@@ -1587,6 +1635,21 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			$item                      = WFFN_MCP_Format::pick( $row, self::LIST_KEYS );
 			$item['is_store_checkout'] = $store > 0 && (int) ( isset( $row['id'] ) ? $row['id'] : 0 ) === $store;
 
+			if ( $with_steps ) {
+				$item['step_list'] = array();
+
+				foreach ( self::raw_steps( $row, $supported ) as $step ) {
+					// The title get-funnel gives: the integration's, which names an untitled Step the way the admin does.
+					$integration         = WFFN_Core()->steps->get_integration_object( $step['type'] );
+					$item['step_list'][] = array(
+						'id'     => (int) $step['id'],
+						'type'   => (string) $step['type'],
+						'title'  => is_object( $integration ) && method_exists( $integration, 'get_entity_title' ) ? (string) $integration->get_entity_title( (int) $step['id'] ) : (string) get_the_title( (int) $step['id'] ),
+						'status' => (string) get_post_status( (int) $step['id'] ),
+					);
+				}
+			}
+
 			$items[] = $item;
 		}
 
@@ -1594,6 +1657,33 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			'items' => $items,
 			'total' => isset( $result['found_posts'] ) ? (int) $result['found_posts'] : count( $items ),
 		);
+	}
+
+	/**
+	 * A list-funnels row's Steps in order, as get-funnel reads them (type and id), from the raw funnel the admin row carries.
+	 * A Step whose type is not registered on this site (an upsell without Pro) is left out, as get-funnel leaves it out.
+	 *
+	 * @param array $row       One get_funnels() item.
+	 * @param array $supported Registered step types, as keys.
+	 *
+	 * @return array[] array( 'id' => int, 'type' => string ) per Step.
+	 */
+	private static function raw_steps( array $row, array $supported ) {
+		$funnel = isset( $row['__funnel'] ) ? (array) $row['__funnel'] : array();
+		$steps  = array();
+
+		foreach ( isset( $funnel['steps'] ) ? (array) $funnel['steps'] : array() as $step ) {
+			$step = (array) $step;
+
+			if ( ! empty( $step['id'] ) && isset( $step['type'], $supported[ $step['type'] ] ) ) {
+				$steps[] = array(
+					'id'   => (int) $step['id'],
+					'type' => isset( $step['type'] ) ? (string) $step['type'] : '',
+				);
+			}
+		}
+
+		return $steps;
 	}
 
 	/**
@@ -2247,9 +2337,9 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		}
 
 		$data = self::response_data( $controller->get_funnel_global_settings() );
-		$only = '' === $asked ? '' : self::settings_group( $data, $asked );
+		$only = '' === $asked ? array() : self::settings_groups( $data, $asked );
 
-		if ( '' !== $asked && '' === $only ) {
+		if ( '' !== $asked && empty( $only ) ) {
 			// Any existing group reads; the list names only the ones holding values, as update-global-settings does.
 			return new WP_Error( 'fkmcp_invalid_input', sprintf( 'group_key must be one of: %s.', self::settings_group_list( $data ) ) );
 		}
@@ -2260,7 +2350,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		$settings = array();
 
 		foreach ( (array) ( isset( $data['global_settings'] ) ? $data['global_settings'] : array() ) as $group => $tree ) {
-			if ( '' !== $only && (string) $group !== $only ) {
+			if ( ! empty( $only ) && ! in_array( (string) $group, $only, true ) ) {
 				continue;
 			}
 
@@ -2820,7 +2910,11 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		}
 
 		$tabs     = self::optimization_tabs( $endpoint, $step->ID );
-		$settings = isset( $input['settings'] ) && is_array( $input['settings'] ) ? $input['settings'] : array();
+		$settings = self::ungroup_settings( $tabs, isset( $input['settings'] ) && is_array( $input['settings'] ) ? $input['settings'] : array(), array_keys( self::flat_values( $tabs ) ) );
+
+		if ( is_wp_error( $settings ) ) {
+			return $settings;
+		}
 
 		// The read shows countries as {value,label} rows; the write takes codes (rows accepted too).
 		foreach ( self::COUNTRY_LIST_KEYS as $key ) {
@@ -3247,6 +3341,14 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		);
 	}
 
+	/** Which products-patch entry a refusal is about: its product and its list (add or update). */
+	private static function product_ref( $product_id, $list ) {
+		return array(
+			'product_id' => (int) $product_id,
+			'list'       => (string) $list,
+		);
+	}
+
 	/**
 	 * The quantity and discount a caller passed for one product, validated
 	 * against the step's own rows and the discount types it allows.
@@ -3267,7 +3369,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			$quantity = (int) $entry['quantity'];
 
 			if ( $quantity < 1 || $quantity > 999 ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( 'quantity for product %d must be 1-999.', $product_id ) );
+				return self::invalid_setting( 'quantity', sprintf( 'quantity for product %d must be 1-999.', $product_id ), 'an integer from 1 to 999', array(), self::product_ref( $product_id, $list ) );
 			}
 
 			$options['quantity'] = method_exists( $product, 'is_sold_individually' ) && $product->is_sold_individually() ? 1 : $quantity;
@@ -3275,7 +3377,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		if ( array_key_exists( 'discount_type', $entry ) ) {
 			if ( ! in_array( (string) $entry['discount_type'], $discount_types, true ) ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( 'discount_type for product %d must be one of: %s.', $product_id, implode( ', ', $discount_types ) ) );
+				return self::invalid_setting( 'discount_type', sprintf( 'discount_type for product %d must be one of: %s.', $product_id, implode( ', ', $discount_types ) ), 'one of the allowed values', $discount_types, self::product_ref( $product_id, $list ) );
 			}
 
 			$options['discount_type'] = (string) $entry['discount_type'];
@@ -3283,20 +3385,20 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		if ( array_key_exists( 'discount_amount', $entry ) ) {
 			if ( ! is_numeric( $entry['discount_amount'] ) || (float) $entry['discount_amount'] < 0 ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( 'discount_amount for product %d must be a number >= 0.', $product_id ) );
+				return self::invalid_setting( 'discount_amount', sprintf( 'discount_amount for product %d must be a number >= 0.', $product_id ), 'a number >= 0', array(), self::product_ref( $product_id, $list ) );
 			}
 
 			$type = isset( $options['discount_type'] ) ? $options['discount_type'] : self::row_discount_type( $rows, $product_id );
 
 			if ( false !== strpos( (string) $type, 'percent' ) && (float) $entry['discount_amount'] > 100 ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( 'discount_amount for product %d is a percentage; it cannot exceed 100.', $product_id ) );
+				return self::invalid_setting( 'discount_amount', sprintf( 'discount_amount for product %d is a percentage; it cannot exceed 100.', $product_id ), 'a percentage from 0 to 100', array(), self::product_ref( $product_id, $list ) );
 			}
 
 			$options['discount_amount'] = (float) $entry['discount_amount'];
 		}
 
 		if ( 'update' === $list && empty( $options ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( 'update for product %d changes nothing: pass quantity, discount_type or discount_amount.', $product_id ) );
+			return self::invalid_setting( $list, sprintf( 'update for product %d changes nothing: pass quantity, discount_type or discount_amount.', $product_id ), 'at least one of quantity, discount_type, discount_amount', array( 'quantity', 'discount_type', 'discount_amount' ), self::product_ref( $product_id, $list ) );
 		}
 
 		return $options;
@@ -3362,7 +3464,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				}
 
 				if ( 'update' === $list && ! in_array( $product_id, $present, true ) ) {
-					return new WP_Error( 'fkmcp_invalid_input', sprintf( 'Product %d is not on it (current: %s); use add.', $product_id, $present ? implode( ', ', $present ) : 'none' ) );
+					return self::invalid_setting( 'update', sprintf( 'Product %d is not on it; use add. Current products: %s.', $product_id, $present ? implode( ', ', $present ) : 'none' ), 'a product id already on it', $present, self::product_ref( $product_id, $list ) );
 				}
 
 				$product = wc_get_product( $product_id );
@@ -3384,7 +3486,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 					}
 
 					if ( ! in_array( $product->get_type(), $product_types, true ) ) {
-						return new WP_Error( 'fkmcp_invalid_input', sprintf( 'Product %d is a %s product, which cannot be sold here. Allowed: %s.', $product_id, $product->get_type(), implode( ', ', $product_types ) ) );
+						return self::invalid_setting( 'product_id', sprintf( 'Product %d is a %s product, which cannot be sold here. Allowed: %s.', $product_id, $product->get_type(), implode( ', ', $product_types ) ), 'a product of an allowed type', $product_types, self::product_ref( $product_id, $list ) );
 					}
 				}
 
@@ -3400,7 +3502,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		foreach ( array_unique( $remove ) as $product_id ) {
 			if ( ! $product_id || ! in_array( $product_id, $present, true ) ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( 'Product %d is not on it (current: %s).', $product_id, $present ? implode( ', ', $present ) : 'none' ) );
+				return self::invalid_setting( 'remove', sprintf( 'Product %d is not on it. Current products: %s.', $product_id, $present ? implode( ', ', $present ) : 'none' ), 'a product id already on it', $present, self::product_ref( $product_id, 'remove' ) );
 			}
 
 			if ( isset( $patch['update'][ $product_id ] ) ) {
@@ -4348,7 +4450,9 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			return self::unavailable( 'fkmcp_modules_unavailable', 'The step design provider' );
 		}
 
-		$picked = self::pick_template( $type, $input );
+		// Landing, optin and thank-you imports download before they write, so the cloud check is skipped. A checkout
+		// importer can write first (the customizer one deletes the page layout before its download), so a checkout keeps it.
+		$picked = self::pick_template( $type, $input, '', 'wc_checkout' === $type );
 
 		if ( is_wp_error( $picked ) ) {
 			return $picked;
@@ -4381,7 +4485,21 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		$response = self::response_data( $response );
 
 		if ( empty( $response['success'] ) ) {
-			return self::design_error( $response, $picked['builder'] );
+			$error = self::design_error( $response, $picked['builder'] );
+
+			// The import gives no reason when the template service failed it; asking the service now names it (unreachable, licence, no such template).
+			if ( 'fkmcp_update_failed' === $error->get_error_code() ) {
+				$cloud = self::pick_template( $type, $input );
+
+				if ( is_wp_error( $cloud ) ) {
+					// Only the imports that download before they write leave the Step as it was; a checkout one may have written first.
+					$kept = 'wc_checkout' === $type ? ' The checkout import may have changed the Step, so read it with get-step and get-checkout-settings before retrying.' : ' The Step keeps its current design.';
+
+					return new WP_Error( $cloud->get_error_code(), $cloud->get_error_message() . $kept );
+				}
+			}
+
+			return $error;
 		}
 
 		return array(
@@ -4414,8 +4532,11 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	 * Resolve a template request against the catalogue and ask the cloud for it before anything is written:
 	 * the controllers create or keep their target on a failed import, and the wrong step key answers an
 	 * activation-sounding error. Returns array( template, builder ) or a WP_Error.
+	 *
+	 * $check_cloud false skips that download for a write that keeps its target on a failed import
+	 * (update-step-template): its import downloads the template again, and the two took up to 17 s.
 	 */
-	public static function pick_template( $catalog_type, $input, $hint = '' ) {
+	public static function pick_template( $catalog_type, $input, $hint = '', $check_cloud = true ) {
 		$input    = (array) $input;
 		$template = isset( $input['template'] ) ? sanitize_text_field( (string) $input['template'] ) : '';
 
@@ -4448,7 +4569,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		}
 
 		// Blank scratch layouts live locally; only designed templates come from the cloud.
-		if ( ! empty( $entry['build_from_scratch'] ) ) {
+		if ( ! empty( $entry['build_from_scratch'] ) || ! $check_cloud ) {
 			return array(
 				'template' => $template,
 				'builder'  => $builder,
@@ -4460,7 +4581,17 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		// A step template arrives as a JSON string; only a refusal is an array carrying error.
 		if ( empty( $remote ) || ( is_array( $remote ) && isset( $remote['error'] ) ) ) {
-			return new WP_Error( 'fkmcp_template_unavailable', is_array( $remote ) && isset( $remote['error'] ) ? wp_strip_all_tags( (string) $remote['error'] ) : 'The FunnelKit template service did not answer; try again later.' );
+			$reason  = is_array( $remote ) && isset( $remote['error'] ) ? $remote['error'] : '';
+			$message = 'The FunnelKit template service did not answer; try again later.';
+
+			// The service's own refusal is a sentence (licence, no such template); a failed request is the list of its HTTP errors.
+			if ( is_string( $reason ) && '' !== $reason ) {
+				$message = wp_strip_all_tags( $reason );
+			} elseif ( is_array( $reason ) && '' !== (string) current( array_filter( $reason, 'is_string' ) ) ) {
+				$message = sprintf( 'The FunnelKit template service could not be reached (%s); try again later.', wp_strip_all_tags( (string) current( array_filter( $reason, 'is_string' ) ) ) );
+			}
+
+			return new WP_Error( 'fkmcp_template_unavailable', $message );
 		}
 
 		return array(
@@ -4505,9 +4636,37 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		if ( isset( $response['builders_options'] ) ) {
 			$options = (array) $response['builders_options'];
-			$message = isset( $options['message'] ) && '' !== $options['message'] ? wp_strip_all_tags( (string) $options['message'] ) : sprintf( 'The %s page builder is not active.', $builder );
+			$texts   = isset( $response['builders_texts'] ) ? (array) $response['builders_texts'] : array();
+			$plugin  = isset( $options['slug'] ) ? sanitize_key( (string) $options['slug'] ) : '';
+			$message = sprintf( 'The %s page builder is not active.', $builder );
 
-			return new WP_Error( 'fkmcp_builder_missing', $message . ' Ask the user to install and activate it, or pick a template for another builder.' );
+			// The import names the plugin the template needs (SlingBlocks for the block editor's templates), which may not be the builder itself.
+			if ( isset( $options['message'] ) && '' !== $options['message'] ) {
+				$message = wp_strip_all_tags( (string) $options['message'] );
+			} elseif ( isset( $texts['text'] ) && '' !== $texts['text'] ) {
+				$message = wp_strip_all_tags( (string) $texts['text'] );
+				$message = (string) preg_replace( '/\s*Click the button.*$/i', '', $message );
+			} elseif ( '' !== $plugin ) {
+				$message = sprintf( 'This template needs the %s plugin.', $plugin );
+			}
+
+			$status = isset( $options['status'] ) ? sanitize_key( (string) $options['status'] ) : '';
+			$actions = array(
+				'install'  => 'install and activate',
+				'activate' => 'activate',
+			);
+			$action  = isset( $actions[ $status ] ) ? $actions[ $status ] : 'install or activate';
+
+			return new WP_Error(
+				'fkmcp_builder_missing',
+				sprintf( '%s Ask the user to %s %s, or pick a template for another builder.', $message, $action, '' !== $plugin ? 'the ' . $plugin . ' plugin' : 'it' ),
+				array_filter(
+					array(
+						'plugin'        => $plugin,
+						'plugin_status' => $status,
+					)
+				)
+			);
 		}
 
 		$message = isset( $response['msg'] ) && '' !== $response['msg'] ? (string) $response['msg'] : ( isset( $response['error'] ) ? (string) $response['error'] : 'The template import failed.' );
@@ -4644,7 +4803,14 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		$data = self::response_data( $controller->get_funnel_global_settings() );
 		$tabs = isset( $data['global_settings'] ) ? (array) $data['global_settings'] : array();
-		$tab  = self::settings_group( $data, isset( $input['group_key'] ) ? (string) $input['group_key'] : '' );
+
+		$tabs_asked = self::settings_groups( $data, isset( $input['group_key'] ) ? (string) $input['group_key'] : '' );
+
+		if ( count( $tabs_asked ) > 1 ) {
+			return new WP_Error( 'fkmcp_invalid_input', sprintf( 'group_key matches several groups: %s. Pass one of them.', self::settings_group_list( $data, $tabs_asked ) ) );
+		}
+
+		$tab = empty( $tabs_asked ) ? '' : $tabs_asked[0];
 
 		// A tab is writable when the site holds values for it; Pro tabs without
 		// their module are pitch stubs with none, tools/logs have nothing to save.
@@ -4757,7 +4923,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				return false;
 			}
 
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s is a checkbox: pass true or false.', $key ) );
+			return self::invalid_setting( $key, sprintf( '%s is a checkbox: pass true or false.', $key ), 'true or false', array( 'true', 'false' ) );
 		}
 
 		if ( in_array( $type, array( 'radios', 'select', 'offer-select' ), true ) && ! empty( $options ) ) {
@@ -4767,7 +4933,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			}
 
 			if ( ! is_scalar( $value ) || ! in_array( (string) $value, $options, true ) ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must be one of: %s.', $key, implode( ', ', $options ) ) );
+				return self::invalid_setting( $key, sprintf( '%s must be one of: %s.', $key, implode( ', ', $options ) ), 'one of the allowed values', $options );
 			}
 
 			return (string) $value;
@@ -4783,28 +4949,28 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			$bad  = array_diff( array_map( 'strval', $list ), $options );
 
 			if ( ! empty( $bad ) ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s accepts only: %s (not %s).', $key, implode( ', ', $options ), implode( ', ', $bad ) ) );
+				return self::invalid_setting( $key, sprintf( '%s accepts only: %s (not %s).', $key, implode( ', ', $options ), implode( ', ', $bad ) ), 'a list of the allowed values', $options );
 			}
 
 			return array_values( array_unique( array_map( 'strval', $list ) ) );
 		}
 
 		if ( 'number' === $type && '' !== $value && ! is_numeric( $value ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must be a number.', $key ) );
+			return self::invalid_setting( $key, sprintf( '%s must be a number.', $key ), 'a number' );
 		}
 
 		if ( 'url' === $type && '' !== $value && ( ! is_string( $value ) || ! preg_match( '#^https?://#i', $value ) || sanitize_url( $value ) !== $value ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must be an http(s) URL.', $key ) );
+			return self::invalid_setting( $key, sprintf( '%s must be an http(s) URL.', $key ), 'an http(s) URL' );
 		}
 
 		if ( 'color' === $type && '' !== $value && ( ! is_string( $value ) || ! preg_match( '/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $value ) ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must be a hex colour like #1a2b3c.', $key ) );
+			return self::invalid_setting( $key, sprintf( '%s must be a hex colour like #1a2b3c.', $key ), 'a hex colour like #1a2b3c' );
 		}
 
 		if ( is_string( $value ) && '' !== $value && preg_match( '/(^|_)email$/', (string) $key ) ) {
 			foreach ( array_map( 'trim', explode( ',', $value ) ) as $address ) {
 				if ( ! is_email( $address ) ) {
-					return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must hold email address(es), comma separated.', $key ) );
+					return self::invalid_setting( $key, sprintf( '%s must hold email address(es), comma separated.', $key ), 'email address(es), comma separated' );
 				}
 			}
 		}
@@ -4813,31 +4979,51 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	}
 
 	/**
-	 * The settings group a caller named, by its key or by the label the admin shows for it
-	 * ("Checkout" is wfacp); '' when neither matches.
+	 * The settings groups a caller named: by key, by the label the admin shows for it
+	 * ("Checkout" is wfacp), else every group whose label holds that word ("upsells" is
+	 * One Click Upsells, "tracking" both tracking groups). Empty when nothing matches.
+	 *
+	 * @return string[]
 	 */
-	private static function settings_group( array $data, $asked ) {
+	private static function settings_groups( array $data, $asked ) {
 		$tabs = isset( $data['global_settings'] ) ? array_map( 'strval', array_keys( (array) $data['global_settings'] ) ) : array();
 		$key  = sanitize_key( $asked );
 
 		if ( in_array( $key, $tabs, true ) ) {
-			return $key;
+			return array( $key );
 		}
 
-		$label = self::label_key( $asked );
+		$label  = self::label_key( $asked );
+		$labels = array_intersect_key( self::settings_group_labels( $data ), array_flip( $tabs ) );
 
-		foreach ( self::settings_group_labels( $data ) as $slug => $title ) {
-			if ( '' !== $label && in_array( $slug, $tabs, true ) && self::label_key( $title ) === $label ) {
-				return $slug;
+		if ( '' === $label ) {
+			return array();
+		}
+
+		foreach ( $labels as $slug => $title ) {
+			if ( self::label_key( $title ) === $label ) {
+				return array( (string) $slug );
 			}
 		}
 
-		return '';
+		$found = array();
+		$stem  = rtrim( $label, 's' );
+
+		foreach ( $labels as $slug => $title ) {
+			foreach ( explode( ' ', $title ) as $word ) {
+				if ( '' !== $stem && rtrim( self::label_key( $word ), 's' ) === $stem ) {
+					$found[] = (string) $slug;
+					break;
+				}
+			}
+		}
+
+		return $found;
 	}
 
-	/** "Order Bumps", "order_bumps" and "order-bumps" compare equal. */
+	/** "Order Bumps", "order_bumps", "order-bumps" and "orderbumps" compare equal. */
 	private static function label_key( $label ) {
-		return str_replace( '_', '-', sanitize_key( str_replace( ' ', '-', (string) $label ) ) );
+		return str_replace( array( '-', '_' ), '', sanitize_key( str_replace( ' ', '-', (string) $label ) ) );
 	}
 
 	/** Group key => the admin's label for it, from the settings screen's tabs. */
@@ -4853,13 +5039,13 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		return $labels;
 	}
 
-	/** The groups holding values, as "key (Label)" - what a refusal offers. */
-	private static function settings_group_list( array $data ) {
+	/** The groups holding values, as "key (Label)" - what a refusal offers; $only narrows it to those keys. */
+	private static function settings_group_list( array $data, array $only = array() ) {
 		$labels = self::settings_group_labels( $data );
 		$listed = array();
 
 		foreach ( (array) ( isset( $data['global_settings'] ) ? $data['global_settings'] : array() ) as $slug => $sections ) {
-			if ( null !== self::tab_values( $sections ) ) {
+			if ( null !== self::tab_values( $sections ) && ( empty( $only ) || in_array( (string) $slug, $only, true ) ) ) {
 				$listed[] = isset( $labels[ $slug ] ) ? sprintf( '%s (%s)', $slug, $labels[ $slug ] ) : (string) $slug;
 			}
 		}
@@ -4903,6 +5089,32 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	}
 
 	/**
+	 * A refused setting or input field. The FunnelKit AI gateway reads a
+	 * refusal's data and only the start of its message, so the field, the form
+	 * it takes and, when they can be listed, its allowed values go in the data.
+	 *
+	 * @param string $key      The setting key or input field.
+	 * @param string $message  The refusal, for the agent.
+	 * @param string $expected What the setting takes.
+	 * @param array  $allowed  The values it allows, when they can be listed.
+	 * @param array  $extra    More data for the refusal.
+	 *
+	 * @return WP_Error
+	 */
+	private static function invalid_setting( $key, $message, $expected, array $allowed = array(), array $extra = array() ) {
+		$data = array(
+			'field'    => (string) $key,
+			'expected' => (string) $expected,
+		) + $extra;
+
+		if ( ! empty( $allowed ) ) {
+			$data['allowed'] = array_values( array_map( 'strval', $allowed ) );
+		}
+
+		return new WP_Error( 'fkmcp_invalid_input', $message, $data );
+	}
+
+	/**
 	 * A PATCH for a settings map: only known keys, scalars or lists, and never
 	 * a masked credential - "***" is what get-*-settings shows for one, and
 	 * writing it back would replace the real key.
@@ -4911,20 +5123,23 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	 */
 	private static function settings_patch( $settings, array $known, array $defs = array(), array $raw = array() ) {
 		if ( ! is_array( $settings ) || empty( $settings ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', 'settings must map at least one setting key to a value.' );
+			return self::invalid_setting( 'settings', 'settings must map at least one setting key to a value.', 'an object of setting key => value' );
 		}
 
 		$unknown = array_diff( array_keys( $settings ), $known );
 
 		if ( ! empty( $unknown ) ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( 'Unknown setting key(s): %s. Known: %s.', implode( ', ', array_map( 'strval', $unknown ) ), implode( ', ', array_map( 'strval', $known ) ) ) );
+			$unknown = array_values( array_map( 'strval', $unknown ) );
+
+			// The keys lead: the message the gateway keeps ends at its first colon.
+			return self::invalid_setting( 'settings', sprintf( 'Unknown setting key(s) %s: Known: %s.', implode( ', ', $unknown ), implode( ', ', array_map( 'strval', $known ) ) ), 'setting keys from the read', $known, array( 'unknown_keys' => $unknown ) );
 		}
 
 		$patch = array();
 
 		foreach ( $settings as $key => $value ) {
 			if ( is_string( $value ) && '***' === trim( $value ) ) {
-				return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s: "***" is a masked value from a read, not a setting; pass the real value or leave the key out.', $key ) );
+				return self::invalid_setting( $key, sprintf( '%s holds "***", a masked value from a read, not a setting; pass the real value or leave the key out.', $key ), 'the real value, not the masked ***' );
 			}
 
 			if ( is_object( $value ) ) {
@@ -6697,6 +6912,19 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	/** Setting keys the admin screens store verbatim (scripts, CSS): never text-sanitised, like the screens themselves. */
 	const CODE_KEYS = array( 'header_script', 'footer_script', 'header_css', 'custom_css', 'custom_js', 'funnel_success_script', 'upsell_page_track_code', 'upsell_page_purchase_code' );
 
+	/**
+	 * The `settings` argument of the step-settings writes: key => value, or the
+	 * keys grouped per tab exactly as the matching get-...-settings read shows
+	 * them, so the read's shape can be sent back as it came.
+	 */
+	public static function settings_patch_schema( $description ) {
+		return WFFN_MCP_Schema::in_map(
+			array( 'type' => array( 'string', 'boolean', 'integer', 'number', 'array', 'object' ) ),
+			$description . ' Flat, or grouped per tab as the read returns them (tab => { key => value }).',
+			array( 'minProperties' => 1 )
+		);
+	}
+
 	/** Setting keys holding HTML content: kept, through wp_kses_post. */
 	const HTML_KEYS = array( 'lead_notification_body' );
 
@@ -6792,6 +7020,12 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			return new WP_Error( 'fkmcp_settings_unavailable', 'The step shows no settings to change.' );
 		}
 
+		$settings = self::ungroup_settings( $tabs, $settings, $known );
+
+		if ( is_wp_error( $settings ) ) {
+			return $settings;
+		}
+
 		$patch = self::settings_patch( $settings, $known, self::field_defs( $tabs ), self::raw_keys() );
 
 		if ( is_wp_error( $patch ) ) {
@@ -6805,6 +7039,55 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		}
 
 		return $patch;
+	}
+
+	/**
+	 * Settings sent grouped per tab, the shape the reads return them in
+	 * ({ tracking_analysis: { key: value } }), flattened to key => value. A
+	 * tab's name holding an object whose keys are all settings is a group,
+	 * even when a setting shares the tab's name (header_css); any other object
+	 * is refused, since no setting takes one.
+	 *
+	 * @return mixed The flat map, the input as it came when it is not a map, or a WP_Error naming the key.
+	 */
+	private static function ungroup_settings( $tabs, $settings, array $known ) {
+		if ( ! is_array( $settings ) ) {
+			return $settings;
+		}
+
+		$flat = array();
+
+		foreach ( $settings as $key => $value ) {
+			$value = is_object( $value ) ? (array) $value : $value;
+
+			if ( ! is_array( $value ) || array() === $value || array_keys( $value ) === range( 0, count( $value ) - 1 ) ) {
+				$flat[ $key ] = $value;
+
+				continue;
+			}
+
+			if ( ! isset( $tabs[ $key ] ) ) {
+				return self::invalid_setting( $key, sprintf( 'settings %s takes a value or a list, not an object: send key => value, or group keys under the tab names the read shows.', $key ), 'a value or a list', array(), array( 'tabs' => array_values( array_map( 'strval', array_keys( (array) $tabs ) ) ) ) );
+			}
+
+			// A read's tab carries GET-only entries (option lists, hints); sent back with the tab, they are dropped, not refused.
+			$value   = array_diff_key( $value, array_flip( self::VALUE_NOISE ) );
+			$unknown = array_diff( array_map( 'strval', array_keys( $value ) ), $known );
+
+			if ( ! empty( $unknown ) ) {
+				return self::invalid_setting( $key, sprintf( 'Unknown setting key(s) %s in tab %s: Known: %s.', implode( ', ', $unknown ), $key, implode( ', ', $known ) ), 'setting keys from the read', $known, array( 'unknown_keys' => array_values( $unknown ) ) );
+			}
+
+			foreach ( $value as $inner => $inner_value ) {
+				if ( array_key_exists( $inner, $flat ) || ( (string) $inner !== (string) $key && array_key_exists( $inner, $settings ) ) ) {
+					return self::invalid_setting( (string) $inner, sprintf( 'settings %s is sent twice (in tab %s and again); send it once.', $inner, $key ), 'the key sent once' );
+				}
+
+				$flat[ $inner ] = is_object( $inner_value ) ? (array) $inner_value : $inner_value;
+			}
+		}
+
+		return $flat;
 	}
 
 	/** key => code|html for the keys settings_patch() must not text-sanitise. */
@@ -6912,7 +7195,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		$post = $id ? get_post( $id ) : null;
 
 		if ( ! $post instanceof WP_Post || 'publish' !== $post->post_status ) {
-			return new WP_Error( 'fkmcp_invalid_input', sprintf( '%s must be the id of a published page or post (or "" to clear it).', $key ) );
+			return self::invalid_setting( $key, sprintf( '%s must be the id of a published page or post (or "" to clear it).', $key ), 'the id of a published page or post, or "" to clear it' );
 		}
 
 		return array(

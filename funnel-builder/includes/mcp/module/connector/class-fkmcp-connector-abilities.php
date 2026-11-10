@@ -224,14 +224,17 @@ final class FKMCP_Connector_Abilities {
 
 	/** The WordPress REST error shape. */
 	private static function error( $status, $code, $message, array $data = array(), array $headers = array() ) {
-		return self::json(
-			$status,
-			array(
-				'code'    => $code,
-				'message' => $message,
-				'data'    => array( 'status' => $status ) + $data,
-			),
-			$headers
+		$body  = array(
+			'code'    => $code,
+			'message' => $message,
+			'data'    => array( 'status' => $status ) + $data,
 		);
+		$store = FKMCP_Connector_Mcp::store_meta();
+
+		if ( array() !== $store ) {
+			$body['meta'] = array( 'fkai_store' => $store );
+		}
+
+		return self::json( $status, $body, $headers );
 	}
 }

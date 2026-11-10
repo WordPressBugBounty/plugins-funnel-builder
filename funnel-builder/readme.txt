@@ -1,10 +1,10 @@
 === FunnelKit - Funnel Builder Plugin for WooCommerce Checkout ===
-Contributors: teamfunnelkit, xlplugins
+Contributors: teamfunnelkit, amans2k
 Tags: woocommerce checkout, checkout, funnel builder, order bump, upsell
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.18.0
+Stable tag: 3.18.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -406,6 +406,15 @@ Reach our [Support Team](https://funnelkit.com/support/). We answer questions on
 4. Start creating Funnels.
 
 == Change log ==
+
+*** Funnel Builder ***
+
+= 3.18.0.1 =
+* Improved: Funnel: FunnelKit AI funnel orders now load within the reply limit, with buyer journeys available as a separate ability. (#9764)
+* Improved: Funnel: FunnelKit AI now reads funnel steps in bulk, pages through orders, applies templates faster and names the reason when a request is declined. (#9772)
+* Improved: Funnel: FunnelKit AI setting and design edits now name the field and allowed values when a change is declined. (#9780)
+* Improved: Funnel: FunnelKit AI now includes the module version in error and sign-in replies for faster troubleshooting. (#9789)
+* Fixed: Funnel: FunnelKit AI global settings now return every settings group the tool lists. (#9781)
 
 = 3.18.0 =
 * Added: Funnel: Added FunnelKit AI (MCP) with a dedicated settings screen and secure sign-in, so AI assistants can build and refine your funnel steps. (#9386)

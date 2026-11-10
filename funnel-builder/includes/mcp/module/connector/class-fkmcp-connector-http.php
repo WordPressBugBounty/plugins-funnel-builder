@@ -69,6 +69,12 @@ final class FKMCP_Connector_Http {
 		$status  = isset( $resp['status'] ) ? (int) $resp['status'] : 200;
 		$headers = isset( $resp['headers'] ) ? (array) $resp['headers'] : array();
 
+		$module = FKMCP_Connector_Mcp::version();
+
+		if ( '' !== $module ) {
+			$headers['X-FKMCP-Version'] = $module;
+		}
+
 		if ( isset( $resp['redirect'] ) ) {
 			nocache_headers();
 			wp_redirect( $resp['redirect'], $status ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- the pinned gateway callback or this site's login.

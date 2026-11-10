@@ -264,22 +264,36 @@ final class FKMCP_Connector_Mcp {
 
 	/** The `fkai_store` object (see with_store_meta()); the ability endpoints send it as meta.fkai_store. */
 	public static function store_meta() {
-		if ( ! class_exists( 'FKMCP_Hosts', false ) || array() === FKMCP_Hosts::all() ) {
-			return array();
+		$meta = array();
+
+		if ( class_exists( 'FKMCP_Hosts', false ) && array() !== FKMCP_Hosts::all() ) {
+			$host = FKMCP_Hosts::primary();
+			$meta = $host ? $host->store_meta() : array();
+			$meta = is_array( $meta ) ? $meta : array();
 		}
 
-		$host = FKMCP_Hosts::primary();
-		$meta = $host ? $host->store_meta() : array();
+		// The module version goes out whether or not a host is registered.
+		$version = self::version();
 
-		if ( ! is_array( $meta ) || array() === $meta ) {
-			return array();
-		}
-
-		if ( defined( 'FKMCP_VERSION' ) ) {
-			$meta['module'] = (string) FKMCP_VERSION;
+		if ( '' !== $version ) {
+			$meta['module'] = $version;
 		}
 
 		return $meta;
+	}
+
+	/**
+	 * The module's release version as the gateway reads it: up to 32 characters
+	 * from A-Z a-z 0-9 . + _ -, '' when FKMCP_VERSION is not defined or is anything else.
+	 */
+	public static function version() {
+		if ( ! defined( 'FKMCP_VERSION' ) ) {
+			return '';
+		}
+
+		$version = (string) FKMCP_VERSION;
+
+		return 1 === preg_match( '/^[A-Za-z0-9.+_-]{1,32}$/', $version ) ? $version : '';
 	}
 
 	/** Every funnelkit/* ability the current user may run. */
@@ -505,13 +519,50 @@ final class FKMCP_Connector_Mcp {
 
 		if ( is_wp_error( $value ) ) {
 			if ( 'ability_invalid_input' === $value->get_error_code() ) {
-				return self::error( $id, -32602, $value->get_error_message() );
+				return self::result( $id, self::input_refusal( $value, $ability ) );
 			}
 
 			return self::result( $id, self::error_result( $value, $ability->get_name() ) );
 		}
 
 		return self::result( $id, self::shape_result( $value ) );
+	}
+
+	/**
+	 * Arguments that failed the tool's input schema, as a tool error rather than
+	 * JSON-RPC -32602 (MCP 2025-11-25, SEP-1303): the agent reads the reason and
+	 * the schema's property names and corrects its next call, and the gateway,
+	 * which reads only structuredContent.error, logs the reason. A malformed
+	 * request (no name, arguments not an object) stays a protocol error in call().
+	 *
+	 * @param WP_Error   $error   The Abilities API's ability_invalid_input.
+	 * @param WP_Ability $ability The tool that refused.
+	 *
+	 * @return array
+	 */
+	public static function input_refusal( WP_Error $error, $ability ) {
+		$message = (string) $error->get_error_message();
+		$reason  = (string) preg_replace( '/^.*?\bReason:\s*/s', '', $message );
+		$schema  = self::object_schema( $ability->get_input_schema() );
+		$data    = array( 'ability' => $ability->get_name() );
+
+		if ( ! empty( $schema['properties'] ) && is_array( $schema['properties'] ) ) {
+			$data['properties'] = array_keys( $schema['properties'] );
+		}
+
+		if ( ! empty( $schema['required'] ) && is_array( $schema['required'] ) ) {
+			$data['required'] = array_values( $schema['required'] );
+		}
+
+		$class = self::error_class( 'ability_invalid_input', $reason );
+
+		return self::refusal(
+			$class,
+			'ability_invalid_input',
+			'Invalid input. ' . self::error_detail( $reason ),
+			rtrim( $message, '. ' ) . ". Correct the arguments to match the tool's input schema and call it again.",
+			self::error_data( $data, $class )
+		);
 	}
 
 	/**
@@ -628,7 +679,7 @@ final class FKMCP_Connector_Mcp {
 			return self::ERROR_CLASS_OF[ $code ];
 		}
 
-		if ( 'fkmcp_invalid_input' === $code ) {
+		if ( 'fkmcp_invalid_input' === $code || 'ability_invalid_input' === $code ) {
 			return 1 === preg_match( '/\brequired\b|\bis missing\b|^pass\b/i', (string) $message ) ? 'missing_argument' : 'invalid_argument';
 		}
 
@@ -731,13 +782,22 @@ final class FKMCP_Connector_Mcp {
 	}
 
 	private static function error( $id, $code, $message ) {
+		$error = array(
+			'code'    => $code,
+			'message' => $message,
+		);
+
+		// Failures are the replies the gateway compares by version, so they carry it as results do.
+		$meta = self::store_meta();
+
+		if ( array() !== $meta ) {
+			$error['_meta'] = array( 'fkai_store' => $meta );
+		}
+
 		return array(
 			'jsonrpc' => '2.0',
 			'id'      => $id,
-			'error'   => array(
-				'code'    => $code,
-				'message' => $message,
-			),
+			'error'   => $error,
 		);
 	}
 
