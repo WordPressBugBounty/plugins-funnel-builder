@@ -69,10 +69,8 @@ final class FKMCP_Connector_Http {
 		$status  = isset( $resp['status'] ) ? (int) $resp['status'] : 200;
 		$headers = isset( $resp['headers'] ) ? (array) $resp['headers'] : array();
 
-		$module = FKMCP_Connector_Mcp::version();
-
-		if ( '' !== $module ) {
-			$headers['X-FKMCP-Version'] = $module;
+		if ( class_exists( 'FKMCP_Connector_Mcp' ) && '' !== FKMCP_Connector_Mcp::version() ) {
+			$headers['X-FKMCP-Version'] = FKMCP_Connector_Mcp::version();
 		}
 
 		if ( isset( $resp['redirect'] ) ) {

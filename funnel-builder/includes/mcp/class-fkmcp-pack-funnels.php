@@ -240,7 +240,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-funnel'                    => array(
 				'label'               => __( 'Get Funnel', 'funnel-builder' ),
-				'description'         => 'Fetch one Funnel by id: title, entry URL and its Steps (type, id, title, status publish/draft, live URL and page builder per Step, including sub-steps like Order Bumps). To review several Funnels, list-funnels with_steps=true gives every Funnel\'s Steps in one call. A Step with builder_inactive was designed with a page builder whose plugin is off: tell the user that first. A draft Step\'s URL may 404 until it is published (publish-funnel-steps publishes them all). For views/conversions/revenue call get-funnel-analytics (Funnel Builder Pro). Read-only.',
+				'description'         => 'Fetch one Funnel by id: title, entry URL and its Steps (type, id, title, status publish/draft, live URL and page builder per Step, including sub-steps like Order Bumps). To review several Funnels, list-funnels with_steps=true gives every Funnel\'s Steps in one call. A Step with builder_inactive was designed with a page builder whose plugin is off: tell the user that first. A draft Step\'s URL may 404 until it is published (publish-funnel-steps publishes them all).' . self::tool_guidance( 'get-funnel' ) . ' Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input( array( 'funnel_id' => WFFN_MCP_Schema::in_id() ), array( 'funnel_id' ) ),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
@@ -274,7 +274,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-step'                      => array(
 				'label'               => __( 'Get Step', 'funnel-builder' ),
-				'description'         => 'One Step of a Funnel: type, title, published or draft, live and editor links, page builder, and its sub-steps such as Order Bumps. builder_inactive: its page builder\'s plugin is off - tell the user that first. Find Step ids with get-funnel; settings by type: get-checkout-settings, get-optin-settings, get-upsell-settings, get-step-settings. Read-only.',
+				'description'         => 'One Step of a Funnel: type, title, published or draft, live and editor links, page builder, and its sub-steps such as Order Bumps. builder_inactive: its page builder\'s plugin is off - tell the user that first. Find Step ids with get-funnel; settings by type: get-checkout-settings, get-optin-settings, get-step-settings.' . self::tool_guidance( 'get-step' ) . ' Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'funnel_id' => WFFN_MCP_Schema::in_id( 'Funnel the Step is in. Omit to read the Step\'s own Funnel.' ),
@@ -500,7 +500,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-checkout-fields'           => array(
 				'label'               => __( 'Get Checkout Fields', 'funnel-builder' ),
-				'description'         => 'The checkout form of one Checkout Step: which layout is active (one, two or three step), its fieldsets and each field\'s key, label, type and required flag, plus the billing/shipping address order. Find Step ids with get-funnel (type wc_checkout). Show/hide conditions: get-checkout-conditional-fields (Pro). Read-only.',
+				'description'         => 'The checkout form of one Checkout Step: which layout is active (one, two or three step), its fieldsets and each field\'s key, label, type and required flag, plus the billing/shipping address order. Find Step ids with get-funnel (type wc_checkout).' . self::tool_guidance( 'get-checkout-fields' ) . ' Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input( array( 'step_id' => WFFN_MCP_Schema::in_id() ), array( 'step_id' ) ),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
@@ -631,7 +631,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-checkout-settings'         => array(
 				'label'               => __( 'Get Checkout Settings', 'funnel-builder' ),
-				'description'         => 'Configuration of one Checkout Step beyond fields and products: layout (template, multi-step form) and settings tabs (tracking overrides, custom CSS/scripts) - values only, credentials masked. Optimizations: get-checkout-optimizations; fields: get-checkout-fields; products: get-checkout-products; conditional fields: get-checkout-conditional-fields (Pro). Step ids: get-funnel (type wc_checkout). Read-only.',
+				'description'         => 'Configuration of one Checkout Step beyond fields and products: layout (template, multi-step form) and settings tabs (tracking overrides, custom CSS/scripts) - values only, credentials masked. Optimizations: get-checkout-optimizations; fields: get-checkout-fields; products: get-checkout-products.' . self::tool_guidance( 'get-checkout-settings' ) . ' Step ids: get-funnel (type wc_checkout). Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input( array( 'step_id' => WFFN_MCP_Schema::in_id() ), array( 'step_id' ) ),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
@@ -744,7 +744,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			'get-step-settings'             => array(
 				'label'               => __( 'Get Step Settings', 'funnel-builder' ),
-				'description'         => 'Template and settings tabs of one Thank You, Landing or Optin Confirmation Step - values only, no UI schema (redirects, custom CSS/JS, validation texts). Credentials come back masked. Other step types have their own tool: get-checkout-settings, get-optin-settings, get-upsell-settings, get-order-bump; Thank You order rules are get-thankyou-rules (Pro). Find Step ids with get-funnel. Read-only.',
+				'description'         => 'Template and settings tabs of one Thank You, Landing or Optin Confirmation Step - values only, no UI schema (redirects, custom CSS/JS, validation texts). Credentials come back masked. Other step types have their own tool: get-checkout-settings, get-optin-settings.' . self::tool_guidance( 'get-step-settings' ) . ' Find Step ids with get-funnel. Read-only.',
 				'input_schema'        => WFFN_MCP_Schema::input( array( 'step_id' => WFFN_MCP_Schema::in_id() ), array( 'step_id' ) ),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
@@ -770,17 +770,26 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			'export-funnel'                 => array(
 				'capability'          => array( 'funnel', 'write' ),
 				'label'               => __( 'Export Funnel', 'funnel-builder' ),
-				'description'         => 'The export file of one Funnel as JSON - what the admin Export button downloads: every Step with page content and settings, unscrubbed (unlike the settings tools, it is not safe from credentials the export may carry - hence the write-level gate). Large (often 100KB+): save or hand over, do not summarise it. To recreate the Funnel here or elsewhere pass export and checksum unchanged to import-funnel. To read a Funnel use get-funnel and the settings tools instead. Read-only.',
-				'input_schema'        => WFFN_MCP_Schema::input( array( 'funnel_id' => WFFN_MCP_Schema::in_id() ), array( 'funnel_id' ) ),
+				'description'         => 'The export file of one Funnel as JSON - what the admin Export button downloads: every Step with page content and settings, unscrubbed (unlike the settings tools, it is not safe from credentials the export may carry - hence the write-level gate). Large: save or hand over, do not summarise it. A small export comes whole as export. One too large for a single reply comes in parts instead: export_part is a slice of the export JSON text, and while next_offset is present call again with offset=next_offset; join the export_part strings in order, without changing them - the joined text is size_bytes long and its sha256 is checksum. Page-builder render caches and the editor lock are left out, so checksum changes only when the Funnel does: if it changes between parts the Funnel was edited meanwhile, start again from offset 0. To recreate the Funnel here or elsewhere pass export (or the joined text) and checksum unchanged to import-funnel, which takes an export of up to ' . ( self::IMPORT_MAX_BYTES / 1048576 ) . ' MB (size_bytes). To read a Funnel use get-funnel and the settings tools instead. Read-only.',
+				'input_schema'        => WFFN_MCP_Schema::input(
+					array(
+						'funnel_id' => WFFN_MCP_Schema::in_id(),
+						'offset'    => WFFN_MCP_Schema::in_int( 'Byte offset into the export JSON text to read the next part from: the previous reply\'s next_offset. Passing it always returns export_part, never export.', array( 'minimum' => 0 ) ),
+					),
+					array( 'funnel_id' )
+				),
 				'output_schema'       => WFFN_MCP_Schema::obj(
 					array(
-						'funnel_id'  => WFFN_MCP_Schema::int(),
-						'title'      => WFFN_MCP_Schema::str(),
-						'steps'      => WFFN_MCP_Schema::int( 'Step count.' ),
-						'checksum'   => WFFN_MCP_Schema::str( 'sha256 of the export JSON; pass it to import-funnel so an altered payload is refused.' ),
-						'size_bytes' => WFFN_MCP_Schema::int( 'Size of the export payload.' ),
-						'format'     => WFFN_MCP_Schema::str( 'Export format identifier; importable via the Funnel Builder import screen.' ),
-						'export'     => WFFN_MCP_Schema::arr( WFFN_MCP_Schema::any_obj( 'Funnel export record: title plus steps[] with type, status, title, meta and post_content.' ), 'The importable export payload, unscrubbed.' ),
+						'funnel_id'   => WFFN_MCP_Schema::int(),
+						'title'       => WFFN_MCP_Schema::str(),
+						'steps'       => WFFN_MCP_Schema::int( 'Step count.' ),
+						'checksum'    => WFFN_MCP_Schema::str( 'sha256 of the whole export JSON text, the same in every part; pass it to import-funnel so an altered payload is refused.' ),
+						'size_bytes'  => WFFN_MCP_Schema::int( 'Size of the whole export JSON text, in bytes.' ),
+						'format'      => WFFN_MCP_Schema::str( 'Export format identifier; importable via the Funnel Builder import screen.' ),
+						'export'      => WFFN_MCP_Schema::arr( WFFN_MCP_Schema::any_obj( 'Funnel export record: title plus steps[] with type, status, title, meta and post_content.' ), 'The importable export payload, unscrubbed. Absent when the export comes in parts.' ),
+						'export_part' => WFFN_MCP_Schema::str( 'One part of the export JSON text, unscrubbed, when the export is too large for one reply.' ),
+						'offset'      => WFFN_MCP_Schema::int( 'Byte offset of export_part in the export JSON text.' ),
+						'next_offset' => WFFN_MCP_Schema::int( 'Offset of the next part; absent on the last part.' ),
 					)
 				),
 				'permission_callback' => $can_write,
@@ -791,7 +800,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			'create-funnel'                 => array(
 				'capability'          => array( 'funnel', 'write' ),
 				'label'               => __( 'Create Funnel', 'funnel-builder' ),
-				'description'         => 'Create a new Funnel from a FunnelKit template or empty, the way the admin\'s Add New does. To copy one of the site\'s existing Funnels, duplicate-funnel does that instead (list-funnels shows them). A new Funnel follows a brief: what is sold, to whom, and any design references - screenshots carry colours, fonts and layout, which a link does not.' . (string) apply_filters( 'fkmcp_create_funnel_brief', '' ) . ' Choose the template by the brief. Then default to mode=template: call list-funnel-templates, offer the user matching templates (name, group, steps), and import the chosen slug - templates ship ready-designed pages (ones marked pro need Funnel Builder Pro active). Use mode=scratch only when the user explicitly wants to build blank pages themselves: its Steps have NO design (steps = step types in funnel order, from list-step-types; Pro types need Funnel Builder Pro; checkout, thank you and upsell steps need WooCommerce), and confirm the step list rather than assuming (an empty Funnel with no Steps, when the user asks for one, is steps []) - a typical sales funnel is landing (sales page), wc_checkout, upsell, wc_thankyou. builder defaults to the site\'s page builder. A template import runs in the background: poll get-import-status until ready before touching its Steps (the result\'s form_steps confirms whether the Checkout landed as a single- or multi-page form). Pass checkout_steps=2 or 3 to import the Checkout as a multi-page contact/shipping/payment form instead of the default single page, and optin_type=inline or popup to pick the Optin variant. Every call creates a new Funnel - check list-funnels first. Write.',
+				'description'         => 'Create a new Funnel from a FunnelKit template or empty, the way the admin\'s Add New does.' . self::tool_guidance( 'create-funnel' ) . ' A new Funnel follows a brief: what is sold, to whom, and any design references - screenshots carry colours, fonts and layout, which a link does not.' . (string) apply_filters( 'fkmcp_create_funnel_brief', '' ) . ' Choose the template by the brief. Then default to mode=template: call list-funnel-templates, offer the user matching templates (name, group, steps), and import the chosen slug - templates ship ready-designed pages (ones marked pro need Funnel Builder Pro active). Use mode=scratch only when the user explicitly wants to build blank pages themselves: its Steps have NO design (steps = step types in funnel order, from list-step-types; Pro types need Funnel Builder Pro; checkout, thank you and upsell steps need WooCommerce), and confirm the step list rather than assuming (an empty Funnel with no Steps, when the user asks for one, is steps []) - a typical sales funnel is landing (sales page), wc_checkout, upsell, wc_thankyou. builder defaults to the site\'s page builder. A template import runs in the background: poll get-import-status until ready before touching its Steps (the result\'s form_steps confirms whether the Checkout landed as a single- or multi-page form). Pass checkout_steps=2 or 3 to import the Checkout as a multi-page contact/shipping/payment form instead of the default single page, and optin_type=inline or popup to pick the Optin variant. Every call creates a new Funnel - check list-funnels first. Write.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'mode'           => WFFN_MCP_Schema::in_enum( array( 'scratch', 'template' ) ),
@@ -1006,7 +1015,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			'update-step'                   => array(
 				'capability'          => array( 'funnel', 'write' ),
 				'label'               => __( 'Update Step', 'funnel-builder' ),
-				'description'         => 'Rename a Step, as the builder header does: the title admins see on the canvas and in reports changes, the page URL is kept. Any funnel Step, an Upsell\'s Offers and Order Bumps, and A/B test variants (ids from get-ab-test). Write.',
+				'description'         => 'Rename a Step, as the builder header does: the title admins see on the canvas and in reports changes, the page URL is kept. Any funnel Step, an Upsell\'s Offers and Order Bumps, and A/B test variants.' . self::tool_guidance( 'update-step' ) . ' Write.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id' => WFFN_MCP_Schema::in_id(),
@@ -1102,7 +1111,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			'update-step-template'          => array(
 				'capability'          => array( 'funnel', 'write' ),
 				'label'               => __( 'Update Step Template', 'funnel-builder' ),
-				'description'         => 'Change the design template of an existing Step, as the admin\'s Change Template does: the template is imported and replaces the Step\'s page content, so edits made to the old design are lost - confirm with the user first. For landing, optin, optin_ty, wc_thankyou and wc_checkout Steps; an Upsell\'s templates belong to its Offers (update-offer-template). template: a slug from list-funnel-templates (type = the step type); builder: the page builder that template is listed under (default: the site\'s default builder). Pro templates need Funnel Builder Pro. Write.',
+				'description'         => 'Change the design template of an existing Step, as the admin\'s Change Template does: the template is imported and replaces the Step\'s page content, so edits made to the old design are lost - confirm with the user first. For landing, optin, optin_ty, wc_thankyou and wc_checkout Steps; an Upsell\'s templates belong to its Offers.' . self::tool_guidance( 'update-step-template' ) . ' template: a slug from list-funnel-templates (type = the step type); builder: the page builder that template is listed under (default: the site\'s default builder). Pro templates need Funnel Builder Pro. Write.',
 				'input_schema'        => WFFN_MCP_Schema::input(
 					array(
 						'step_id'  => WFFN_MCP_Schema::in_id(),
@@ -1195,7 +1204,7 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 					array(
 						'json'     => array(
 							'type'        => array( 'array', 'object', 'string' ),
-							'description' => 'The export: a list of funnels, one funnel object, or that JSON as a string.',
+							'description' => 'The export: a list of funnels, one funnel object, or that JSON as a string (for an export-funnel read in parts, its export_part strings joined in order).',
 						),
 						'checksum' => WFFN_MCP_Schema::in_str( '', array( 'pattern' => '^[a-f0-9]{64}$' ) ),
 						'title'    => WFFN_MCP_Schema::in_str(
@@ -1466,6 +1475,20 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 				'Format money amounts in results this way.'
 			),
 		);
+	}
+
+	/**
+	 * fkmcp_tool_guidance: what another pack adds to one of this pack's tool
+	 * descriptions, naming the tools it registers. These descriptions name
+	 * only tools this pack registers: without Funnel Builder Pro a Pro tool
+	 * named here is one the agent calls and gets "Tool not found" for.
+	 *
+	 * @param string $slug This pack's tool the text is for.
+	 *
+	 * @return string Leading-space sentences, or ''.
+	 */
+	private static function tool_guidance( $slug ) {
+		return (string) apply_filters( 'fkmcp_tool_guidance', '', $slug );
 	}
 
 	/**
@@ -4436,6 +4459,10 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		}
 
 		if ( 'wfocu_funnel' === $post->post_type ) {
+			if ( ! self::pro_active() ) {
+				return self::pro_required( sprintf( 'Step %d is an Upsell: its templates belong to its Offers, which only Funnel Builder Pro changes.', $step_id ) );
+			}
+
 			return new WP_Error( 'fkmcp_wrong_step_type', sprintf( 'An Upsell\'s templates belong to its Offers: list them with get-upsell-offers (step %d), then call update-offer-template with the offer_id.', $step_id ) );
 		}
 
@@ -4472,9 +4499,13 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			),
 			'POST'
 		);
-		$response = self::controller_call(
+		list( $response, $import_failed ) = self::watch_template_request(
 			static function () use ( $modules, $request ) {
-				return $modules->save_design( $request );
+				return self::controller_call(
+					static function () use ( $modules, $request ) {
+						return $modules->save_design( $request );
+					}
+				);
 			}
 		);
 
@@ -4489,13 +4520,14 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 			// The import gives no reason when the template service failed it; asking the service now names it (unreachable, licence, no such template).
 			if ( 'fkmcp_update_failed' === $error->get_error_code() ) {
-				$cloud = self::pick_template( $type, $input );
+				// A download the store could not make would fail again, so only a failure the import did not explain asks the service.
+				$cloud = is_wp_error( $import_failed ) ? self::template_service_error( null, $import_failed ) : self::pick_template( $type, $input );
 
 				if ( is_wp_error( $cloud ) ) {
 					// Only the imports that download before they write leave the Step as it was; a checkout one may have written first.
 					$kept = 'wc_checkout' === $type ? ' The checkout import may have changed the Step, so read it with get-step and get-checkout-settings before retrying.' : ' The Step keeps its current design.';
 
-					return new WP_Error( $cloud->get_error_code(), $cloud->get_error_message() . $kept );
+					return new WP_Error( $cloud->get_error_code(), $cloud->get_error_message() . $kept, $cloud->get_error_data() );
 				}
 			}
 
@@ -4576,27 +4608,110 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 			);
 		}
 
-		$core   = function_exists( 'WFFN_Core' ) ? WFFN_Core() : null;
-		$remote = is_object( $core ) && isset( $core->remote_importer ) && method_exists( $core->remote_importer, 'get_remote_template' ) ? $core->remote_importer->get_remote_template( self::remote_type( $catalog_type ), $template, $builder ) : null;
+		$core = function_exists( 'WFFN_Core' ) ? WFFN_Core() : null;
+
+		list( $remote, $failed ) = self::watch_template_request(
+			static function () use ( $core, $catalog_type, $template, $builder ) {
+				return is_object( $core ) && isset( $core->remote_importer ) && method_exists( $core->remote_importer, 'get_remote_template' ) ? $core->remote_importer->get_remote_template( self::remote_type( $catalog_type ), $template, $builder ) : null;
+			}
+		);
 
 		// A step template arrives as a JSON string; only a refusal is an array carrying error.
 		if ( empty( $remote ) || ( is_array( $remote ) && isset( $remote['error'] ) ) ) {
-			$reason  = is_array( $remote ) && isset( $remote['error'] ) ? $remote['error'] : '';
-			$message = 'The FunnelKit template service did not answer; try again later.';
-
-			// The service's own refusal is a sentence (licence, no such template); a failed request is the list of its HTTP errors.
-			if ( is_string( $reason ) && '' !== $reason ) {
-				$message = wp_strip_all_tags( $reason );
-			} elseif ( is_array( $reason ) && '' !== (string) current( array_filter( $reason, 'is_string' ) ) ) {
-				$message = sprintf( 'The FunnelKit template service could not be reached (%s); try again later.', wp_strip_all_tags( (string) current( array_filter( $reason, 'is_string' ) ) ) );
-			}
-
-			return new WP_Error( 'fkmcp_template_unavailable', $message );
+			return self::template_service_error( $remote, $failed );
 		}
 
 		return array(
 			'template' => $template,
 			'builder'  => $builder,
+		);
+	}
+
+	/**
+	 * Runs a call that may download from the template service, and returns what it returned with the
+	 * request to that service that failed on the store's side, if one did. The importer passes such a
+	 * failure on as bare text, or as nothing, so it is read from WordPress's HTTP API instead: any
+	 * WP_Error for a request to the template service URL, from the transport or from a pre_http_request
+	 * filter. With reject_unsafe_urls, core swaps a URL that does not resolve to a public address for
+	 * false before it reports the failure, so a failure with no URL counts when it follows a template
+	 * service request that pre_http_request let through.
+	 *
+	 * @param callable $call Runs the download.
+	 *
+	 * @return array What $call returned, then the failed request (WP_Error) or null.
+	 */
+	private static function watch_template_request( callable $call ) {
+		$endpoint = rtrim( self::template_api_url(), '/' );
+		$failed   = null;
+		$pending  = false;
+		$is_ours  = static function ( $url ) use ( $endpoint ) {
+			return '' !== $endpoint && rtrim( (string) $url, '/' ) === $endpoint;
+		};
+		$on_pre   = static function ( $pre, $args, $url ) use ( $is_ours, &$failed, &$pending ) {
+			$pending = $is_ours( $url ) && false === $pre;
+			if ( is_wp_error( $pre ) && $is_ours( $url ) ) {
+				$failed = $pre;
+			}
+
+			return $pre;
+		};
+		$on_debug = static function ( $response, $context, $transport, $args, $url ) use ( $is_ours, &$failed, &$pending ) {
+			if ( is_wp_error( $response ) && ( $is_ours( $url ) || ( $pending && empty( $url ) ) ) ) {
+				$failed = $response;
+			}
+			$pending = false;
+		};
+
+		add_action( 'http_api_debug', $on_debug, 10, 5 );
+		add_filter( 'pre_http_request', $on_pre, PHP_INT_MAX, 3 );
+		try {
+			$result = $call();
+		} finally {
+			remove_action( 'http_api_debug', $on_debug, 10 );
+			remove_filter( 'pre_http_request', $on_pre, PHP_INT_MAX );
+		}
+
+		return array( $result, $failed );
+	}
+
+	/** The template service URL the importer downloads from, or '' when there is no importer. */
+	private static function template_api_url() {
+		$importer = function_exists( 'WFFN_Core' ) && isset( WFFN_Core()->remote_importer ) ? WFFN_Core()->remote_importer : null;
+
+		return is_object( $importer ) && method_exists( $importer, 'get_template_api_url' ) ? (string) $importer->get_template_api_url() : '';
+	}
+
+	/**
+	 * Why the template service gave no template. Its own answer (licence, no such template, an error
+	 * status) is passed on. A request that failed on the store's side, or no answer at all, is the
+	 * store's connection to the service, which a retry does not fix: an *_unavailable code would be
+	 * classed plugin_incompatible, so it gets its own code, the gateway's internal_error class and a 504.
+	 *
+	 * @param mixed         $remote What get_remote_template() returned.
+	 * @param WP_Error|null $failed The request that failed, from watch_template_request().
+	 *
+	 * @return WP_Error
+	 */
+	private static function template_service_error( $remote, $failed = null ) {
+		$reason = is_array( $remote ) && isset( $remote['error'] ) && is_string( $remote['error'] ) ? wp_strip_all_tags( $remote['error'] ) : '';
+
+		if ( ! is_wp_error( $failed ) && '' !== $reason ) {
+			return new WP_Error( 'fkmcp_template_unavailable', $reason );
+		}
+
+		$reason = is_wp_error( $failed ) ? wp_strip_all_tags( (string) $failed->get_error_message() ) : '';
+		$host   = (string) wp_parse_url( self::template_api_url(), PHP_URL_HOST );
+		$host   = '' !== $host ? $host : 'the FunnelKit template service';
+		$curl   = 1 === preg_match( '/^cURL error \d+/', $reason, $match ) ? ' (' . $match[0] . ')' : '';
+
+		return new WP_Error(
+			'fkmcp_template_service_unreachable',
+			sprintf( 'This store could not connect to the FunnelKit template service%1$s, so no template was downloaded. This is the store\'s own connection to %2$s, not a plugin problem, and calling again now will fail the same way: do not retry. Tell the user, and suggest they ask their host or site administrator to allow outbound HTTPS from the store to %2$s.', '' !== $reason ? ' (' . $reason . ')' : '', $host ),
+			array(
+				'status'       => 504,
+				'fkai_code'    => 'internal_error',
+				'fkai_message' => 'The store could not connect to the FunnelKit template service' . $curl . '.',
+			)
 		);
 	}
 
@@ -5836,11 +5951,16 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	 * @return array|WP_Error The template, or why it could not be fetched.
 	 */
 	private static function fetch_template( $template, $builder, array $steps ) {
-		$core   = function_exists( 'WFFN_Core' ) ? WFFN_Core() : null;
-		$remote = is_object( $core ) && isset( $core->remote_importer ) && method_exists( $core->remote_importer, 'get_remote_template' ) ? $core->remote_importer->get_remote_template( 'funnel', $template, $builder, $steps ) : null;
+		$core = function_exists( 'WFFN_Core' ) ? WFFN_Core() : null;
+
+		list( $remote, $failed ) = self::watch_template_request(
+			static function () use ( $core, $template, $builder, $steps ) {
+				return is_object( $core ) && isset( $core->remote_importer ) && method_exists( $core->remote_importer, 'get_remote_template' ) ? $core->remote_importer->get_remote_template( 'funnel', $template, $builder, $steps ) : null;
+			}
+		);
 
 		if ( ! is_array( $remote ) || empty( $remote ) || isset( $remote['error'] ) ) {
-			return new WP_Error( 'fkmcp_template_unavailable', is_array( $remote ) && isset( $remote['error'] ) ? wp_strip_all_tags( (string) $remote['error'] ) : 'The FunnelKit template service did not answer; try again later.' );
+			return self::template_service_error( $remote, $failed );
 		}
 
 		return $remote;
@@ -6204,9 +6324,14 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		return new WP_Error( 'fkmcp_pro_required', $message . ' Upgrade: ' . self::UPGRADE_URL . ' - open your answer by saying this needs Funnel Builder Pro and show this as a clickable link titled "Upgrade to Pro".' );
 	}
 
+	/** Whether Funnel Builder Pro is active, so its tools are listed: it answers fkmcp_context_pro with no upgrade link. */
+	private static function pro_active() {
+		return array() === self::pro_upsell();
+	}
+
 	/** How create-funnel's ask phrases the clone option. */
 	private static function clone_offer() {
-		if ( array() === self::pro_upsell() ) {
+		if ( self::pro_active() ) {
 			return 'clone one of the site\'s existing Funnels (offer them from list-funnels, then duplicate-funnel)';
 		}
 
@@ -6428,18 +6553,114 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 		// Canonical form = what survives a JSON round trip (empty objects become
 		// lists, objects become arrays): import-funnel hashes the payload the
 		// same way, so what the agent receives is exactly what is checksummed.
-		$export    = json_decode( (string) wp_json_encode( $export ), true );
-		$canonical = (string) wp_json_encode( $export );
+		$export = json_decode( (string) wp_json_encode( $export ), true );
 
-		return array(
+		foreach ( (array) $export as $i => $funnel_export ) {
+			if ( isset( $funnel_export['steps'] ) && is_array( $funnel_export['steps'] ) ) {
+				$export[ $i ]['steps'] = self::drop_volatile_meta( $funnel_export['steps'] );
+			}
+		}
+
+		$canonical = (string) wp_json_encode( $export );
+		$size      = strlen( $canonical );
+
+		$result = array(
 			'funnel_id'  => (int) $funnel->get_id(),
 			'title'      => $funnel->get_title(),
 			'steps'      => count( isset( $export[0]['steps'] ) ? (array) $export[0]['steps'] : array() ),
-			'size_bytes' => strlen( $canonical ),
+			'size_bytes' => $size,
 			'format'     => 'funnel-builder-export',
 			'checksum'   => hash( 'sha256', $canonical ),
-			'export'     => $export,
 		);
+
+		$paged = isset( $input['offset'] );
+
+		if ( ! $paged && $size + strlen( (string) wp_json_encode( $canonical ) ) <= self::EXPORT_REPLY_BYTES ) {
+			$result['export'] = $export;
+
+			return $result;
+		}
+
+		$offset = $paged ? absint( $input['offset'] ) : 0;
+
+		if ( $offset >= $size ) {
+			return new WP_Error( 'fkmcp_invalid_input', sprintf( 'offset %d is past the end of the export (size_bytes %d). Start from offset 0.', $offset, $size ) );
+		}
+
+		$part = self::export_part( $canonical, $offset );
+
+		$result['offset']      = $offset;
+		$result['export_part'] = $part;
+
+		if ( $offset + strlen( $part ) < $size ) {
+			$result['next_offset'] = $offset + strlen( $part );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Step meta that WordPress and Elementor rewrite without the Funnel being
+	 * edited: the post lock heartbeat refreshes while an editor is open, and
+	 * the render caches Elementor stamps with the time they were built, or
+	 * deletes on Clear Files & Data and adds back (as a new, last row) on the
+	 * next view. Left in, they change the checksum but not size_bytes - and an
+	 * import would carry another post's stale cache.
+	 */
+	const EXPORT_VOLATILE_META = array( '_edit_lock', '_elementor_css', '_elementor_element_cache', '_elementor_page_assets', '_elementor_markdown_cache' );
+
+	/**
+	 * The steps of an export without EXPORT_VOLATILE_META, at any depth (a
+	 * checkout nests its meta, and its substeps theirs).
+	 *
+	 * @param array $data Steps, or a part of one.
+	 *
+	 * @return array
+	 */
+	private static function drop_volatile_meta( array $data ) {
+		foreach ( $data as $key => $value ) {
+			if ( is_string( $key ) && in_array( $key, self::EXPORT_VOLATILE_META, true ) ) {
+				unset( $data[ $key ] );
+			} elseif ( is_array( $value ) ) {
+				$data[ $key ] = self::drop_volatile_meta( $value );
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Bytes of export one export-funnel reply may carry. The connector sends a
+	 * result twice - as structuredContent and inside content[].text, escaped
+	 * again - so a part is measured as both, and the reply stays well under the
+	 * gateway's 200 KB read.
+	 */
+	const EXPORT_REPLY_BYTES = 150000;
+
+	/**
+	 * The longest slice of the export JSON text from $offset that fits one
+	 * reply. That text is ASCII (wp_json_encode escapes the rest), so any byte
+	 * offset is a safe cut.
+	 *
+	 * @param string $canonical The whole export JSON text.
+	 * @param int    $offset    Byte offset to start from.
+	 *
+	 * @return string
+	 */
+	private static function export_part( $canonical, $offset ) {
+		$length = (int) ( self::EXPORT_REPLY_BYTES / 2 );
+
+		while ( true ) {
+			$part    = (string) substr( $canonical, $offset, $length );
+			$encoded = (string) wp_json_encode( $part );
+			$cost    = strlen( $encoded ) + strlen( (string) wp_json_encode( $encoded ) );
+
+			if ( $cost <= self::EXPORT_REPLY_BYTES || 1 >= $length ) {
+				return $part;
+			}
+
+			$length = (int) floor( $length * self::EXPORT_REPLY_BYTES / $cost );
+		}
 	}
 
 	/** Step post type => the settings route's type slug, for steps with no richer tool of their own. */
@@ -6453,8 +6674,16 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 	const STEP_TOOLS = array(
 		'wfacp_checkout' => 'get-checkout-settings',
 		'wffn_optin'     => 'get-optin-settings',
-		'wfocu_funnel'   => 'get-upsell-settings',
-		'wfob_bump'      => 'get-order-bump',
+	);
+
+	/**
+	 * Step post types only Funnel Builder Pro reads => what they are, and
+	 * Pro's tool that reads them. The tool is named only while Pro is
+	 * active: without Pro it is not listed (left-over Steps of a removed Pro).
+	 */
+	const PRO_STEP_TOOLS = array(
+		'wfocu_funnel' => array( 'an Upsell', 'get-upsell-settings' ),
+		'wfob_bump'    => array( 'an Order Bump', 'get-order-bump' ),
 	);
 
 	/**
@@ -6475,6 +6704,16 @@ class FKMCP_Pack_Funnels extends FKMCP_Pack {
 
 		if ( isset( self::STEP_TOOLS[ $post->post_type ] ) ) {
 			return new WP_Error( 'fkmcp_wrong_step_type', sprintf( 'Step %d is read by %s, not this tool.', $step_id, self::STEP_TOOLS[ $post->post_type ] ) );
+		}
+
+		if ( isset( self::PRO_STEP_TOOLS[ $post->post_type ] ) ) {
+			list( $what, $tool ) = self::PRO_STEP_TOOLS[ $post->post_type ];
+
+			if ( ! self::pro_active() ) {
+				return self::pro_required( sprintf( 'Step %d is %s, which only Funnel Builder Pro reads.', $step_id, $what ) );
+			}
+
+			return new WP_Error( 'fkmcp_wrong_step_type', sprintf( 'Step %d is read by %s, not this tool.', $step_id, $tool ) );
 		}
 
 		if ( ! isset( self::SIMPLE_STEP_TYPES[ $post->post_type ] ) ) {

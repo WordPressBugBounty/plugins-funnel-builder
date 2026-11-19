@@ -222,17 +222,20 @@ final class FKMCP_Connector_Abilities {
 		);
 	}
 
-	/** The WordPress REST error shape. */
+	/**
+	 * The WordPress REST error shape, with meta.fkai_store as the list sends it. A 401 is the one
+	 * refusal sent before sign-in (denied() runs first), so it says the module version only.
+	 */
 	private static function error( $status, $code, $message, array $data = array(), array $headers = array() ) {
-		$body  = array(
+		$body = array(
 			'code'    => $code,
 			'message' => $message,
 			'data'    => array( 'status' => $status ) + $data,
 		);
-		$store = FKMCP_Connector_Mcp::store_meta();
+		$meta = 401 === (int) $status ? FKMCP_Connector_Mcp::public_meta() : FKMCP_Connector_Mcp::store_meta();
 
-		if ( array() !== $store ) {
-			$body['meta'] = array( 'fkai_store' => $store );
+		if ( array() !== $meta ) {
+			$body['meta'] = array( 'fkai_store' => $meta );
 		}
 
 		return self::json( $status, $body, $headers );

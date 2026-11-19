@@ -248,7 +248,8 @@ final class FKMCP_Connector_Mcp {
 	 * gate's refusals), so a call is traceable to the code that answered it on
 	 * its own: the host plugin, its version, its Pro companion's version and the
 	 * license level its Pro tools answer by, plus `module`, the version of the
-	 * module copy that booted. The host decides its keys
+	 * module copy that booted, and `plugins`, the version every active FunnelKit
+	 * plugin registers (plugin_versions()). The host decides its keys
 	 * (FKMCP_Host::store_meta()); nothing when no host is registered, as in the
 	 * connector's own tests.
 	 */
@@ -262,7 +263,10 @@ final class FKMCP_Connector_Mcp {
 		return $result;
 	}
 
-	/** The `fkai_store` object (see with_store_meta()); the ability endpoints send it as meta.fkai_store. */
+	/**
+	 * The `fkai_store` object (see with_store_meta()); the ability endpoints send it as meta.fkai_store.
+	 * The module version goes out whether or not a host is registered: the gateway compares replies by it.
+	 */
 	public static function store_meta() {
 		$meta = array();
 
@@ -272,7 +276,12 @@ final class FKMCP_Connector_Mcp {
 			$meta = is_array( $meta ) ? $meta : array();
 		}
 
-		// The module version goes out whether or not a host is registered.
+		$plugins = self::plugin_versions();
+
+		if ( array() !== $plugins ) {
+			$meta['plugins'] = $plugins;
+		}
+
 		$version = self::version();
 
 		if ( '' !== $version ) {
@@ -283,17 +292,48 @@ final class FKMCP_Connector_Mcp {
 	}
 
 	/**
-	 * The module's release version as the gateway reads it: up to 32 characters
-	 * from A-Z a-z 0-9 . + _ -, '' when FKMCP_VERSION is not defined or is anything else.
+	 * Every FunnelKit plugin's own version, as each registers it on the
+	 * `fkmcp_plugin_versions` filter: its plugin slug => its version, for example
+	 * array( 'funnel-builder' => '3.17.0' ). Whichever copy of the module booted,
+	 * every active plugin adds its own entry. A key that is not a plain slug or a
+	 * version clean_version() refuses is left out.
+	 *
+	 * @return array<string, string> Sorted by slug.
 	 */
-	public static function version() {
-		if ( ! defined( 'FKMCP_VERSION' ) ) {
-			return '';
+	public static function plugin_versions() {
+		$out = array();
+
+		foreach ( (array) apply_filters( 'fkmcp_plugin_versions', array() ) as $slug => $version ) {
+			$version = is_scalar( $version ) ? self::clean_version( (string) $version ) : '';
+
+			if ( is_string( $slug ) && 1 === preg_match( '/^[a-z0-9_-]{1,64}$/D', $slug ) && '' !== $version ) {
+				$out[ $slug ] = $version;
+			}
 		}
 
-		$version = (string) FKMCP_VERSION;
+		ksort( $out, SORT_STRING );
 
-		return 1 === preg_match( '/^[A-Za-z0-9.+_-]{1,32}$/', $version ) ? $version : '';
+		return $out;
+	}
+
+	/**
+	 * What a reply sent before sign-in may say about the store: the module version only, never
+	 * the plugin versions or the license level store_meta() carries.
+	 */
+	public static function public_meta() {
+		$version = self::version();
+
+		return '' !== $version ? array( 'module' => $version ) : array();
+	}
+
+	/** The module version as the gateway reads it, '' when FKMCP_VERSION is not defined or not a plain version. */
+	public static function version() {
+		return defined( 'FKMCP_VERSION' ) ? self::clean_version( (string) FKMCP_VERSION ) : '';
+	}
+
+	/** Up to 32 characters of A-Z a-z 0-9 . + _ -, else ''. */
+	public static function clean_version( $version ) {
+		return 1 === preg_match( '/^[A-Za-z0-9.+_-]{1,32}$/D', (string) $version ) ? (string) $version : '';
 	}
 
 	/** Every funnelkit/* ability the current user may run. */
@@ -788,8 +828,8 @@ final class FKMCP_Connector_Mcp {
 		);
 
 		// Failures are the replies the gateway compares by version, so they carry it as results do.
+		// Every protocol error is answered after sign-in (handle() sends the 401 before parsing).
 		$meta = self::store_meta();
-
 		if ( array() !== $meta ) {
 			$error['_meta'] = array( 'fkai_store' => $meta );
 		}
